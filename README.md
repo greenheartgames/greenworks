@@ -44,6 +44,7 @@ else {
 Troubleshooting
 ===
 Possible issues while building/running:
+
     * Library not loaded: @loader_path/libsteam_api.dylib (or .dll for windows)
 That means you didn't copied this file to your app directory, and it can't link it at runtime.
 
