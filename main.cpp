@@ -33,7 +33,7 @@ struct Achievement {
 	bool bSuccess;
 };
 
-class GreenheartGames : node::ObjectWrap {
+class Greenworks : node::ObjectWrap {
 	private:
 
 		static void steamWriteToFile(uv_work_t *req) {
