@@ -25,13 +25,13 @@ node-gyp configure
 node-gyp build
 ```
 
-If everything goes fine, it will create a folder deploy/ with node module within (greenworks-steam-X.node, where X depends on your os. E.g. for mac it will be greenworks-steam-osx.node). Now it's possible to use the module from a node.js application. Make sure libsteam_api dynamic library is distributed along with the application.
+If everything goes fine, it will create a folder deploy/ with node module within (greenworks-X.node, where X depends on your os. E.g. for mac it will be greenworks-osx.node). Now it's possible to use the module from a node.js application. Make sure libsteam_api dynamic library is distributed along with the application.
 
 Test
 ===
 Here is a simple application, which inits steam API. 
 ```javascript
-var steam = require('./greenworks-steam-osx');
+var steam = require('./greenworks-osx');
 
 if (steam.initAPI()) {
     console.log('Steam API initalised');
