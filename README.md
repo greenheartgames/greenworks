@@ -10,7 +10,7 @@ For Game Dev Tycoon we've built 5 methods, based on Steam API:
 - `getCloudQuota()` - is used to get steam cloud usage. Uses methods from `ISteamRemoteStorage`;
 - `saveTextToFile(fileName, content, complete, error)` (asynchronous) - saves some textual data locally, but it also gets synced with steam cloud in background;
 - `readTextFromFile(fileName, content, complete, error)` (asynchronous) - gets some data, previously saved using `saveTextToFile()`. Both `readTextFromFile` and `saveTextToFile` are using `ISteamRemoteStorage`;
-- `activateAchievement(id, callback)` (asynchronous) - sets a user achievement, using `ISteamUserStats`.
+- `activateAchievement(id, complete, error)` (asynchronous) - sets a user achievement, using `ISteamUserStats`.
 
 Dependencies
 ===
