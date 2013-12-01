@@ -179,8 +179,8 @@ class Greenworks : node::ObjectWrap {
 		}
 
 	public:
-		GreenheartGames()  {}
-		~GreenheartGames() {}
+		Greenworks()  {}
+		~Greenworks() {}
 
 		static Handle<Value> initAPI(const Arguments& args) {
 			HandleScope scope;
@@ -290,11 +290,11 @@ class Greenworks : node::ObjectWrap {
 };
 
 void init(Handle<Object> exports) {
-	exports->Set(String::NewSymbol("initAPI"), FunctionTemplate::New(GreenheartGames::initAPI)->GetFunction());
-	exports->Set(String::NewSymbol("getCloudQuota"), FunctionTemplate::New(GreenheartGames::getCloudQuota)->GetFunction());
-	exports->Set(String::NewSymbol("saveTextToFile"), FunctionTemplate::New(GreenheartGames::saveTextToFile)->GetFunction());
-	exports->Set(String::NewSymbol("readTextFromFile"), FunctionTemplate::New(GreenheartGames::readTextFromFile)->GetFunction());
-	exports->Set(String::NewSymbol("activateAchievement"), FunctionTemplate::New(GreenheartGames::activateAchievement)->GetFunction());
+	exports->Set(String::NewSymbol("initAPI"), FunctionTemplate::New(Greenworks::initAPI)->GetFunction());
+	exports->Set(String::NewSymbol("getCloudQuota"), FunctionTemplate::New(Greenworks::getCloudQuota)->GetFunction());
+	exports->Set(String::NewSymbol("saveTextToFile"), FunctionTemplate::New(Greenworks::saveTextToFile)->GetFunction());
+	exports->Set(String::NewSymbol("readTextFromFile"), FunctionTemplate::New(Greenworks::readTextFromFile)->GetFunction());
+	exports->Set(String::NewSymbol("activateAchievement"), FunctionTemplate::New(Greenworks::activateAchievement)->GetFunction());
 }
 
 #ifdef _WIN32
