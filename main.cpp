@@ -298,9 +298,9 @@ void init(Handle<Object> exports) {
 }
 
 #ifdef _WIN32
-	NODE_MODULE(gdt_steam_win, init)
+	NODE_MODULE(greenworks_win, init)
 #elif __APPLE__
-	NODE_MODULE(gdt_steam_osx, init)
+	NODE_MODULE(greenworks_osx, init)
 #elif __linux__
-	NODE_MODULE(gdt_steam_linux, init)
+	NODE_MODULE(greenworks_linux, init)
 #endif
