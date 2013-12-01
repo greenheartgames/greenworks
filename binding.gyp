@@ -3,7 +3,7 @@
 		['OS=="win"', {
 			'variables': {
 				'copy_command%': 'copy',
-				'module_name%': 'gdt-steam-win',
+				'module_name%': 'greenworks-steam-win',
 				'redist_bin_dir%': '',
 				'lib_extension%': 'dll'
 			},
@@ -12,7 +12,7 @@
 		['OS=="mac"', {
 			'variables': {
 				'copy_command%': 'cp',
-				'module_name%': 'gdt-steam-osx',
+				'module_name%': 'greenworks-steam-osx',
 				'redist_bin_dir%': 'osx32',
 				'lib_extension%': 'dylib'
 			},
@@ -21,7 +21,7 @@
 		['OS=="linux"', {
 			'variables': {
 				'copy_command%': 'cp',
-				'module_name%': 'gdt-steam-linux',
+				'module_name%': 'greenworks-steam-linux',
 				'redist_bin_dir%': 'linux32',
 				'lib_extension%': 'so'
 			},
@@ -50,14 +50,14 @@
 					'action_name': 'move_node_module',
 
 					'inputs': [
-						'<@(PRODUCT_DIR)/gdt-steam.node'
+						'<@(PRODUCT_DIR)/greenworks-steam.node'
 					],
 
 					'outputs': [
 						'deploy/<@(module_name).node'
 					],
 
-					'action': ['<@(copy_command)', '<@(PRODUCT_DIR)/gdt-steam.node', 'deploy/<@(module_name).node']
+					'action': ['<@(copy_command)', '<@(PRODUCT_DIR)/greenworks-steam.node', 'deploy/<@(module_name).node']
 				}
 			]
 		}
