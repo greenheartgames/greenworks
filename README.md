@@ -25,7 +25,7 @@ node-gyp configure
 node-gyp build
 ```
 
-If everything goes fine, it will create a folder deploy/ with node module within (gdt-steam-X.node, where X depends on your os. E.g. for mac it will be gdt-steam-osx.node). Now it's possible to use the module from a node.js application. Make sure libsteam_api dynamic library is distributed along with the application.
+If everything goes fine, it will create a folder deploy/ with node module within (greenworks-steam-X.node, where X depends on your os. E.g. for mac it will be greenworks-steam-osx.node). Now it's possible to use the module from a node.js application. Make sure libsteam_api dynamic library is distributed along with the application.
 
 Test
 ===
