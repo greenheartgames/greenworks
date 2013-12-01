@@ -31,7 +31,7 @@ Test
 ===
 Here is a simple application, which inits steam API. 
 ```javascript
-var steam = require('./gdt-steam-osx');
+var steam = require('./greenworks-steam-osx');
 
 if (steam.initAPI()) {
     console.log('Steam API initalised');
@@ -46,10 +46,10 @@ Troubleshooting
 Possible issues while building/running:
 
     * Library not loaded: @loader_path/libsteam_api.dylib (or .dll for windows)
-That means you didn't copied this file to your app directory, and it can't link it at runtime.
+That means you didn't copy this file to your app directory and it can't link it at runtime.
 
     * SteamAPI_Init() failed; unable to locate a running instance of Steam, or a local steamclient.dll
-Your steam client should be running (or you can copy steamclient dynamic library into your app directory).
+Your steam client should be running (or you can copy the steamclient dynamic library into your app directory).
     
     * SteamAPI_Init() failed; no appID found.
-Steam can't determine for which steam application you are trying to initialise the API. Either launch the game from Steam, or put the file steam_appid.txt containing the correct appID in your app folder. steam_appid.txt should contain just your application id, nothing else.
+Steam can't determine for which steam application you are trying to initialise the API. Either launch the game from Steam, or put the file `steam_appid.txt` containing the correct appID in your app folder. steam_appid.txt should contain just your application id, nothing else.
