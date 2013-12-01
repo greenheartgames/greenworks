@@ -5,7 +5,7 @@ A node.js plugin to integrate with [Steamworks](http://www.steampowered.com/stea
 
 The plugin was developed the enable the Steam release of Greenheart Games' [Game Dev Tycoon](http://www.greenheartgames.com/app/game-dev-tycoon/), a game powered by [node-webkit](https://github.com/rogerwang/node-webkit).
 
-For Game Dev Tycoon we've built 5 methods, based on Steam API:
+For Game Dev Tycoon we've added support for Steam Cloud and Steam Achievements via the following five methods, based on the Steamworks SDK:
 - `initAPI()` (synchronous call) - this one is used when the app starts. This method uses `SteamAPI_Init` and `ISteamUserStats::RequestCurrentStats` methods;
 - `getCloudQuota()` - is used to get steam cloud usage. Uses methods from `ISteamRemoteStorage`;
 - `saveTextToFile(fileName, content, complete, error)` (asynchronous) - saves some textual data locally, but it also gets synced with steam cloud in background;
@@ -54,3 +54,11 @@ Your steam client should be running (or you can copy the steamclient dynamic lib
     
     * SteamAPI_Init() failed; no appID found.
 Steam can't determine for which steam application you are trying to initialise the API. Either launch the game from Steam, or put the file `steam_appid.txt` containing the correct appID in your app folder. steam_appid.txt should contain just your application id, nothing else.
+
+License
+===
+Greenworks is published under the MIT license. See `LICENSE` file for details.
+
+Help us improve!
+===
+Greenworks was developed to enable a minimum set of features for the Game Dev Tycoon release and could surely use more development. If you improve the project please consider opening a pull-request.
