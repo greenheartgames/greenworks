@@ -15,6 +15,7 @@ For Game Dev Tycoon we've built 5 methods, based on Steam API:
 Dependencies
 ===
 Before building modules you need to download Steamworks SDK ([https://partner.steamgames.com/](https://partner.steamgames.com/)).
+Note that the steamworks SDK libraries and docs are only usable under license from Valve. If you fork Greenworks, don't commit any of the dependencies from the steamworks SDK to a public place.
 
 Build
 ===
