@@ -8,7 +8,7 @@ API
 ===
 For Game Dev Tycoon we've added support for Steam Cloud and Steam Achievements via the following five methods, based on the Steamworks SDK:
 - `initAPI()` (synchronous call) - this one is used when the app starts. This method uses `SteamAPI_Init` and `ISteamUserStats::RequestCurrentStats` methods;
-- `getCloudQuota()` - is used to get steam cloud usage. Uses methods from `ISteamRemoteStorage`;
+- `getCloudQuota(complete(total, available), error)` - is used to get steam cloud usage. Uses methods from `ISteamRemoteStorage`;
 - `saveTextToFile(fileName, content, complete, error)` (asynchronous) - saves some textual data locally, but it also gets synced with steam cloud in background;
 - `readTextFromFile(fileName, content, complete, error)` (asynchronous) - gets some data, previously saved using `saveTextToFile()`. Both `readTextFromFile` and `saveTextToFile` are using `ISteamRemoteStorage`;
 - `activateAchievement(id, complete, error)` (asynchronous) - sets a user achievement, using `ISteamUserStats`.
