@@ -39,7 +39,7 @@ else {
 
 Build
 ===
-In order to build modules, you need first to add redistributable_bin/ (under SDK folder) to PATH (so steam_api.lib is linked while building).
+If you want to build greenworks yourself, you need first to add redistributable_bin/ (under SDK folder) to PATH (so steam_api.lib is linked while building).
 
 ```sh
 node-gyp configure
