@@ -18,16 +18,10 @@ Dependencies
 Before building modules you need to download Steamworks SDK ([https://partner.steamgames.com/](https://partner.steamgames.com/)).
 Note that the steamworks SDK libraries and docs are only usable under license from Valve. If you fork Greenworks, don't commit any of the dependencies from the steamworks SDK to a public place.
 
-Build
+Usage
 ===
-In order to build modules, you need first to add redistributable_bin/ (under SDK folder) to PATH (so steam_api.lib is linked while building).
-
-```sh
-node-gyp configure
-node-gyp build
-```
-
-If everything goes fine, it will create a folder deploy/ with node module within (greenworks-X.node, where X depends on your os. E.g. for mac it will be greenworks-osx.node). Now it's possible to use the module from a node.js application. Make sure libsteam_api dynamic library is distributed along with the application.
+We provide compiled versions of greenworks under [releases](https://github.com/greenheartgames/greenworks/releases).
+To use the binaries you will have to copy them alongside the steam libraries and then load the module via require.
 
 Test
 ===
@@ -42,6 +36,18 @@ else {
 	console.log('Error initalising Steam API');
 }
 ```
+
+Build
+===
+In order to build modules, you need first to add redistributable_bin/ (under SDK folder) to PATH (so steam_api.lib is linked while building).
+
+```sh
+node-gyp configure
+node-gyp build
+```
+
+If everything goes fine, it will create a folder deploy/ with node module within (greenworks-X.node, where X depends on your os. E.g. for mac it will be greenworks-osx.node). Now it's possible to use the module from a node.js application. Make sure libsteam_api dynamic library is distributed along with the application.
+
 
 Troubleshooting
 ===
