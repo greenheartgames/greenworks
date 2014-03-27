@@ -5,7 +5,7 @@
 				'copy_command%': 'copy',
 				'module_name%': 'greenworks-win',
 				'redist_bin_dir%': '',
-				'lib_extension%': 'dll'
+				'lib_extension%': 'lib'
 			},
 		}],
 
@@ -35,9 +35,9 @@
 				'main.cpp'
 			],
 			'link_settings': {
-				'ldflags': ['-L$(CURDIR)/../steamworks-sdk/redistributable_bin/<(redist_bin_dir)'],
+				'ldflags': ['-L$(CURDIR)steamworks-sdk/redistributable_bin/<(redist_bin_dir)'],
 				'libraries': [
-					'$(CURDIR)/../steamworks-sdk/redistributable_bin/<(redist_bin_dir)/libsteam_api.<(lib_extension)'
+					'$(CURDIR)../steamworks-sdk/redistributable_bin/<(redist_bin_dir)/steam_api.<(lib_extension)'
 				]
 			}
 		},
