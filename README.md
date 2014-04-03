@@ -12,6 +12,8 @@ For Game Dev Tycoon we've added support for Steam Cloud and Steam Achievements v
 - `saveTextToFile(fileName, content, complete, error)` (asynchronous) - saves some textual data locally, but it also gets synced with steam cloud in background;
 - `readTextFromFile(fileName, content, complete(data), error)` (asynchronous) - gets some data, previously saved using `saveTextToFile()`. Both `readTextFromFile` and `saveTextToFile` are using `ISteamRemoteStorage`;
 - `activateAchievement(id, complete, error)` (asynchronous) - sets a user achievement, using `ISteamUserStats`.
+- `isCloudEnabled()` (synchronous call) - returns true or false if the Steam cloud for the app is enabled or not
+- `enableCloud(enable)` (synchronous call) - enable or disabled the Steam cloud feature for the app
 
 Dependencies
 ===
