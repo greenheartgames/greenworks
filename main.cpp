@@ -287,6 +287,23 @@ class Greenworks : node::ObjectWrap {
 
 			return scope.Close(Undefined());
 		}
+
+		static Handle<Value> enableCloud(const Arguments& args){
+			HandleScope scope;
+
+			bool bEnableCloud = args[0]->ToBoolean()->Value();
+			ISteamRemoteStorage *pSteamRemoteStorage = SteamRemoteStorage();
+
+			pSteamRemoteStorage->SetCloudEnabledForApp(bEnableCloud);
+
+			return scope.Close(Undefined());
+		}
+
+		static Handle<Value> isCloudEnabled(const Arguments& args){
+			HandleScope scope;
+			ISteamRemoteStorage *pSteamRemoteStorage = SteamRemoteStorage();
+			return scope.Close(Boolean::New(pSteamRemoteStorage->IsCloudEnabledForApp()));
+		}
 };
 
 void init(Handle<Object> exports) {
@@ -295,6 +312,8 @@ void init(Handle<Object> exports) {
 	exports->Set(String::NewSymbol("saveTextToFile"), FunctionTemplate::New(Greenworks::saveTextToFile)->GetFunction());
 	exports->Set(String::NewSymbol("readTextFromFile"), FunctionTemplate::New(Greenworks::readTextFromFile)->GetFunction());
 	exports->Set(String::NewSymbol("activateAchievement"), FunctionTemplate::New(Greenworks::activateAchievement)->GetFunction());
+	exports->Set(String::NewSymbol("isCloudEnabled"), FunctionTemplate::New(Greenworks::isCloudEnabled)->GetFunction());
+	exports->Set(String::NewSymbol("enableCloud"), FunctionTemplate::New(Greenworks::enableCloud)->GetFunction());
 }
 
 #ifdef _WIN32
