@@ -2,7 +2,7 @@ greenworks
 ===
 
 A node.js plugin to integrate with [Steamworks](http://www.steampowered.com/steamworks/).
-The plugin was developed to enable the Steam release of Greenheart Games' [Game Dev Tycoon](http://www.greenheartgames.com/app/game-dev-tycoon/), a game powered by [node-webkit](https://github.com/rogerwang/node-webkit).
+The plugin was developed to enable the Steam release of Greenheart Games' [Game Dev Tycoon](http://www.greenheartgames.com/app/game-dev-tycoon/), a game powered by [node-webkit](https://github.com/rogerwang/node-webkit). It has since been used by [other projects](https://github.com/greenheartgames/greenworks/wiki/Apps-games-using-greenworks).
 
 API
 ===
