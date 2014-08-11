@@ -6,7 +6,48 @@ The plugin was developed to enable the Steam release of Greenheart Games' [Game 
 
 API
 ===
-For Game Dev Tycoon we've added support for several Steam related functionality, such as Workshop synchronization, Steam Cloud and Steam Achievements via several methods, based on the Steamworks SDK.
+For Game Dev Tycoon we've added support for several Steam related functionality, such as Workshop synchronization, Steam Cloud and Steam Achievements.
+The methods we used are based on the Steamworks SDK.
+
+**Greenworks**
+
+* Greenworks.initAPI()
+* Greenworks.getCloudQuotas()
+* Greenworks.saveTextToFile(string fileName, string content, func success, func error)
+* Greenworks.readTextFromFile(string fileName, func success, func error)
+* Greenworks.activateAchievement(string achievementId, func success, func error)
+* Greenworks.enableCloud()
+* Greenworks.isCloudEnabled()
+* Greenworks.isCloudEnabledForUser()
+* Greenworks.getNumberOfPlayers()
+* Greenworks.ugcPublish(string fileName, string title, string description, string imageFile, func successCallback, func errorCallback, func progressCallback)
+* Greenworks.ugcPublishUpdate(int publishedFileId, string fileName, string title, string description, string imageFile, func successCallback, func errorCallback, func progressCallback)
+* Greenworks.ugcGetItems(int type, int sort, func successCallback, func errorCallback, func progressCallback)
+* Greenworks.ugcGetUserItems(int type, int sort, int filter, func successCallback, func errorCallback, func progressCallback)
+* Greenworks.ugcDownloadItem(string fileName, int hFile, string targetFolder, func successCallback, func errorCallback, func progressCallback)
+* Greenworks.ugcSynchronizeItems(string targetFolder, func success, func error, func progress)
+* Greenworks.getCurrentGameLanguage()
+* Greenworks.getCurrentUILanguage()
+* Greenworks.getSteamId()
+* Greenworks.ugcShowOverlay(optional workshopItemId)
+* Greenworks.ugcUnsubscribe(int publishedFileId, func success, func error, func progress)
+* Greenworks.getCurrentGameInstallDir()
+* Greenworks.runCallbacks()
+
+***
+
+**Greenworks.Utils**
+
+* Greenworks.Utils.createArchive(string zipFile, string sourceDir, string password,  int compressionLevel, func success, func error)
+* Greenworks.Utils.extractArchive(string zipFile, string targetDir, string password, func success, func error)
+* Greenworks.Utils.sleep(int ms)
+* Greenworks.Utils.getOS(int ms)
+* Greenworks.Utils.move(string sourceFolder, string targetFolder)
+* Greenworks.Utils.enableConsole()
+* Greenworks.Utils.disableConsole()
+* Greenworks.Utils.enableWriteToLog(string targetFile)
+* Greenworks.Utils.disableWriteToLog()
+
 Please consult the [Greenworks API documentation](https://github.com/greenheartgames/greenworks/blob/master/docs/Greenworks%20API.pdf) for more information.
 
 Dependencies
