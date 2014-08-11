@@ -39,15 +39,15 @@ errorCallback, func progressCallback)</sup>
 
 **Greenworks.Utils**
 
-* createArchive(string zipFile, string sourceDir, string password,  int compressionLevel, func success, func error)
-* extractArchive(string zipFile, string targetDir, string password, func success, func error)
-* sleep(int ms)
-* getOS(int ms)
-* move(string sourceFolder, string targetFolder)
-* enableConsole()
-* disableConsole()
-* enableWriteToLog(string targetFile)
-* disableWriteToLog()
+* <sup>createArchive(string zipFile, string sourceDir, string password,  int compressionLevel, func success, func error)</sup>
+* <sup>extractArchive(string zipFile, string targetDir, string password, func success, func error)</sup>
+* <sup>sleep(int ms)</sup>
+* <sup>getOS(int ms)</sup>
+* <sup>move(string sourceFolder, string targetFolder)</sup>
+* <sup>enableConsole()</sup>
+* <sup>disableConsole()</sup>
+* <sup>enableWriteToLog(string targetFile)</sup>
+* <sup>disableWriteToLog()</sup>
 
 Please consult the [Greenworks API documentation](https://github.com/greenheartgames/greenworks/blob/master/docs/Greenworks%20API.pdf) for more information.
 
