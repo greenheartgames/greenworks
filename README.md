@@ -42,7 +42,7 @@ errorCallback, func progressCallback)</sup>
 * <sup>createArchive(string zipFile, string sourceDir, string password,  int compressionLevel, func success, func error)</sup>
 * <sup>extractArchive(string zipFile, string targetDir, string password, func success, func error)</sup>
 * <sup>sleep(int ms)</sup>
-* <sup>getOS(int ms)</sup>
+* <sup>getOS()</sup>
 * <sup>move(string sourceFolder, string targetFolder)</sup>
 * <sup>enableConsole()</sup>
 * <sup>disableConsole()</sup>
