@@ -79,13 +79,34 @@ Build
 ===
 If you want to build greenworks yourself, you need first to add redistributable_bin/ (under SDK folder) to PATH (so steam_api.lib is linked while building).
 
+Using node-gyp:
+
 ```sh
-node-gyp configure
+node-gyp configure --target=0.8.6
 node-gyp build
 ```
 
+Using nw-gyp:
+
+```sh
+nw-gyp configure --target=0.8.6
+nw-gyp build
+```
+On 64bit editions of Windows, you might need to explicitly specifiy the architecture. You can do this by adding the option --arch=ia32 to the configure line.
+
+```nw-gyp configure --target=0.8.6 --arch=ia32```
+
 If everything goes fine, it will create a folder deploy/ with node module within (greenworks-X.node, where X depends on your os. E.g. for mac it will be greenworks-osx.node). Now it's possible to use the module from a node.js application. Make sure libsteam_api dynamic library is distributed along with the application.
 
+If you use nw-gyp you can build by:
+
+On Windows
+nw-gyp configure --target=0.8.6 --arch=ia32 --msvs_version=2013
+cmd /c "C:\Users\fabbattista\AppData\Roaming\npm\nw-gyp.cmd" build
+cmd /c "C:\Users\fabbattista\AppData\Roaming\npm\nw-gyp.cmd" build
+
+On Linux / OSX
+nw-gyp configure --target=0.8.6 --arch=ia32 --msvs_version=2013
 
 Troubleshooting
 ===
