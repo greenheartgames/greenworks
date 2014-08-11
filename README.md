@@ -6,14 +6,8 @@ The plugin was developed to enable the Steam release of Greenheart Games' [Game 
 
 API
 ===
-For Game Dev Tycoon we've added support for Steam Cloud and Steam Achievements via the following five methods, based on the Steamworks SDK:
-- `initAPI()` (synchronous call) - this one is used when the app starts. This method uses `SteamAPI_Init` and `ISteamUserStats::RequestCurrentStats` methods;
-- `getCloudQuota(complete(total, available), error)` - is used to get steam cloud usage. Uses methods from `ISteamRemoteStorage`;
-- `saveTextToFile(fileName, content, complete, error)` (asynchronous) - saves some textual data locally, but it also gets synced with steam cloud in background;
-- `readTextFromFile(fileName, content, complete(data), error)` (asynchronous) - gets some data, previously saved using `saveTextToFile()`. Both `readTextFromFile` and `saveTextToFile` are using `ISteamRemoteStorage`;
-- `activateAchievement(id, complete, error)` (asynchronous) - sets a user achievement, using `ISteamUserStats`.
-- `isCloudEnabled()` (synchronous call) - returns true or false if the Steam cloud for the app is enabled or not
-- `enableCloud(enable)` (synchronous call) - enable or disable the Steam cloud feature for the app
+For Game Dev Tycoon we've added support for several Steam related functionality, such as Workshop synchronization, Steam Cloud and Steam Achievements via several methods, based on the Steamworks SDK.
+Please consult the Greenworks API.pdf for more information.
 
 Dependencies
 ===
