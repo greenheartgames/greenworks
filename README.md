@@ -12,14 +12,18 @@ The methods we used are based on the Steamworks SDK.
 **Greenworks**
 
 * <sup>initAPI()</sup>
-* <sup>getCloudQuotas()</sup>
-* <sup>saveTextToFile(string fileName, string content, func success, func error)</sup>
-* <sup>readTextFromFile(string fileName, func success, func error)</sup>
 * <sup>activateAchievement(string achievementId, func success, func error)</sup>
+* <sup>getNumberOfPlayers()</sup>
+* <sup>getCurrentGameLanguage()</sup>
+* <sup>getCurrentUILanguage()</sup>
+* <sup>getSteamId()</sup>
+* <sup>getCurrentGameInstallDir()</sup>
+* <sup>getCloudQuotas()</sup>
+* <sup>readTextFromFile(string fileName, func success, func error)</sup>
+* <sup>saveTextToFile(string fileName, string content, func success, func error)</sup>
 * <sup>enableCloud()</sup>
 * <sup>isCloudEnabled()</sup>
 * <sup>isCloudEnabledForUser()</sup>
-* <sup>getNumberOfPlayers()</sup>
 * <sup>ugcPublish(string fileName, string title, string description, string imageFile, func successCallback, func 
 errorCallback, func progressCallback)</sup>
 * <sup>ugcPublishUpdate(int publishedFileId, string fileName, string title, string description, string imageFile, func successCallback, func errorCallback, func progressCallback)</sup>
@@ -27,12 +31,8 @@ errorCallback, func progressCallback)</sup>
 * <sup>ugcGetUserItems(int type, int sort, int filter, func successCallback, func errorCallback, func progressCallback)</sup>
 * <sup>ugcDownloadItem(string fileName, int hFile, string targetFolder, func successCallback, func errorCallback, func progressCallback)</sup>
 * <sup>ugcSynchronizeItems(string targetFolder, func success, func error, func progress)</sup>
-* <sup>getCurrentGameLanguage()</sup>
-* <sup>getCurrentUILanguage()</sup>
-* <sup>getSteamId()</sup>
 * <sup>ugcShowOverlay(optional workshopItemId)</sup>
 * <sup>ugcUnsubscribe(int publishedFileId, func success, func error, func progress)</sup>
-* <sup>getCurrentGameInstallDir()</sup>
 * <sup>runCallbacks()</sup>
 
 ***
