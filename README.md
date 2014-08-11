@@ -31,7 +31,7 @@ errorCallback, func progressCallback)</sup>
 * <sup>ugcGetUserItems(int type, int sort, int filter, func successCallback, func errorCallback, func progressCallback)</sup>
 * <sup>ugcDownloadItem(string fileName, int hFile, string targetFolder, func successCallback, func errorCallback, func progressCallback)</sup>
 * <sup>ugcSynchronizeItems(string targetFolder, func success, func error, func progress)</sup>
-* <sup>ugcShowOverlay(optional workshopItemId)</sup>
+* <sup>ugcShowOverlay(optional int workshopItemId)</sup>
 * <sup>ugcUnsubscribe(int publishedFileId, func success, func error, func progress)</sup>
 * <sup>runCallbacks()</sup>
 
