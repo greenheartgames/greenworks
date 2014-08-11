@@ -7,7 +7,7 @@ The plugin was developed to enable the Steam release of Greenheart Games' [Game 
 API
 ===
 For Game Dev Tycoon we've added support for several Steam related functionality, such as Workshop synchronization, Steam Cloud and Steam Achievements via several methods, based on the Steamworks SDK.
-Please consult the Greenworks API.pdf for more information.
+Please consult the [Greenworks API documentation](https://github.com/greenheartgames/greenworks/blob/master/docs/Greenworks%20API.pdf) for more information.
 
 Dependencies
 ===
