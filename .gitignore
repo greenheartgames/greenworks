@@ -1,13 +1,6 @@
-# Compiled Object files
-*.slo
-*.lo
-*.o
-
-# Compiled Dynamic libraries
-*.so
+node_modules/
+build/
+deps/steamworks_sdk/
+*.swp
 *.dylib
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
+*.node
