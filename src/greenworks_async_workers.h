@@ -1,3 +1,7 @@
+// Copyright (c) 2014 Greenheart Games Pty. Ltd. All rights reserved.
+// Use of this source code is governed by the MIT license that can be
+// found in the LICENSE file.
+
 #ifndef SRC_GREENWORK_ASYNC_WORKERS_H_
 #define SRC_GREENWORK_ASYNC_WORKERS_H_
 
