@@ -5,6 +5,7 @@
 #include <string>
 
 #include "nan.h"
+#include "steam/steam_api.h"
 #include "v8.h"
 
 #include "greenworks_async_workers.h"
