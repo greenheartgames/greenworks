@@ -91,6 +91,24 @@ A sample nw application is provided [here](https://github.com/greenheartgames/gr
 
 For more details, you can refer to [nw-gyp](https://github.com/rogerwang/nw-gyp) page.
 
+###Atom-shell Building Steps
+
+Using Greenworks in atom-shll, we use `node-gyp` with some custom settings to build
+greenworks module.
+
+```
+cd greenworks
+
+HOME=~/.atom-shell-gyp node-gyp rebuild --target=<0.17.1 or other atom-shell versions> --dist-url=https://gh-contractor-zcbenz.s3.amazonaws.com/atom-shell/dist
+```
+
+After building finished, you can find `greenworks-(linux/win/osx).node` file
+ends up in `build/Release`.
+
+A sample atom-shell application is provided [here](https://github.com/greenheartgames/greenworks/tree/nan-compatible/samples/atom-shell).
+
+For more details, you can refer to [Using native Node modules](https://github.com/atom/atom-shell/blob/master/docs/tutorial/using-native-node-modules.md) page.
+
 ##Test
 
 Greenworks uses [Mocha](http://visionmedia.github.io/mocha/) framework to test
