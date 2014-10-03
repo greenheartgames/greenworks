@@ -48,7 +48,7 @@ if (greenworks.initAPI()) {
 Download [Steamworks SDK](https://partner.steamgames.com/) and unzip to `<greenworks_src_dir>/deps/steamworks_sdk_dir`
 directory.
 
-###Building steps
+###Nodejs Addon Building Steps
 
 ```
 // change to greenworks src directory.
@@ -61,11 +61,33 @@ node-gyp configure
 node-gyp rebuild
 ```
 
-Once building is done, you can fine `greenworks-(linux/win/osx).node` under
+Once building is done, you can find `greenworks-(linux/win/osx).node` under
 `build/Release`.
 
 If you have any issues on building/running, consult to
 [troubleshooting](https://github.com/greenheartgames/greenworks/wiki/Troubleshooting) page.
+
+###Node-webkit Building Steps
+
+Using Greenworks in node-webkit, you need the [nw-gyp](https://github.com/rogerwang/nw-gyp)
+instead of 'node-gyp' to build.
+
+```
+// install nw-gyp
+sudo npm install -g nw-gyp
+
+cd greenworks
+// generate the building files
+nw-gyp configure --target=<0.10.5 or other nw version>
+
+// build Greenworks
+nw-gyp build
+```
+
+After building finished, you can find `greenworks-(linux/win/osx).node` file
+ends up in `build/Release`.
+
+For more details, you can refer to [nw-gyp](https://github.com/rogerwang/nw-gyp) page.
 
 ##Test
 
