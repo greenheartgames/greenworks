@@ -87,6 +87,8 @@ nw-gyp build
 After building finished, you can find `greenworks-(linux/win/osx).node` file
 ends up in `build/Release`.
 
+A sample nw application is provided [here](https://github.com/greenheartgames/greenworks/tree/nan-compatible/samples/node-webkit).
+
 For more details, you can refer to [nw-gyp](https://github.com/rogerwang/nw-gyp) page.
 
 ##Test

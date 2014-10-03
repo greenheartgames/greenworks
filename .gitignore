@@ -2,6 +2,7 @@ node_modules/
 build/
 deps/steamworks_sdk/
 test/steam_appid.txt
+steam_appid.txt
 *.swp
 *.dylib
 *.node
