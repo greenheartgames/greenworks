@@ -60,6 +60,11 @@
           '<(source_root_dir)/<(steamworks_sdk_dir)/redistributable_bin/<(redist_bin_dir)/libsteam_api.<(lib_extension)'
         ]
       },
+      'xcode_settings': {
+        'WARNING_CFLAGS':  [
+          '-Wno-deprecated-declarations',
+        ],
+      },
       'copies': [
         {
           'destination': '<(PRODUCT_DIR)',
