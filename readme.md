@@ -67,6 +67,21 @@ Once building is done, you can fine `greenworks-(linux/win/osx).node` under
 If you have any issues on building/running, consult to
 [troubleshooting](https://github.com/greenheartgames/greenworks/wiki/Troubleshooting) page.
 
+##Test
+
+Greenworks uses [Mocha](http://visionmedia.github.io/mocha/) framework to test
+steam APIs.
+
+Before running the test, you should create a `steam_appid.txt` with
+a Steam Game Application ID in `<greenworks_src_dir>/test` directory.
+
+```bash
+cd greenworks
+./test/run-test
+```
+
+See [how to find the application ID for a Steam Game](https://support.steampowered.com/kb_article.php?ref=3729-WFJZ-4175).
+
 ##License
 
 Greenworks is published under the MIT license. See `LICENSE` file for details.
