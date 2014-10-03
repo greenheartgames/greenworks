@@ -1,8 +1,13 @@
 #Greenworks
 
 Greenworks is a nodejs addon integrated with [Steamworks](http://www.steampowered.com/steamworks/).
-The addon aims to expose Steam APIs to javascript for easy usage. It supports
-both node v0.10 and v0.11.
+The addon aims to expose Steam APIs to javascript for easy usage.
+
+Greenworks supports:
+
+* node v0.10.X and v0.11.X
+* node-webkit v0.8.X and v0.10.X
+* atom-shell v0.8.4 or above
 
 It's created and developed by Greenheart Games Pty. Ltd for [Game Dev Tycoon](http://www.greenheartgames.com/app/game-dev-tycoon/),
 a game powered by [node-webkit](https://github.com/rogerwang/node-webkit).
