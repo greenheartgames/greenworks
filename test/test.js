@@ -65,4 +65,13 @@ describe('greenworks API', function() {
                                 function(err) { throw err; });
     });
   });
+
+  describe('Game setting', function() {
+    it('Should get successfully', function() {
+      console.log(steam.getCurrentGameLanguage());
+      console.log(steam.getCurrentUILanguage());
+      console.log(steam.getCurrentGameInstallDir());
+    });
+  });
+
 });

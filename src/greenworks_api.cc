@@ -118,6 +118,22 @@ NAN_METHOD(ActivateAchievement) {
   NanReturnUndefined();
 }
 
+NAN_METHOD(GetCurrentGameLanguage) {
+  NanScope();
+  NanReturnValue(NanNew(SteamApps()->GetCurrentGameLanguage()));
+}
+
+NAN_METHOD(GetCurrentUILanguage) {
+  NanScope();
+  NanReturnValue(NanNew(SteamUtils()->GetSteamUILanguage()));
+}
+
+// TODO: Implement get game install directory.
+NAN_METHOD(GetCurrentGameInstallDir) {
+  NanScope();
+  NanReturnValue(NanNew("NOT IMPLEMENTED"));
+}
+
 void init(v8::Handle<v8::Object> exports) {
   exports->Set(NanNew("initAPI"),
                NanNew<v8::FunctionTemplate>(InitAPI)->GetFunction());
@@ -140,6 +156,16 @@ void init(v8::Handle<v8::Object> exports) {
   exports->Set(NanNew("activateAchievement"),
                NanNew<v8::FunctionTemplate>(
                    ActivateAchievement)->GetFunction());
+  // Game setting related APIs.
+  exports->Set(NanNew("getCurrentGameLanguage"),
+                      NanNew<v8::FunctionTemplate>(
+                          GetCurrentGameLanguage)->GetFunction());
+  exports->Set(NanNew("getCurrentUILanguage"),
+               NanNew<v8::FunctionTemplate>(
+                   GetCurrentUILanguage)->GetFunction());
+  exports->Set(NanNew("getCurrentGameInstallDir"),
+               NanNew<v8::FunctionTemplate>(
+                   GetCurrentGameInstallDir)->GetFunction());
 }
 
 }  // namespace
