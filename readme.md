@@ -24,7 +24,8 @@ the [release](https://github.com/greenheartgames/greenworks/releases) page.
 Greenworks supports Steam related APIs based on Steamworks SDK, such as
 Steam Cloud, Steam Achievement and Workshop synchronization.
 
-See [docs](https://github.com/greenheartgames/greenworks/wiki/Greenworks-API) for details.
+See [API Reference](https://github.com/greenheartgames/greenworks/wiki/API-Reference)
+for details.
 
 ##Usage
 
