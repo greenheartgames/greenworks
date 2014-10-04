@@ -70,6 +70,13 @@ NAN_METHOD(IsCloudEnabled) {
       steam_remote_storage->IsCloudEnabledForApp()));
 }
 
+NAN_METHOD(IsCloudEnabledForUser) {
+  NanScope();
+  ISteamRemoteStorage* steam_remote_storage = SteamRemoteStorage();
+  NanReturnValue(NanNew<v8::Boolean>(
+      steam_remote_storage->IsCloudEnabledForAccount()));
+}
+
 NAN_METHOD(EnableCloud) {
   NanScope();
 
@@ -114,16 +121,22 @@ NAN_METHOD(ActivateAchievement) {
 void init(v8::Handle<v8::Object> exports) {
   exports->Set(NanNew("initAPI"),
                NanNew<v8::FunctionTemplate>(InitAPI)->GetFunction());
+  // File related APIs.
   exports->Set(NanNew("saveTextToFile"),
                NanNew<v8::FunctionTemplate>(SaveTextToFile)->GetFunction());
   exports->Set(NanNew("readTextFromFile"),
                NanNew<v8::FunctionTemplate>(ReadTextFromFile)->GetFunction());
+  // Cloud related APIs.
   exports->Set(NanNew("isCloudEnabled"),
                NanNew<v8::FunctionTemplate>(IsCloudEnabled)->GetFunction());
+  exports->Set(NanNew("isCloudEnabledForUser"),
+               NanNew<v8::FunctionTemplate>(
+                   IsCloudEnabledForUser)->GetFunction());
   exports->Set(NanNew("enableCloud"),
                NanNew<v8::FunctionTemplate>(EnableCloud)->GetFunction());
   exports->Set(NanNew("getCloudQuota"),
                NanNew<v8::FunctionTemplate>(GetCloudQuota)->GetFunction());
+  // Achievement related APIs.
   exports->Set(NanNew("activateAchievement"),
                NanNew<v8::FunctionTemplate>(
                    ActivateAchievement)->GetFunction());
