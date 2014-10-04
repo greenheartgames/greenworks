@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 #include <string>
+#include <sstream>
 
 #include "nan.h"
 #include "steam/steam_api.h"
@@ -11,6 +12,52 @@
 #include "greenworks_async_workers.h"
 
 namespace {
+
+v8::Local<v8::Object> GetSteamUserCountType(int type_id) {
+  v8::Local<v8::Object> account_type = NanNew<v8::Object>();
+  std::string name;
+  switch (type_id){
+    case k_EAccountTypeAnonGameServer:
+      name = "k_EAccountTypeAnonGameServer";
+      break;
+    case k_EAccountTypeAnonUser:
+      name = "k_EAccountTypeAnonUser";
+      break;
+    case k_EAccountTypeChat:
+      name = "k_EAccountTypeChat";
+      break;
+    case k_EAccountTypeClan:
+      name = "k_EAccountTypeClan";
+      break;
+    case k_EAccountTypeConsoleUser:
+      name = "k_EAccountTypeConsoleUser";
+      break;
+    case k_EAccountTypeContentServer:
+      name = "k_EAccountTypeContentServer";
+      break;
+    case k_EAccountTypeGameServer:
+      name = "k_EAccountTypeGameServer";
+      break;
+    case k_EAccountTypeIndividual:
+      name = "k_EAccountTypeIndividual";
+      break;
+    case k_EAccountTypeInvalid:
+      name = "k_EAccountTypeInvalid";
+      break;
+    case k_EAccountTypeMax:
+      name = "k_EAccountTypeMax";
+      break;
+    case k_EAccountTypeMultiseat:
+      name = "k_EAccountTypeMultiseat";
+      break;
+    case k_EAccountTypePending:
+      name = "k_EAccountTypePending";
+      break;
+  }
+  account_type->Set(NanNew("name"), NanNew(name));
+  account_type->Set(NanNew("value"), NanNew(type_id));
+  return account_type;
+}
 
 NAN_METHOD(InitAPI) {
   NanScope();
@@ -23,6 +70,47 @@ NAN_METHOD(InitAPI) {
   }
 
   NanReturnValue(NanNew(success));
+}
+
+NAN_METHOD(GetSteamId) {
+  NanScope();
+  CSteamID user_id = SteamUser()->GetSteamID();
+  v8::Local<v8::Object> flags = NanNew<v8::Object>();
+  flags->Set(NanNew("anonymous"), NanNew(user_id.BAnonAccount()));
+  flags->Set(NanNew("anonymousGameServer"),
+      NanNew(user_id.BAnonGameServerAccount()));
+  flags->Set(NanNew("anonymousGameServerLogin"),
+      NanNew(user_id.BBlankAnonAccount()));
+  flags->Set(NanNew("anonymousUser"), NanNew(user_id.BAnonUserAccount()));
+  flags->Set(NanNew("chat"), NanNew(user_id.BChatAccount()));
+  flags->Set(NanNew("clan"), NanNew(user_id.BClanAccount()));
+  flags->Set(NanNew("consoleUser"), NanNew(user_id.BConsoleUserAccount()));
+  flags->Set(NanNew("contentServer"), NanNew(user_id.BContentServerAccount()));
+  flags->Set(NanNew("gameServer"), NanNew(user_id.BGameServerAccount()));
+  flags->Set(NanNew("individual"), NanNew(user_id.BIndividualAccount()));
+  flags->Set(NanNew("gameServerPersistent"),
+      NanNew(user_id.BPersistentGameServerAccount()));
+  flags->Set(NanNew("lobby"), NanNew(user_id.IsLobby()));
+
+  v8::Local<v8::Object> result = NanNew<v8::Object>();
+  result->Set(NanNew("flags"), flags);
+  result->Set(NanNew("type"), GetSteamUserCountType(user_id.GetEAccountType()));
+  result->Set(NanNew("accountId"), NanNew<v8::Integer>(user_id.GetAccountID()));
+  result->Set(NanNew("staticAccountId"),
+              NanNew<v8::Integer>(user_id.GetStaticAccountKey()));
+  result->Set(NanNew("isValid"), NanNew<v8::Integer>(user_id.IsValid()));
+  result->Set(NanNew("level"), NanNew<v8::Integer>(
+        SteamUser()->GetPlayerSteamLevel()));
+
+  if (!SteamFriends()->RequestUserInformation(user_id, true)) {
+    result->Set(NanNew("screenName"),
+                NanNew(SteamFriends()->GetFriendPersonaName(user_id)));
+  } else {
+    std::ostringstream sout;
+    sout << user_id.GetAccountID();
+    result->Set(NanNew("screenName"), NanNew(sout.str()));
+  }
+  NanReturnValue(result);
 }
 
 NAN_METHOD(SaveTextToFile) {
@@ -135,8 +223,11 @@ NAN_METHOD(GetCurrentGameInstallDir) {
 }
 
 void init(v8::Handle<v8::Object> exports) {
+  // Common APIs.
   exports->Set(NanNew("initAPI"),
                NanNew<v8::FunctionTemplate>(InitAPI)->GetFunction());
+  exports->Set(NanNew("getSteamId"),
+               NanNew<v8::FunctionTemplate>(GetSteamId)->GetFunction());
   // File related APIs.
   exports->Set(NanNew("saveTextToFile"),
                NanNew<v8::FunctionTemplate>(SaveTextToFile)->GetFunction());

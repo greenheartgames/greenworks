@@ -66,11 +66,12 @@ describe('greenworks API', function() {
     });
   });
 
-  describe('Game setting', function() {
-    it('Should get successfully', function() {
+  describe('Output Steam APIs calling result', function() {
+    it('Should be called successfully', function() {
       console.log(greenworks.getCurrentGameLanguage());
       console.log(greenworks.getCurrentUILanguage());
       console.log(greenworks.getCurrentGameInstallDir());
+      console.log(greenworks.getSteamId());
     });
   });
 
