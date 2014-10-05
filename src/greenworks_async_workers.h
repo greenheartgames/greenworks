@@ -5,9 +5,13 @@
 #ifndef SRC_GREENWORK_ASYNC_WORKERS_H_
 #define SRC_GREENWORK_ASYNC_WORKERS_H_
 
+#include "steam/steam_api.h"
+
 #include "steam_async_worker.h"
+#include "greenworks_utils.h"
 
 namespace greenworks {
+
 
 class FileSaveWorker : public SteamAsyncWorker {
  public:
@@ -60,6 +64,22 @@ class ActivateAchievementWorker : public SteamAsyncWorker {
 
  private:
   std::string achievement_;
+};
+
+class GetNumberOfPlayersWorker : public SteamAsyncWorker {
+ public:
+  GetNumberOfPlayersWorker(NanCallback* success_callback,
+                          NanCallback* error_callback);
+	void OnGetNumberOfPlayersCompleted(NumberOfCurrentPlayers_t* result,
+                                     bool io_failure);
+  // Override NanAsyncWorker methods.
+  virtual void Execute();
+  virtual void HandleOKCallback();
+
+ private:
+  bool is_completed_;
+  int num_of_players_;
+  CCallResult<GetNumberOfPlayersWorker, NumberOfCurrentPlayers_t> call_result_;
 };
 
 }  // namespace greenworks

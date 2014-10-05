@@ -111,4 +111,50 @@ void ActivateAchievementWorker::Execute() {
     SetErrorMessage("Error on storing user achievement");
 }
 
+GetNumberOfPlayersWorker::GetNumberOfPlayersWorker(
+    NanCallback* success_callback, NanCallback* error_callback)
+       :SteamAsyncWorker(success_callback, error_callback),
+        is_completed_(false),
+        num_of_players_(-1) {
+}
+
+void GetNumberOfPlayersWorker::Execute() {
+  SteamAPICall_t steam_api_call = SteamUserStats()->GetNumberOfCurrentPlayers();
+  call_result_.Set(steam_api_call, this,
+      &GetNumberOfPlayersWorker::OnGetNumberOfPlayersCompleted);
+  // Give Steam a chance to run callback.
+  SteamAPI_RunCallbacks();
+
+  // Wait Steam API Callback result for 2 s in nodejs event loop(uv_loop).
+  // If time is out of 2s, we regard the api is failed.
+  // Poll every 0.5s.
+  for (int i = 0; i < 4; ++i) {
+    if (is_completed_)
+      return;
+    // sleep 500ms.
+    utils::sleep(500);
+  }
+
+  SetErrorMessage("Error on getting number of players: Timeout");
+}
+
+void GetNumberOfPlayersWorker::OnGetNumberOfPlayersCompleted(
+    NumberOfCurrentPlayers_t* result, bool io_failure) {
+  if (io_failure) {
+    SetErrorMessage("Error on getting number of players: Steam API IO Failure");
+  } else if (result->m_bSuccess) {
+    num_of_players_ = result->m_cPlayers;
+  } else {
+    SetErrorMessage("Error on getting number of players.");
+  }
+  is_completed_ = true;
+}
+
+void GetNumberOfPlayersWorker::HandleOKCallback() {
+  NanScope();
+
+  v8::Local<v8::Value> argv[] = { NanNew(num_of_players_) };
+  callback->Call(1, argv);
+}
+
 }  // namespace greenworks

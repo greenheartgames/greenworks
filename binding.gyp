@@ -46,6 +46,8 @@
         'src/greenworks_api.cc',
         'src/greenworks_async_workers.cc',
         'src/greenworks_async_workers.h',
+        'src/greenworks_utils.cc',
+        'src/greenworks_utils.h',
         'src/steam_async_worker.cc',
         'src/steam_async_worker.h',
       ],

@@ -67,11 +67,15 @@ describe('greenworks API', function() {
   });
 
   describe('Output Steam APIs calling result', function() {
-    it('Should be called successfully', function() {
+    it('Should be called successfully', function(done) {
       console.log(greenworks.getCurrentGameLanguage());
       console.log(greenworks.getCurrentUILanguage());
       console.log(greenworks.getCurrentGameInstallDir());
       console.log(greenworks.getSteamId());
+      console.log(greenworks.getNumberOfPlayers(function(num) {
+        console.log('Number of Players: ' + num);
+        done();
+      }, function(err) { throw err; }));
     });
   });
 

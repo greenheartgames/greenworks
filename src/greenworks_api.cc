@@ -10,6 +10,7 @@
 #include "v8.h"
 
 #include "greenworks_async_workers.h"
+#include "greenworks_utils.h"
 
 namespace {
 
@@ -222,6 +223,19 @@ NAN_METHOD(GetCurrentGameInstallDir) {
   NanReturnValue(NanNew("NOT IMPLEMENTED"));
 }
 
+NAN_METHOD(GetNumberOfPlayers) {
+  NanScope();
+  if (args.Length() < 2) {
+    NanThrowTypeError("Wrong numer of arguments, should be 2.");
+    NanReturnUndefined();
+  }
+  NanCallback* success_callback = new NanCallback(args[0].As<v8::Function>());
+  NanCallback* error_callback = new NanCallback(args[1].As<v8::Function>());
+  NanAsyncQueueWorker(new greenworks::GetNumberOfPlayersWorker(
+      success_callback, error_callback));
+  NanReturnUndefined();
+}
+
 void init(v8::Handle<v8::Object> exports) {
   // Common APIs.
   exports->Set(NanNew("initAPI"),
@@ -257,6 +271,8 @@ void init(v8::Handle<v8::Object> exports) {
   exports->Set(NanNew("getCurrentGameInstallDir"),
                NanNew<v8::FunctionTemplate>(
                    GetCurrentGameInstallDir)->GetFunction());
+  exports->Set(NanNew("getNumberOfPlayers"),
+               NanNew<v8::FunctionTemplate>(GetNumberOfPlayers)->GetFunction());
 }
 
 }  // namespace
