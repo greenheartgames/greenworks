@@ -1,7 +1,7 @@
 #Greenworks
 
-Greenworks is a nodejs addon integrated with [Steamworks](http://www.steampowered.com/steamworks/).
-The addon aims to expose Steam APIs to javascript for easy usage.
+Greenworks is a node.js addon which allows you to integrate your HTML5 app or game with [Steamworks](http://www.steampowered.com/steamworks/).
+The addon exposes a number of useful Steamworks APIs to JavaScript for easy usage.
 
 Greenworks supports:
 
@@ -9,28 +9,27 @@ Greenworks supports:
 * node-webkit v0.8.X and v0.10.X
 * atom-shell v0.8.4 or above
 
-It's created and developed by Greenheart Games Pty. Ltd for [Game Dev Tycoon](http://www.greenheartgames.com/app/game-dev-tycoon/),
+It was originally created and developed by Greenheart Games Pty. Ltd for [Game Dev Tycoon](http://www.greenheartgames.com/app/game-dev-tycoon/),
 a game powered by [node-webkit](https://github.com/rogerwang/node-webkit).
 
-Greenworks is also used in other games, see [real apps games list](https://github.com/greenheartgames/greenworks/wiki/Apps-games-using-greenworks).
+Greenworks is also used in other games, see [product list](https://github.com/greenheartgames/greenworks/wiki/Apps-games-using-greenworks).
 
 ##Download
 
-Prebuild binaries of greenworks for Windows, Mac OSX and Linux can be found on
+Prebuild binaries of greenworks for Windows, Mac OSX and Linux  can be found on
 the [release](https://github.com/greenheartgames/greenworks/releases) page.
 
 ##APIs
 
-Greenworks supports Steam related APIs based on Steamworks SDK, such as
-Steam Cloud, Steam Achievement and Workshop synchronization.
+Greenworks currently supports Steam Cloud, Steam Achievement and Workshop synchronization related methods.
 
-See [API Reference](https://github.com/greenheartgames/greenworks/wiki/API-Reference)
+For a complete list of supported methods see the [API Reference](https://github.com/greenheartgames/greenworks/wiki/API-Reference)
 for details.
 
 ##Usage
 
 Before using greenworks, you need to copy `libsteam_api.dll`/`libsteam_api.dylib`/`libsteam_api.so`
-library from Steamworks SDK and `greenworks.node` to your app directory.
+library from the Steamworks SDK and copy the greenworks binaries to your app directory.
 
 A simple application on Mac OS X which inits Steam API.
 ```
@@ -49,7 +48,7 @@ if (greenworks.initAPI()) {
 
 * Steamworks SDK 1.30
 * nodejs v0.10 or v0.11
-* node-gyp
+* node-gyp (or nwp-gyp if you use node-webkit)
 
 Download [Steamworks SDK](https://partner.steamgames.com/) and unzip to `<greenworks_src_dir>/deps/steamworks_sdk_dir`
 directory.
@@ -70,12 +69,12 @@ node-gyp rebuild
 Once building is done, you can find `greenworks-(linux/win/osx).node` under
 `build/Release`.
 
-If you have any issues on building/running, consult to
+If you encounter any issues consult the
 [troubleshooting](https://github.com/greenheartgames/greenworks/wiki/Troubleshooting) page.
 
 ###Node-webkit Building Steps
 
-Using Greenworks in node-webkit, you need the [nw-gyp](https://github.com/rogerwang/nw-gyp)
+Using Greenworks in node-webkit, you need to use [nw-gyp](https://github.com/rogerwang/nw-gyp)
 instead of 'node-gyp' to build.
 
 ```
@@ -90,17 +89,14 @@ nw-gyp configure --target=<0.10.5 or other nw version>
 nw-gyp build
 ```
 
-After building finished, you can find `greenworks-(linux/win/osx).node` file
-ends up in `build/Release`.
+After building finished, you can find the `greenworks-(linux/win/osx).node` binaries in `build/Release`.
 
-A sample nw application is provided [here](https://github.com/greenheartgames/greenworks/tree/nan-compatible/samples/node-webkit).
+A sample node-webkit application is provided [here](https://github.com/greenheartgames/greenworks/tree/nan-compatible/samples/node-webkit).
 
-For more details, you can refer to [nw-gyp](https://github.com/rogerwang/nw-gyp) page.
 
 ###Atom-shell Building Steps
 
-Using Greenworks in atom-shll, we use `node-gyp` with some custom settings to build
-greenworks module.
+To build Greenworks for atom-shell, we use `node-gyp` with some custom settings.
 
 ```
 cd greenworks
@@ -108,8 +104,7 @@ cd greenworks
 HOME=~/.atom-shell-gyp node-gyp rebuild --target=<0.17.1 or other atom-shell versions> --dist-url=https://gh-contractor-zcbenz.s3.amazonaws.com/atom-shell/dist
 ```
 
-After building finished, you can find `greenworks-(linux/win/osx).node` file
-ends up in `build/Release`.
+After building finished, you can find the `greenworks-(linux/win/osx).node` binaries in `build/Release`.
 
 A sample atom-shell application is provided [here](https://github.com/greenheartgames/greenworks/tree/nan-compatible/samples/atom-shell).
 
@@ -117,11 +112,12 @@ For more details, you can refer to [Using native Node modules](https://github.co
 
 ##Test
 
-Greenworks uses [Mocha](http://visionmedia.github.io/mocha/) framework to test
-steam APIs.
+Greenworks uses [Mocha](http://visionmedia.github.io/mocha/) framework to test the steamworks APIs.
 
-Before running the test, you should create a `steam_appid.txt` with
-a Steam Game Application ID in `<greenworks_src_dir>/test` directory.
+Since Greenworks is interacting with Steamworks you need to configure your app id before you can run the tests.
+
+Since Greenworks is interacting with Steamworks, you need to create a `steam_appid.txt` file with
+a valid Steam Game Application ID in the `<greenworks_src_dir>/test` directory.
 
 ```bash
 cd greenworks
@@ -133,3 +129,5 @@ See [how to find the application ID for a Steam Game](https://support.steampower
 ##License
 
 Greenworks is published under the MIT license. See `LICENSE` file for details.
+
+If you use Greenworks, please tel us know at [@GreenheartGames](https://twitter.com/GreenheartGames) and freel free to add your product to our  [product list](https://github.com/greenheartgames/greenworks/wiki/Apps-games-using-greenworks).
