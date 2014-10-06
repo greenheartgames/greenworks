@@ -128,4 +128,4 @@ See [how to find the application ID for a Steam Game](https://support.steampower
 
 Greenworks is published under the MIT license. See `LICENSE` file for details.
 
-If you use Greenworks, please tel us know at [@GreenheartGames](https://twitter.com/GreenheartGames) and freel free to add your product to our  [product list](https://github.com/greenheartgames/greenworks/wiki/Apps-games-using-greenworks).
+If you use Greenworks, please tell us know at [@GreenheartGames](https://twitter.com/GreenheartGames) and feel free to add your product to our  [product list](https://github.com/greenheartgames/greenworks/wiki/Apps-games-using-greenworks).
