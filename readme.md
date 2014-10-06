@@ -114,10 +114,8 @@ For more details, you can refer to [Using native Node modules](https://github.co
 
 Greenworks uses [Mocha](http://visionmedia.github.io/mocha/) framework to test the steamworks APIs.
 
-Since Greenworks is interacting with Steamworks you need to configure your app id before you can run the tests.
-
 Since Greenworks is interacting with Steamworks, you need to create a `steam_appid.txt` file with
-a valid Steam Game Application ID in the `<greenworks_src_dir>/test` directory.
+a valid Steam Game Application ID in the `<greenworks_src_dir>/test` directory, in order to run the tests.
 
 ```bash
 cd greenworks
