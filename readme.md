@@ -33,7 +33,7 @@ library from the Steamworks SDK and copy the greenworks binaries to your app dir
 
 A simple application on Mac OS X which inits Steam API.
 ```
-var greenworks = require('./greenworks-osx');
+var greenworks = require('../lib/greenworks');
 
 if (greenworks.initAPI()) {
   console.log('Steam API has been initalized.');
