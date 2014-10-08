@@ -239,8 +239,8 @@ NAN_METHOD(GetNumberOfPlayers) {
 NAN_METHOD(FileShare) {
   NanScope();
 
-  if (args.Length() < 2) {
-    NanThrowTypeError("Wrong numer of arguments, should be 2.");
+  if (args.Length() < 3) {
+    NanThrowTypeError("Wrong numer of arguments, should be 3.");
     NanReturnUndefined();
   }
   std::string file_name(*(v8::String::Utf8Value(args[0])));
