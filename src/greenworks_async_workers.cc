@@ -157,4 +157,45 @@ void GetNumberOfPlayersWorker::HandleOKCallback() {
   callback->Call(1, argv);
 }
 
+FileShareWorker::FileShareWorker(
+    NanCallback* success_callback, NanCallback* error_callback,
+    const std::string& file_name)
+       :SteamAsyncWorker(success_callback, error_callback),
+        is_completed_(false),
+        file_name_(file_name) {
+}
+
+void FileShareWorker::Execute() {
+  SteamAPICall_t share_result = SteamRemoteStorage()->FileShare(
+      file_name_.c_str());
+  call_result_.Set(share_result, this, &FileShareWorker::OnFileShareCompleted);
+
+  // Wait for FileShare callback result.
+  while (!is_completed_) {
+    SteamAPI_RunCallbacks();
+    // sleep 100ms.
+    utils::sleep(100);
+  }
+}
+
+void FileShareWorker::OnFileShareCompleted(
+    RemoteStorageFileShareResult_t* result, bool io_failure) {
+  if (io_failure) {
+    SetErrorMessage("Error on sharing file: Steam API IO Failure");
+  } else if (result->m_eResult == k_EResultOK) {
+    share_file_handle_ = result->m_hFile;
+  } else {
+    SetErrorMessage("Error on sharing file on Steam cloud.");
+  }
+  is_completed_ = true;
+}
+
+void FileShareWorker::HandleOKCallback() {
+  NanScope();
+
+  v8::Local<v8::Value> argv[] = { NanNew<v8::Uint32>(
+      static_cast<unsigned int>(share_file_handle_)) };
+  callback->Call(1, argv);
+}
+
 }  // namespace greenworks

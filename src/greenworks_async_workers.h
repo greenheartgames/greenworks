@@ -82,6 +82,25 @@ class GetNumberOfPlayersWorker : public SteamAsyncWorker {
   CCallResult<GetNumberOfPlayersWorker, NumberOfCurrentPlayers_t> call_result_;
 };
 
+class FileShareWorker : public SteamAsyncWorker {
+ public:
+  FileShareWorker(NanCallback* success_callback,
+                  NanCallback* error_callback,
+                  const std::string& file_name);
+  void OnFileShareCompleted(RemoteStorageFileShareResult_t* result,
+                            bool io_failure);
+
+  // Override NanAsyncWorker methods.
+  virtual void Execute();
+  virtual void HandleOKCallback();
+
+ private:
+  bool is_completed_;
+  const std::string file_name_;
+  UGCHandle_t share_file_handle_;
+  CCallResult<FileShareWorker, RemoteStorageFileShareResult_t> call_result_;
+};
+
 }  // namespace greenworks
 
 #endif  // SRC_GREENWORK_ASYNC_WORKERS_H_

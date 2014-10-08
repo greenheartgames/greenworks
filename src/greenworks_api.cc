@@ -236,6 +236,22 @@ NAN_METHOD(GetNumberOfPlayers) {
   NanReturnUndefined();
 }
 
+NAN_METHOD(FileShare) {
+  NanScope();
+
+  if (args.Length() < 2) {
+    NanThrowTypeError("Wrong numer of arguments, should be 2.");
+    NanReturnUndefined();
+  }
+  std::string file_name(*(v8::String::Utf8Value(args[0])));
+  NanCallback* success_callback = new NanCallback(args[1].As<v8::Function>());
+  NanCallback* error_callback = new NanCallback(args[2].As<v8::Function>());
+
+  NanAsyncQueueWorker(new greenworks::FileShareWorker(
+      success_callback, error_callback, file_name));
+  NanReturnUndefined();
+}
+
 void init(v8::Handle<v8::Object> exports) {
   // Common APIs.
   exports->Set(NanNew("initAPI"),
@@ -273,6 +289,9 @@ void init(v8::Handle<v8::Object> exports) {
                    GetCurrentGameInstallDir)->GetFunction());
   exports->Set(NanNew("getNumberOfPlayers"),
                NanNew<v8::FunctionTemplate>(GetNumberOfPlayers)->GetFunction());
+  // WorkShop related APIs
+  exports->Set(NanNew("fileShare"),
+               NanNew<v8::FunctionTemplate>(FileShare)->GetFunction());
   // Utils related APIs.
   utils::InitUtilsObject(exports);
 }
