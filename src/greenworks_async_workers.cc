@@ -122,20 +122,15 @@ void GetNumberOfPlayersWorker::Execute() {
   SteamAPICall_t steam_api_call = SteamUserStats()->GetNumberOfCurrentPlayers();
   call_result_.Set(steam_api_call, this,
       &GetNumberOfPlayersWorker::OnGetNumberOfPlayersCompleted);
-  // Give Steam a chance to run callback.
-  SteamAPI_RunCallbacks();
 
-  // Wait Steam API Callback result for 2 s in nodejs event loop(uv_loop).
-  // If time is out of 2s, we regard the api is failed.
-  // Poll every 0.5s.
-  for (int i = 0; i < 4; ++i) {
-    if (is_completed_)
-      return;
-    // sleep 500ms.
-    utils::sleep(500);
+  // We should wait Steam callback result in uv event loop, otherwise uv event
+  // loop will end ignore the Steam callback.
+  // Poll every 0.1s.
+  while (!is_completed_) {
+    SteamAPI_RunCallbacks();
+    // sleep 100ms.
+    utils::sleep(100);
   }
-
-  SetErrorMessage("Error on getting number of players: Timeout");
 }
 
 void GetNumberOfPlayersWorker::OnGetNumberOfPlayersCompleted(
