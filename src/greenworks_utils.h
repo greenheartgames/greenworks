@@ -5,7 +5,11 @@
 #ifndef SRC_GREENWORKS_UTILS_H_
 #define SRC_GREENWORKS_UTILS_H_
 
+#include "v8.h"
+
 namespace utils {
+
+void InitUtilsObject(v8::Handle<v8::Object> exports);
 
 void sleep(int milliseconds);
 

@@ -4,6 +4,9 @@
 
 #include "greenworks_utils.h"
 
+#include "nan.h"
+#include "v8.h"
+
 #if defined(_WIN32)
 #include <windows.h>
 #else
@@ -11,6 +14,14 @@
 #endif
 
 namespace utils {
+
+void InitUtilsObject(v8::Handle<v8::Object> exports) {
+  // Prepare constructor template
+  v8::Local<v8::FunctionTemplate> tpl = NanNew<v8::FunctionTemplate>();
+  v8::Persistent<v8::Function> constructor;
+  NanAssignPersistent(constructor, tpl->GetFunction());
+  exports->Set(NanNew("Utils"), tpl->GetFunction());
+}
 
 void sleep(int milliseconds) {
 #if defined(_WIN32)

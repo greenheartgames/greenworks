@@ -273,6 +273,8 @@ void init(v8::Handle<v8::Object> exports) {
                    GetCurrentGameInstallDir)->GetFunction());
   exports->Set(NanNew("getNumberOfPlayers"),
                NanNew<v8::FunctionTemplate>(GetNumberOfPlayers)->GetFunction());
+  // Utils related APIs.
+  utils::InitUtilsObject(exports);
 }
 
 }  // namespace
