@@ -9,14 +9,14 @@
       'variables': {
         'project_name': 'greenworks-win',
         'redist_bin_dir': '',
-        'lib_extension': 'dll'
+        'lib_steam': 'steam_api.lib',
       },
     }],
     ['OS=="mac"', {
       'variables': {
         'project_name': 'greenworks-osx',
         'redist_bin_dir': 'osx32',
-        'lib_extension': 'dylib'
+        'lib_steam': 'libsteam_api.dylib'
       },
     }],
     ['OS=="linux"', {
@@ -25,14 +25,14 @@
           'variables': {
             'project_name': 'greenworks-linux32',
             'redist_bin_dir': 'linux32',
-            'lib_extension': 'so'
+            'lib_steam': 'libsteam_api.so'
           }
         }],
         ['targets_arch=="x64"', {
           'variables': {
             'project_name': 'greenworks-linux64',
             'redist_bin_dir': 'linux64',
-            'lib_extension': 'so'
+            'lib_steam': 'libsteam_api.so'
           }
         }],
       ],
@@ -59,7 +59,7 @@
         'ldflags': [
           '-L<(source_root_dir)/<(steamworks_sdk_dir)/redistributable_bin/<(redist_bin_dir)'],
         'libraries': [
-          '<(source_root_dir)/<(steamworks_sdk_dir)/redistributable_bin/<(redist_bin_dir)/libsteam_api.<(lib_extension)'
+          '<(source_root_dir)/<(steamworks_sdk_dir)/redistributable_bin/<(redist_bin_dir)/<(lib_steam)'
         ]
       },
       'xcode_settings': {
@@ -70,8 +70,17 @@
       'copies': [
         {
           'destination': '<(PRODUCT_DIR)',
-          'files': [
-            '<(source_root_dir)/<(steamworks_sdk_dir)/redistributable_bin/<(redist_bin_dir)/libsteam_api.<(lib_extension)'
+          'conditions': [
+            ['OS=="win"', {
+              'files': [
+                '<(source_root_dir)/<(steamworks_sdk_dir)/redistributable_bin/<(redist_bin_dir)/steam_api.dll'
+              ],
+            }],
+            ['OS=="mac" or OS=="linux"', {
+              'files': [
+                '<(source_root_dir)/<(steamworks_sdk_dir)/redistributable_bin/<(redist_bin_dir)/<(lib_steam)'
+              ],
+            }],
           ],
         }
       ],

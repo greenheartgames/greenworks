@@ -98,7 +98,8 @@ NAN_METHOD(GetSteamId) {
   result->Set(NanNew("type"), GetSteamUserCountType(user_id.GetEAccountType()));
   result->Set(NanNew("accountId"), NanNew<v8::Integer>(user_id.GetAccountID()));
   result->Set(NanNew("staticAccountId"),
-              NanNew<v8::Integer>(user_id.GetStaticAccountKey()));
+              NanNew<v8::Integer>(static_cast<unsigned int>(
+                  user_id.GetStaticAccountKey())));
   result->Set(NanNew("isValid"), NanNew<v8::Integer>(user_id.IsValid()));
   result->Set(NanNew("level"), NanNew<v8::Integer>(
         SteamUser()->GetPlayerSteamLevel()));

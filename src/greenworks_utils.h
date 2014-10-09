@@ -5,6 +5,7 @@
 #ifndef SRC_GREENWORKS_UTILS_H_
 #define SRC_GREENWORKS_UTILS_H_
 
+#include "node.h"
 #include "v8.h"
 
 namespace utils {

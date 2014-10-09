@@ -5,7 +5,6 @@
 #include "greenworks_utils.h"
 
 #include "nan.h"
-#include "v8.h"
 
 #if defined(_WIN32)
 #include <windows.h>
