@@ -21,14 +21,14 @@
     }],
     ['OS=="linux"', {
       'conditions': [
-        ['targets_arch=="ia32"', {
+        ['target_arch=="ia32"', {
           'variables': {
             'project_name': 'greenworks-linux32',
             'redist_bin_dir': 'linux32',
             'lib_steam': 'libsteam_api.so'
           }
         }],
-        ['targets_arch=="x64"', {
+        ['target_arch=="x64"', {
           'variables': {
             'project_name': 'greenworks-linux64',
             'redist_bin_dir': 'linux64',
@@ -56,12 +56,19 @@
         '<!(node -e "require(\'nan\')")'
       ],
       'link_settings': {
-        'ldflags': [
-          '-L<(source_root_dir)/<(steamworks_sdk_dir)/redistributable_bin/<(redist_bin_dir)'],
         'libraries': [
           '<(source_root_dir)/<(steamworks_sdk_dir)/redistributable_bin/<(redist_bin_dir)/<(lib_steam)'
         ]
       },
+      'conditions': [
+        ['OS== "linux"',
+          {
+            'ldflags': [
+              '-Wl,-rpath,\$$ORIGIN',
+            ],
+          },
+        ],
+      ],
       'xcode_settings': {
         'WARNING_CFLAGS':  [
           '-Wno-deprecated-declarations',

@@ -110,7 +110,7 @@ NAN_METHOD(GetSteamId) {
   } else {
     std::ostringstream sout;
     sout << user_id.GetAccountID();
-    result->Set(NanNew("screenName"), NanNew(sout.str()));
+    result->Set(NanNew("screenName"), NanNew<v8::String>(sout.str()));
   }
   NanReturnValue(result);
 }
