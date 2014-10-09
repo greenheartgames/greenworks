@@ -6,11 +6,24 @@
 
   'conditions': [
     ['OS=="win"', {
-      'variables': {
-        'project_name': 'greenworks-win',
-        'redist_bin_dir': '',
-        'lib_steam': 'steam_api.lib',
-      },
+      'conditions': [
+        ['target_arch=="ia32"', {
+          'variables': {
+            'project_name': 'greenworks-win32',
+            'redist_bin_dir': '',
+            'lib_steam': 'steam_api.lib',
+            'lib_dll_steam': 'steam_api.dll',
+          },
+        }],
+        ['target_arch=="x64"', {
+          'variables': {
+            'project_name': 'greenworks-win64',
+            'redist_bin_dir': 'win64',
+            'lib_steam': 'steam_api64.lib',
+            'lib_dll_steam': 'steam_api64.dll',
+          },
+        }],
+      ],
     }],
     ['OS=="mac"', {
       'variables': {
@@ -80,7 +93,7 @@
           'conditions': [
             ['OS=="win"', {
               'files': [
-                '<(source_root_dir)/<(steamworks_sdk_dir)/redistributable_bin/<(redist_bin_dir)/steam_api.dll'
+                '<(source_root_dir)/<(steamworks_sdk_dir)/redistributable_bin/<(redist_bin_dir)/<(lib_dll_steam)'
               ],
             }],
             ['OS=="mac" or OS=="linux"', {
