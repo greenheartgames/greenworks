@@ -306,7 +306,11 @@ void init(v8::Handle<v8::Object> exports) {
     NODE_MODULE(greenworks_win64, init)
   #endif
 #elif defined(__APPLE__)
-  NODE_MODULE(greenworks_osx, init)
+  #if defined(__x86_64__) || defined(__ppc64__)
+    NODE_MODULE(greenworks_osx64, init)
+  #else
+    NODE_MODULE(greenworks_osx32, init)
+  #endif
 #elif defined(__linux__)
   #if defined(__x86_64__) || defined(__ppc64__)
     NODE_MODULE(greenworks_linux64, init)
