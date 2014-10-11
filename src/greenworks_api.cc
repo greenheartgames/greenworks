@@ -14,6 +14,10 @@
 
 namespace {
 
+#define THROW_BAD_ARGS(msg) \
+  NanThrowTypeError(msg); \
+  NanReturnUndefined();
+
 v8::Local<v8::Object> GetSteamUserCountType(int type_id) {
   v8::Local<v8::Object> account_type = NanNew<v8::Object>();
   std::string name;
@@ -118,18 +122,21 @@ NAN_METHOD(GetSteamId) {
 NAN_METHOD(SaveTextToFile) {
   NanScope();
 
-  if (args.Length() < 4) {
-    NanThrowTypeError("Wrong numer of arguments, should be 4.");
-    NanReturnUndefined();
+  if (args.Length() < 3 || !args[0]->IsString() || !args[1]->IsString() ||
+      !args[2]->IsFunction()) {
+    THROW_BAD_ARGS("Bad arguments");
   }
 
   std::string file_name(*(v8::String::Utf8Value(args[0])));
   std::string content(*(v8::String::Utf8Value(args[1])));
   NanCallback* successCallback = new NanCallback(args[2].As<v8::Function>());
-  NanCallback* errorCallback = new NanCallback(args[3].As<v8::Function>());
+  NanCallback* error_callback = NULL;
+
+  if (args[3]->IsFunction())
+    error_callback = new NanCallback(args[3].As<v8::Function>());
 
   NanAsyncQueueWorker(new greenworks::FileSaveWorker(successCallback,
-                                                     errorCallback,
+                                                     error_callback,
                                                      file_name,
                                                      content));
   NanReturnUndefined();
@@ -138,17 +145,19 @@ NAN_METHOD(SaveTextToFile) {
 NAN_METHOD(ReadTextFromFile) {
   NanScope();
 
-  if (args.Length() < 3) {
-    NanThrowTypeError("Wrong numer of arguments, should be 3.");
-    NanReturnUndefined();
+  if (args.Length() < 2 || !args[0]->IsString() || !args[1]->IsFunction()) {
+    THROW_BAD_ARGS("Bad arguments");
   }
 
   std::string file_name(*(v8::String::Utf8Value(args[0])));
   NanCallback* successCallback = new NanCallback(args[1].As<v8::Function>());
-  NanCallback* errorCallback = new NanCallback(args[2].As<v8::Function>());
+  NanCallback* error_callback = NULL;
+
+  if (args[2]->IsFunction())
+    error_callback = new NanCallback(args[2].As<v8::Function>());
 
   NanAsyncQueueWorker(new greenworks::FileReadWorker(successCallback,
-                                                     errorCallback,
+                                                     error_callback,
                                                      file_name));
   NanReturnUndefined();
 }
@@ -171,8 +180,7 @@ NAN_METHOD(EnableCloud) {
   NanScope();
 
   if (args.Length() < 1) {
-    NanThrowTypeError("Wrong numer of arguments, should be 1.");
-    NanReturnUndefined();
+    THROW_BAD_ARGS("Bad arguments");
   }
   bool enable_flag = args[0]->BooleanValue();
   SteamRemoteStorage()->SetCloudEnabledForApp(enable_flag);
@@ -182,12 +190,15 @@ NAN_METHOD(EnableCloud) {
 NAN_METHOD(GetCloudQuota) {
   NanScope();
 
-  if (args.Length() < 2) {
-    NanThrowTypeError("Wrong numer of arguments, should be 2.");
-    NanReturnUndefined();
+  if (args.Length() < 1 || !args[0]->IsFunction()) {
+    THROW_BAD_ARGS("Bad arguments");
   }
   NanCallback* success_callback = new NanCallback(args[0].As<v8::Function>());
-  NanCallback* error_callback = new NanCallback(args[1].As<v8::Function>());
+  NanCallback* error_callback = NULL;
+
+  if (args[1]->IsFunction())
+    error_callback = new NanCallback(args[1].As<v8::Function>());
+
   NanAsyncQueueWorker(new greenworks::CloudQuotaGetWorker(success_callback,
                                                           error_callback));
   NanReturnUndefined();
@@ -196,13 +207,16 @@ NAN_METHOD(GetCloudQuota) {
 NAN_METHOD(ActivateAchievement) {
   NanScope();
 
-  if (args.Length() < 3) {
-    NanThrowTypeError("Wrong numer of arguments, should be 3.");
-    NanReturnUndefined();
+  if (args.Length() < 2 || !args[0]->IsString() || !args[1]->IsFunction()) {
+    THROW_BAD_ARGS("Bad arguments");
   }
   std::string achievement = (*(v8::String::Utf8Value(args[0])));
   NanCallback* success_callback = new NanCallback(args[1].As<v8::Function>());
-  NanCallback* error_callback = new NanCallback(args[2].As<v8::Function>());
+  NanCallback* error_callback = NULL;
+
+  if (args[2]->IsFunction())
+    error_callback = new NanCallback(args[2].As<v8::Function>());
+
   NanAsyncQueueWorker(new greenworks::ActivateAchievementWorker(
       success_callback, error_callback, achievement));
   NanReturnUndefined();
@@ -226,12 +240,15 @@ NAN_METHOD(GetCurrentGameInstallDir) {
 
 NAN_METHOD(GetNumberOfPlayers) {
   NanScope();
-  if (args.Length() < 2) {
-    NanThrowTypeError("Wrong numer of arguments, should be 2.");
-    NanReturnUndefined();
+  if (args.Length() < 2 || !args[0]->IsFunction()) {
+    THROW_BAD_ARGS("Bad arguments");
   }
   NanCallback* success_callback = new NanCallback(args[0].As<v8::Function>());
-  NanCallback* error_callback = new NanCallback(args[1].As<v8::Function>());
+  NanCallback* error_callback = NULL;
+
+  if (args[1]->IsFunction())
+    error_callback = new NanCallback(args[1].As<v8::Function>());
+
   NanAsyncQueueWorker(new greenworks::GetNumberOfPlayersWorker(
       success_callback, error_callback));
   NanReturnUndefined();
@@ -240,13 +257,15 @@ NAN_METHOD(GetNumberOfPlayers) {
 NAN_METHOD(FileShare) {
   NanScope();
 
-  if (args.Length() < 3) {
-    NanThrowTypeError("Wrong numer of arguments, should be 3.");
-    NanReturnUndefined();
+  if (args.Length() < 2 || !args[0]->IsString() || !args[1]->IsFunction()) {
+    THROW_BAD_ARGS("Bad arguments");
   }
   std::string file_name(*(v8::String::Utf8Value(args[0])));
   NanCallback* success_callback = new NanCallback(args[1].As<v8::Function>());
-  NanCallback* error_callback = new NanCallback(args[2].As<v8::Function>());
+  NanCallback* error_callback = NULL;
+
+  if (args[2]->IsFunction())
+    error_callback = new NanCallback(args[2].As<v8::Function>());
 
   NanAsyncQueueWorker(new greenworks::FileShareWorker(
       success_callback, error_callback, file_name));

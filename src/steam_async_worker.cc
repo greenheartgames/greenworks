@@ -18,6 +18,7 @@ SteamAsyncWorker::~SteamAsyncWorker() {
 }
 
 void SteamAsyncWorker::HandleErrorCallback() {
+  if (!error_callback_) return;
   NanScope();
   v8::Local<v8::Value> argv[] = { NanNew(ErrorMessage()) };
   error_callback_->Call(1, argv);
