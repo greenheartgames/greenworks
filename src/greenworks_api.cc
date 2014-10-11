@@ -272,6 +272,30 @@ NAN_METHOD(FileShare) {
   NanReturnUndefined();
 }
 
+NAN_METHOD(PublishWorkshopFile) {
+  NanScope();
+
+  if (args.Length() < 5 || !args[0]->IsString() || !args[1]->IsString() ||
+      !args[2]->IsString() || !args[3]->IsString() || !args[4]->IsFunction()) {
+    THROW_BAD_ARGS("Bad arguments");
+  }
+  std::string file_name(*(v8::String::Utf8Value(args[0])));
+  std::string image_name(*(v8::String::Utf8Value(args[1])));
+  std::string title(*(v8::String::Utf8Value(args[2])));
+  std::string description(*(v8::String::Utf8Value(args[3])));
+
+  NanCallback* success_callback = new NanCallback(args[4].As<v8::Function>());
+  NanCallback* error_callback = NULL;
+
+  if (args[5]->IsFunction())
+    error_callback = new NanCallback(args[5].As<v8::Function>());
+
+  NanAsyncQueueWorker(new greenworks::PublishWorkshopFileWorker(
+      success_callback, error_callback, file_name, image_name, title,
+      description));
+  NanReturnUndefined();
+}
+
 void init(v8::Handle<v8::Object> exports) {
   // Common APIs.
   exports->Set(NanNew("initAPI"),
@@ -312,6 +336,8 @@ void init(v8::Handle<v8::Object> exports) {
   // WorkShop related APIs
   exports->Set(NanNew("fileShare"),
                NanNew<v8::FunctionTemplate>(FileShare)->GetFunction());
+  exports->Set(NanNew("publishWorkshopFile"),
+               NanNew<v8::FunctionTemplate>(PublishWorkshopFile)->GetFunction());
   // Utils related APIs.
   utils::InitUtilsObject(exports);
 }

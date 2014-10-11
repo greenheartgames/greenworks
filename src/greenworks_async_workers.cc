@@ -193,4 +193,59 @@ void FileShareWorker::HandleOKCallback() {
   callback->Call(1, argv);
 }
 
+PublishWorkshopFileWorker::PublishWorkshopFileWorker(
+    NanCallback* success_callback, NanCallback* error_callback,
+    const std::string& file_name, const std::string& image_name,
+    const std::string& title, const std::string& description):
+        SteamAsyncWorker(success_callback, error_callback),
+        file_name_(file_name),
+        image_name_(image_name),
+        title_(title),
+        description_(description) {
+}
+
+void PublishWorkshopFileWorker::Execute() {
+  SteamParamStringArray_t tags;
+  tags.m_nNumStrings = 0;
+  SteamAPICall_t publish_result = SteamRemoteStorage()->PublishWorkshopFile(
+      file_name_.c_str(),
+      image_name_.empty()? NULL:image_name_.c_str(),
+      SteamUtils()->GetAppID(),
+      title_.c_str(),
+      description_.empty()? NULL:description_.c_str(),
+      k_ERemoteStoragePublishedFileVisibilityPublic,
+      &tags,
+      k_EWorkshopFileTypeCommunity);
+
+  call_result_.Set(publish_result, this,
+      &PublishWorkshopFileWorker::OnFilePublishCompleted);
+
+  // Wait for FileShare callback result.
+  while (!is_completed_) {
+    SteamAPI_RunCallbacks();
+    // sleep 100ms.
+    utils::sleep(100);
+  }
+}
+
+void PublishWorkshopFileWorker::OnFilePublishCompleted(
+    RemoteStoragePublishFileResult_t* result, bool io_failure) {
+  if (io_failure) {
+    SetErrorMessage("Error on publishing workshop file: Steam API IO Failure");
+  } else if (result->m_eResult == k_EResultOK) {
+    publish_file_id_ = result->m_nPublishedFileId;
+  } else {
+    SetErrorMessage("Error on publishing workshop file.");
+  }
+  is_completed_ = true;
+}
+
+void PublishWorkshopFileWorker::HandleOKCallback() {
+  NanScope();
+
+  v8::Local<v8::Value> argv[] = { NanNew<v8::Uint32>(
+      static_cast<unsigned int>(publish_file_id_)) };
+  callback->Call(1, argv);
+}
+
 }  // namespace greenworks

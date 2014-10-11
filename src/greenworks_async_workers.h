@@ -101,6 +101,33 @@ class FileShareWorker : public SteamAsyncWorker {
   CCallResult<FileShareWorker, RemoteStorageFileShareResult_t> call_result_;
 };
 
+class PublishWorkshopFileWorker : public SteamAsyncWorker {
+ public:
+  PublishWorkshopFileWorker(NanCallback* success_callback,
+                            NanCallback* error_callback,
+                            const std::string& file_name,
+                            const std::string& image_name,
+                            const std::string& title,
+                            const std::string& description);
+  void OnFilePublishCompleted(RemoteStoragePublishFileResult_t* result,
+                              bool io_failure);
+
+  // Override NanAsyncWorker methods.
+  virtual void Execute();
+  virtual void HandleOKCallback();
+
+ private:
+  bool is_completed_;
+  std::string file_name_;
+  std::string image_name_;
+  std::string title_;
+  std::string description_;
+
+  PublishedFileId_t publish_file_id_;
+  CCallResult<PublishWorkshopFileWorker,
+      RemoteStoragePublishFileResult_t> call_result_;
+};
+
 }  // namespace greenworks
 
 #endif  // SRC_GREENWORK_ASYNC_WORKERS_H_
