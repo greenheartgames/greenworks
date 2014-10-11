@@ -4,6 +4,9 @@
 
 #include "greenworks_utils.h"
 
+#include <iostream>
+#include <fstream>
+
 #include "nan.h"
 
 #if defined(_WIN32)
@@ -28,6 +31,19 @@ void sleep(int milliseconds) {
 #else
   usleep(milliseconds*1000);
 #endif
+}
+
+bool ReadFile(const char* path, char* &content, int& length) {
+  std::ifstream fin(path, std::ios::in|std::ios::binary|std::ios::ate);
+  if (!fin.is_open()) {
+    return false;
+  }
+  std::streampos size = fin.tellg();
+  content = new char[size];
+  fin.seekg(0, std::ios::beg);
+  fin.read(content, size);
+  length = size;
+  return true;
 }
 
 }  // namespace utils

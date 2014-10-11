@@ -14,6 +14,8 @@ void InitUtilsObject(v8::Handle<v8::Object> exports);
 
 void sleep(int milliseconds);
 
+bool ReadFile(const char* path, char* &content, int& length);
+
 }  // namespace utils
 
 #endif  // SRC_GREENWORKS_UTILS_H_

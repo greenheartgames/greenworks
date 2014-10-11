@@ -5,13 +5,15 @@
 #ifndef SRC_GREENWORK_ASYNC_WORKERS_H_
 #define SRC_GREENWORK_ASYNC_WORKERS_H_
 
+#include <string>
+#include <vector>
+
 #include "steam/steam_api.h"
 
 #include "steam_async_worker.h"
 #include "greenworks_utils.h"
 
 namespace greenworks {
-
 
 class FileSaveWorker : public SteamAsyncWorker {
  public:
@@ -24,6 +26,18 @@ class FileSaveWorker : public SteamAsyncWorker {
  private:
   std::string file_name_;
   std::string content_;
+};
+
+class FilesSaveWorker : public SteamAsyncWorker {
+ public:
+  FilesSaveWorker(NanCallback* success_callback, NanCallback* error_callback,
+      const std::vector<std::string>& files_path);
+
+  // Override NanAsyncWorker methods.
+  virtual void Execute();
+
+ private:
+  std::vector<std::string> files_path_;
 };
 
 class FileReadWorker : public SteamAsyncWorker {

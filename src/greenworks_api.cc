@@ -4,6 +4,7 @@
 
 #include <string>
 #include <sstream>
+#include <vector>
 
 #include "nan.h"
 #include "steam/steam_api.h"
@@ -14,9 +15,11 @@
 
 namespace {
 
-#define THROW_BAD_ARGS(msg) \
-  NanThrowTypeError(msg); \
-  NanReturnUndefined();
+#define THROW_BAD_ARGS(msg)    \
+    do {                       \
+       NanThrowTypeError(msg); \
+       NanReturnUndefined();   \
+    } while(0);
 
 v8::Local<v8::Object> GetSteamUserCountType(int type_id) {
   v8::Local<v8::Object> account_type = NanNew<v8::Object>();
@@ -139,6 +142,30 @@ NAN_METHOD(SaveTextToFile) {
                                                      error_callback,
                                                      file_name,
                                                      content));
+  NanReturnUndefined();
+}
+
+NAN_METHOD(SaveFilesToCloud) {
+  NanScope();
+  if (args.Length() < 2 || !args[0]->IsArray() || !args[1]->IsFunction()) {
+    THROW_BAD_ARGS("Bad arguments");
+  }
+  v8::Local<v8::Array> files = args[0].As<v8::Array>();
+  std::vector<std::string> files_path;
+  for (uint32_t i = 0; i < files->Length(); ++i) {
+    if (!files->Get(i)->IsString())
+      THROW_BAD_ARGS("Bad arguments");
+    files_path.push_back(*(v8::String::Utf8Value(files->Get(i))));
+  }
+
+  NanCallback* success_callback = new NanCallback(args[1].As<v8::Function>());
+  NanCallback* error_callback = NULL;
+
+  if (args[2]->IsFunction())
+    error_callback = new NanCallback(args[2].As<v8::Function>());
+  NanAsyncQueueWorker(new greenworks::FilesSaveWorker(success_callback,
+                                                      error_callback,
+                                                      files_path));
   NanReturnUndefined();
 }
 
@@ -307,6 +334,8 @@ void init(v8::Handle<v8::Object> exports) {
                NanNew<v8::FunctionTemplate>(SaveTextToFile)->GetFunction());
   exports->Set(NanNew("readTextFromFile"),
                NanNew<v8::FunctionTemplate>(ReadTextFromFile)->GetFunction());
+  exports->Set(NanNew("saveFilesToCloud"),
+               NanNew<v8::FunctionTemplate>(SaveFilesToCloud)->GetFunction());
   // Cloud related APIs.
   exports->Set(NanNew("isCloudEnabled"),
                NanNew<v8::FunctionTemplate>(IsCloudEnabled)->GetFunction());

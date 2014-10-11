@@ -8,6 +8,18 @@
 #include "steam/steam_api.h"
 #include "v8.h"
 
+namespace {
+
+struct FilesContentContainer {
+  std::vector<char*> files_content;
+  ~FilesContentContainer() {
+    for (size_t i = 0; i < files_content.size(); ++i) {
+      delete files_content[i];
+    }
+  }
+};
+
+};
 namespace greenworks {
 
 FileSaveWorker::FileSaveWorker(NanCallback* success_callback,
@@ -35,6 +47,36 @@ void FileSaveWorker::Execute() {
     SetErrorMessage("Error on writing to file.");
 
   return;
+}
+
+FilesSaveWorker::FilesSaveWorker(NanCallback* success_callback,
+    NanCallback* error_callback, const std::vector<std::string>& files_path):
+        SteamAsyncWorker(success_callback, error_callback),
+        files_path_(files_path) {
+}
+
+void FilesSaveWorker::Execute() {
+  FilesContentContainer container;
+  std::vector<int> files_content_length;
+  for (size_t i = 0; i < files_path_.size(); ++i) {
+    char* content = NULL;
+    int length = 0;
+    if (!utils::ReadFile(files_path_[i].c_str(), content, length))
+      break;
+    container.files_content.push_back(content);
+    files_content_length.push_back(length);
+  }
+  if (container.files_content.size() != files_path_.size()) {
+    SetErrorMessage("Error on reading files.");
+    return;
+  }
+  for (size_t i = 0; i < files_path_.size(); ++i) {
+    if (!SteamRemoteStorage()->FileWrite(files_path_[i].c_str(),
+        container.files_content[i], files_content_length[i])) {
+      SetErrorMessage("Error on writing file on Steam Cloud.");
+      return;
+    }
+  }
 }
 
 FileReadWorker::FileReadWorker(NanCallback* success_callback,
