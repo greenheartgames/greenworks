@@ -226,6 +226,7 @@ PublishWorkshopFileWorker::PublishWorkshopFileWorker(
     const std::string& file_name, const std::string& image_name,
     const std::string& title, const std::string& description):
         SteamAsyncWorker(success_callback, error_callback),
+        is_completed_(false),
         file_name_(file_name),
         image_name_(image_name),
         title_(title),
