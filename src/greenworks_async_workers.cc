@@ -277,4 +277,61 @@ void PublishWorkshopFileWorker::HandleOKCallback() {
   callback->Call(1, argv);
 }
 
+UpdatePublishedWorkshopFileWorker::UpdatePublishedWorkshopFileWorker(
+    NanCallback* success_callback, NanCallback* error_callback,
+    unsigned int published_file_id, const std::string& file_name,
+    const std::string& image_name, const std::string& title,
+    const std::string& description):
+        SteamAsyncWorker(success_callback, error_callback),
+        is_completed_(false),
+        published_file_id_(published_file_id),
+        file_name_(file_name),
+        image_name_(image_name),
+        title_(title),
+        description_(description) {
+}
+
+void UpdatePublishedWorkshopFileWorker::Execute() {
+  PublishedFileUpdateHandle_t update_handle =
+      SteamRemoteStorage()->CreatePublishedFileUpdateRequest(
+          published_file_id_);
+
+  if (!file_name_.empty())
+    SteamRemoteStorage()->UpdatePublishedFileFile(update_handle,
+        file_name_.c_str());
+  if (!image_name_.empty())
+    SteamRemoteStorage()->UpdatePublishedFilePreviewFile(update_handle,
+        image_name_.c_str());
+  if (!title_.empty())
+    SteamRemoteStorage()->UpdatePublishedFileTitle(update_handle,
+        title_.c_str());
+  if (!description_.empty())
+    SteamRemoteStorage()->UpdatePublishedFileDescription(update_handle,
+        description_.c_str());
+  SteamAPICall_t commit_update_result =
+      SteamRemoteStorage()->CommitPublishedFileUpdate(update_handle);
+  update_published_file_call_result_.Set(commit_update_result, this,
+      &UpdatePublishedWorkshopFileWorker::
+           OnCommitPublishedFileUpdateCompleted);
+
+  // Wait for published workshop file updated.
+  while (!is_completed_) {
+    SteamAPI_RunCallbacks();
+    // sleep 100ms.
+    utils::sleep(100);
+  }
+}
+
+void UpdatePublishedWorkshopFileWorker::OnCommitPublishedFileUpdateCompleted(
+    RemoteStorageUpdatePublishedFileResult_t* result, bool io_failure) {
+  if (io_failure) {
+    SetErrorMessage(
+        "Error on committing published file update: Steam API IO Failure");
+  } else if (result->m_eResult == k_EResultOK) {
+  } else {
+    SetErrorMessage("Error on getting published file details.");
+  }
+  is_completed_ = true;
+}
+
 }  // namespace greenworks
