@@ -22,31 +22,17 @@ struct FilesContentContainer {
 };
 namespace greenworks {
 
-FileSaveWorker::FileSaveWorker(NanCallback* success_callback,
+FileContentSaveWorker::FileContentSaveWorker(NanCallback* success_callback,
     NanCallback* error_callback, std::string file_name, std::string content):
         SteamAsyncWorker(success_callback, error_callback),
         file_name_(file_name),
         content_(content) {
 }
 
-void FileSaveWorker::Execute() {
-  ISteamRemoteStorage* steam_remote_storage = SteamRemoteStorage();
-
-  // Checking quota (in the future we may need it)
-  int nTotal = -1, nAvailable = -1;
-
-  if (!steam_remote_storage->GetQuota(&nTotal, &nAvailable)) {
-    SetErrorMessage("Error on getting Cloud quota");
-    return;
-  }
-
-  bool success = steam_remote_storage ->FileWrite(
-      file_name_.c_str(), content_.c_str(), content_.size());
-
-  if (!success)
+void FileContentSaveWorker::Execute() {
+  if (!SteamRemoteStorage()->FileWrite(
+      file_name_.c_str(), content_.c_str(), content_.size()))
     SetErrorMessage("Error on writing to file.");
-
-  return;
 }
 
 FilesSaveWorker::FilesSaveWorker(NanCallback* success_callback,

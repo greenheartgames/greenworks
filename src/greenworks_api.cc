@@ -132,16 +132,16 @@ NAN_METHOD(SaveTextToFile) {
 
   std::string file_name(*(v8::String::Utf8Value(args[0])));
   std::string content(*(v8::String::Utf8Value(args[1])));
-  NanCallback* successCallback = new NanCallback(args[2].As<v8::Function>());
+  NanCallback* success_callback = new NanCallback(args[2].As<v8::Function>());
   NanCallback* error_callback = NULL;
 
   if (args[3]->IsFunction())
     error_callback = new NanCallback(args[3].As<v8::Function>());
 
-  NanAsyncQueueWorker(new greenworks::FileSaveWorker(successCallback,
-                                                     error_callback,
-                                                     file_name,
-                                                     content));
+  NanAsyncQueueWorker(new greenworks::FileContentSaveWorker(success_callback,
+                                                            error_callback,
+                                                            file_name,
+                                                            content));
   NanReturnUndefined();
 }
 
@@ -177,13 +177,13 @@ NAN_METHOD(ReadTextFromFile) {
   }
 
   std::string file_name(*(v8::String::Utf8Value(args[0])));
-  NanCallback* successCallback = new NanCallback(args[1].As<v8::Function>());
+  NanCallback* success_callback = new NanCallback(args[1].As<v8::Function>());
   NanCallback* error_callback = NULL;
 
   if (args[2]->IsFunction())
     error_callback = new NanCallback(args[2].As<v8::Function>());
 
-  NanAsyncQueueWorker(new greenworks::FileReadWorker(successCallback,
+  NanAsyncQueueWorker(new greenworks::FileReadWorker(success_callback,
                                                      error_callback,
                                                      file_name));
   NanReturnUndefined();

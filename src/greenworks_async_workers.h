@@ -15,10 +15,10 @@
 
 namespace greenworks {
 
-class FileSaveWorker : public SteamAsyncWorker {
+class FileContentSaveWorker : public SteamAsyncWorker {
  public:
-  FileSaveWorker(NanCallback* success_callback, NanCallback* error_callback,
-      std::string file_name, std::string content);
+  FileContentSaveWorker(NanCallback* success_callback,
+      NanCallback* error_callback, std::string file_name, std::string content);
 
   // Override NanAsyncWorker methods.
   virtual void Execute();
