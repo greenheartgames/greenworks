@@ -7,6 +7,8 @@
 
 #include "steam_async_worker.h"
 
+#include <vector>
+
 #include "steam/steam_api.h"
 
 namespace greenworks {
@@ -80,6 +82,28 @@ class UpdatePublishedWorkshopFileWorker : public SteamCallbackAsyncWorker {
   CCallResult<UpdatePublishedWorkshopFileWorker,
       RemoteStorageUpdatePublishedFileResult_t>
           update_published_file_call_result_;
+};
+
+class QueryAllUGCWorker : public SteamCallbackAsyncWorker {
+ public:
+  QueryAllUGCWorker(NanCallback* success_callback,
+                    NanCallback* error_callback,
+                    EUGCMatchingUGCType ugc_matching_type,
+                    EUGCQuery ugc_query_type);
+  void OnAllUGCQueryCompleted(SteamUGCQueryCompleted_t* result,
+                              bool io_failure);
+
+  // Override NanAsyncWorker methods.
+  virtual void Execute();
+  virtual void HandleOKCallback();
+
+ private:
+  EUGCMatchingUGCType ugc_matching_type_;
+  EUGCQuery ugc_query_type_;
+  std::vector<SteamUGCDetails_t> ugc_items_;
+
+  CCallResult<QueryAllUGCWorker,
+      SteamUGCQueryCompleted_t> ugc_query_call_result_;
 };
 
 }  // namespace greenworks

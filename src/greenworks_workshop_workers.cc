@@ -8,6 +8,51 @@
 #include "steam/steam_api.h"
 #include "v8.h"
 
+namespace {
+
+v8::Local<v8::Object> ConvertToJsObject(const SteamUGCDetails_t& item) {
+  v8::Local<v8::Object> result = NanNew<v8::Object>();
+
+  result->Set(NanNew("acceptedForUse"), NanNew(item.m_bAcceptedForUse));
+  result->Set(NanNew("banned"), NanNew(item.m_bBanned));
+  result->Set(NanNew("tagsTruncated"), NanNew(item.m_bTagsTruncated));
+  result->Set(NanNew("fileType"), NanNew(item.m_eFileType));
+  result->Set(NanNew("result"), NanNew(item.m_eResult));
+  result->Set(NanNew("visibility"), NanNew(item.m_eVisibility));
+  result->Set(NanNew("score"), NanNew(item.m_flScore));
+
+  result->Set(NanNew("file"), NanNew(static_cast<unsigned int>(item.m_hFile)));
+  result->Set(NanNew("fileName"), NanNew(item.m_pchFileName));
+  result->Set(NanNew("fileSize"), NanNew(item.m_nFileSize));
+
+  result->Set(NanNew("previewFile"),
+              NanNew(static_cast<unsigned int>(item.m_hPreviewFile)));
+  result->Set(NanNew("previewFileSize"), NanNew(item.m_nPreviewFileSize));
+
+  result->Set(NanNew("steamIDOwner"),
+              NanNew(static_cast<unsigned int>(item.m_ulSteamIDOwner)));
+  result->Set(NanNew("consumerAppID"), NanNew(item.m_nConsumerAppID));
+  result->Set(NanNew("creatorAppID"), NanNew(item.m_nCreatorAppID));
+  result->Set(NanNew("publishedFileId"),
+              NanNew(static_cast<unsigned int>(item.m_nPublishedFileId)));
+
+  result->Set(NanNew("title"), NanNew(item.m_rgchTitle));
+  result->Set(NanNew("description"), NanNew(item.m_rgchDescription));
+  result->Set(NanNew("URL"), NanNew(item.m_rgchURL));
+  result->Set(NanNew("tags"), NanNew(item.m_rgchTags));
+
+  result->Set(NanNew("timeAddedToUserList"), NanNew(
+      item.m_rtimeAddedToUserList));
+  result->Set(NanNew("timeCreated"), NanNew(item.m_rtimeCreated));
+  result->Set(NanNew("timeUpdated"), NanNew(item.m_rtimeUpdated));
+  result->Set(NanNew("votesDown"), NanNew(item.m_unVotesDown));
+  result->Set(NanNew("votesUp"), NanNew(item.m_unVotesUp));
+
+  return result;
+}
+
+}
+
 namespace greenworks {
 
 FileShareWorker::FileShareWorker(NanCallback* success_callback,
@@ -147,6 +192,55 @@ void UpdatePublishedWorkshopFileWorker::OnCommitPublishedFileUpdateCompleted(
   } else if (result->m_eResult == k_EResultOK) {
   } else {
     SetErrorMessage("Error on getting published file details.");
+  }
+  is_completed_ = true;
+}
+
+QueryAllUGCWorker::QueryAllUGCWorker(NanCallback* success_callback,
+    NanCallback* error_callback, EUGCMatchingUGCType ugc_matching_type,
+    EUGCQuery ugc_query_type)
+        :SteamCallbackAsyncWorker(success_callback, error_callback),
+         ugc_matching_type_(ugc_matching_type),
+         ugc_query_type_(ugc_query_type) {
+}
+
+void QueryAllUGCWorker::Execute() {
+  uint32 app_id = SteamUtils()->GetAppID();
+  UGCHandle_t ugc_handle = SteamUGC()->CreateQueryAllUGCRequest(
+		  ugc_query_type_, ugc_matching_type_, app_id, app_id, 1);
+	SteamAPICall_t ugc_query_result = SteamUGC()->SendQueryUGCRequest(ugc_handle);
+  ugc_query_call_result_.Set(ugc_query_result, this,
+      &QueryAllUGCWorker::OnAllUGCQueryCompleted);
+
+  // Wait for query all ugc completed.
+  WaitForCompleted();
+}
+
+void QueryAllUGCWorker::HandleOKCallback() {
+  NanScope();
+
+  v8::Local<v8::Array> items = NanNew<v8::Array>(ugc_items_.size());
+  for (size_t i = 0; i < ugc_items_.size(); ++i)
+    items->Set(i, ConvertToJsObject(ugc_items_[i]));
+  v8::Local<v8::Value> argv[] = {
+      NanNew<v8::Uint32>(static_cast<unsigned int>(ugc_items_.size())), items };
+  callback->Call(2, argv);
+}
+
+void QueryAllUGCWorker::OnAllUGCQueryCompleted(SteamUGCQueryCompleted_t* result,
+    bool io_failure) {
+  if (io_failure) {
+    SetErrorMessage("Error on querying all ugc: Steam API IO Failure");
+  } else if (result->m_eResult == k_EResultOK) {
+    uint32 count = result->m_unNumResultsReturned;
+    SteamUGCDetails_t item;
+    for (uint32 i = 0; i < count; ++i) {
+      SteamUGC()->GetQueryUGCResult(result->m_handle, i, &item);
+      ugc_items_.push_back(item);
+    }
+    SteamUGC()->ReleaseQueryUGCRequest(result->m_handle);
+  } else {
+    SetErrorMessage("Error on querying all ugc.");
   }
   is_completed_ = true;
 }
