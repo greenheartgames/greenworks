@@ -70,6 +70,8 @@
         'src/greenworks_api.cc',
         'src/greenworks_async_workers.cc',
         'src/greenworks_async_workers.h',
+        'src/greenworks_workshop_workers.cc',
+        'src/greenworks_workshop_workers.h',
         'src/greenworks_utils.cc',
         'src/greenworks_utils.h',
         'src/steam_async_worker.cc',

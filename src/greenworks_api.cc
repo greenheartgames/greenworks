@@ -11,6 +11,7 @@
 #include "v8.h"
 
 #include "greenworks_async_workers.h"
+#include "greenworks_workshop_workers.h"
 #include "greenworks_utils.h"
 
 namespace {

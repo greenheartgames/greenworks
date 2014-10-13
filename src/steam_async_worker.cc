@@ -6,6 +6,9 @@
 
 #include "v8.h"
 
+#include "steam/steam_api.h"
+#include "greenworks_utils.h"
+
 namespace greenworks {
 
 SteamAsyncWorker::SteamAsyncWorker(NanCallback* success_callback,
@@ -22,6 +25,20 @@ void SteamAsyncWorker::HandleErrorCallback() {
   NanScope();
   v8::Local<v8::Value> argv[] = { NanNew(ErrorMessage()) };
   error_callback_->Call(1, argv);
+}
+
+SteamCallbackAsyncWorker::SteamCallbackAsyncWorker(
+    NanCallback* success_callback, NanCallback* error_callback):
+        SteamAsyncWorker(success_callback, error_callback),
+        is_completed_(false) {
+}
+
+void SteamCallbackAsyncWorker::WaitForCompleted() {
+  while (!is_completed_) {
+    SteamAPI_RunCallbacks();
+    // sleep 100ms.
+    utils::sleep(100);
+  }
 }
 
 }  // namespace greenworks

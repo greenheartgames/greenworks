@@ -23,6 +23,18 @@ class SteamAsyncWorker : public NanAsyncWorker {
   NanCallback* error_callback_;
 };
 
+// An abstract SteamAsyncWorker for Steam callback API.
+class SteamCallbackAsyncWorker : public SteamAsyncWorker {
+ public:
+  SteamCallbackAsyncWorker(NanCallback* success_callback,
+      NanCallback* error_callback);
+
+  void WaitForCompleted();
+
+ protected:
+  bool is_completed_;
+};
+
 }  // namespace greenworks
 
 #endif  // SRC_STEAM_ASYNC_WORKER_H_
