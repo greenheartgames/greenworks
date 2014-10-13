@@ -189,6 +189,9 @@ FileShareWorker::FileShareWorker(
 }
 
 void FileShareWorker::Execute() {
+  // Ignore empty path.
+  if (file_name_.empty()) return;
+
   SteamAPICall_t share_result = SteamRemoteStorage()->FileShare(
       file_name_.c_str());
   call_result_.Set(share_result, this, &FileShareWorker::OnFileShareCompleted);

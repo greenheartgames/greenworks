@@ -155,7 +155,10 @@ NAN_METHOD(SaveFilesToCloud) {
   for (uint32_t i = 0; i < files->Length(); ++i) {
     if (!files->Get(i)->IsString())
       THROW_BAD_ARGS("Bad arguments");
-    files_path.push_back(*(v8::String::Utf8Value(files->Get(i))));
+    v8::String::Utf8Value string_array(files->Get(i));
+    // Ignore empty path.
+    if (string_array.length() > 0)
+      files_path.push_back(*string_array);
   }
 
   NanCallback* success_callback = new NanCallback(args[1].As<v8::Function>());
