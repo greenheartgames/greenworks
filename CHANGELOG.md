@@ -1,7 +1,22 @@
 ## 2014.10.10 v0.3.0-alpha
 
 * Greenworks APIs compiled for node-webkit v0.8.6 and v0.10.5
-* Greenworks core methods are rewritten with `Nan` module, supports node v0.10.X and v0.11.X
+* Greenworks core methods(see below) are rewritten with `Nan` module, supports node v0.10.X and v0.11.X
+  * initAPI
+  * getSteamId
+  * saveTextToFile
+  * readTextFromFile
+  * isCloudEnabled
+  * isCloudEnabledForUser
+  * enableCloud
+  * getCloudQuota
+  * activateAchievement
+  * getCurrentGameLanguage
+  * getCurrentUILanguage
+  * getCurrentGameInstallDir
+  * getNumberOfPlayers
+  * fileShare
+  * Utils.move
 
 ## 2014.08.11 v0.2.0
 
