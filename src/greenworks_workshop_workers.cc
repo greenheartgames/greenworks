@@ -8,6 +8,8 @@
 #include "steam/steam_api.h"
 #include "v8.h"
 
+#include "greenworks_utils.h"
+
 namespace {
 
 v8::Local<v8::Object> ConvertToJsObject(const SteamUGCDetails_t& item) {
@@ -21,20 +23,22 @@ v8::Local<v8::Object> ConvertToJsObject(const SteamUGCDetails_t& item) {
   result->Set(NanNew("visibility"), NanNew(item.m_eVisibility));
   result->Set(NanNew("score"), NanNew(item.m_flScore));
 
-  result->Set(NanNew("file"), NanNew(static_cast<unsigned int>(item.m_hFile)));
+  result->Set(NanNew("file"),
+              NanNew<v8::String>(utils::uint64ToString(item.m_hFile)));
   result->Set(NanNew("fileName"), NanNew(item.m_pchFileName));
   result->Set(NanNew("fileSize"), NanNew(item.m_nFileSize));
 
   result->Set(NanNew("previewFile"),
-              NanNew(static_cast<unsigned int>(item.m_hPreviewFile)));
+              NanNew<v8::String>(utils::uint64ToString(item.m_hPreviewFile)));
   result->Set(NanNew("previewFileSize"), NanNew(item.m_nPreviewFileSize));
 
   result->Set(NanNew("steamIDOwner"),
-              NanNew(static_cast<unsigned int>(item.m_ulSteamIDOwner)));
+              NanNew<v8::String>(utils::uint64ToString(item.m_ulSteamIDOwner)));
   result->Set(NanNew("consumerAppID"), NanNew(item.m_nConsumerAppID));
   result->Set(NanNew("creatorAppID"), NanNew(item.m_nCreatorAppID));
   result->Set(NanNew("publishedFileId"),
-              NanNew(static_cast<unsigned int>(item.m_nPublishedFileId)));
+              NanNew<v8::String>(utils::uint64ToString(
+                  item.m_nPublishedFileId)));
 
   result->Set(NanNew("title"), NanNew(item.m_rgchTitle));
   result->Set(NanNew("description"), NanNew(item.m_rgchDescription));
@@ -88,8 +92,8 @@ void FileShareWorker::OnFileShareCompleted(
 void FileShareWorker::HandleOKCallback() {
   NanScope();
 
-  v8::Local<v8::Value> argv[] = { NanNew<v8::Uint32>(
-      static_cast<unsigned int>(share_file_handle_)) };
+  v8::Local<v8::Value> argv[] = { NanNew<v8::String>(
+      utils::uint64ToString(share_file_handle_)) };
   callback->Call(1, argv);
 }
 
@@ -139,14 +143,14 @@ void PublishWorkshopFileWorker::OnFilePublishCompleted(
 void PublishWorkshopFileWorker::HandleOKCallback() {
   NanScope();
 
-  v8::Local<v8::Value> argv[] = { NanNew<v8::Uint32>(
-      static_cast<unsigned int>(publish_file_id_)) };
+  v8::Local<v8::Value> argv[] = { NanNew<v8::String>(
+      utils::uint64ToString(publish_file_id_)) };
   callback->Call(1, argv);
 }
 
 UpdatePublishedWorkshopFileWorker::UpdatePublishedWorkshopFileWorker(
     NanCallback* success_callback, NanCallback* error_callback,
-    unsigned int published_file_id, const std::string& file_name,
+    PublishedFileId_t published_file_id, const std::string& file_name,
     const std::string& image_name, const std::string& title,
     const std::string& description):
         SteamCallbackAsyncWorker(success_callback, error_callback),

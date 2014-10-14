@@ -6,6 +6,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <sstream>
 
 #include "nan.h"
 #include "steam/steam_api.h"
@@ -106,6 +107,19 @@ bool ReadFile(const char* path, char* &content, int& length) {
   fin.read(content, size);
   length = size;
   return true;
+}
+
+std::string uint64ToString(uint64 value) {
+  std::ostringstream sout;
+  sout << value;
+  return sout.str();
+}
+
+uint64 strToUint64(std::string str) {
+  std::stringstream sin(str);
+  uint64 result;
+  sin >> result;
+  return result;
 }
 
 }  // namespace utils

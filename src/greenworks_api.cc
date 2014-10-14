@@ -105,9 +105,8 @@ NAN_METHOD(GetSteamId) {
   result->Set(NanNew("flags"), flags);
   result->Set(NanNew("type"), GetSteamUserCountType(user_id.GetEAccountType()));
   result->Set(NanNew("accountId"), NanNew<v8::Integer>(user_id.GetAccountID()));
-  result->Set(NanNew("staticAccountId"),
-              NanNew<v8::Integer>(static_cast<unsigned int>(
-                  user_id.GetStaticAccountKey())));
+  result->Set(NanNew("staticAccountId"), NanNew<v8::String>(
+      utils::uint64ToString(user_id.GetStaticAccountKey())));
   result->Set(NanNew("isValid"), NanNew<v8::Integer>(user_id.IsValid()));
   result->Set(NanNew("level"), NanNew<v8::Integer>(
         SteamUser()->GetPlayerSteamLevel()));
@@ -330,13 +329,14 @@ NAN_METHOD(PublishWorkshopFile) {
 NAN_METHOD(UpdatePublishedWorkshopFile) {
   NanScope();
 
-  if (args.Length() < 6 || !args[0]->IsUint32() || !args[1]->IsString() ||
+  if (args.Length() < 6 || !args[0]->IsString() || !args[1]->IsString() ||
       !args[2]->IsString() || !args[3]->IsString() || !args[4]->IsString() ||
       !args[5]->IsFunction()) {
     THROW_BAD_ARGS("Bad arguments");
   }
 
-  unsigned int published_file_id = args[0]->Uint32Value();
+  PublishedFileId_t published_file_id = utils::strToUint64(
+      *(v8::String::Utf8Value(args[0])));
   std::string file_name(*(v8::String::Utf8Value(args[1])));
   std::string image_name(*(v8::String::Utf8Value(args[2])));
   std::string title(*(v8::String::Utf8Value(args[3])));

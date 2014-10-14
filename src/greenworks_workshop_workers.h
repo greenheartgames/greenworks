@@ -61,7 +61,7 @@ class UpdatePublishedWorkshopFileWorker : public SteamCallbackAsyncWorker {
  public:
   UpdatePublishedWorkshopFileWorker(NanCallback* success_callback,
                                     NanCallback* error_callback,
-                                    unsigned int published_file_id,
+                                    PublishedFileId_t published_file_id,
                                     const std::string& file_name,
                                     const std::string& image_name,
                                     const std::string& title,
