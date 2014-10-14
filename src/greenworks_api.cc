@@ -376,6 +376,31 @@ NAN_METHOD(UGCGetItems) {
   NanReturnUndefined();
 }
 
+NAN_METHOD(UGCGetUserItems) {
+  NanScope();
+  if (args.Length() < 4 || !args[0]->IsInt32() || !args[1]->IsInt32() ||
+      !args[2]->IsInt32() || !args[3]->IsFunction()) {
+    THROW_BAD_ARGS("Bad arguments");
+  }
+
+  EUGCMatchingUGCType ugc_matching_type = static_cast<EUGCMatchingUGCType>(
+      args[0]->Int32Value());
+  EUserUGCListSortOrder ugc_list_order = static_cast<EUserUGCListSortOrder>(
+      args[1]->Int32Value());
+  EUserUGCList ugc_list = static_cast<EUserUGCList>(args[2]->Int32Value());
+
+  NanCallback* success_callback = new NanCallback(args[3].As<v8::Function>());
+  NanCallback* error_callback = NULL;
+
+  if (args[4]->IsFunction())
+    error_callback = new NanCallback(args[4].As<v8::Function>());
+
+  NanAsyncQueueWorker(new greenworks::QueryUserUGCWorker(
+      success_callback, error_callback, ugc_matching_type, ugc_list,
+      ugc_list_order));
+  NanReturnUndefined();
+}
+
 void init(v8::Handle<v8::Object> exports) {
   // Common APIs.
   exports->Set(NanNew("initAPI"),
@@ -425,9 +450,13 @@ void init(v8::Handle<v8::Object> exports) {
                    UpdatePublishedWorkshopFile)->GetFunction());
   exports->Set(NanNew("ugcGetItems"),
                NanNew<v8::FunctionTemplate>(UGCGetItems)->GetFunction());
+  exports->Set(NanNew("ugcGetUserItems"),
+               NanNew<v8::FunctionTemplate>(UGCGetUserItems)->GetFunction());
 
   utils::InitUgcMatchingTypes(exports);
   utils::InitUgcQueryTypes(exports);
+  utils::InitUserUgcListSortOrder(exports);
+  utils::InitUserUgcList(exports);
 
   // Utils related APIs.
   utils::InitUtilsObject(exports);

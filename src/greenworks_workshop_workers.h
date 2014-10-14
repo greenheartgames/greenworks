@@ -84,26 +84,54 @@ class UpdatePublishedWorkshopFileWorker : public SteamCallbackAsyncWorker {
           update_published_file_call_result_;
 };
 
-class QueryAllUGCWorker : public SteamCallbackAsyncWorker {
+// A base worker class for querying (user/all) ugc.
+class QueryUGCWorker : public SteamCallbackAsyncWorker {
+ public:
+  QueryUGCWorker(NanCallback* success_callback,
+                 NanCallback* error_callback,
+                 EUGCMatchingUGCType ugc_matching_type);
+  void OnUGCQueryCompleted(SteamUGCQueryCompleted_t* result,
+                           bool io_failure);
+
+  // Override NanAsyncWorker methods.
+  virtual void HandleOKCallback();
+
+ protected:
+  EUGCMatchingUGCType ugc_matching_type_;
+  std::vector<SteamUGCDetails_t> ugc_items_;
+
+  CCallResult<QueryUGCWorker,
+      SteamUGCQueryCompleted_t> ugc_query_call_result_;
+};
+
+class QueryAllUGCWorker : public QueryUGCWorker {
  public:
   QueryAllUGCWorker(NanCallback* success_callback,
                     NanCallback* error_callback,
                     EUGCMatchingUGCType ugc_matching_type,
                     EUGCQuery ugc_query_type);
-  void OnAllUGCQueryCompleted(SteamUGCQueryCompleted_t* result,
-                              bool io_failure);
 
   // Override NanAsyncWorker methods.
   virtual void Execute();
-  virtual void HandleOKCallback();
 
  private:
-  EUGCMatchingUGCType ugc_matching_type_;
   EUGCQuery ugc_query_type_;
-  std::vector<SteamUGCDetails_t> ugc_items_;
+};
 
-  CCallResult<QueryAllUGCWorker,
-      SteamUGCQueryCompleted_t> ugc_query_call_result_;
+class QueryUserUGCWorker : public QueryUGCWorker {
+ public:
+  QueryUserUGCWorker(NanCallback* success_callback,
+                     NanCallback* error_callback,
+                     EUGCMatchingUGCType ugc_matching_type,
+                     EUserUGCList ugc_list,
+                     EUserUGCListSortOrder ugc_list_sort_order);
+
+  // Override NanAsyncWorker methods.
+  virtual void Execute();
+
+ private:
+  EUserUGCList ugc_list_;
+  EUserUGCListSortOrder ugc_list_sort_order_;
 };
 
 }  // namespace greenworks

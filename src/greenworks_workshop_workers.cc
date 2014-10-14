@@ -200,27 +200,14 @@ void UpdatePublishedWorkshopFileWorker::OnCommitPublishedFileUpdateCompleted(
   is_completed_ = true;
 }
 
-QueryAllUGCWorker::QueryAllUGCWorker(NanCallback* success_callback,
-    NanCallback* error_callback, EUGCMatchingUGCType ugc_matching_type,
-    EUGCQuery ugc_query_type)
+QueryUGCWorker::QueryUGCWorker(NanCallback* success_callback,
+    NanCallback* error_callback, EUGCMatchingUGCType ugc_matching_type)
         :SteamCallbackAsyncWorker(success_callback, error_callback),
-         ugc_matching_type_(ugc_matching_type),
-         ugc_query_type_(ugc_query_type) {
+         ugc_matching_type_(ugc_matching_type) {
 }
 
-void QueryAllUGCWorker::Execute() {
-  uint32 app_id = SteamUtils()->GetAppID();
-  UGCHandle_t ugc_handle = SteamUGC()->CreateQueryAllUGCRequest(
-		  ugc_query_type_, ugc_matching_type_, app_id, app_id, 1);
-	SteamAPICall_t ugc_query_result = SteamUGC()->SendQueryUGCRequest(ugc_handle);
-  ugc_query_call_result_.Set(ugc_query_result, this,
-      &QueryAllUGCWorker::OnAllUGCQueryCompleted);
 
-  // Wait for query all ugc completed.
-  WaitForCompleted();
-}
-
-void QueryAllUGCWorker::HandleOKCallback() {
+void QueryUGCWorker::HandleOKCallback() {
   NanScope();
 
   v8::Local<v8::Array> items = NanNew<v8::Array>(ugc_items_.size());
@@ -231,7 +218,7 @@ void QueryAllUGCWorker::HandleOKCallback() {
   callback->Call(2, argv);
 }
 
-void QueryAllUGCWorker::OnAllUGCQueryCompleted(SteamUGCQueryCompleted_t* result,
+void QueryUGCWorker::OnUGCQueryCompleted(SteamUGCQueryCompleted_t* result,
     bool io_failure) {
   if (io_failure) {
     SetErrorMessage("Error on querying all ugc: Steam API IO Failure");
@@ -244,9 +231,55 @@ void QueryAllUGCWorker::OnAllUGCQueryCompleted(SteamUGCQueryCompleted_t* result,
     }
     SteamUGC()->ReleaseQueryUGCRequest(result->m_handle);
   } else {
-    SetErrorMessage("Error on querying all ugc.");
+    SetErrorMessage("Error on querying ugc.");
   }
   is_completed_ = true;
+}
+
+QueryAllUGCWorker::QueryAllUGCWorker(NanCallback* success_callback,
+    NanCallback* error_callback, EUGCMatchingUGCType ugc_matching_type,
+    EUGCQuery ugc_query_type)
+        :QueryUGCWorker(success_callback, error_callback, ugc_matching_type),
+         ugc_query_type_(ugc_query_type) {
+}
+
+void QueryAllUGCWorker::Execute() {
+  uint32 app_id = SteamUtils()->GetAppID();
+  UGCQueryHandle_t ugc_handle = SteamUGC()->CreateQueryAllUGCRequest(
+      ugc_query_type_, ugc_matching_type_, app_id, app_id, 1);
+  SteamAPICall_t ugc_query_result = SteamUGC()->SendQueryUGCRequest(ugc_handle);
+  ugc_query_call_result_.Set(ugc_query_result, this,
+      &QueryAllUGCWorker::OnUGCQueryCompleted);
+
+  // Wait for query all ugc completed.
+  WaitForCompleted();
+}
+
+QueryUserUGCWorker::QueryUserUGCWorker(NanCallback* success_callback,
+    NanCallback* error_callback, EUGCMatchingUGCType ugc_matching_type,
+    EUserUGCList ugc_list, EUserUGCListSortOrder ugc_list_sort_order)
+        :QueryUGCWorker(success_callback, error_callback, ugc_matching_type),
+         ugc_list_(ugc_list),
+         ugc_list_sort_order_(ugc_list_sort_order) {
+}
+
+void QueryUserUGCWorker::Execute() {
+  uint32 app_id = SteamUtils()->GetAppID();
+
+  UGCQueryHandle_t ugc_handle = SteamUGC()->CreateQueryUserUGCRequest(
+      SteamUser()->GetSteamID().GetAccountID(),
+      ugc_list_,
+      ugc_matching_type_,
+      ugc_list_sort_order_,
+      app_id,
+      app_id,
+      1);
+  SteamAPICall_t ugc_query_result = SteamUGC()->SendQueryUGCRequest(ugc_handle);
+  ugc_query_call_result_.Set(ugc_query_result, this,
+      &QueryUserUGCWorker::OnUGCQueryCompleted);
+
+  // Wait for query all ugc completed.
+  WaitForCompleted();
 }
 
 }  // namespace greenworks

@@ -88,6 +88,43 @@ void InitUgcQueryTypes(v8::Handle<v8::Object> exports) {
   exports->Set(NanNew("UGCQueryType"), ugc_query_type);
 }
 
+void InitUserUgcList(v8::Handle<v8::Object> exports) {
+  v8::Local<v8::Object> ugc_list = NanNew<v8::Object>();
+  ugc_list->Set(NanNew("Published"), NanNew(k_EUserUGCList_Published));
+  ugc_list->Set(NanNew("VotedOn"), NanNew(k_EUserUGCList_VotedOn));
+  ugc_list->Set(NanNew("VotedUp"), NanNew(k_EUserUGCList_VotedUp));
+  ugc_list->Set(NanNew("VotedDown"), NanNew(k_EUserUGCList_VotedDown));
+  ugc_list->Set(NanNew("WillVoteLater"), NanNew(k_EUserUGCList_WillVoteLater));
+  ugc_list->Set(NanNew("Favorited"), NanNew(k_EUserUGCList_Favorited));
+  ugc_list->Set(NanNew("Subscribed"), NanNew(k_EUserUGCList_Subscribed));
+  ugc_list->Set(NanNew("UsedOrPlayer"), NanNew(k_EUserUGCList_UsedOrPlayed));
+  ugc_list->Set(NanNew("Followed"), NanNew(k_EUserUGCList_Followed));
+  v8::Persistent<v8::Object> constructor;
+  NanAssignPersistent(constructor, ugc_list);
+  exports->Set(NanNew("UserUGCList"), ugc_list);
+}
+
+void InitUserUgcListSortOrder(v8::Handle<v8::Object> exports) {
+  v8::Local<v8::Object> ugc_list_sort_order = NanNew<v8::Object>();
+  ugc_list_sort_order->Set(NanNew("CreationOrderDesc"),
+      NanNew((int)k_EUserUGCListSortOrder_CreationOrderDesc));
+  ugc_list_sort_order->Set(NanNew("CreationOrderAsc"),
+      NanNew(k_EUserUGCListSortOrder_CreationOrderDesc));
+  ugc_list_sort_order->Set(NanNew("TitleAsc"),
+      NanNew(k_EUserUGCListSortOrder_TitleAsc));
+  ugc_list_sort_order->Set(NanNew("LastUpdatedDesc"),
+      NanNew(k_EUserUGCListSortOrder_LastUpdatedDesc));
+  ugc_list_sort_order->Set(NanNew("SubscriptionDateDesc"),
+      NanNew(k_EUserUGCListSortOrder_SubscriptionDateDesc));
+  ugc_list_sort_order->Set(NanNew("VoteScoreDesc"),
+      NanNew(k_EUserUGCListSortOrder_VoteScoreDesc));
+  ugc_list_sort_order->Set(NanNew("ForModeration"),
+      NanNew(k_EUserUGCListSortOrder_ForModeration));
+  v8::Persistent<v8::Object> constructor;
+  NanAssignPersistent(constructor, ugc_list_sort_order);
+  exports->Set(NanNew("UserUGCListSortOrder"), ugc_list_sort_order);
+}
+
 void sleep(int milliseconds) {
 #if defined(_WIN32)
   Sleep(milliseconds);
