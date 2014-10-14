@@ -146,6 +146,12 @@ bool ReadFile(const char* path, char* &content, int& length) {
   return true;
 }
 
+bool WriteFile(const std::string& target_path, char* content, int length) {
+  std::ofstream fout(target_path.c_str());
+  fout.write(content, length);
+  return fout.good();
+}
+
 std::string uint64ToString(uint64 value) {
   std::ostringstream sout;
   sout << value;

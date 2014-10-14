@@ -134,6 +134,26 @@ class QueryUserUGCWorker : public QueryUGCWorker {
   EUserUGCListSortOrder ugc_list_sort_order_;
 };
 
+class DownloadItemWorker : public SteamCallbackAsyncWorker {
+ public:
+  DownloadItemWorker(NanCallback* success_callback,
+                     NanCallback* error_callback,
+                     UGCHandle_t download_file_handle,
+                     const std::string& download_dir);
+
+  void OnDownloadCompleted(RemoteStorageDownloadUGCResult_t* result,
+      bool io_failure);
+
+  // Override NanAsyncWorker methods.
+  virtual void Execute();
+
+ private:
+  UGCHandle_t download_file_handle_;
+  std::string download_dir_;
+  CCallResult<DownloadItemWorker,
+      RemoteStorageDownloadUGCResult_t> call_result_;
+};
+
 }  // namespace greenworks
 
 #endif  // SRC_GREENWORK_WORKSHOP_WORKERS_H_

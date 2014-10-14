@@ -27,6 +27,8 @@ void sleep(int milliseconds);
 
 bool ReadFile(const char* path, char* &content, int& length);
 
+bool WriteFile(const std::string& target_path, char* content, int length);
+
 std::string uint64ToString(uint64 value);
 
 uint64 strToUint64(std::string);

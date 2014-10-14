@@ -401,6 +401,27 @@ NAN_METHOD(UGCGetUserItems) {
   NanReturnUndefined();
 }
 
+NAN_METHOD(UGCDownloadItem) {
+  NanScope();
+  if (args.Length() < 3 || !args[0]->IsString() || !args[1]->IsString() ||
+      !args[2]->IsFunction()) {
+    THROW_BAD_ARGS("Bad arguments");
+  }
+  UGCHandle_t download_file_handle = utils::strToUint64(
+      *(v8::String::Utf8Value(args[0])));
+  std::string download_dir = *(v8::String::Utf8Value(args[1]));
+
+  NanCallback* success_callback = new NanCallback(args[2].As<v8::Function>());
+  NanCallback* error_callback = NULL;
+
+  if (args[3]->IsFunction())
+    error_callback = new NanCallback(args[3].As<v8::Function>());
+
+  NanAsyncQueueWorker(new greenworks::DownloadItemWorker(
+      success_callback, error_callback, download_file_handle, download_dir));
+  NanReturnUndefined();
+}
+
 void init(v8::Handle<v8::Object> exports) {
   // Common APIs.
   exports->Set(NanNew("initAPI"),
@@ -452,6 +473,8 @@ void init(v8::Handle<v8::Object> exports) {
                NanNew<v8::FunctionTemplate>(UGCGetItems)->GetFunction());
   exports->Set(NanNew("ugcGetUserItems"),
                NanNew<v8::FunctionTemplate>(UGCGetUserItems)->GetFunction());
+  exports->Set(NanNew("ugcDownloadItem"),
+               NanNew<v8::FunctionTemplate>(UGCDownloadItem)->GetFunction());
 
   utils::InitUgcMatchingTypes(exports);
   utils::InitUgcQueryTypes(exports);
