@@ -154,6 +154,30 @@ class DownloadItemWorker : public SteamCallbackAsyncWorker {
       RemoteStorageDownloadUGCResult_t> call_result_;
 };
 
+class SynchronizeItemsWorker : public SteamCallbackAsyncWorker {
+ public:
+  SynchronizeItemsWorker(NanCallback* success_callback,
+                         NanCallback* error_callback,
+                         const std::string& download_dir);
+
+  void OnUGCQueryCompleted(SteamUGCQueryCompleted_t* result,
+                           bool io_failure);
+  void OnDownloadCompleted(RemoteStorageDownloadUGCResult_t* result,
+      bool io_failure);
+
+  // Override NanAsyncWorker methods.
+  virtual void Execute();
+
+ private:
+  size_t current_download_items_pos_;
+  std::string download_dir_;
+  std::vector<SteamUGCDetails_t> ugc_items_;
+  CCallResult<SynchronizeItemsWorker,
+      RemoteStorageDownloadUGCResult_t> download_call_result_;
+  CCallResult<SynchronizeItemsWorker,
+      SteamUGCQueryCompleted_t> ugc_query_call_result_;
+};
+
 }  // namespace greenworks
 
 #endif  // SRC_GREENWORK_WORKSHOP_WORKERS_H_

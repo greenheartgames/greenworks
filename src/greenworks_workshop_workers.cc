@@ -55,6 +55,12 @@ v8::Local<v8::Object> ConvertToJsObject(const SteamUGCDetails_t& item) {
   return result;
 }
 
+inline std::string GetAbsoluteFilePath(const std::string& file_path,
+    const std::string& download_dir) {
+  std::string file_name = file_path.substr(file_path.find_last_of("/\\") + 1);
+  return download_dir + "/" + file_name;
+}
+
 }
 
 namespace greenworks {
@@ -306,9 +312,8 @@ void DownloadItemWorker::OnDownloadCompleted(
     SetErrorMessage(
         "Error on downloading file: Steam API IO Failure");
   } else if (result->m_eResult == k_EResultOK) {
-    std::string file_path(result->m_pchFileName);
-    std::string file_name = file_path.substr(file_path.find_last_of("/\\") + 1);
-    std::string target_path = download_dir_ + "/" + file_name;
+    std::string target_path = GetAbsoluteFilePath(result->m_pchFileName,
+        download_dir_);
 
     int file_size_in_bytes = result->m_nSizeInBytes;
     char* content = new char[file_size_in_bytes];
@@ -319,6 +324,112 @@ void DownloadItemWorker::OnDownloadCompleted(
       SetErrorMessage("Error on saving file on local machine.");
     }
     delete content;
+  } else {
+    SetErrorMessage("Error on downloading file.");
+  }
+  is_completed_ = true;
+}
+
+SynchronizeItemsWorker::SynchronizeItemsWorker(NanCallback* success_callback,
+    NanCallback* error_callback, const std::string& download_dir)
+        :SteamCallbackAsyncWorker(success_callback, error_callback),
+         current_download_items_pos_(0),
+         download_dir_(download_dir) {
+}
+
+void SynchronizeItemsWorker::Execute() {
+  uint32 app_id = SteamUtils()->GetAppID();
+
+  UGCQueryHandle_t ugc_handle = SteamUGC()->CreateQueryUserUGCRequest(
+      SteamUser()->GetSteamID().GetAccountID(),
+      k_EUserUGCList_Subscribed,
+      k_EUGCMatchingUGCType_Items,
+      k_EUserUGCListSortOrder_SubscriptionDateDesc,
+      app_id,
+      app_id,
+      1);
+  SteamAPICall_t ugc_query_result = SteamUGC()->SendQueryUGCRequest(ugc_handle);
+  ugc_query_call_result_.Set(ugc_query_result, this,
+      &SynchronizeItemsWorker::OnUGCQueryCompleted);
+
+  // Wait for synchronization completed.
+  WaitForCompleted();
+}
+
+void SynchronizeItemsWorker::OnUGCQueryCompleted(
+    SteamUGCQueryCompleted_t* result, bool io_failure) {
+  if (io_failure) {
+    SetErrorMessage("Error on querying all ugc: Steam API IO Failure");
+  } else if (result->m_eResult == k_EResultOK) {
+    SteamUGCDetails_t item;
+    for (uint32 i = 0; i < result->m_unNumResultsReturned; ++i) {
+      SteamUGC()->GetQueryUGCResult(result->m_handle, i, &item);
+      std::string target_path = GetAbsoluteFilePath(item.m_pchFileName,
+          download_dir_);
+      int64 file_update_time = utils::GetFileLastUpdatedTime(
+          target_path.c_str());
+      // If the file is not existed or last update time is not equal to Steam,
+      // download it.
+      if (file_update_time == -1 || file_update_time != item.m_rtimeUpdated)
+        ugc_items_.push_back(item);
+    }
+
+    // Start download the file.
+    if (ugc_items_.size() > 0) {
+      SteamAPICall_t download_item_result =
+         SteamRemoteStorage()->UGCDownload(
+             ugc_items_[current_download_items_pos_].m_hFile, 0);
+      download_call_result_.Set(download_item_result, this,
+          &SynchronizeItemsWorker::OnDownloadCompleted);
+      SteamUGC()->ReleaseQueryUGCRequest(result->m_handle);
+      return;
+    }
+  } else {
+    SetErrorMessage("Error on querying ugc.");
+  }
+  is_completed_ = true;
+}
+
+void SynchronizeItemsWorker::OnDownloadCompleted(
+    RemoteStorageDownloadUGCResult_t* result, bool io_failure) {
+  if (io_failure) {
+    SetErrorMessage(
+        "Error on downloading file: Steam API IO Failure");
+  } else if (result->m_eResult == k_EResultOK) {
+    std::string target_path = GetAbsoluteFilePath(result->m_pchFileName,
+        download_dir_);
+
+    int file_size_in_bytes = result->m_nSizeInBytes;
+    char* content = new char[file_size_in_bytes];
+
+    SteamRemoteStorage()->UGCRead(result->m_hFile,
+        content, file_size_in_bytes, 0, k_EUGCRead_Close);
+    bool is_save_success = utils::WriteFile(target_path,
+        content, file_size_in_bytes);
+    delete content;
+
+    if (!is_save_success) {
+      SetErrorMessage("Error on saving file on local machine.");
+      is_completed_ = true;
+      return;
+    }
+
+    int64 file_updated_time =
+        ugc_items_[current_download_items_pos_].m_rtimeUpdated;
+    if (!utils::UpdateFileLastUpdatedTime(
+            target_path.c_str(), static_cast<time_t>(file_updated_time))) {
+      SetErrorMessage("Error on update file time on local machine.");
+      is_completed_ = true;
+      return;
+    }
+    ++current_download_items_pos_;
+    if (current_download_items_pos_ < ugc_items_.size()) {
+      SteamAPICall_t download_item_result = SteamRemoteStorage()->UGCDownload(
+          ugc_items_[current_download_items_pos_].m_hFile, 0);
+      download_call_result_.Set(download_item_result, this,
+          &SynchronizeItemsWorker::OnDownloadCompleted);
+      return;
+    }
   } else {
     SetErrorMessage("Error on downloading file.");
   }

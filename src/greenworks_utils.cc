@@ -12,9 +12,11 @@
 #include "steam/steam_api.h"
 
 #if defined(_WIN32)
+#include <sys/utime.h>
 #include <windows.h>
 #else
 #include <unistd.h>
+#include <utime.h>
 #endif
 
 namespace utils {
@@ -150,6 +152,20 @@ bool WriteFile(const std::string& target_path, char* content, int length) {
   std::ofstream fout(target_path.c_str());
   fout.write(content, length);
   return fout.good();
+}
+
+bool UpdateFileLastUpdatedTime(const char* file_path, time_t time) {
+  utimbuf utime_buf;
+  utime_buf.actime = time;
+  utime_buf.modtime = time;
+  return utime(file_path, &utime_buf) == 0;
+}
+
+int64 GetFileLastUpdatedTime(const char* file_path) {
+	struct stat st;
+  if (stat(file_path, &st))
+    return -1;
+  return st.st_mtime;
 }
 
 std::string uint64ToString(uint64 value) {
