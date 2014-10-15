@@ -16,7 +16,7 @@ Greenworks is also used in other games, see [product list](https://github.com/gr
 
 ##Download
 
-Prebuild binaries of greenworks for Windows, Mac OSX and Linux  can be found on
+Prebuild binaries of greenworks for node-webkit can be found on
 the [release](https://github.com/greenheartgames/greenworks/releases) page.
 
 ##APIs
@@ -26,21 +26,69 @@ Greenworks currently supports Steam Cloud, Steam Achievement and Workshop synchr
 For a complete list of supported methods see the [API Reference](https://github.com/greenheartgames/greenworks/wiki/API-Reference)
 for details.
 
-##Usage
+##Start Greenworks in node-webkit
 
-Before using greenworks, you need to copy `libsteam_api.dll`/`libsteam_api.dylib`/`libsteam_api.so`
-library from the Steamworks SDK and copy the greenworks binaries to your app directory.
+Currently we provide prebuild binaries for node-webkit v0.8.6 and v0.10.5.
 
-A simple application on Mac OS X which inits Steam API.
+1. Download the release binaries from [release](https://github.com/greenheartgames/greenworks/releases) page and unzip.
+2. Copy the `steam_api.dll`/`libsteam_api.dylib`/`libsteam_api.so` from Steamworks SDK(`<steam_sdk_path>/redistributable_bin/`) to
+`<greenworks_path>/lib`. Please make sure that architecture(32 bits or 64 bits) of steam dynamic library should be the same as node-webkit's.
+3. Create a `steam_appid.txt` file with your Steam APP ID under `<greenworks_path>/` directory.
+4. Create your node-webkit app code under `<greenworks_path>/` directory.
+
+**A hello-world sample**
+
+Create `index.html`:
+
 ```
-var greenworks = require('../lib/greenworks');
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Hello Greenworks</title>
+</head>
 
-if (greenworks.initAPI()) {
-  console.log('Steam API has been initalized.');
-} else {
-  console.log('Error on initializing Steam API');
+<body>
+  <h1>Greenworks Test</h1>
+  SteamAPI Init:
+  <script>
+    var greenworks = require('./greenworks');
+    document.write(greenworks.initAPI());
+  </script>
+</body>
+```
+
+Create `package.json`:
+
+```
+{
+  "name": "greenworks-nw-demo",
+  "main": "index.html"
 }
 ```
+
+The hello-world demo directory on Mac OS X like:
+```
+|-- greenworks.js
+|-- index.html
+|-- lib
+|   |-- greenworks-linux32.node
+|   |-- greenworks-linux64.node
+|   |-- greenworks-osx32.node
+|   |-- greenworks-osx64.node
+|   |-- greenworks-win32.node
+|   `-- libsteam_api.dylib
+|-- package.json
+`-- steam_appid.txt
+```
+
+##Usage Requirement
+
+Before using greenworks, you need to:
+
+1. Copy `steam_api.dll`/`libsteam_api.dylib`/`libsteam_api.so` library from the Steamworks SDK(`<steam_sdk_path>/redistributable_bin/`)
+to greenworks binaries directory.
+2. Create a `steam_appid.txt` file with your Steam APP ID under code directory.
+
 
 ##Building Instructions
 
