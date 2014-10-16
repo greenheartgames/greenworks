@@ -440,6 +440,26 @@ NAN_METHOD(UGCSynchronizeItems) {
   NanReturnUndefined();
 }
 
+NAN_METHOD(UGCShowOverlay) {
+  NanScope();
+  std::string steam_store_url;
+  if (args.Length() < 1) {
+    uint32 appId = SteamUtils()->GetAppID();
+    steam_store_url = "http://steamcommunity.com/app/" +
+        utils::uint64ToString(appId) + "/workshop/";
+  } else {
+    if (!args[0]->IsString()) {
+      THROW_BAD_ARGS("Bad arguments");
+    }
+    std::string item_id = *(v8::String::Utf8Value(args[0]));
+    steam_store_url = "http://steamcommunity.com/sharedfiles/filedetails/?id="
+      + item_id;
+  }
+
+  SteamFriends()->ActivateGameOverlayToWebPage(steam_store_url.c_str());
+  NanReturnUndefined();
+}
+
 void init(v8::Handle<v8::Object> exports) {
   // Common APIs.
   exports->Set(NanNew("initAPI"),
@@ -495,6 +515,8 @@ void init(v8::Handle<v8::Object> exports) {
                NanNew<v8::FunctionTemplate>(UGCDownloadItem)->GetFunction());
   exports->Set(NanNew("ugcSynchronizeItems"),
                NanNew<v8::FunctionTemplate>(UGCSynchronizeItems)->GetFunction());
+  exports->Set(NanNew("ugcShowOverlay"),
+               NanNew<v8::FunctionTemplate>(UGCShowOverlay)->GetFunction());
 
   utils::InitUgcMatchingTypes(exports);
   utils::InitUgcQueryTypes(exports);
