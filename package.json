@@ -7,8 +7,12 @@
     "url": "https://github.com/greenheartgames/greenworks/blob/nan-compatible/LICENSE"
   }],
   "dependencies": {
-    "mocha": "1.21.4",
-    "nan": "1.3.0"
+    "archiver": "0.11.0",
+    "nan": "1.3.0",
+    "unzip": "0.1.11"
+  },
+  "devDependencies": {
+    "mocha": "1.21.4"
   },
   "gypfile": true
 }
