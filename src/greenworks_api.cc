@@ -460,6 +460,24 @@ NAN_METHOD(UGCShowOverlay) {
   NanReturnUndefined();
 }
 
+NAN_METHOD(UGCUnsubscribe) {
+  NanScope();
+  if (args.Length() < 2 || !args[0]->IsString() || !args[1]->IsFunction()) {
+    THROW_BAD_ARGS("Bad arguments");
+  }
+  PublishedFileId_t unsubscribed_file_id = utils::strToUint64(
+      *(v8::String::Utf8Value(args[0])));
+  NanCallback* success_callback = new NanCallback(args[1].As<v8::Function>());
+  NanCallback* error_callback = NULL;
+
+  if (args[2]->IsFunction())
+    error_callback = new NanCallback(args[2].As<v8::Function>());
+
+  NanAsyncQueueWorker(new greenworks::UnsubscribePublishedFileWorker(
+      success_callback, error_callback, unsubscribed_file_id));
+  NanReturnUndefined();
+}
+
 void init(v8::Handle<v8::Object> exports) {
   // Common APIs.
   exports->Set(NanNew("initAPI"),
@@ -517,6 +535,8 @@ void init(v8::Handle<v8::Object> exports) {
                NanNew<v8::FunctionTemplate>(UGCSynchronizeItems)->GetFunction());
   exports->Set(NanNew("ugcShowOverlay"),
                NanNew<v8::FunctionTemplate>(UGCShowOverlay)->GetFunction());
+  exports->Set(NanNew("ugcUnsubscribe"),
+               NanNew<v8::FunctionTemplate>(UGCUnsubscribe)->GetFunction());
 
   utils::InitUgcMatchingTypes(exports);
   utils::InitUgcQueryTypes(exports);

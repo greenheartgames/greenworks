@@ -178,6 +178,25 @@ class SynchronizeItemsWorker : public SteamCallbackAsyncWorker {
       SteamUGCQueryCompleted_t> ugc_query_call_result_;
 };
 
+class UnsubscribePublishedFileWorker : public SteamCallbackAsyncWorker {
+ public:
+  UnsubscribePublishedFileWorker(NanCallback* success_callback,
+                                 NanCallback* error_callback,
+                                 PublishedFileId_t unsubscribe_file_id);
+
+  void OnUnsubscribeCompleted(RemoteStoragePublishedFileUnsubscribed_t* result,
+      bool io_failure);
+
+  // Override NanAsyncWorker methods.
+  virtual void Execute();
+
+ private:
+  PublishedFileId_t unsubscribe_file_id_;
+
+  CCallResult<UnsubscribePublishedFileWorker,
+      RemoteStoragePublishedFileUnsubscribed_t> unsubscribe_call_result_;
+};
+
 }  // namespace greenworks
 
 #endif  // SRC_GREENWORK_WORKSHOP_WORKERS_H_
