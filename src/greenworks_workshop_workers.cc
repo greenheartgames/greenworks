@@ -219,9 +219,8 @@ void QueryUGCWorker::HandleOKCallback() {
   v8::Local<v8::Array> items = NanNew<v8::Array>(ugc_items_.size());
   for (size_t i = 0; i < ugc_items_.size(); ++i)
     items->Set(i, ConvertToJsObject(ugc_items_[i]));
-  v8::Local<v8::Value> argv[] = {
-      NanNew<v8::Uint32>(static_cast<unsigned int>(ugc_items_.size())), items };
-  callback->Call(2, argv);
+  v8::Local<v8::Value> argv[] = { items };
+  callback->Call(1, argv);
 }
 
 void QueryUGCWorker::OnUGCQueryCompleted(SteamUGCQueryCompleted_t* result,
