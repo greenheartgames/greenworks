@@ -167,6 +167,7 @@ class SynchronizeItemsWorker : public SteamCallbackAsyncWorker {
 
   // Override NanAsyncWorker methods.
   virtual void Execute();
+  virtual void HandleOKCallback();
 
  private:
   size_t current_download_items_pos_;

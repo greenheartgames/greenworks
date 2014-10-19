@@ -435,6 +435,16 @@ void SynchronizeItemsWorker::OnDownloadCompleted(
   is_completed_ = true;
 }
 
+void SynchronizeItemsWorker::HandleOKCallback() {
+  NanScope();
+
+  v8::Local<v8::Array> items = NanNew<v8::Array>(ugc_items_.size());
+  for (size_t i = 0; i < ugc_items_.size(); ++i)
+    items->Set(i, ConvertToJsObject(ugc_items_[i]));
+  v8::Local<v8::Value> argv[] = { items };
+  callback->Call(1, argv);
+}
+
 UnsubscribePublishedFileWorker::UnsubscribePublishedFileWorker(
     NanCallback* success_callback, NanCallback* error_callback,
     PublishedFileId_t unsubscribe_file_id)
