@@ -96,6 +96,42 @@ class GetNumberOfPlayersWorker : public SteamCallbackAsyncWorker {
   CCallResult<GetNumberOfPlayersWorker, NumberOfCurrentPlayers_t> call_result_;
 };
 
+class CreateArchiveWorker : public SteamAsyncWorker {
+ public:
+  CreateArchiveWorker(NanCallback* success_callback,
+                      NanCallback* error_callback,
+                      const std::string& zip_file_path,
+                      const std::string& source_dir,
+                      const std::string& password,
+                      int compress_level);
+
+  // Override NanAsyncWorker methods.
+  virtual void Execute();
+
+ private:
+  std::string zip_file_path_;
+  std::string source_dir_;
+  std::string password_;
+  int compress_level_;
+};
+
+class ExtractArchiveWorker : public SteamAsyncWorker {
+ public:
+  ExtractArchiveWorker(NanCallback* success_callback,
+                       NanCallback* error_callback,
+                       const std::string& zip_file_path,
+                       const std::string& extract_path,
+                       const std::string& password);
+
+  // Override NanAsyncWorker methods.
+  virtual void Execute();
+
+ private:
+  std::string zip_file_path_;
+  std::string extract_path_;
+  std::string password_;
+};
+
 }  // namespace greenworks
 
 #endif  // SRC_GREENWORK_ASYNC_WORKERS_H_

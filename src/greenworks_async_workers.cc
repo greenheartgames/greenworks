@@ -8,6 +8,9 @@
 #include "steam/steam_api.h"
 #include "v8.h"
 
+#include "greenworks_unzip.h"
+#include "greenworks_zip.h"
+
 namespace {
 
 struct FilesContentContainer {
@@ -171,6 +174,42 @@ void GetNumberOfPlayersWorker::HandleOKCallback() {
 
   v8::Local<v8::Value> argv[] = { NanNew(num_of_players_) };
   callback->Call(1, argv);
+}
+
+CreateArchiveWorker::CreateArchiveWorker(NanCallback* success_callback,
+    NanCallback* error_callback, const std::string& zip_file_path,
+    const std::string& source_dir, const std::string& password,
+    int compress_level)
+        :SteamAsyncWorker(success_callback, error_callback),
+         zip_file_path_(zip_file_path),
+         source_dir_(source_dir),
+         password_(password),
+         compress_level_(compress_level) {
+}
+
+void CreateArchiveWorker::Execute() {
+  int result = zip(zip_file_path_.c_str(),
+                   source_dir_.c_str(),
+                   compress_level_,
+                   password_.empty()?NULL:password_.c_str());
+  if (result)
+    SetErrorMessage("Error on creating zip file.");
+}
+
+ExtractArchiveWorker::ExtractArchiveWorker(NanCallback* success_callback,
+    NanCallback* error_callback, const std::string& zip_file_path,
+    const std::string& extract_path, const std::string& password)
+        : SteamAsyncWorker(success_callback, error_callback),
+          zip_file_path_(zip_file_path),
+          extract_path_(extract_path),
+          password_(password) {
+}
+
+void ExtractArchiveWorker::Execute() {
+  int result = unzip(zip_file_path_.c_str(), extract_path_.c_str(),
+      password_.empty()?NULL:password_.c_str());
+  if (result)
+    SetErrorMessage("Error on extracting zip file.");
 }
 
 }  // namespace greenworks

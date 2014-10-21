@@ -478,6 +478,62 @@ NAN_METHOD(UGCUnsubscribe) {
   NanReturnUndefined();
 }
 
+NAN_METHOD(CreateArchive) {
+  NanScope();
+  if (args.Length() < 5 || !args[0]->IsString() || !args[1]->IsString() ||
+      !args[2]->IsString() || !args[3]->IsInt32() || !args[4]->IsFunction()) {
+    THROW_BAD_ARGS("bad arguments");
+  }
+  std::string zip_file_path = *(v8::String::Utf8Value(args[0]));
+  std::string source_dir = *(v8::String::Utf8Value(args[1]));
+  std::string password = *(v8::String::Utf8Value(args[2]));
+  int compress_level = args[3]->Int32Value();
+
+  NanCallback* success_callback = new NanCallback(args[4].As<v8::Function>());
+  NanCallback* error_callback = NULL;
+
+  if (args[5]->IsFunction())
+    error_callback = new NanCallback(args[5].As<v8::Function>());
+
+  NanAsyncQueueWorker(new greenworks::CreateArchiveWorker(
+      success_callback, error_callback, zip_file_path, source_dir, password,
+      compress_level));
+  NanReturnUndefined();
+}
+
+NAN_METHOD(ExtractArchive) {
+  NanScope();
+  if (args.Length() < 4 || !args[0]->IsString() || !args[1]->IsString() ||
+      !args[2]->IsString() || !args[4]->IsFunction()) {
+    THROW_BAD_ARGS("bad arguments");
+  }
+  std::string zip_file_path = *(v8::String::Utf8Value(args[0]));
+  std::string extract_dir = *(v8::String::Utf8Value(args[1]));
+  std::string password = *(v8::String::Utf8Value(args[2]));
+
+  NanCallback* success_callback = new NanCallback(args[3].As<v8::Function>());
+  NanCallback* error_callback = NULL;
+
+  if (args[5]->IsFunction())
+    error_callback = new NanCallback(args[4].As<v8::Function>());
+
+  NanAsyncQueueWorker(new greenworks::ExtractArchiveWorker(
+      success_callback, error_callback, zip_file_path, extract_dir, password));
+  NanReturnUndefined();
+}
+
+void InitUtilsObject(v8::Handle<v8::Object> exports) {
+  // Prepare constructor template
+  v8::Local<v8::FunctionTemplate> tpl = NanNew<v8::FunctionTemplate>();
+  tpl->Set(NanNew("createArchive"),
+      NanNew<v8::FunctionTemplate>(CreateArchive)->GetFunction());
+  tpl->Set(NanNew("extractArchive"),
+      NanNew<v8::FunctionTemplate>(ExtractArchive)->GetFunction());
+  v8::Persistent<v8::Function> constructor;
+  NanAssignPersistent(constructor, tpl->GetFunction());
+  exports->Set(NanNew("Utils"), tpl->GetFunction());
+}
+
 void init(v8::Handle<v8::Object> exports) {
   // Common APIs.
   exports->Set(NanNew("initAPI"),
@@ -544,7 +600,7 @@ void init(v8::Handle<v8::Object> exports) {
   utils::InitUserUgcList(exports);
 
   // Utils related APIs.
-  utils::InitUtilsObject(exports);
+  InitUtilsObject(exports);
 }
 
 }  // namespace

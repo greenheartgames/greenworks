@@ -13,8 +13,6 @@
 
 namespace utils {
 
-void InitUtilsObject(v8::Handle<v8::Object> exports);
-
 void InitUgcQueryTypes(v8::Handle<v8::Object> exports);
 
 void InitUgcMatchingTypes(v8::Handle<v8::Object> exports);

@@ -21,14 +21,6 @@
 
 namespace utils {
 
-void InitUtilsObject(v8::Handle<v8::Object> exports) {
-  // Prepare constructor template
-  v8::Local<v8::FunctionTemplate> tpl = NanNew<v8::FunctionTemplate>();
-  v8::Persistent<v8::Function> constructor;
-  NanAssignPersistent(constructor, tpl->GetFunction());
-  exports->Set(NanNew("Utils"), tpl->GetFunction());
-}
-
 void InitUgcMatchingTypes(v8::Handle<v8::Object> exports) {
   v8::Local<v8::Object> ugc_matching_type = NanNew<v8::Object>();
   ugc_matching_type->Set(NanNew("Items"), NanNew(k_EUGCMatchingUGCType_Items));
