@@ -146,6 +146,13 @@ bool WriteFile(const std::string& target_path, char* content, int length) {
   return fout.good();
 }
 
+std::string GetFileNameFromPath(const std::string& file_path) {
+  size_t pos = file_path.find_last_of("/\\");
+  if (pos == std::string::npos)
+    return file_path;
+  return file_path.substr(pos + 1);
+}
+
 bool UpdateFileLastUpdatedTime(const char* file_path, time_t time) {
   utimbuf utime_buf;
   utime_buf.actime = time;

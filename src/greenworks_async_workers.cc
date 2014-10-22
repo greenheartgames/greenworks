@@ -61,7 +61,8 @@ void FilesSaveWorker::Execute() {
     return;
   }
   for (size_t i = 0; i < files_path_.size(); ++i) {
-    if (!SteamRemoteStorage()->FileWrite(files_path_[i].c_str(),
+    std::string file_name = utils::GetFileNameFromPath(files_path_[i]);
+    if (!SteamRemoteStorage()->FileWrite(file_name.c_str(),
         container.files_content[i], files_content_length[i])) {
       SetErrorMessage("Error on writing file on Steam Cloud.");
       return;

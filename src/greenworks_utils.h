@@ -27,6 +27,8 @@ bool ReadFile(const char* path, char* &content, int& length);
 
 bool WriteFile(const std::string& target_path, char* content, int length);
 
+std::string GetFileNameFromPath(const std::string& file_path);
+
 bool UpdateFileLastUpdatedTime(const char* file_path, time_t time);
 
 int64 GetFileLastUpdatedTime(const char* file_path);
