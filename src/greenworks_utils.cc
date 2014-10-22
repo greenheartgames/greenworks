@@ -141,7 +141,7 @@ bool ReadFile(const char* path, char* &content, int& length) {
 }
 
 bool WriteFile(const std::string& target_path, char* content, int length) {
-  std::ofstream fout(target_path.c_str());
+  std::ofstream fout(target_path.c_str(), std::ios::binary);
   fout.write(content, length);
   return fout.good();
 }
