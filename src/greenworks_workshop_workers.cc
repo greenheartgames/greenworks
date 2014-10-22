@@ -4,6 +4,8 @@
 
 #include "greenworks_workshop_workers.h"
 
+#include <algorithm>
+
 #include "nan.h"
 #include "steam/steam_api.h"
 #include "v8.h"
@@ -440,8 +442,14 @@ void SynchronizeItemsWorker::HandleOKCallback() {
   NanScope();
 
   v8::Local<v8::Array> items = NanNew<v8::Array>(ugc_items_.size());
-  for (size_t i = 0; i < ugc_items_.size(); ++i)
-    items->Set(i, ConvertToJsObject(ugc_items_[i]));
+  for (size_t i = 0; i < ugc_items_.size(); ++i) {
+    v8::Local<v8::Object> item = ConvertToJsObject(ugc_items_[i]);
+    bool is_updated = std::find(download_ugc_items_handle_.begin(),
+        download_ugc_items_handle_.end(), ugc_items_[i].m_hFile) !=
+        download_ugc_items_handle_.end();
+    item->Set(NanNew("isUpdated"), NanNew(is_updated));
+    items->Set(i, item);
+  }
   v8::Local<v8::Value> argv[] = { items };
   callback->Call(1, argv);
 }
