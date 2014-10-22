@@ -367,17 +367,18 @@ void SynchronizeItemsWorker::OnUGCQueryCompleted(
           download_dir_);
       int64 file_update_time = utils::GetFileLastUpdatedTime(
           target_path.c_str());
+      ugc_items_.push_back(item);
       // If the file is not existed or last update time is not equal to Steam,
       // download it.
       if (file_update_time == -1 || file_update_time != item.m_rtimeUpdated)
-        ugc_items_.push_back(item);
+        download_ugc_items_handle_.push_back(item.m_hFile);
     }
 
     // Start download the file.
-    if (ugc_items_.size() > 0) {
+    if (download_ugc_items_handle_.size() > 0) {
       SteamAPICall_t download_item_result =
          SteamRemoteStorage()->UGCDownload(
-             ugc_items_[current_download_items_pos_].m_hFile, 0);
+             download_ugc_items_handle_[current_download_items_pos_], 0);
       download_call_result_.Set(download_item_result, this,
           &SynchronizeItemsWorker::OnDownloadCompleted);
       SteamUGC()->ReleaseQueryUGCRequest(result->m_handle);
@@ -422,9 +423,9 @@ void SynchronizeItemsWorker::OnDownloadCompleted(
       return;
     }
     ++current_download_items_pos_;
-    if (current_download_items_pos_ < ugc_items_.size()) {
+    if (current_download_items_pos_ < download_ugc_items_handle_.size()) {
       SteamAPICall_t download_item_result = SteamRemoteStorage()->UGCDownload(
-          ugc_items_[current_download_items_pos_].m_hFile, 0);
+          download_ugc_items_handle_[current_download_items_pos_], 0);
       download_call_result_.Set(download_item_result, this,
           &SynchronizeItemsWorker::OnDownloadCompleted);
       return;

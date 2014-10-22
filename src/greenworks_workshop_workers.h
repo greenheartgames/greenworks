@@ -173,6 +173,7 @@ class SynchronizeItemsWorker : public SteamCallbackAsyncWorker {
   size_t current_download_items_pos_;
   std::string download_dir_;
   std::vector<SteamUGCDetails_t> ugc_items_;
+  std::vector<UGCHandle_t> download_ugc_items_handle_;
   CCallResult<SynchronizeItemsWorker,
       RemoteStorageDownloadUGCResult_t> download_call_result_;
   CCallResult<SynchronizeItemsWorker,
