@@ -68,17 +68,18 @@ inline std::string GetAbsoluteFilePath(const std::string& file_path,
 namespace greenworks {
 
 FileShareWorker::FileShareWorker(NanCallback* success_callback,
-    NanCallback* error_callback, const std::string& file_name)
+    NanCallback* error_callback, const std::string& file_path)
         :SteamCallbackAsyncWorker(success_callback, error_callback),
-         file_name_(file_name) {
+         file_path_(file_path) {
 }
 
 void FileShareWorker::Execute() {
   // Ignore empty path.
-  if (file_name_.empty()) return;
+  if (file_path_.empty()) return;
 
+  std::string file_name = utils::GetFileNameFromPath(file_path_);
   SteamAPICall_t share_result = SteamRemoteStorage()->FileShare(
-      file_name_.c_str());
+      file_name.c_str());
   call_result_.Set(share_result, this, &FileShareWorker::OnFileShareCompleted);
 
   // Wait for FileShare callback result.
@@ -107,11 +108,11 @@ void FileShareWorker::HandleOKCallback() {
 
 PublishWorkshopFileWorker::PublishWorkshopFileWorker(
     NanCallback* success_callback, NanCallback* error_callback,
-    const std::string& file_name, const std::string& image_name,
+    const std::string& file_path, const std::string& image_path,
     const std::string& title, const std::string& description):
         SteamCallbackAsyncWorker(success_callback, error_callback),
-        file_name_(file_name),
-        image_name_(image_name),
+        file_path_(file_path),
+        image_path_(image_path),
         title_(title),
         description_(description) {
 }
@@ -119,9 +120,11 @@ PublishWorkshopFileWorker::PublishWorkshopFileWorker(
 void PublishWorkshopFileWorker::Execute() {
   SteamParamStringArray_t tags;
   tags.m_nNumStrings = 0;
+  std::string file_name = utils::GetFileNameFromPath(file_path_);
+  std::string image_name = utils::GetFileNameFromPath(image_path_);
   SteamAPICall_t publish_result = SteamRemoteStorage()->PublishWorkshopFile(
-      file_name_.c_str(),
-      image_name_.empty()? NULL:image_name_.c_str(),
+      file_name.c_str(),
+      image_name.empty()? NULL:image_name.c_str(),
       SteamUtils()->GetAppID(),
       title_.c_str(),
       description_.empty()? NULL:description_.c_str(),
@@ -158,13 +161,13 @@ void PublishWorkshopFileWorker::HandleOKCallback() {
 
 UpdatePublishedWorkshopFileWorker::UpdatePublishedWorkshopFileWorker(
     NanCallback* success_callback, NanCallback* error_callback,
-    PublishedFileId_t published_file_id, const std::string& file_name,
-    const std::string& image_name, const std::string& title,
+    PublishedFileId_t published_file_id, const std::string& file_path,
+    const std::string& image_path, const std::string& title,
     const std::string& description):
         SteamCallbackAsyncWorker(success_callback, error_callback),
         published_file_id_(published_file_id),
-        file_name_(file_name),
-        image_name_(image_name),
+        file_path_(file_path),
+        image_path_(image_path),
         title_(title),
         description_(description) {
 }
@@ -174,12 +177,14 @@ void UpdatePublishedWorkshopFileWorker::Execute() {
       SteamRemoteStorage()->CreatePublishedFileUpdateRequest(
           published_file_id_);
 
-  if (!file_name_.empty())
+  const std::string file_name = utils::GetFileNameFromPath(file_path_);
+  const std::string image_name = utils::GetFileNameFromPath(image_path_);
+  if (!file_name.empty())
     SteamRemoteStorage()->UpdatePublishedFileFile(update_handle,
-        file_name_.c_str());
-  if (!image_name_.empty())
+        file_name.c_str());
+  if (!image_name.empty())
     SteamRemoteStorage()->UpdatePublishedFilePreviewFile(update_handle,
-        image_name_.c_str());
+        image_name.c_str());
   if (!title_.empty())
     SteamRemoteStorage()->UpdatePublishedFileTitle(update_handle,
         title_.c_str());

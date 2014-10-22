@@ -17,7 +17,7 @@ class FileShareWorker : public SteamCallbackAsyncWorker {
  public:
   FileShareWorker(NanCallback* success_callback,
                   NanCallback* error_callback,
-                  const std::string& file_name);
+                  const std::string& file_path);
   void OnFileShareCompleted(RemoteStorageFileShareResult_t* result,
                             bool io_failure);
 
@@ -26,7 +26,7 @@ class FileShareWorker : public SteamCallbackAsyncWorker {
   virtual void HandleOKCallback();
 
  private:
-  const std::string file_name_;
+  const std::string file_path_;
   UGCHandle_t share_file_handle_;
   CCallResult<FileShareWorker, RemoteStorageFileShareResult_t> call_result_;
 };
@@ -35,8 +35,8 @@ class PublishWorkshopFileWorker : public SteamCallbackAsyncWorker {
  public:
   PublishWorkshopFileWorker(NanCallback* success_callback,
                             NanCallback* error_callback,
-                            const std::string& file_name,
-                            const std::string& image_name,
+                            const std::string& file_path,
+                            const std::string& image_path,
                             const std::string& title,
                             const std::string& description);
   void OnFilePublishCompleted(RemoteStoragePublishFileResult_t* result,
@@ -47,8 +47,8 @@ class PublishWorkshopFileWorker : public SteamCallbackAsyncWorker {
   virtual void HandleOKCallback();
 
  private:
-  std::string file_name_;
-  std::string image_name_;
+  std::string file_path_;
+  std::string image_path_;
   std::string title_;
   std::string description_;
 
@@ -62,8 +62,8 @@ class UpdatePublishedWorkshopFileWorker : public SteamCallbackAsyncWorker {
   UpdatePublishedWorkshopFileWorker(NanCallback* success_callback,
                                     NanCallback* error_callback,
                                     PublishedFileId_t published_file_id,
-                                    const std::string& file_name,
-                                    const std::string& image_name,
+                                    const std::string& file_path,
+                                    const std::string& image_path,
                                     const std::string& title,
                                     const std::string& description);
   void OnCommitPublishedFileUpdateCompleted(
@@ -74,8 +74,8 @@ class UpdatePublishedWorkshopFileWorker : public SteamCallbackAsyncWorker {
 
  private:
   PublishedFileId_t published_file_id_;
-  std::string file_name_;
-  std::string image_name_;
+  std::string file_path_;
+  std::string image_path_;
   std::string title_;
   std::string description_;
 
