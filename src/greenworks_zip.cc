@@ -48,13 +48,14 @@
 #include <fcntl.h>
 
 #ifdef _WIN32
-	#include <direct.h>
-	#include <io.h>
+  #include <direct.h>
+  #include <io.h>
+  #include "misc/dirent.h"
 #else
   #include <dirent.h>
-  #include <unistd.h>
   #include <sys/types.h>
   #include <sys/stat.h>
+  #include <unistd.h>
 #endif
 
 #ifdef _WIN32
