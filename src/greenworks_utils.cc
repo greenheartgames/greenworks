@@ -132,11 +132,10 @@ bool ReadFile(const char* path, char* &content, int& length) {
   if (!fin.is_open()) {
     return false;
   }
-  std::streampos size = fin.tellg();
-  content = new char[size];
+  length = static_cast<int>(fin.tellg());
+  content = new char[length];
   fin.seekg(0, std::ios::beg);
-  fin.read(content, size);
-  length = size;
+  fin.read(content, length);
   return true;
 }
 
