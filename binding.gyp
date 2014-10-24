@@ -1,7 +1,8 @@
 {
   'variables': {
     'source_root_dir': '<!(python tools/source_root_dir.py)',
-    'steamworks_sdk_dir': 'deps/steamworks_sdk'
+    'steamworks_sdk_dir': 'deps/steamworks_sdk',
+    'target_dir': 'lib'
   },
 
   'conditions': [
@@ -115,20 +116,35 @@
           '-Wno-deprecated-declarations',
         ],
       },
-      'copies': [
+    },
+    {
+      'target_name': 'copy_binaries',
+      'type': 'none',
+      'actions': [
         {
-          'destination': '<(PRODUCT_DIR)',
-          'conditions': [
-            ['OS=="win"', {
-              'files': [
-                '<(source_root_dir)/<(steamworks_sdk_dir)/redistributable_bin/<(redist_bin_dir)/<(lib_dll_steam)'
-              ],
-            }],
-            ['OS=="mac" or OS=="linux"', {
-              'files': [
-                '<(source_root_dir)/<(steamworks_sdk_dir)/redistributable_bin/<(redist_bin_dir)/<(lib_steam)'
-              ],
-            }],
+          'action_name': 'Copy Binaries',
+          'variables': {
+            'conditions': [
+              ['OS=="win"', {
+                'lib_steam_path': '<(source_root_dir)/<(steamworks_sdk_dir)/redistributable_bin/<(redist_bin_dir)/<(lib_dll_steam)',
+              }],
+              ['OS=="mac" or OS=="linux"', {
+                'lib_steam_path': '<(source_root_dir)/<(steamworks_sdk_dir)/redistributable_bin/<(redist_bin_dir)/<(lib_steam)',
+              }],
+            ]
+          },
+          'inputs': [
+            '<(lib_steam_path)',
+            '<(PRODUCT_DIR)/<(project_name).node'
+          ],
+          'outputs': [
+            '<(target_dir)',
+          ],
+          'action': [
+            'python',
+            'tools/copy_binaries.py',
+            '<@(_inputs)',
+            '<@(_outputs)',
           ],
         }
       ],

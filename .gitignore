@@ -1,5 +1,6 @@
 node_modules/
 build/
+lib/
 deps/steamworks_sdk/
 test/steam_appid.txt
 steam_appid.txt

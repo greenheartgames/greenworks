@@ -1,6 +1,6 @@
 var assert = require("assert")
 var os = require('os')
-var greenworks = require('../lib/greenworks');
+var greenworks = require('../greenworks');
 
 describe('greenworks API', function() {
   if (!greenworks.initAPI()) {

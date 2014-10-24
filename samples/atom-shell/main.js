@@ -7,7 +7,7 @@ function log(msg) {
 
 function testSteamAPI() {
   var os = require('os')
-  var greenworks = require('../../lib/greenworks');
+  var greenworks = require('../../greenworks');
   if (!greenworks) {
     log('Greenworks not support for ' + os.platform() + ' platform');
   } else {
