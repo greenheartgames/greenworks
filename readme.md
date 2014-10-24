@@ -2,7 +2,7 @@
 
 Greenworks is a MIT-licensed node.js addon allowing you to integrate your HTML5 app or game with [Steamworks](http://www.steampowered.com/steamworks/) by exposing a number of Steamworks APIs to JavaScript.
 
-Greenworks is created by Greenheart Games, originally to enable Steam integration in [Game Dev Tycoon](http://www.greenheartgames.com/app/game-dev-tycoon/), but has since been open-sourced and [used in other projects](https://github.com/greenheartgames/greenworks/wiki/Apps-games-using-greenworks).
+Greenworks is created by Greenheart Games, originally to enable Steam integration in [Game Dev Tycoon](http://www.greenheartgames.com/app/game-dev-tycoon/), and has been open-sourced and [used in other projects](https://github.com/greenheartgames/greenworks/wiki/Apps-games-using-greenworks).
 
 The project is built using [NAN](https://github.com/rvagg/nan) to support both node 0.10.x and 0.11.x. technologies.
 
@@ -28,8 +28,9 @@ for details.
 
 1. Download the release binaries from [release](https://github.com/greenheartgames/greenworks/releases) page and unzip.
 2. Copy the `steam_api.dll`/`libsteam_api.dylib`/`libsteam_api.so` from Steamworks SDK(`<steam_sdk_path>/redistributable_bin/`) to
-`<greenworks_path>/lib`. Please make sure the architecture (32 bits= or 64 bit) of the steam dynamic library is the same as node-webkit's.
-3. Create a `steam_appid.txt` file with your Steam APP ID under `<greenworks_path>/` directory. (You only need the `steam_appid.txt` file for testing)
+`<greenworks_path>/lib`. Please make sure the architecture (32 bits or 64 bits) of the steam dynamic library is the same as node-webkit's.
+3. Create a `steam_appid.txt` file with your Steam APP ID under `<greenworks_path>/` directory. (
+    You only need the `steam_appid.txt` file for developing. If you launch the game from Steam, Steam will automatically know the APPID of your game)
 4. Create your node-webkit app code under `<greenworks_path>/` directory.
 
 **A hello-world sample**
@@ -62,7 +63,7 @@ Create `package.json`:
 }
 ```
 
-The hello-world demo directory on Mac OS X like:
+The node-webkit v0.10.5 hello-world demo directory on Mac OS X like:
 ```
 |-- greenworks.js
 |-- index.html
@@ -91,7 +92,7 @@ to greenworks binaries directory.
 ###Prerequisties
 
 * Steamworks SDK 1.30
-* nodejs v0.10 or v0.11
+* nodejs v0.10.X or v0.11.X
 * node-gyp (or nwp-gyp if you use node-webkit)
 
 Download [Steamworks SDK](https://partner.steamgames.com/) and unzip to `<greenworks_src_dir>/deps/steamworks_sdk_dir`
