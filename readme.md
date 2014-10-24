@@ -2,8 +2,7 @@
 
 Greenworks is a MIT-licensed node.js addon allowing you to integrate your HTML5 app or game with [Steamworks](http://www.steampowered.com/steamworks/) by exposing a number of Steamworks APIs to JavaScript.
 
-Greenworks was originally created to enable Steam integration in [Game Dev Tycoon](http://www.greenheartgames.com/app/game-dev-tycoon/),
-a game powered by [node-webkit](https://github.com/rogerwang/node-webkit) but has since been open-sourced and further developer by Greenheart Games.
+Greenworks is created by Greenheart Games, originally to enable Steam integration in [Game Dev Tycoon](http://www.greenheartgames.com/app/game-dev-tycoon/), but has since been open-sourced and [used in other projects](https://github.com/greenheartgames/greenworks/wiki/Apps-games-using-greenworks).
 
 The project is built using [NAN](https://github.com/rvagg/nan) to support both node 0.10.x and 0.11.x. technologies.
 
