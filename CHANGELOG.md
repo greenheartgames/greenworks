@@ -1,8 +1,7 @@
 ## 2014.10.24 v0.3.0 stable
 
 * Greenworks complied for node-webkit v0.8.6 and v0.10.5 with Steamworks SDK 1.30
-* All Greenworks APIs(cloud APIs, workshop APIs, utils APIs, Steam Info APIs) are totally rewritten with `Nan` module, supports node v0.10.X
-  and node v0.11.X
+* All Greenworks APIs(cloud APIs, workshop APIs, utils APIs, Steam Info APIs) are totally rewritten with [NAN](https://github.com/rvagg/nan) module, supports node v0.10.X and node v0.11.X
 
 ## 2014.10.10 v0.3.0-alpha
 
