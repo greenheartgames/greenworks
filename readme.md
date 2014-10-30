@@ -1,8 +1,13 @@
+##New Release 0.3
+The newest release enables compatibility with node 0.11.x, node-webkit 0.10.x and atom-shell 0.8.4 and above. If you find the release useful please consider donating.
+
+<a href='https://pledgie.com/campaigns/27218'><img alt='Click here to lend your support to: Greenworks v0.3+ and make a donation at pledgie.com !' src='https://pledgie.com/campaigns/27218.png?skin_name=chrome' border='0' ></a>
+
 #Greenworks
 
 Greenworks is a MIT-licensed node.js addon allowing you to integrate your HTML5 app or game with [Steamworks](http://www.steampowered.com/steamworks/) by exposing a number of Steamworks APIs to JavaScript.
 
-Greenworks is created by Greenheart Games, originally to enable Steam integration in [Game Dev Tycoon](http://www.greenheartgames.com/app/game-dev-tycoon/), and has been open-sourced and [used in other projects](https://github.com/greenheartgames/greenworks/wiki/Apps-games-using-greenworks).
+Greenworks is developed by Greenheart Games, originally to enable Steam integration in [Game Dev Tycoon](http://www.greenheartgames.com/app/game-dev-tycoon/), and has been open-sourced and [used in other projects](https://github.com/greenheartgames/greenworks/wiki/Apps-games-using-greenworks). The project is funded by Greenheart Games and other generous [donors](https://pledgie.com/campaigns/27218/donors).
 
 The project is built using [NAN](https://github.com/rvagg/nan) to support both node 0.10.x and 0.11.x. technologies.
 
@@ -174,3 +179,9 @@ See [how to find the application ID for a Steam Game](https://support.steampower
 Greenworks is published under the MIT license. See `LICENSE` file for details.
 
 If you use Greenworks, please let us know at [@GreenheartGames](https://twitter.com/GreenheartGames) and feel free to add your product to our  [product list](https://github.com/greenheartgames/greenworks/wiki/Apps-games-using-greenworks).
+
+##Donate
+
+Please consider donating to the project:
+
+<a href='https://pledgie.com/campaigns/27218'><img alt='Click here to lend your support to: Greenworks v0.3+ and make a donation at pledgie.com !' src='https://pledgie.com/campaigns/27218.png?skin_name=chrome' border='0' ></a>
