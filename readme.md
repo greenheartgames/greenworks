@@ -1,5 +1,5 @@
 ##New Release 0.3
-The newest release enables compatibility with node 0.11.x, node-webkit 0.10.x and atom-shell 0.8.4 and above. If you find the release useful please consider donating.
+The newest release enables compatibility with node 0.11.x, node-webkit 0.10.x and atom-shell 0.8.4 and above. If you find the release useful, please consider donating.
 
 <a href='https://pledgie.com/campaigns/27218'><img alt='Click here to lend your support to: Greenworks v0.3+ and make a donation at pledgie.com !' src='https://pledgie.com/campaigns/27218.png?skin_name=chrome' border='0' ></a>
 
