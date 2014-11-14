@@ -365,11 +365,12 @@ int zip(const char* targetFile, const char* sourceDir, int compressionLevel, con
       // Using 4 for unicode compatibility (UTF8) -- tested with chinese, does not work as expected
       err = zipOpenNewFileInZip4_64(zf, savefilenameinzip, &zi, NULL, 0, NULL, 0, NULL, (opt_compress_level != 0) ? Z_DEFLATED : 0, opt_compress_level, 0, -MAX_WBITS, DEF_MEM_LEVEL, Z_DEFAULT_STRATEGY, password, crcFile, 36, 1 << 11, zip64);
 
-      if (err == ZIP_OK) {
-        fin = fopen64(filenameinzip, "rb");
-        if (fin == NULL)
-          err = ZIP_ERRNO;
-      }
+      if (err != ZIP_OK)
+        break;
+
+      fin = fopen64(filenameinzip, "rb");
+      if (fin == NULL)
+        err = ZIP_ERRNO;
 
       if (err == ZIP_OK) {
         do {
