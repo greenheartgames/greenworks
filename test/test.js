@@ -1,5 +1,4 @@
-var assert = require("assert")
-var os = require('os')
+var assert = require("assert");
 var greenworks = require('../greenworks');
 
 describe('greenworks API', function() {
@@ -19,12 +18,12 @@ describe('greenworks API', function() {
     it('Should read successfully.', function(done) {
       greenworks.readTextFromFile('test_file.txt', function(message) {
           assert(message == 'test_content'); done(); }, function(err) {
-          throw err; done(); });
+          throw err; });
     });
 
     it('Should read failed.', function(done) {
       greenworks.readTextFromFile('not_exist.txt', function(message) {
-       throw 'Error'; done() }, function(err) { done(); });
+       throw 'Error'; }, function(err) { done(); });
     })
   });
 
