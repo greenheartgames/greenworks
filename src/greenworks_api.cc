@@ -284,6 +284,20 @@ NAN_METHOD(GetNumberOfPlayers) {
   NanReturnUndefined();
 }
 
+NAN_METHOD(IsGameOverlayEnabled) {
+  NanScope();
+  NanReturnValue(NanNew(SteamUtils()->IsOverlayEnabled()));
+}
+
+NAN_METHOD(ActivateGameOverlay) {
+  NanScope();
+  if (args.Length() < 1 || !args[0]->IsString()) {
+    THROW_BAD_ARGS("Bad arguments");
+  }
+  std::string option(*(v8::String::Utf8Value(args[0])));
+  SteamFriends()->ActivateGameOverlay(option.c_str());
+}
+
 NAN_METHOD(FileShare) {
   NanScope();
 
@@ -573,6 +587,12 @@ void init(v8::Handle<v8::Object> exports) {
                    GetCurrentGameInstallDir)->GetFunction());
   exports->Set(NanNew("getNumberOfPlayers"),
                NanNew<v8::FunctionTemplate>(GetNumberOfPlayers)->GetFunction());
+  exports->Set(NanNew("isGameOverlayEnabled"),
+               NanNew<v8::FunctionTemplate>(
+                   IsGameOverlayEnabled)->GetFunction());
+  exports->Set(NanNew("activateGameOverlay"),
+               NanNew<v8::FunctionTemplate>(
+                   ActivateGameOverlay)->GetFunction());
   // WorkShop related APIs
   exports->Set(NanNew("fileShare"),
                NanNew<v8::FunctionTemplate>(FileShare)->GetFunction());
