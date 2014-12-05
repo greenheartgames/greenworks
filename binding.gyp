@@ -101,6 +101,13 @@
             ],
           },
         ],
+        ['OS== "win" and target_arch=="x64"',
+          {
+            'defines': [
+              '_AMD64_',
+            ],
+          },
+        ],
         # For zlib.gyp::minizip library.
         ['OS=="mac" or OS=="ios" or OS=="android"', {
           # Mac, Android and the BSDs don't have fopen64, ftello64, or
