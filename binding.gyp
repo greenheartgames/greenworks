@@ -126,6 +126,9 @@
     },
     {
       'target_name': 'copy_binaries',
+      'dependencies': [
+        '<(project_name)'
+      ],
       'type': 'none',
       'actions': [
         {
