@@ -223,7 +223,8 @@ QueryUGCWorker::QueryUGCWorker(NanCallback* success_callback,
 void QueryUGCWorker::HandleOKCallback() {
   NanScope();
 
-  v8::Local<v8::Array> items = NanNew<v8::Array>(ugc_items_.size());
+  v8::Local<v8::Array> items = NanNew<v8::Array>(
+      static_cast<int>(ugc_items_.size()));
   for (size_t i = 0; i < ugc_items_.size(); ++i)
     items->Set(i, ConvertToJsObject(ugc_items_[i]));
   v8::Local<v8::Value> argv[] = { items };
@@ -446,7 +447,8 @@ void SynchronizeItemsWorker::OnDownloadCompleted(
 void SynchronizeItemsWorker::HandleOKCallback() {
   NanScope();
 
-  v8::Local<v8::Array> items = NanNew<v8::Array>(ugc_items_.size());
+  v8::Local<v8::Array> items = NanNew<v8::Array>(
+      static_cast<int>(ugc_items_.size()));
   for (size_t i = 0; i < ugc_items_.size(); ++i) {
     v8::Local<v8::Object> item = ConvertToJsObject(ugc_items_[i]);
     bool is_updated = std::find(download_ugc_items_handle_.begin(),
