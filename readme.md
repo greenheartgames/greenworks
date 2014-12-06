@@ -1,5 +1,5 @@
-##New Release 0.3
-The newest release enables compatibility with node 0.11.x, node-webkit 0.10.x and atom-shell 0.8.4 and above. If you find the release useful, please consider donating.
+##New Release 0.4
+The newest release enables compatibility with node 0.11.x, node-webkit 0.11.x and atom-shell 0.8.4 and above. If you find the release useful, please consider donating.
 
 <a href='https://pledgie.com/campaigns/27218'><img alt='Click here to lend your support to: Greenworks v0.3+ and make a donation at pledgie.com !' src='https://pledgie.com/campaigns/27218.png?skin_name=chrome' border='0' ></a>
 
@@ -14,7 +14,7 @@ The project is built using [NAN](https://github.com/rvagg/nan) to support both n
 Currently greenworks supports:
 
 * node v0.10.X and v0.11.X
-* node-webkit v0.8.X and v0.10.X
+* node-webkit v0.8.X and v0.11.X
 * atom-shell v0.8.4 or above
 
 ##Download
@@ -68,7 +68,7 @@ Create `package.json`:
 }
 ```
 
-The node-webkit v0.10.5 hello-world demo directory on Mac OS X like:
+The node-webkit v0.11.2 hello-world demo directory on Mac OS X like:
 ```
 |-- greenworks.js
 |-- index.html
