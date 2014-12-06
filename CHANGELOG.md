@@ -1,3 +1,9 @@
+## 2014.10.24 v0.4.0 stable
+
+* Greenworks complied for node-webkit v0.8.6 and v0.11.2 with Steamworks SDK 1.30
+* Add activateGameOverlay and IsGameOverlayEnabled APIs
+* Fix: a segment fault when zipOpenNewFileInZip4_64 fails
+
 ## 2014.10.24 v0.3.0 stable
 
 * Greenworks complied for node-webkit v0.8.6 and v0.10.5 with Steamworks SDK 1.30
