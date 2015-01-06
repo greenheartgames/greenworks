@@ -141,7 +141,7 @@ nw-gyp build
 
 After building finished, you can find the `greenworks-(linux/win/osx).node` binaries in `build/Release`.
 
-A sample node-webkit application is provided [here](https://github.com/greenheartgames/greenworks/tree/nan-compatible/samples/node-webkit).
+A sample node-webkit application is provided [here](https://github.com/greenheartgames/greenworks/tree/master/samples/node-webkit).
 
 
 ###Atom-shell Building Steps
@@ -156,7 +156,7 @@ HOME=~/.atom-shell-gyp node-gyp rebuild --target=<0.17.1 or other atom-shell ver
 
 After building finished, you can find the `greenworks-(linux/win/osx).node` binaries in `build/Release`.
 
-A sample atom-shell application is provided [here](https://github.com/greenheartgames/greenworks/tree/nan-compatible/samples/atom-shell).
+A sample atom-shell application is provided [here](https://github.com/greenheartgames/greenworks/tree/master/samples/atom-shell).
 
 For more details, you can refer to [Using native Node modules](https://github.com/atom/atom-shell/blob/master/docs/tutorial/using-native-node-modules.md) page.
 
