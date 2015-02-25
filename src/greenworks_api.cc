@@ -296,6 +296,7 @@ NAN_METHOD(ActivateGameOverlay) {
   }
   std::string option(*(v8::String::Utf8Value(args[0])));
   SteamFriends()->ActivateGameOverlay(option.c_str());
+  NanReturnUndefined();
 }
 
 NAN_METHOD(FileShare) {
