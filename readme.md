@@ -42,7 +42,7 @@ for details.
 
 Create `index.html`:
 
-```
+```html
 <html>
 <head>
   <meta charset="utf-8">
@@ -61,7 +61,7 @@ Create `index.html`:
 
 Create `package.json`:
 
-```
+```json
 {
   "name": "greenworks-nw-demo",
   "main": "index.html"
@@ -105,14 +105,14 @@ directory.
 
 ###Nodejs Addon Building Steps
 
-```
-// change to greenworks src directory.
+```shell
+# change to greenworks src directory.
 cd greenworks
-// install the dependencies.
+# install the dependencies.
 npm install
-// configure gyp project.
+# configure gyp project.
 node-gyp configure
-// build greenworks addon.
+# build greenworks addon.
 node-gyp rebuild
 ```
 
@@ -127,15 +127,15 @@ If you encounter any issues consult the
 Using Greenworks in node-webkit, you need to use [nw-gyp](https://github.com/rogerwang/nw-gyp)
 instead of 'node-gyp' to build.
 
-```
-// install nw-gyp
+```shell
+# install nw-gyp
 sudo npm install -g nw-gyp
 
 cd greenworks
-// generate the building files
+# generate the building files
 nw-gyp configure --target=<0.10.5 or other nw version>
 
-// build Greenworks
+# build Greenworks
 nw-gyp build
 ```
 
@@ -148,7 +148,7 @@ A sample node-webkit application is provided [here](https://github.com/greenhear
 
 To build Greenworks for atom-shell, we use `node-gyp` with some custom settings.
 
-```
+```shell
 cd greenworks
 
 HOME=~/.atom-shell-gyp node-gyp rebuild --target=<0.17.1 or other atom-shell versions> --dist-url=https://gh-contractor-zcbenz.s3.amazonaws.com/atom-shell/dist
@@ -167,7 +167,7 @@ Greenworks uses [Mocha](http://visionmedia.github.io/mocha/) framework to test t
 Since Greenworks is interacting with Steamworks, you need to create a `steam_appid.txt` file with
 a valid Steam Game Application ID in the `<greenworks_src_dir>/test` directory, in order to run the tests.
 
-```bash
+```shell
 cd greenworks
 ./test/run-test
 ```
