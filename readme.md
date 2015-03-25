@@ -98,7 +98,7 @@ to greenworks binaries directory.
 
 * Steamworks SDK 1.30
 * nodejs v0.10.X or v0.11.X
-* node-gyp (or nwp-gyp if you use node-webkit)
+* node-gyp (or nw-gyp if you use node-webkit)
 
 Download [Steamworks SDK](https://partner.steamgames.com/) and unzip to `<greenworks_src_dir>/deps/steamworks_sdk_dir`
 directory.
@@ -125,7 +125,7 @@ If you encounter any issues consult the
 ###Node-webkit Building Steps
 
 Using Greenworks in node-webkit, you need to use [nw-gyp](https://github.com/rogerwang/nw-gyp)
-instead of 'node-gyp' to build.
+instead of `node-gyp` to build.
 
 ```shell
 # install nw-gyp
