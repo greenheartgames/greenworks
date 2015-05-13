@@ -101,7 +101,7 @@ to greenworks binaries directory.
 * nodejs v0.10.X or v0.11.X
 * node-gyp (or nw-gyp if you use NW.js)
 
-Download [Steamworks SDK](https://partner.steamgames.com/) and unzip to `<greenworks_src_dir>/deps/steamworks_sdk_dir`
+Download [Steamworks SDK](https://partner.steamgames.com/) and unzip to `<greenworks_src_dir>/deps/steamworks_sdk`
 directory.
 
 ###Nodejs Addon Building Steps
