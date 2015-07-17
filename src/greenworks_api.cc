@@ -286,6 +286,16 @@ NAN_METHOD(ClearAchievement) {
   NanReturnUndefined();
 }
 
+NAN_METHOD(GetAchievementNames) {
+  NanScope();
+  int count = static_cast<int>(SteamUserStats()->GetNumAchievements());
+  v8::Local<v8::Array> names = NanNew<v8::Array>(count);
+  for (int i = 0; i < count; ++i) {
+    names->Set(i, NanNew(SteamUserStats()->GetAchievementName(i)));
+  }
+  NanReturnValue(names);
+}
+
 NAN_METHOD(GetNumberOfAchievements) {
   NanScope();
   ISteamUserStats* steam_user_stats = SteamUserStats();
@@ -620,6 +630,8 @@ void init(v8::Handle<v8::Object> exports) {
                NanNew<v8::FunctionTemplate>(GetAchievement)->GetFunction());
   exports->Set(NanNew("clearAchievement"),
                NanNew<v8::FunctionTemplate>(ClearAchievement)->GetFunction());
+  exports->Set(NanNew("getAchievementNames"),
+               NanNew<v8::FunctionTemplate>(GetAchievementNames)->GetFunction());
   exports->Set(NanNew("getNumberOfAchievements"),
                NanNew<v8::FunctionTemplate>(
                    GetNumberOfAchievements)->GetFunction());
