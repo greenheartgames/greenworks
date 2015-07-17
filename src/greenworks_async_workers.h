@@ -65,8 +65,8 @@ class CloudQuotaGetWorker : public SteamAsyncWorker {
   virtual void HandleOKCallback();
 
  private:
-	int total_bytes_;
-	int available_bytes_;
+  int total_bytes_;
+  int available_bytes_;
 };
 
 class ActivateAchievementWorker : public SteamAsyncWorker {
