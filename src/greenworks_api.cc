@@ -252,6 +252,12 @@ NAN_METHOD(ActivateAchievement) {
   NanReturnUndefined();
 }
 
+NAN_METHOD(GetNumberOfAchievements) {
+  NanScope();
+  ISteamUserStats* steam_user_stats = SteamUserStats();
+  NanReturnValue(steam_user_stats->GetNumAchievements());
+}
+
 NAN_METHOD(GetCurrentGameLanguage) {
   NanScope();
   NanReturnValue(NanNew(SteamApps()->GetCurrentGameLanguage()));
@@ -576,6 +582,9 @@ void init(v8::Handle<v8::Object> exports) {
   exports->Set(NanNew("activateAchievement"),
                NanNew<v8::FunctionTemplate>(
                    ActivateAchievement)->GetFunction());
+  exports->Set(NanNew("getNumberOfAchievements"),
+               NanNew<v8::FunctionTemplate>(
+                   GetNumberOfAchievements)->GetFunction());
   // Game setting related APIs.
   exports->Set(NanNew("getCurrentGameLanguage"),
                       NanNew<v8::FunctionTemplate>(
