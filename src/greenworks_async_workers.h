@@ -81,6 +81,21 @@ class ActivateAchievementWorker : public SteamAsyncWorker {
   std::string achievement_;
 };
 
+class GetAchievementWorker : public SteamAsyncWorker {
+ public:
+  GetAchievementWorker(NanCallback* success_callback,
+                       NanCallback* error_callback,
+                       const std::string& achievement);
+
+  // Override NanAsyncWorker methods.
+  virtual void Execute();
+  virtual void HandleOKCallback();
+
+ private:
+  std::string achievement_;
+  bool is_achieved_;
+};
+
 class GetNumberOfPlayersWorker : public SteamCallbackAsyncWorker {
  public:
   GetNumberOfPlayersWorker(NanCallback* success_callback,

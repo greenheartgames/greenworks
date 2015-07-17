@@ -252,6 +252,23 @@ NAN_METHOD(ActivateAchievement) {
   NanReturnUndefined();
 }
 
+NAN_METHOD(GetAchievement) {
+  NanScope();
+  if (args.Length() < 2 || !args[0]->IsString() || !args[1]->IsFunction()) {
+    THROW_BAD_ARGS("Bad arguments");
+  }
+
+  std::string achievement = (*(v8::String::Utf8Value(args[0])));
+  NanCallback* success_callback = new NanCallback(args[1].As<v8::Function>());
+  NanCallback* error_callback = NULL;
+
+  if (args[2]->IsFunction())
+    error_callback = new NanCallback(args[2].As<v8::Function>());
+  NanAsyncQueueWorker(new greenworks::GetAchievementWorker(
+      success_callback, error_callback, achievement));
+  NanReturnUndefined();
+}
+
 NAN_METHOD(GetNumberOfAchievements) {
   NanScope();
   ISteamUserStats* steam_user_stats = SteamUserStats();
@@ -582,6 +599,9 @@ void init(v8::Handle<v8::Object> exports) {
   exports->Set(NanNew("activateAchievement"),
                NanNew<v8::FunctionTemplate>(
                    ActivateAchievement)->GetFunction());
+  exports->Set(NanNew("getAchievement"),
+               NanNew<v8::FunctionTemplate>(
+                   GetAchievement)->GetFunction());
   exports->Set(NanNew("getNumberOfAchievements"),
                NanNew<v8::FunctionTemplate>(
                    GetNumberOfAchievements)->GetFunction());

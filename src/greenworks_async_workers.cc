@@ -144,6 +144,30 @@ void ActivateAchievementWorker::Execute() {
     SetErrorMessage("Error on storing user achievement");
 }
 
+GetAchievementWorker::GetAchievementWorker(
+    NanCallback* success_callback,
+    NanCallback* error_callback,
+    const std::string& achievement):
+        SteamAsyncWorker(success_callback, error_callback),
+        achievement_(achievement),
+        is_achieved_(false) {
+}
+
+void GetAchievementWorker::Execute() {
+  ISteamUserStats* steam_user_stats = SteamUserStats();
+  bool success = steam_user_stats->GetAchievement(achievement_.c_str(),
+                                                  &is_achieved_);
+  if (!success) {
+    SetErrorMessage("Achivement id is not valid");
+  }
+}
+
+void GetAchievementWorker::HandleOKCallback() {
+  NanScope();
+  v8::Local<v8::Value> argv[] = { NanNew(is_achieved_) };
+  callback->Call(1, argv);
+}
+
 GetNumberOfPlayersWorker::GetNumberOfPlayersWorker(
     NanCallback* success_callback, NanCallback* error_callback)
        :SteamCallbackAsyncWorker(success_callback, error_callback),
