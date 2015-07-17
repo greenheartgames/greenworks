@@ -7,7 +7,7 @@
     "url": "https://github.com/greenheartgames/greenworks/blob/master/LICENSE"
   }],
   "dependencies": {
-    "nan": "1.7.0"
+    "nan": "1.8.0"
   },
   "devDependencies": {
     "mocha": "1.21.4"
