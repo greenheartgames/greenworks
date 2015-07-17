@@ -168,6 +168,31 @@ void GetAchievementWorker::HandleOKCallback() {
   callback->Call(1, argv);
 }
 
+ClearAchievementWorker::ClearAchievementWorker(
+    NanCallback* success_callback,
+    NanCallback* error_callback,
+    const std::string& achievement):
+        SteamAsyncWorker(success_callback, error_callback),
+        achievement_(achievement),
+        success_(false) {
+}
+
+void ClearAchievementWorker::Execute() {
+  ISteamUserStats* steam_user_stats = SteamUserStats();
+  success_ = steam_user_stats->ClearAchievement(achievement_.c_str());
+  if (!success_) {
+    SetErrorMessage("Fails on clear achievement.");
+  } else if (!steam_user_stats->StoreStats()) {
+    SetErrorMessage("Fails on uploading user stats to server");
+  }
+}
+
+void ClearAchievementWorker::HandleOKCallback() {
+  NanScope();
+  v8::Local<v8::Value> argv[] = { NanNew(success_) };
+  callback->Call(1, argv);
+}
+
 GetNumberOfPlayersWorker::GetNumberOfPlayersWorker(
     NanCallback* success_callback, NanCallback* error_callback)
        :SteamCallbackAsyncWorker(success_callback, error_callback),
