@@ -125,7 +125,7 @@ If you encounter any issues consult the
 
 ###NW.js Building Steps
 
-Using Greenworks in NW.js, you need to use [nw-gyp](https://github.com/rogerwang/nw-gyp)
+Using Greenworks in NW.js, you need to use [nw-gyp](https://github.com/nwjs/nw-gyp)
 instead of `node-gyp` to build.
 
 ```shell
