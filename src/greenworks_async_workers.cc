@@ -158,7 +158,7 @@ void GetAchievementWorker::Execute() {
   bool success = steam_user_stats->GetAchievement(achievement_.c_str(),
                                                   &is_achieved_);
   if (!success) {
-    SetErrorMessage("Achivement id is not valid");
+    SetErrorMessage("Achivement name is not valid.");
   }
 }
 
@@ -181,16 +181,15 @@ void ClearAchievementWorker::Execute() {
   ISteamUserStats* steam_user_stats = SteamUserStats();
   success_ = steam_user_stats->ClearAchievement(achievement_.c_str());
   if (!success_) {
-    SetErrorMessage("Fails on clear achievement.");
+    SetErrorMessage("Achievement name is not valid.");
   } else if (!steam_user_stats->StoreStats()) {
-    SetErrorMessage("Fails on uploading user stats to server");
+    SetErrorMessage("Fails on uploading user stats to server.");
   }
 }
 
 void ClearAchievementWorker::HandleOKCallback() {
   NanScope();
-  v8::Local<v8::Value> argv[] = { NanNew(success_) };
-  callback->Call(1, argv);
+  callback->Call(0, {});
 }
 
 GetNumberOfPlayersWorker::GetNumberOfPlayersWorker(
