@@ -1,5 +1,5 @@
 ##New Release 0.4
-The newest release enables compatibility with node v0.11.x and v0.12.x, NW.js v0.12.X and atom-shell v0.21.X. If you find the release useful, please consider donating.
+The newest release enables compatibility with node v0.11.x and v0.12.x, NW.js v0.12.X and Electron v0.21.X. If you find the release useful, please consider donating.
 
 <a href='https://pledgie.com/campaigns/27218'><img alt='Click here to lend your support to: Greenworks v0.3+ and make a donation at pledgie.com !' src='https://pledgie.com/campaigns/27218.png?skin_name=chrome' border='0' ></a>
 
@@ -16,7 +16,7 @@ Currently greenworks supports:
 * node v0.10.X, v0.11.X and v0.12.X
 * iojs v1.6.2
 * NW.js(formerly node-webkit) v0.8.X, v0.11.X and v0.12.X
-* atom-shell v0.21.X
+* Electron(formerly atom-shell) v0.21.X or above
 
 ##Download
 
@@ -134,7 +134,7 @@ sudo npm install -g nw-gyp
 
 cd greenworks
 # generate the building files
-nw-gyp configure --target=<0.10.5 or other nw version>
+nw-gyp configure --target=<0.10.5 or other nw version> --arch=<x64 or ia32>
 
 # build Greenworks
 nw-gyp build
@@ -145,21 +145,21 @@ After building finished, you can find the `greenworks-(linux/win/osx).node` bina
 A sample NW.js application is provided [here](https://github.com/greenheartgames/greenworks/tree/master/samples/nw.js).
 
 
-###Atom-shell Building Steps
+###Electron Building Steps
 
-To build Greenworks for atom-shell, we use `node-gyp` with some custom settings.
+To build Greenworks for Electron, we use `node-gyp` with some custom settings.
 
 ```shell
 cd greenworks
 
-HOME=~/.atom-shell-gyp node-gyp rebuild --target=<0.17.1 or other atom-shell versions> --dist-url=https://gh-contractor-zcbenz.s3.amazonaws.com/atom-shell/dist
+HOME=~/.electron-gyp node-gyp rebuild --target=<0.29.2 or other versions> --arch=x64 --dist-url=https://atom.io/download/atom-shell
 ```
 
 After building finished, you can find the `greenworks-(linux/win/osx).node` binaries in `build/Release`.
 
-A sample atom-shell application is provided [here](https://github.com/greenheartgames/greenworks/tree/master/samples/atom-shell).
+A sample for Electron application is provided [here](https://github.com/greenheartgames/greenworks/tree/master/samples/electron).
 
-For more details, you can refer to [Using native Node modules](https://github.com/atom/atom-shell/blob/master/docs/tutorial/using-native-node-modules.md) page.
+For more details, you can refer to [Using native Node modules](https://github.com/atom/electron/blob/master/docs/tutorial/using-native-node-modules.md) page.
 
 ##Test
 
