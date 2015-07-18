@@ -135,7 +135,7 @@ NAN_METHOD(SaveTextToFile) {
   NanCallback* success_callback = new NanCallback(args[2].As<v8::Function>());
   NanCallback* error_callback = NULL;
 
-  if (args[3]->IsFunction())
+  if (args.Length() > 3 && args[3]->IsFunction())
     error_callback = new NanCallback(args[3].As<v8::Function>());
 
   NanAsyncQueueWorker(new greenworks::FileContentSaveWorker(success_callback,
@@ -164,7 +164,7 @@ NAN_METHOD(SaveFilesToCloud) {
   NanCallback* success_callback = new NanCallback(args[1].As<v8::Function>());
   NanCallback* error_callback = NULL;
 
-  if (args[2]->IsFunction())
+  if (args.Length() > 2 && args[2]->IsFunction())
     error_callback = new NanCallback(args[2].As<v8::Function>());
   NanAsyncQueueWorker(new greenworks::FilesSaveWorker(success_callback,
                                                       error_callback,
@@ -183,7 +183,7 @@ NAN_METHOD(ReadTextFromFile) {
   NanCallback* success_callback = new NanCallback(args[1].As<v8::Function>());
   NanCallback* error_callback = NULL;
 
-  if (args[2]->IsFunction())
+  if (args.Length() > 2 && args[2]->IsFunction())
     error_callback = new NanCallback(args[2].As<v8::Function>());
 
   NanAsyncQueueWorker(new greenworks::FileReadWorker(success_callback,
@@ -226,7 +226,7 @@ NAN_METHOD(GetCloudQuota) {
   NanCallback* success_callback = new NanCallback(args[0].As<v8::Function>());
   NanCallback* error_callback = NULL;
 
-  if (args[1]->IsFunction())
+  if (args.Length() > 2 && args[1]->IsFunction())
     error_callback = new NanCallback(args[1].As<v8::Function>());
 
   NanAsyncQueueWorker(new greenworks::CloudQuotaGetWorker(success_callback,
@@ -244,7 +244,7 @@ NAN_METHOD(ActivateAchievement) {
   NanCallback* success_callback = new NanCallback(args[1].As<v8::Function>());
   NanCallback* error_callback = NULL;
 
-  if (args[2]->IsFunction())
+  if (args.Length() > 2 && args[2]->IsFunction())
     error_callback = new NanCallback(args[2].As<v8::Function>());
 
   NanAsyncQueueWorker(new greenworks::ActivateAchievementWorker(
@@ -262,7 +262,7 @@ NAN_METHOD(GetAchievement) {
   NanCallback* success_callback = new NanCallback(args[1].As<v8::Function>());
   NanCallback* error_callback = NULL;
 
-  if (args[2]->IsFunction())
+  if (args.Length() > 2 && args[2]->IsFunction())
     error_callback = new NanCallback(args[2].As<v8::Function>());
   NanAsyncQueueWorker(new greenworks::GetAchievementWorker(
       success_callback, error_callback, achievement));
@@ -278,7 +278,7 @@ NAN_METHOD(ClearAchievement) {
   NanCallback* success_callback = new NanCallback(args[1].As<v8::Function>());
   NanCallback* error_callback = NULL;
 
-  if (args[2]->IsFunction())
+  if (args.Length() > 2 && args[2]->IsFunction())
     error_callback = new NanCallback(args[2].As<v8::Function>());
 
   NanAsyncQueueWorker(new greenworks::ClearAchievementWorker(
@@ -320,13 +320,13 @@ NAN_METHOD(GetCurrentGameInstallDir) {
 
 NAN_METHOD(GetNumberOfPlayers) {
   NanScope();
-  if (args.Length() < 2 || !args[0]->IsFunction()) {
+  if (args.Length() < 1 || !args[0]->IsFunction()) {
     THROW_BAD_ARGS("Bad arguments");
   }
   NanCallback* success_callback = new NanCallback(args[0].As<v8::Function>());
   NanCallback* error_callback = NULL;
 
-  if (args[1]->IsFunction())
+  if (args.Length() > 1 && args[1]->IsFunction())
     error_callback = new NanCallback(args[1].As<v8::Function>());
 
   NanAsyncQueueWorker(new greenworks::GetNumberOfPlayersWorker(
@@ -359,7 +359,7 @@ NAN_METHOD(FileShare) {
   NanCallback* success_callback = new NanCallback(args[1].As<v8::Function>());
   NanCallback* error_callback = NULL;
 
-  if (args[2]->IsFunction())
+  if (args.Length() > 2 && args[2]->IsFunction())
     error_callback = new NanCallback(args[2].As<v8::Function>());
 
   NanAsyncQueueWorker(new greenworks::FileShareWorker(
@@ -382,7 +382,7 @@ NAN_METHOD(PublishWorkshopFile) {
   NanCallback* success_callback = new NanCallback(args[4].As<v8::Function>());
   NanCallback* error_callback = NULL;
 
-  if (args[5]->IsFunction())
+  if (args.Length() > 5 && args[5]->IsFunction())
     error_callback = new NanCallback(args[5].As<v8::Function>());
 
   NanAsyncQueueWorker(new greenworks::PublishWorkshopFileWorker(
@@ -410,7 +410,7 @@ NAN_METHOD(UpdatePublishedWorkshopFile) {
   NanCallback* success_callback = new NanCallback(args[5].As<v8::Function>());
   NanCallback* error_callback = NULL;
 
-  if (args[5]->IsFunction())
+  if (args.Length() > 6 && args[6]->IsFunction())
     error_callback = new NanCallback(args[6].As<v8::Function>());
 
   NanAsyncQueueWorker(new greenworks::UpdatePublishedWorkshopFileWorker(
@@ -433,7 +433,7 @@ NAN_METHOD(UGCGetItems) {
   NanCallback* success_callback = new NanCallback(args[2].As<v8::Function>());
   NanCallback* error_callback = NULL;
 
-  if (args[3]->IsFunction())
+  if (args.Length() > 3 && args[3]->IsFunction())
     error_callback = new NanCallback(args[3].As<v8::Function>());
 
   NanAsyncQueueWorker(new greenworks::QueryAllUGCWorker(
@@ -457,7 +457,7 @@ NAN_METHOD(UGCGetUserItems) {
   NanCallback* success_callback = new NanCallback(args[3].As<v8::Function>());
   NanCallback* error_callback = NULL;
 
-  if (args[4]->IsFunction())
+  if (args.Length() > 4 && args[4]->IsFunction())
     error_callback = new NanCallback(args[4].As<v8::Function>());
 
   NanAsyncQueueWorker(new greenworks::QueryUserUGCWorker(
@@ -479,7 +479,7 @@ NAN_METHOD(UGCDownloadItem) {
   NanCallback* success_callback = new NanCallback(args[2].As<v8::Function>());
   NanCallback* error_callback = NULL;
 
-  if (args[3]->IsFunction())
+  if (args.Length() > 3 && args[3]->IsFunction())
     error_callback = new NanCallback(args[3].As<v8::Function>());
 
   NanAsyncQueueWorker(new greenworks::DownloadItemWorker(
@@ -497,7 +497,7 @@ NAN_METHOD(UGCSynchronizeItems) {
   NanCallback* success_callback = new NanCallback(args[1].As<v8::Function>());
   NanCallback* error_callback = NULL;
 
-  if (args[2]->IsFunction())
+  if (args.Length() > 2 && args[2]->IsFunction())
     error_callback = new NanCallback(args[2].As<v8::Function>());
 
   NanAsyncQueueWorker(new greenworks::SynchronizeItemsWorker(
@@ -535,7 +535,7 @@ NAN_METHOD(UGCUnsubscribe) {
   NanCallback* success_callback = new NanCallback(args[1].As<v8::Function>());
   NanCallback* error_callback = NULL;
 
-  if (args[2]->IsFunction())
+  if (args.Length() > 2 && args[2]->IsFunction())
     error_callback = new NanCallback(args[2].As<v8::Function>());
 
   NanAsyncQueueWorker(new greenworks::UnsubscribePublishedFileWorker(
@@ -557,7 +557,7 @@ NAN_METHOD(CreateArchive) {
   NanCallback* success_callback = new NanCallback(args[4].As<v8::Function>());
   NanCallback* error_callback = NULL;
 
-  if (args[5]->IsFunction())
+  if (args.Length() > 5 && args[5]->IsFunction())
     error_callback = new NanCallback(args[5].As<v8::Function>());
 
   NanAsyncQueueWorker(new greenworks::CreateArchiveWorker(
@@ -569,7 +569,7 @@ NAN_METHOD(CreateArchive) {
 NAN_METHOD(ExtractArchive) {
   NanScope();
   if (args.Length() < 4 || !args[0]->IsString() || !args[1]->IsString() ||
-      !args[2]->IsString() || !args[4]->IsFunction()) {
+      !args[2]->IsString() || !args[3]->IsFunction()) {
     THROW_BAD_ARGS("bad arguments");
   }
   std::string zip_file_path = *(v8::String::Utf8Value(args[0]));
@@ -579,7 +579,7 @@ NAN_METHOD(ExtractArchive) {
   NanCallback* success_callback = new NanCallback(args[3].As<v8::Function>());
   NanCallback* error_callback = NULL;
 
-  if (args[5]->IsFunction())
+  if (args.Length() > 4 && args[4]->IsFunction())
     error_callback = new NanCallback(args[4].As<v8::Function>());
 
   NanAsyncQueueWorker(new greenworks::ExtractArchiveWorker(
