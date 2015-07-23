@@ -89,8 +89,8 @@ The NW.js v0.11.2 hello-world demo directory on Mac OS X like:
 Before using greenworks, you need to:
 
 1. Copy `steam_api.dll`/`libsteam_api.dylib`/`libsteam_api.so` library from the Steamworks SDK(`<steam_sdk_path>/redistributable_bin/`)
-to greenworks binaries directory.
-2. Create a `steam_appid.txt` file with your Steam APP ID under code directory.
+to `<app-dir>/lib/`.
+2. Create a `steam_appid.txt` file with your Steam APP ID under `<app-dir>` directory.
 
 
 ##Building Instructions
