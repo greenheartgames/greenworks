@@ -5,6 +5,7 @@
 #include <string>
 #include <sstream>
 #include <vector>
+#include <iomanip>
 
 #include "nan.h"
 #include "steam/steam_api.h"
@@ -587,6 +588,20 @@ NAN_METHOD(ExtractArchive) {
   NanReturnUndefined();
 }
 
+NAN_METHOD(GetAuthSessionTicket) {
+  NanScope();
+  unsigned char buf[4096];
+  unsigned int buf_size;
+  SteamUser()->GetAuthSessionTicket(buf, 4096, &buf_size);  
+  std::ostringstream hex_ticket;
+  for (unsigned int i = 0; i < buf_size; i++) {
+      hex_ticket << std::setfill('0') << std::setw(2) << std::uppercase << std::hex << int(buf[i]);
+  }
+  v8::Local<v8::Object> ticket = NanNew<v8::Object>();
+  ticket->Set(NanNew("ticket"), NanNew(hex_ticket.str()));
+  NanReturnValue(ticket);
+}
+
 void InitUtilsObject(v8::Handle<v8::Object> exports) {
   // Prepare constructor template
   v8::Local<v8::FunctionTemplate> tpl = NanNew<v8::FunctionTemplate>();
@@ -674,6 +689,11 @@ void init(v8::Handle<v8::Object> exports) {
   exports->Set(NanNew("ugcUnsubscribe"),
                NanNew<v8::FunctionTemplate>(UGCUnsubscribe)->GetFunction());
 
+               
+  // Auth/Purchase related APIs
+  exports->Set(NanNew("getAuthSessionTicket"),
+               NanNew<v8::FunctionTemplate>(GetAuthSessionTicket)->GetFunction());
+  
   utils::InitUgcMatchingTypes(exports);
   utils::InitUgcQueryTypes(exports);
   utils::InitUserUgcListSortOrder(exports);
