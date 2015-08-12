@@ -602,6 +602,16 @@ NAN_METHOD(GetAuthSessionTicket) {
   NanReturnValue(ticket);
 }
 
+NAN_METHOD(ActivateGameOverlayToWebPage) {
+  NanScope();
+  if (args.Length() < 1 || !args[0]->IsString()) {
+    THROW_BAD_ARGS("bad arguments");
+  }
+  std::string url = *(v8::String::Utf8Value(args[0]));
+  SteamFriends()->ActivateGameOverlayToWebPage(url.c_str());
+  NanReturnUndefined();
+}
+
 void InitUtilsObject(v8::Handle<v8::Object> exports) {
   // Prepare constructor template
   v8::Local<v8::FunctionTemplate> tpl = NanNew<v8::FunctionTemplate>();
@@ -693,7 +703,9 @@ void init(v8::Handle<v8::Object> exports) {
   // Auth/Purchase related APIs
   exports->Set(NanNew("getAuthSessionTicket"),
                NanNew<v8::FunctionTemplate>(GetAuthSessionTicket)->GetFunction());
-  
+  exports->Set(NanNew("activateGameOverlayToWebPage"),
+               NanNew<v8::FunctionTemplate>(ActivateGameOverlayToWebPage)->GetFunction());
+               
   utils::InitUgcMatchingTypes(exports);
   utils::InitUgcQueryTypes(exports);
   utils::InitUserUgcListSortOrder(exports);
