@@ -189,7 +189,7 @@ void ClearAchievementWorker::Execute() {
 
 void ClearAchievementWorker::HandleOKCallback() {
   NanScope();
-  callback->Call(0, {});
+  callback->Call(0, NULL);
 }
 
 GetNumberOfPlayersWorker::GetNumberOfPlayersWorker(
