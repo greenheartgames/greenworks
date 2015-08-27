@@ -12,7 +12,6 @@
 #include "greenworks_zip.h"
 
 #include <sstream>
-#include <vector>
 #include <iomanip>
 
 namespace {

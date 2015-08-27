@@ -5,7 +5,6 @@
 #include <string>
 #include <sstream>
 #include <vector>
-#include <iomanip>
 
 #include "nan.h"
 #include "steam/steam_api.h"
