@@ -590,16 +590,17 @@ NAN_METHOD(ExtractArchive) {
 
 NAN_METHOD(GetAuthSessionTicket) {
   NanScope();
-  unsigned char buf[4096];
-  unsigned int buf_size;
-  SteamUser()->GetAuthSessionTicket(buf, 4096, &buf_size);  
-  std::ostringstream hex_ticket;
-  for (unsigned int i = 0; i < buf_size; i++) {
-      hex_ticket << std::setfill('0') << std::setw(2) << std::uppercase << std::hex << int(buf[i]);
+  if (args.Length() < 1 || !args[0]->IsFunction()) {
+      THROW_BAD_ARGS("Bad arguments");
   }
-  v8::Local<v8::Object> ticket = NanNew<v8::Object>();
-  ticket->Set(NanNew("ticket"), NanNew(hex_ticket.str()));
-  NanReturnValue(ticket);
+  NanCallback* success_callback = new NanCallback(args[0].As<v8::Function>());
+  NanCallback* error_callback = NULL;
+
+  if (args.Length() > 1 && args[1]->IsFunction())
+      error_callback = new NanCallback(args[1].As<v8::Function>());
+  NanAsyncQueueWorker(new greenworks::GetAuthSessionTicketWorker(
+      success_callback, error_callback));
+  NanReturnUndefined();
 }
 
 NAN_METHOD(ActivateGameOverlayToWebPage) {

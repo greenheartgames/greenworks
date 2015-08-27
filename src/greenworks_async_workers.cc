@@ -11,6 +11,10 @@
 #include "greenworks_unzip.h"
 #include "greenworks_zip.h"
 
+#include <sstream>
+#include <vector>
+#include <iomanip>
+
 namespace {
 
 struct FilesContentContainer {
@@ -259,6 +263,40 @@ void ExtractArchiveWorker::Execute() {
       password_.empty()?NULL:password_.c_str());
   if (result)
     SetErrorMessage("Error on extracting zip file.");
+}
+
+GetAuthSessionTicketWorker::GetAuthSessionTicketWorker(
+  NanCallback* success_callback,
+  NanCallback* error_callback ) 
+    : SteamCallbackAsyncWorker(success_callback, error_callback), 
+      result(this, &GetAuthSessionTicketWorker::OnGetAuthSessionCompleted) {
+
+}
+
+void GetAuthSessionTicketWorker::Execute() {
+  SteamUser()->GetAuthSessionTicket(ticket_buf_, sizeof(ticket_buf_), &ticket_buf_size_);
+  WaitForCompleted();
+}
+
+void GetAuthSessionTicketWorker::OnGetAuthSessionCompleted(GetAuthSessionTicketResponse_t *inCallback) {
+  if (inCallback->m_eResult == k_EResultOK) {
+    std::ostringstream hex_ticket;
+    for (unsigned int i = 0; i < ticket_buf_size_; i++) {
+        hex_ticket << std::setfill('0') << std::setw(2) << std::uppercase << std::hex << int(ticket_buf_[i]);
+    }
+    ticket_ = hex_ticket.str();
+  } else {
+    SetErrorMessage("Error on getting auth session ticket.");
+  }
+  is_completed_ = true;
+}
+
+void GetAuthSessionTicketWorker::HandleOKCallback() {
+  NanScope();
+  v8::Local<v8::Object> ticket = NanNew<v8::Object>();
+  ticket->Set(NanNew("ticket"), NanNew(ticket_));
+  v8::Local<v8::Value> argv[] = { ticket };
+  callback->Call(1, argv);
 }
 
 }  // namespace greenworks

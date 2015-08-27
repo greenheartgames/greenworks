@@ -162,6 +162,27 @@ class ExtractArchiveWorker : public SteamAsyncWorker {
   std::string password_;
 };
 
+class GetAuthSessionTicketWorker : public SteamCallbackAsyncWorker {
+ public:
+  GetAuthSessionTicketWorker(NanCallback* success_callback,
+                             NanCallback* error_callback);
+  STEAM_CALLBACK(GetAuthSessionTicketWorker,
+                 OnGetAuthSessionCompleted,
+                 GetAuthSessionTicketResponse_t,
+                 result);
+  // Override NanAsyncWorker methods.
+  virtual void Execute();
+  virtual void HandleOKCallback();
+ private:
+  std::string ticket_;
+  unsigned int ticket_buf_size_;
+  unsigned char ticket_buf_[4096];
+};
+
+
+
+    
+    
 }  // namespace greenworks
 
 #endif  // SRC_GREENWORK_ASYNC_WORKERS_H_
