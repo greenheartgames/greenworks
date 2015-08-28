@@ -590,43 +590,42 @@ NAN_METHOD(ExtractArchive) {
 NAN_METHOD(GetAuthSessionTicket) {
   NanScope();
   if (args.Length() < 1 || !args[0]->IsFunction()) {
-      THROW_BAD_ARGS("Bad arguments");
+    THROW_BAD_ARGS("Bad arguments");
   }
   NanCallback* success_callback = new NanCallback(args[0].As<v8::Function>());
   NanCallback* error_callback = NULL;
   if (args.Length() > 1 && args[1]->IsFunction())
-      error_callback = new NanCallback(args[1].As<v8::Function>());
+    error_callback = new NanCallback(args[1].As<v8::Function>());
   NanAsyncQueueWorker(new greenworks::GetAuthSessionTicketWorker(
-      success_callback, error_callback));
+    success_callback, error_callback));
   NanReturnUndefined();
 }
 
 NAN_METHOD(CancelAuthTicket) {
-    NanScope();
-    if (args.Length() < 1 || !args[0]->IsNumber()) {
-        THROW_BAD_ARGS("Bad arguments");
-    }
-    HAuthTicket h = args[1].As<v8::Number>()->Int32Value();
-    SteamUser()->CancelAuthTicket(h);
-    NanReturnUndefined();
+  NanScope();
+  if (args.Length() < 1 || !args[0]->IsNumber()) {
+    THROW_BAD_ARGS("Bad arguments");
+  }
+  HAuthTicket h = args[1].As<v8::Number>()->Int32Value();
+  SteamUser()->CancelAuthTicket(h);
+  NanReturnUndefined();
 }
 
 
 NAN_METHOD(GetEncryptedAppTicket) {
-    NanScope();
-    if (args.Length() < 2 || !args[1]->IsFunction()) {
-        THROW_BAD_ARGS("Bad arguments");
-    }
-    v8::String::Utf8Value _user_data(args[0]->ToString());
-    std::string user_data = *_user_data;
-    NanCallback* success_callback = new NanCallback(args[1].As<v8::Function>());
-    NanCallback* error_callback = NULL;
-
-    if (args.Length() > 1 && args[1]->IsFunction())
-        error_callback = new NanCallback(args[1].As<v8::Function>());
-    NanAsyncQueueWorker(new greenworks::RequestEncryptedAppTicketWorker(
-        user_data, success_callback, error_callback));
-    NanReturnUndefined();
+  NanScope();
+  if (args.Length() < 2 || !args[1]->IsFunction()) {
+    THROW_BAD_ARGS("Bad arguments");
+  }
+  v8::String::Utf8Value _user_data(args[0]->ToString());
+  std::string user_data = *_user_data;
+  NanCallback* success_callback = new NanCallback(args[1].As<v8::Function>());
+  NanCallback* error_callback = NULL;
+  if (args.Length() > 1 && args[1]->IsFunction())
+    error_callback = new NanCallback(args[1].As<v8::Function>());
+  NanAsyncQueueWorker(new greenworks::RequestEncryptedAppTicketWorker(
+    user_data, success_callback, error_callback));
+  NanReturnUndefined();
 }
 
 NAN_METHOD(ActivateGameOverlayToWebPage) {
@@ -731,9 +730,9 @@ void init(v8::Handle<v8::Object> exports) {
   exports->Set(NanNew("getAuthSessionTicket"),
                NanNew<v8::FunctionTemplate>(GetAuthSessionTicket)->GetFunction());
   exports->Set(NanNew("getEncryptedAppTicket"),
-      NanNew<v8::FunctionTemplate>(GetEncryptedAppTicket)->GetFunction());
+               NanNew<v8::FunctionTemplate>(GetEncryptedAppTicket)->GetFunction());
   exports->Set(NanNew("cancelAuthTicket"),
-      NanNew<v8::FunctionTemplate>(CancelAuthTicket)->GetFunction());
+               NanNew<v8::FunctionTemplate>(CancelAuthTicket)->GetFunction());
   exports->Set(NanNew("activateGameOverlayToWebPage"),
                NanNew<v8::FunctionTemplate>(ActivateGameOverlayToWebPage)->GetFunction());
 
