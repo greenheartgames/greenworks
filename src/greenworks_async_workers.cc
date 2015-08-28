@@ -300,4 +300,42 @@ void GetAuthSessionTicketWorker::HandleOKCallback() {
   callback->Call(1, argv);
 }
 
+
+
+
+RequestEncryptedAppTicketWorker::RequestEncryptedAppTicketWorker(
+  std::string user_data, 
+  NanCallback* success_callback,
+  NanCallback* error_callback)
+    : SteamCallbackAsyncWorker(success_callback, error_callback),
+      user_data_(user_data), ticket_buf_size_(0) {
+
+}
+
+void RequestEncryptedAppTicketWorker::Execute() {
+  SteamAPICall_t steam_api_call = SteamUser()->RequestEncryptedAppTicket((void*)user_data_.c_str(), user_data_.length());
+  call_result_.Set(steam_api_call, this, &RequestEncryptedAppTicketWorker::OnRequestEncryptedAppTicketCompleted);
+  WaitForCompleted();
+}
+
+void RequestEncryptedAppTicketWorker::OnRequestEncryptedAppTicketCompleted(EncryptedAppTicketResponse_t *inCallback, bool io_failure) {
+  if (!io_failure && inCallback->m_eResult == k_EResultOK) {
+    SteamUser()->GetEncryptedAppTicket(ticket_buf_, sizeof(ticket_buf_), &ticket_buf_size_);
+    std::ostringstream hex_ticket;
+    for (unsigned int i = 0; i < ticket_buf_size_; i++) {
+      hex_ticket << std::setfill('0') << std::setw(2) << std::uppercase << std::hex << int(ticket_buf_[i]);
+    }
+    ticket_ = hex_ticket.str();
+  } else {
+    SetErrorMessage("Error on getting encrypted app ticket.");
+  }
+  is_completed_ = true;
+}
+
+void RequestEncryptedAppTicketWorker::HandleOKCallback() {
+  NanScope();
+  v8::Local<v8::Value> argv[] = { NanNew(ticket_) };
+  callback->Call(1, argv);
+}
+
 }  // namespace greenworks

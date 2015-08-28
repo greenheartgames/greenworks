@@ -170,7 +170,6 @@ class GetAuthSessionTicketWorker : public SteamCallbackAsyncWorker {
                  OnGetAuthSessionCompleted,
                  GetAuthSessionTicketResponse_t,
                  result);
-  // Override NanAsyncWorker methods.
   virtual void Execute();
   virtual void HandleOKCallback();
  private:
@@ -181,7 +180,21 @@ class GetAuthSessionTicketWorker : public SteamCallbackAsyncWorker {
 };
 
 
-
+class RequestEncryptedAppTicketWorker : public SteamCallbackAsyncWorker {
+ public:
+  RequestEncryptedAppTicketWorker(std::string user_data, 
+                                  NanCallback* success_callback, 
+                                  NanCallback* error_callback);
+  void OnRequestEncryptedAppTicketCompleted(EncryptedAppTicketResponse_t*, bool);
+  virtual void Execute();
+  virtual void HandleOKCallback();
+ private:
+  std::string user_data_;
+  std::string ticket_;
+  unsigned int ticket_buf_size_;
+  unsigned char ticket_buf_[4096];
+  CCallResult< RequestEncryptedAppTicketWorker, EncryptedAppTicketResponse_t > call_result_;
+};
     
     
 }  // namespace greenworks
