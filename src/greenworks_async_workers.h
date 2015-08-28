@@ -175,8 +175,9 @@ class GetAuthSessionTicketWorker : public SteamCallbackAsyncWorker {
   virtual void HandleOKCallback();
  private:
   std::string ticket_;
+  HAuthTicket handle_;
   unsigned int ticket_buf_size_;
-  unsigned char ticket_buf_[4096];
+  unsigned char ticket_buf_[2048];
 };
 
 

@@ -268,12 +268,13 @@ GetAuthSessionTicketWorker::GetAuthSessionTicketWorker(
   NanCallback* success_callback,
   NanCallback* error_callback ) 
     : SteamCallbackAsyncWorker(success_callback, error_callback), 
-      result(this, &GetAuthSessionTicketWorker::OnGetAuthSessionCompleted) {
+      result(this, &GetAuthSessionTicketWorker::OnGetAuthSessionCompleted),
+      handle_(0), ticket_buf_size_(0) {
 
 }
 
 void GetAuthSessionTicketWorker::Execute() {
-  SteamUser()->GetAuthSessionTicket(ticket_buf_, sizeof(ticket_buf_), &ticket_buf_size_);
+  handle_ = SteamUser()->GetAuthSessionTicket(ticket_buf_, sizeof(ticket_buf_), &ticket_buf_size_);
   WaitForCompleted();
 }
 
@@ -294,6 +295,7 @@ void GetAuthSessionTicketWorker::HandleOKCallback() {
   NanScope();
   v8::Local<v8::Object> ticket = NanNew<v8::Object>();
   ticket->Set(NanNew("ticket"), NanNew(ticket_));
+  ticket->Set(NanNew("handle"), NanNew(handle_));
   v8::Local<v8::Value> argv[] = { ticket };
   callback->Call(1, argv);
 }

@@ -602,6 +602,17 @@ NAN_METHOD(GetAuthSessionTicket) {
   NanReturnUndefined();
 }
 
+NAN_METHOD(CancelAuthTicket) {
+    NanScope();
+    if (args.Length() < 1 || !args[0]->IsNumber()) {
+        THROW_BAD_ARGS("Bad arguments");
+    }
+    HAuthTicket h = args[1].As<v8::Number>()->Int32Value();
+    SteamUser()->CancelAuthTicket(h);
+    NanReturnUndefined();
+}
+
+
 NAN_METHOD(ActivateGameOverlayToWebPage) {
   NanScope();
   if (args.Length() < 1 || !args[0]->IsString()) {
@@ -703,6 +714,8 @@ void init(v8::Handle<v8::Object> exports) {
   // Auth/Purchase related APIs
   exports->Set(NanNew("getAuthSessionTicket"),
                NanNew<v8::FunctionTemplate>(GetAuthSessionTicket)->GetFunction());
+  exports->Set(NanNew("cancelAuthTicket"),
+      NanNew<v8::FunctionTemplate>(CancelAuthTicket)->GetFunction());
   exports->Set(NanNew("activateGameOverlayToWebPage"),
                NanNew<v8::FunctionTemplate>(ActivateGameOverlayToWebPage)->GetFunction());
                
