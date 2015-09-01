@@ -4,6 +4,7 @@
 
 #include "greenworks_async_workers.h"
 
+#include <sstream>
 #include "nan.h"
 #include "steam/steam_api.h"
 #include "v8.h"
@@ -11,8 +12,6 @@
 #include "greenworks_unzip.h"
 #include "greenworks_zip.h"
 
-#include <sstream>
-#include <iomanip>
 
 namespace {
 

@@ -20,12 +20,12 @@ namespace {
     do {                       \
        NanThrowTypeError(msg); \
        NanReturnUndefined();   \
-    } while(0);
+    } while (0);
 
 v8::Local<v8::Object> GetSteamUserCountType(int type_id) {
   v8::Local<v8::Object> account_type = NanNew<v8::Object>();
   std::string name;
-  switch (type_id){
+  switch (type_id) {
     case k_EAccountTypeAnonGameServer:
       name = "k_EAccountTypeAnonGameServer";
       break;
@@ -611,18 +611,19 @@ NAN_METHOD(CancelAuthTicket) {
   NanReturnUndefined();
 }
 
-
 NAN_METHOD(GetEncryptedAppTicket) {
   NanScope();
-  if (args.Length() < 2 || !args[1]->IsFunction()) {
+  if (args.Length() < 2 || !args[0]->IsString() || !args[1]->IsFunction()) {
     THROW_BAD_ARGS("Bad arguments");
   }
-  v8::String::Utf8Value _user_data(args[0]->ToString());
-  std::string user_data = *_user_data;
+  char* user_data = *(static_cast<v8::String::Utf8Value>(args[0]->ToString()));
+  if (!user_data) {
+    THROW_BAD_ARGS("Bad arguments");
+  }
   NanCallback* success_callback = new NanCallback(args[1].As<v8::Function>());
   NanCallback* error_callback = NULL;
-  if (args.Length() > 1 && args[1]->IsFunction())
-    error_callback = new NanCallback(args[1].As<v8::Function>());
+  if (args.Length() > 2 && args[2]->IsFunction())
+    error_callback = new NanCallback(args[2].As<v8::Function>());
   NanAsyncQueueWorker(new greenworks::RequestEncryptedAppTicketWorker(
     user_data, success_callback, error_callback));
   NanReturnUndefined();
@@ -682,7 +683,8 @@ void init(v8::Handle<v8::Object> exports) {
   exports->Set(NanNew("clearAchievement"),
                NanNew<v8::FunctionTemplate>(ClearAchievement)->GetFunction());
   exports->Set(NanNew("getAchievementNames"),
-               NanNew<v8::FunctionTemplate>(GetAchievementNames)->GetFunction());
+               NanNew<v8::FunctionTemplate>(
+                   GetAchievementNames)->GetFunction());
   exports->Set(NanNew("getNumberOfAchievements"),
                NanNew<v8::FunctionTemplate>(
                    GetNumberOfAchievements)->GetFunction());
@@ -704,11 +706,15 @@ void init(v8::Handle<v8::Object> exports) {
   exports->Set(NanNew("activateGameOverlay"),
                NanNew<v8::FunctionTemplate>(
                    ActivateGameOverlay)->GetFunction());
+  exports->Set(NanNew("activateGameOverlayToWebPage"),
+               NanNew<v8::FunctionTemplate>(
+                   ActivateGameOverlayToWebPage)->GetFunction());
   // WorkShop related APIs
   exports->Set(NanNew("fileShare"),
                NanNew<v8::FunctionTemplate>(FileShare)->GetFunction());
   exports->Set(NanNew("publishWorkshopFile"),
-               NanNew<v8::FunctionTemplate>(PublishWorkshopFile)->GetFunction());
+               NanNew<v8::FunctionTemplate>(
+                   PublishWorkshopFile)->GetFunction());
   exports->Set(NanNew("updatePublishedWorkshopFile"),
                NanNew<v8::FunctionTemplate>(
                    UpdatePublishedWorkshopFile)->GetFunction());
@@ -719,22 +725,21 @@ void init(v8::Handle<v8::Object> exports) {
   exports->Set(NanNew("ugcDownloadItem"),
                NanNew<v8::FunctionTemplate>(UGCDownloadItem)->GetFunction());
   exports->Set(NanNew("ugcSynchronizeItems"),
-               NanNew<v8::FunctionTemplate>(UGCSynchronizeItems)->GetFunction());
+               NanNew<v8::FunctionTemplate>(
+                   UGCSynchronizeItems)->GetFunction());
   exports->Set(NanNew("ugcShowOverlay"),
                NanNew<v8::FunctionTemplate>(UGCShowOverlay)->GetFunction());
   exports->Set(NanNew("ugcUnsubscribe"),
                NanNew<v8::FunctionTemplate>(UGCUnsubscribe)->GetFunction());
-
-               
-  // Auth/Purchase related APIs
+  // Authentication related APIs
   exports->Set(NanNew("getAuthSessionTicket"),
-               NanNew<v8::FunctionTemplate>(GetAuthSessionTicket)->GetFunction());
+               NanNew<v8::FunctionTemplate>(
+                   GetAuthSessionTicket)->GetFunction());
   exports->Set(NanNew("getEncryptedAppTicket"),
-               NanNew<v8::FunctionTemplate>(GetEncryptedAppTicket)->GetFunction());
+               NanNew<v8::FunctionTemplate>(
+                   GetEncryptedAppTicket)->GetFunction());
   exports->Set(NanNew("cancelAuthTicket"),
                NanNew<v8::FunctionTemplate>(CancelAuthTicket)->GetFunction());
-  exports->Set(NanNew("activateGameOverlayToWebPage"),
-               NanNew<v8::FunctionTemplate>(ActivateGameOverlayToWebPage)->GetFunction());
 
   utils::InitUgcMatchingTypes(exports);
   utils::InitUgcQueryTypes(exports);

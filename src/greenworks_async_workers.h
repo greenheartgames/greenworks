@@ -114,8 +114,8 @@ class ClearAchievementWorker : public SteamAsyncWorker {
 class GetNumberOfPlayersWorker : public SteamCallbackAsyncWorker {
  public:
   GetNumberOfPlayersWorker(NanCallback* success_callback,
-                          NanCallback* error_callback);
-	void OnGetNumberOfPlayersCompleted(NumberOfCurrentPlayers_t* result,
+                           NanCallback* error_callback);
+  void OnGetNumberOfPlayersCompleted(NumberOfCurrentPlayers_t* result,
                                      bool io_failure);
   // Override NanAsyncWorker methods.
   virtual void Execute();
@@ -179,13 +179,13 @@ class GetAuthSessionTicketWorker : public SteamCallbackAsyncWorker {
   unsigned char ticket_buf_[2048];
 };
 
-
 class RequestEncryptedAppTicketWorker : public SteamCallbackAsyncWorker {
  public:
-  RequestEncryptedAppTicketWorker(std::string user_data, 
-                                  NanCallback* success_callback, 
+  RequestEncryptedAppTicketWorker(std::string user_data,
+                                  NanCallback* success_callback,
                                   NanCallback* error_callback);
-  void OnRequestEncryptedAppTicketCompleted(EncryptedAppTicketResponse_t*, bool);
+  void OnRequestEncryptedAppTicketCompleted(
+      EncryptedAppTicketResponse_t*, bool);
   virtual void Execute();
   virtual void HandleOKCallback();
  private:
@@ -193,10 +193,10 @@ class RequestEncryptedAppTicketWorker : public SteamCallbackAsyncWorker {
   std::string ticket_;
   unsigned int ticket_buf_size_;
   unsigned char ticket_buf_[4096];
-  CCallResult< RequestEncryptedAppTicketWorker, EncryptedAppTicketResponse_t > call_result_;
+  CCallResult< RequestEncryptedAppTicketWorker, EncryptedAppTicketResponse_t >
+      call_result_;
 };
-    
-    
+
 }  // namespace greenworks
 
-#endif  // SRC_GREENWORK_ASYNC_WORKERS_H_
+#endif  // SRC_GREENWORKS_ASYNC_WORKERS_H_
