@@ -5,6 +5,7 @@
 #include "greenworks_async_workers.h"
 
 #include <sstream>
+#include <iomanip>
 #include "nan.h"
 #include "steam/steam_api.h"
 #include "v8.h"
@@ -318,7 +319,8 @@ RequestEncryptedAppTicketWorker::RequestEncryptedAppTicketWorker(
 
 void RequestEncryptedAppTicketWorker::Execute() {
   SteamAPICall_t steam_api_call = SteamUser()->RequestEncryptedAppTicket(
-      static_cast<void*>(user_data_.c_str()), user_data_.length());
+      static_cast<void*>(const_cast<char*>(user_data_.c_str())),
+      user_data_.length());
   call_result_.Set(steam_api_call, this,
       &RequestEncryptedAppTicketWorker::OnRequestEncryptedAppTicketCompleted);
   WaitForCompleted();

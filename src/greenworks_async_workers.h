@@ -172,6 +172,7 @@ class GetAuthSessionTicketWorker : public SteamCallbackAsyncWorker {
                  result);
   virtual void Execute();
   virtual void HandleOKCallback();
+
  private:
   std::string ticket_;
   HAuthTicket handle_;
@@ -188,6 +189,7 @@ class RequestEncryptedAppTicketWorker : public SteamCallbackAsyncWorker {
       EncryptedAppTicketResponse_t*, bool);
   virtual void Execute();
   virtual void HandleOKCallback();
+
  private:
   std::string user_data_;
   std::string ticket_;
