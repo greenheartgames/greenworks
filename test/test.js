@@ -64,4 +64,26 @@ describe('greenworks API', function() {
     });
   });
 
+  describe('getAuthSessionTicket', function() {
+    it('Should get successfully', function(done) {
+      greenworks.getAuthSessionTicket(function(ticket) {
+        console.log(ticket); 
+        assert(ticket.ticket); 
+        assert(ticket.handle); 
+        greenworks.cancelAuthTicket(ticket.handle);
+        done(); 
+      }, function(err) { throw err; done(); });
+    });
+  });
+
+  describe('getEncryptedAppTicket', function() {
+    it('Should get successfully', function(done) {
+      greenworks.getEncryptedAppTicket('test_content', function(ticket) {
+        console.log('Encrypted app ticket:', ticket); 
+        assert(ticket);
+        done(); 
+      }, function(err) { throw err; done(); });
+    });
+  });
+
 });
