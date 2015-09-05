@@ -4,12 +4,15 @@
 
 #include "greenworks_async_workers.h"
 
+#include <sstream>
+#include <iomanip>
 #include "nan.h"
 #include "steam/steam_api.h"
 #include "v8.h"
 
 #include "greenworks_unzip.h"
 #include "greenworks_zip.h"
+
 
 namespace {
 
@@ -22,7 +25,18 @@ struct FilesContentContainer {
   }
 };
 
-};
+std::string bytesToHexString(const unsigned char* bytes, size_t length) {
+  /* encode bytes to a string where each byte is '0' padded hex digits pairs
+     of all upper-case letters */
+  std::ostringstream hex_str;
+  for (unsigned int i = 0; i < length; ++i) {
+    hex_str << std::setfill('0') << std::setw(2) << std::uppercase << std::hex
+        << int(bytes[i]);
+  }
+  return hex_str.str();
+}
+
+};  // namespace
 
 namespace greenworks {
 
@@ -259,6 +273,75 @@ void ExtractArchiveWorker::Execute() {
       password_.empty()?NULL:password_.c_str());
   if (result)
     SetErrorMessage("Error on extracting zip file.");
+}
+
+GetAuthSessionTicketWorker::GetAuthSessionTicketWorker(
+  NanCallback* success_callback,
+  NanCallback* error_callback )
+    : SteamCallbackAsyncWorker(success_callback, error_callback),
+      result(this, &GetAuthSessionTicketWorker::OnGetAuthSessionCompleted),
+      handle_(0), ticket_buf_size_(0) {
+}
+
+void GetAuthSessionTicketWorker::Execute() {
+  handle_ = SteamUser()->GetAuthSessionTicket(ticket_buf_,
+                                              sizeof(ticket_buf_),
+                                              &ticket_buf_size_);
+  WaitForCompleted();
+}
+
+void GetAuthSessionTicketWorker::OnGetAuthSessionCompleted(
+    GetAuthSessionTicketResponse_t *inCallback) {
+  if (inCallback->m_eResult == k_EResultOK) {
+    ticket_ = bytesToHexString(ticket_buf_, ticket_buf_size_);
+  } else {
+    SetErrorMessage("Error on getting auth session ticket.");
+  }
+  is_completed_ = true;
+}
+
+void GetAuthSessionTicketWorker::HandleOKCallback() {
+  NanScope();
+  v8::Local<v8::Object> ticket = NanNew<v8::Object>();
+  ticket->Set(NanNew("ticket"), NanNew(ticket_));
+  ticket->Set(NanNew("handle"), NanNew(handle_));
+  v8::Local<v8::Value> argv[] = { ticket };
+  callback->Call(1, argv);
+}
+
+RequestEncryptedAppTicketWorker::RequestEncryptedAppTicketWorker(
+  std::string user_data,
+  NanCallback* success_callback,
+  NanCallback* error_callback)
+    : SteamCallbackAsyncWorker(success_callback, error_callback),
+      user_data_(user_data), ticket_buf_size_(0) {
+}
+
+void RequestEncryptedAppTicketWorker::Execute() {
+  SteamAPICall_t steam_api_call = SteamUser()->RequestEncryptedAppTicket(
+      static_cast<void*>(const_cast<char*>(user_data_.c_str())),
+      user_data_.length());
+  call_result_.Set(steam_api_call, this,
+      &RequestEncryptedAppTicketWorker::OnRequestEncryptedAppTicketCompleted);
+  WaitForCompleted();
+}
+
+void RequestEncryptedAppTicketWorker::OnRequestEncryptedAppTicketCompleted(
+    EncryptedAppTicketResponse_t *inCallback, bool io_failure) {
+  if (!io_failure && inCallback->m_eResult == k_EResultOK) {
+    SteamUser()->GetEncryptedAppTicket(ticket_buf_, sizeof(ticket_buf_),
+        &ticket_buf_size_);
+    ticket_ = bytesToHexString(ticket_buf_, ticket_buf_size_);
+  } else {
+    SetErrorMessage("Error on getting encrypted app ticket.");
+  }
+  is_completed_ = true;
+}
+
+void RequestEncryptedAppTicketWorker::HandleOKCallback() {
+  NanScope();
+  v8::Local<v8::Value> argv[] = { NanNew(ticket_) };
+  callback->Call(1, argv);
 }
 
 }  // namespace greenworks

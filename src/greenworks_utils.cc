@@ -101,7 +101,7 @@ void InitUserUgcList(v8::Handle<v8::Object> exports) {
 void InitUserUgcListSortOrder(v8::Handle<v8::Object> exports) {
   v8::Local<v8::Object> ugc_list_sort_order = NanNew<v8::Object>();
   ugc_list_sort_order->Set(NanNew("CreationOrderDesc"),
-      NanNew((int)k_EUserUGCListSortOrder_CreationOrderDesc));
+      NanNew(static_cast<int>(k_EUserUGCListSortOrder_CreationOrderDesc)));
   ugc_list_sort_order->Set(NanNew("CreationOrderAsc"),
       NanNew(k_EUserUGCListSortOrder_CreationOrderDesc));
   ugc_list_sort_order->Set(NanNew("TitleAsc"),
@@ -160,7 +160,7 @@ bool UpdateFileLastUpdatedTime(const char* file_path, time_t time) {
 }
 
 int64 GetFileLastUpdatedTime(const char* file_path) {
-	struct stat st;
+    struct stat st;
   if (stat(file_path, &st))
     return -1;
   return st.st_mtime;
