@@ -19,12 +19,12 @@ namespace {
 
 #define THROW_BAD_ARGS(msg)    \
     do {                       \
-       NanThrowTypeError(msg); \
-       NanReturnUndefined();   \
+       Nan::ThrowTypeError(msg); \
+       return;                   \
     } while (0);
 
 
-v8::Persistent<v8::Object> g_persistent_steam_events;
+Nan::Persistent<v8::Object> g_persistent_steam_events;
 
 class SteamEvent : public greenworks::SteamClient::Observer {
  public:
@@ -37,34 +37,43 @@ class SteamEvent : public greenworks::SteamClient::Observer {
 };
 
 void SteamEvent::OnGameOverlayActivated(bool is_active) {
-  v8::Local<v8::Value> argv[] = { NanNew("game-overlay-activated"),
-                                  NanNew(is_active) };
-  NanMakeCallback(NanNew(g_persistent_steam_events), "on", 2, argv);
+  v8::Local<v8::Value> argv[] = {
+      Nan::New("game-overlay-activated").ToLocalChecked(),
+      Nan::New(is_active) };
+  Nan::MakeCallback(
+      Nan::New(g_persistent_steam_events), "on", 2, argv);
 }
 
 void SteamEvent::OnSteamServersConnected() {
-  v8::Local<v8::Value> argv[] = { NanNew("steam-servers-connected") };
-  NanMakeCallback(NanNew(g_persistent_steam_events), "on", 1, argv);
+  v8::Local<v8::Value> argv[] = {
+      Nan::New("steam-servers-connected").ToLocalChecked() };
+  Nan::MakeCallback(
+      Nan::New(g_persistent_steam_events),"on", 1, argv);
 }
 
 void SteamEvent::OnSteamServersDisconnected() {
-  v8::Local<v8::Value> argv[] = { NanNew("steam-servers-disconnected") };
-  NanMakeCallback(NanNew(g_persistent_steam_events), "on", 1, argv);
+  v8::Local<v8::Value> argv[] = {
+      Nan::New("steam-servers-disconnected").ToLocalChecked() };
+  Nan::MakeCallback(
+      Nan::New(g_persistent_steam_events), "on", 1, argv);
 }
 
 void SteamEvent::OnSteamServerConnectFailure(int status_code) {
-  v8::Local<v8::Value> argv[] = { NanNew("steam-server-connect-failure"),
-                                  NanNew(status_code) };
-  NanMakeCallback(NanNew(g_persistent_steam_events), "on", 2, argv);
+  v8::Local<v8::Value> argv[] = {
+      Nan::New("steam-server-connect-failure").ToLocalChecked(),
+      Nan::New(status_code) };
+  Nan::MakeCallback(
+      Nan::New(g_persistent_steam_events), "on", 2, argv);
 }
 
 void SteamEvent::OnSteamShutdown() {
-  v8::Local<v8::Value> argv[] = { NanNew("steam-shutdown") };
-  NanMakeCallback(NanNew(g_persistent_steam_events), "on", 1, argv);
+  v8::Local<v8::Value> argv[] = { Nan::New("steam-shutdown").ToLocalChecked() };
+  Nan::MakeCallback(
+      Nan::New(g_persistent_steam_events), "on", 1, argv);
 }
 
 v8::Local<v8::Object> GetSteamUserCountType(int type_id) {
-  v8::Local<v8::Object> account_type = NanNew<v8::Object>();
+  v8::Local<v8::Object> account_type = Nan::New<v8::Object>();
   std::string name;
   switch (type_id) {
     case k_EAccountTypeAnonGameServer:
@@ -104,13 +113,14 @@ v8::Local<v8::Object> GetSteamUserCountType(int type_id) {
       name = "k_EAccountTypePending";
       break;
   }
-  account_type->Set(NanNew("name"), NanNew(name));
-  account_type->Set(NanNew("value"), NanNew(type_id));
+  account_type->Set(Nan::New("name").ToLocalChecked(),
+                    Nan::New(name).ToLocalChecked());
+  account_type->Set(Nan::New("value").ToLocalChecked(), Nan::New(type_id));
   return account_type;
 }
 
 NAN_METHOD(InitAPI) {
-  NanScope();
+  Nan::HandleScope scope;
 
   bool success = SteamAPI_Init();
 
@@ -121,79 +131,91 @@ NAN_METHOD(InitAPI) {
 
   greenworks::SteamClient::GetInstance()->AddObserver(new SteamEvent());
   greenworks::SteamClient::StartSteamLoop();
-  NanReturnValue(NanNew(success));
+  info.GetReturnValue().Set(Nan::New(success));
 }
 
 NAN_METHOD(GetSteamId) {
-  NanScope();
+  Nan::HandleScope scope;
   CSteamID user_id = SteamUser()->GetSteamID();
-  v8::Local<v8::Object> flags = NanNew<v8::Object>();
-  flags->Set(NanNew("anonymous"), NanNew(user_id.BAnonAccount()));
-  flags->Set(NanNew("anonymousGameServer"),
-      NanNew(user_id.BAnonGameServerAccount()));
-  flags->Set(NanNew("anonymousGameServerLogin"),
-      NanNew(user_id.BBlankAnonAccount()));
-  flags->Set(NanNew("anonymousUser"), NanNew(user_id.BAnonUserAccount()));
-  flags->Set(NanNew("chat"), NanNew(user_id.BChatAccount()));
-  flags->Set(NanNew("clan"), NanNew(user_id.BClanAccount()));
-  flags->Set(NanNew("consoleUser"), NanNew(user_id.BConsoleUserAccount()));
-  flags->Set(NanNew("contentServer"), NanNew(user_id.BContentServerAccount()));
-  flags->Set(NanNew("gameServer"), NanNew(user_id.BGameServerAccount()));
-  flags->Set(NanNew("individual"), NanNew(user_id.BIndividualAccount()));
-  flags->Set(NanNew("gameServerPersistent"),
-      NanNew(user_id.BPersistentGameServerAccount()));
-  flags->Set(NanNew("lobby"), NanNew(user_id.IsLobby()));
+  v8::Local<v8::Object> flags = Nan::New<v8::Object>();
+  flags->Set(Nan::New("anonymous").ToLocalChecked(), Nan::New(user_id.BAnonAccount()));
+  flags->Set(Nan::New("anonymousGameServer").ToLocalChecked(),
+      Nan::New(user_id.BAnonGameServerAccount()));
+  flags->Set(Nan::New("anonymousGameServerLogin").ToLocalChecked(),
+      Nan::New(user_id.BBlankAnonAccount()));
+  flags->Set(Nan::New("anonymousUser").ToLocalChecked(),
+             Nan::New(user_id.BAnonUserAccount()));
+  flags->Set(Nan::New("chat").ToLocalChecked(),
+             Nan::New(user_id.BChatAccount()));
+  flags->Set(Nan::New("clan").ToLocalChecked(),
+             Nan::New(user_id.BClanAccount()));
+  flags->Set(Nan::New("consoleUser").ToLocalChecked(),
+             Nan::New(user_id.BConsoleUserAccount()));
+  flags->Set(Nan::New("contentServer").ToLocalChecked(),
+             Nan::New(user_id.BContentServerAccount()));
+  flags->Set(Nan::New("gameServer").ToLocalChecked(),
+             Nan::New(user_id.BGameServerAccount()));
+  flags->Set(Nan::New("individual").ToLocalChecked(),
+             Nan::New(user_id.BIndividualAccount()));
+  flags->Set(Nan::New("gameServerPersistent").ToLocalChecked(),
+             Nan::New(user_id.BPersistentGameServerAccount()));
+  flags->Set(Nan::New("lobby").ToLocalChecked(), Nan::New(user_id.IsLobby()));
 
-  v8::Local<v8::Object> result = NanNew<v8::Object>();
-  result->Set(NanNew("flags"), flags);
-  result->Set(NanNew("type"), GetSteamUserCountType(user_id.GetEAccountType()));
-  result->Set(NanNew("accountId"), NanNew<v8::Integer>(user_id.GetAccountID()));
-  result->Set(NanNew("staticAccountId"), NanNew<v8::String>(
-      utils::uint64ToString(user_id.GetStaticAccountKey())));
-  result->Set(NanNew("isValid"), NanNew<v8::Integer>(user_id.IsValid()));
-  result->Set(NanNew("level"), NanNew<v8::Integer>(
-        SteamUser()->GetPlayerSteamLevel()));
+  v8::Local<v8::Object> result = Nan::New<v8::Object>();
+  result->Set(Nan::New("flags").ToLocalChecked(), flags);
+  result->Set(Nan::New("type").ToLocalChecked(),
+              GetSteamUserCountType(user_id.GetEAccountType()));
+  result->Set(Nan::New("accountId").ToLocalChecked(),
+              Nan::New<v8::Integer>(user_id.GetAccountID()));
+  result->Set(Nan::New("staticAccountId").ToLocalChecked(),
+      Nan::New(utils::uint64ToString(
+          user_id.GetStaticAccountKey())).ToLocalChecked());
+  result->Set(Nan::New("isValid").ToLocalChecked(),
+              Nan::New<v8::Integer>(user_id.IsValid()));
+  result->Set(Nan::New("level").ToLocalChecked(),
+              Nan::New<v8::Integer>(SteamUser()->GetPlayerSteamLevel()));
 
   if (!SteamFriends()->RequestUserInformation(user_id, true)) {
-    result->Set(NanNew("screenName"),
-                NanNew(SteamFriends()->GetFriendPersonaName(user_id)));
+    result->Set(Nan::New("screenName").ToLocalChecked(),
+                Nan::New(SteamFriends()->GetFriendPersonaName(user_id)).ToLocalChecked());
   } else {
     std::ostringstream sout;
     sout << user_id.GetAccountID();
-    result->Set(NanNew("screenName"), NanNew<v8::String>(sout.str()));
+    result->Set(Nan::New("screenName").ToLocalChecked(),
+                Nan::New(sout.str()).ToLocalChecked());
   }
-  NanReturnValue(result);
+  info.GetReturnValue().Set(result);
 }
 
 NAN_METHOD(SaveTextToFile) {
-  NanScope();
+  Nan::HandleScope scope;
 
-  if (args.Length() < 3 || !args[0]->IsString() || !args[1]->IsString() ||
-      !args[2]->IsFunction()) {
+  if (info.Length() < 3 || !info[0]->IsString() || !info[1]->IsString() ||
+      !info[2]->IsFunction()) {
     THROW_BAD_ARGS("Bad arguments");
   }
 
-  std::string file_name(*(v8::String::Utf8Value(args[0])));
-  std::string content(*(v8::String::Utf8Value(args[1])));
-  NanCallback* success_callback = new NanCallback(args[2].As<v8::Function>());
-  NanCallback* error_callback = NULL;
+  std::string file_name(*(v8::String::Utf8Value(info[0])));
+  std::string content(*(v8::String::Utf8Value(info[1])));
+  Nan::Callback* success_callback = new Nan::Callback(info[2].As<v8::Function>());
+  Nan::Callback* error_callback = NULL;
 
-  if (args.Length() > 3 && args[3]->IsFunction())
-    error_callback = new NanCallback(args[3].As<v8::Function>());
+  if (info.Length() > 3 && info[3]->IsFunction())
+    error_callback = new Nan::Callback(info[3].As<v8::Function>());
 
-  NanAsyncQueueWorker(new greenworks::FileContentSaveWorker(success_callback,
+  Nan::AsyncQueueWorker(new greenworks::FileContentSaveWorker(success_callback,
                                                             error_callback,
                                                             file_name,
                                                             content));
-  NanReturnUndefined();
+  info.GetReturnValue().Set(Nan::Undefined());
 }
 
 NAN_METHOD(SaveFilesToCloud) {
-  NanScope();
-  if (args.Length() < 2 || !args[0]->IsArray() || !args[1]->IsFunction()) {
+  Nan::HandleScope scope;
+  if (info.Length() < 2 || !info[0]->IsArray() || !info[1]->IsFunction()) {
     THROW_BAD_ARGS("Bad arguments");
   }
-  v8::Local<v8::Array> files = args[0].As<v8::Array>();
+  v8::Local<v8::Array> files = info[0].As<v8::Array>();
   std::vector<std::string> files_path;
   for (uint32_t i = 0; i < files->Length(); ++i) {
     if (!files->Get(i)->IsString())
@@ -204,598 +226,626 @@ NAN_METHOD(SaveFilesToCloud) {
       files_path.push_back(*string_array);
   }
 
-  NanCallback* success_callback = new NanCallback(args[1].As<v8::Function>());
-  NanCallback* error_callback = NULL;
+  Nan::Callback* success_callback = new Nan::Callback(info[1].As<v8::Function>());
+  Nan::Callback* error_callback = NULL;
 
-  if (args.Length() > 2 && args[2]->IsFunction())
-    error_callback = new NanCallback(args[2].As<v8::Function>());
-  NanAsyncQueueWorker(new greenworks::FilesSaveWorker(success_callback,
+  if (info.Length() > 2 && info[2]->IsFunction())
+    error_callback = new Nan::Callback(info[2].As<v8::Function>());
+  Nan::AsyncQueueWorker(new greenworks::FilesSaveWorker(success_callback,
                                                       error_callback,
                                                       files_path));
-  NanReturnUndefined();
+  info.GetReturnValue().Set(Nan::Undefined());
 }
 
 NAN_METHOD(ReadTextFromFile) {
-  NanScope();
+  Nan::HandleScope scope;
 
-  if (args.Length() < 2 || !args[0]->IsString() || !args[1]->IsFunction()) {
+  if (info.Length() < 2 || !info[0]->IsString() || !info[1]->IsFunction()) {
     THROW_BAD_ARGS("Bad arguments");
   }
 
-  std::string file_name(*(v8::String::Utf8Value(args[0])));
-  NanCallback* success_callback = new NanCallback(args[1].As<v8::Function>());
-  NanCallback* error_callback = NULL;
+  std::string file_name(*(v8::String::Utf8Value(info[0])));
+  Nan::Callback* success_callback = new Nan::Callback(info[1].As<v8::Function>());
+  Nan::Callback* error_callback = NULL;
 
-  if (args.Length() > 2 && args[2]->IsFunction())
-    error_callback = new NanCallback(args[2].As<v8::Function>());
+  if (info.Length() > 2 && info[2]->IsFunction())
+    error_callback = new Nan::Callback(info[2].As<v8::Function>());
 
-  NanAsyncQueueWorker(new greenworks::FileReadWorker(success_callback,
+  Nan::AsyncQueueWorker(new greenworks::FileReadWorker(success_callback,
                                                      error_callback,
                                                      file_name));
-  NanReturnUndefined();
+  info.GetReturnValue().Set(Nan::Undefined());
 }
 
 NAN_METHOD(IsCloudEnabled) {
-  NanScope();
+  Nan::HandleScope scope;
   ISteamRemoteStorage* steam_remote_storage = SteamRemoteStorage();
-  NanReturnValue(NanNew<v8::Boolean>(
+  info.GetReturnValue().Set(Nan::New<v8::Boolean>(
       steam_remote_storage->IsCloudEnabledForApp()));
 }
 
 NAN_METHOD(IsCloudEnabledForUser) {
-  NanScope();
+  Nan::HandleScope scope;
   ISteamRemoteStorage* steam_remote_storage = SteamRemoteStorage();
-  NanReturnValue(NanNew<v8::Boolean>(
+  info.GetReturnValue().Set(Nan::New<v8::Boolean>(
       steam_remote_storage->IsCloudEnabledForAccount()));
 }
 
 NAN_METHOD(EnableCloud) {
-  NanScope();
+  Nan::HandleScope scope;
 
-  if (args.Length() < 1) {
+  if (info.Length() < 1) {
     THROW_BAD_ARGS("Bad arguments");
   }
-  bool enable_flag = args[0]->BooleanValue();
+  bool enable_flag = info[0]->BooleanValue();
   SteamRemoteStorage()->SetCloudEnabledForApp(enable_flag);
-  NanReturnUndefined();
+  info.GetReturnValue().Set(Nan::Undefined());
 }
 
 NAN_METHOD(GetCloudQuota) {
-  NanScope();
+  Nan::HandleScope scope;
 
-  if (args.Length() < 1 || !args[0]->IsFunction()) {
+  if (info.Length() < 1 || !info[0]->IsFunction()) {
     THROW_BAD_ARGS("Bad arguments");
   }
-  NanCallback* success_callback = new NanCallback(args[0].As<v8::Function>());
-  NanCallback* error_callback = NULL;
+  Nan::Callback* success_callback = new Nan::Callback(info[0].As<v8::Function>());
+  Nan::Callback* error_callback = NULL;
 
-  if (args.Length() > 2 && args[1]->IsFunction())
-    error_callback = new NanCallback(args[1].As<v8::Function>());
+  if (info.Length() > 2 && info[1]->IsFunction())
+    error_callback = new Nan::Callback(info[1].As<v8::Function>());
 
-  NanAsyncQueueWorker(new greenworks::CloudQuotaGetWorker(success_callback,
+  Nan::AsyncQueueWorker(new greenworks::CloudQuotaGetWorker(success_callback,
                                                           error_callback));
-  NanReturnUndefined();
+  info.GetReturnValue().Set(Nan::Undefined());
 }
 
 NAN_METHOD(ActivateAchievement) {
-  NanScope();
+  Nan::HandleScope scope;
 
-  if (args.Length() < 2 || !args[0]->IsString() || !args[1]->IsFunction()) {
+  if (info.Length() < 2 || !info[0]->IsString() || !info[1]->IsFunction()) {
     THROW_BAD_ARGS("Bad arguments");
   }
-  std::string achievement = (*(v8::String::Utf8Value(args[0])));
-  NanCallback* success_callback = new NanCallback(args[1].As<v8::Function>());
-  NanCallback* error_callback = NULL;
+  std::string achievement = (*(v8::String::Utf8Value(info[0])));
+  Nan::Callback* success_callback = new Nan::Callback(info[1].As<v8::Function>());
+  Nan::Callback* error_callback = NULL;
 
-  if (args.Length() > 2 && args[2]->IsFunction())
-    error_callback = new NanCallback(args[2].As<v8::Function>());
+  if (info.Length() > 2 && info[2]->IsFunction())
+    error_callback = new Nan::Callback(info[2].As<v8::Function>());
 
-  NanAsyncQueueWorker(new greenworks::ActivateAchievementWorker(
+  Nan::AsyncQueueWorker(new greenworks::ActivateAchievementWorker(
       success_callback, error_callback, achievement));
-  NanReturnUndefined();
+  info.GetReturnValue().Set(Nan::Undefined());
 }
 
 NAN_METHOD(GetAchievement) {
-  NanScope();
-  if (args.Length() < 2 || !args[0]->IsString() || !args[1]->IsFunction()) {
+  Nan::HandleScope scope;
+  if (info.Length() < 2 || !info[0]->IsString() || !info[1]->IsFunction()) {
     THROW_BAD_ARGS("Bad arguments");
   }
 
-  std::string achievement = (*(v8::String::Utf8Value(args[0])));
-  NanCallback* success_callback = new NanCallback(args[1].As<v8::Function>());
-  NanCallback* error_callback = NULL;
+  std::string achievement = (*(v8::String::Utf8Value(info[0])));
+  Nan::Callback* success_callback = new Nan::Callback(info[1].As<v8::Function>());
+  Nan::Callback* error_callback = NULL;
 
-  if (args.Length() > 2 && args[2]->IsFunction())
-    error_callback = new NanCallback(args[2].As<v8::Function>());
-  NanAsyncQueueWorker(new greenworks::GetAchievementWorker(
+  if (info.Length() > 2 && info[2]->IsFunction())
+    error_callback = new Nan::Callback(info[2].As<v8::Function>());
+  Nan::AsyncQueueWorker(new greenworks::GetAchievementWorker(
       success_callback, error_callback, achievement));
-  NanReturnUndefined();
+  info.GetReturnValue().Set(Nan::Undefined());
 }
 
 NAN_METHOD(ClearAchievement) {
-  NanScope();
-  if (args.Length() < 2 || !args[0]->IsString() || !args[1]->IsFunction()) {
+  Nan::HandleScope scope;
+  if (info.Length() < 2 || !info[0]->IsString() || !info[1]->IsFunction()) {
     THROW_BAD_ARGS("Bad arguments");
   }
-  std::string achievement = (*(v8::String::Utf8Value(args[0])));
-  NanCallback* success_callback = new NanCallback(args[1].As<v8::Function>());
-  NanCallback* error_callback = NULL;
+  std::string achievement = (*(v8::String::Utf8Value(info[0])));
+  Nan::Callback* success_callback = new Nan::Callback(info[1].As<v8::Function>());
+  Nan::Callback* error_callback = NULL;
 
-  if (args.Length() > 2 && args[2]->IsFunction())
-    error_callback = new NanCallback(args[2].As<v8::Function>());
+  if (info.Length() > 2 && info[2]->IsFunction())
+    error_callback = new Nan::Callback(info[2].As<v8::Function>());
 
-  NanAsyncQueueWorker(new greenworks::ClearAchievementWorker(
+  Nan::AsyncQueueWorker(new greenworks::ClearAchievementWorker(
       success_callback, error_callback, achievement));
-  NanReturnUndefined();
+  info.GetReturnValue().Set(Nan::Undefined());
 }
 
 NAN_METHOD(GetAchievementNames) {
-  NanScope();
+  Nan::HandleScope scope;
   int count = static_cast<int>(SteamUserStats()->GetNumAchievements());
-  v8::Local<v8::Array> names = NanNew<v8::Array>(count);
+  v8::Local<v8::Array> names = Nan::New<v8::Array>(count);
   for (int i = 0; i < count; ++i) {
-    names->Set(i, NanNew(SteamUserStats()->GetAchievementName(i)));
+    names->Set(i,
+       Nan::New(SteamUserStats()->GetAchievementName(i)).ToLocalChecked());
   }
-  NanReturnValue(names);
+  info.GetReturnValue().Set(names);
 }
 
 NAN_METHOD(GetNumberOfAchievements) {
-  NanScope();
+  Nan::HandleScope scope;
   ISteamUserStats* steam_user_stats = SteamUserStats();
-  NanReturnValue(steam_user_stats->GetNumAchievements());
+  info.GetReturnValue().Set(steam_user_stats->GetNumAchievements());
 }
 
 NAN_METHOD(GetCurrentGameLanguage) {
-  NanScope();
-  NanReturnValue(NanNew(SteamApps()->GetCurrentGameLanguage()));
+  Nan::HandleScope scope;
+  info.GetReturnValue().Set(
+      Nan::New(SteamApps()->GetCurrentGameLanguage()).ToLocalChecked());
 }
 
 NAN_METHOD(GetCurrentUILanguage) {
-  NanScope();
-  NanReturnValue(NanNew(SteamUtils()->GetSteamUILanguage()));
+  Nan::HandleScope scope;
+  info.GetReturnValue().Set(
+      Nan::New(SteamUtils()->GetSteamUILanguage()).ToLocalChecked());
 }
 
 // TODO: Implement get game install directory.
 NAN_METHOD(GetCurrentGameInstallDir) {
-  NanScope();
-  NanReturnValue(NanNew("NOT IMPLEMENTED"));
+  Nan::HandleScope scope;
+  info.GetReturnValue().Set(Nan::New("NOT IMPLEMENTED").ToLocalChecked());
 }
 
 NAN_METHOD(GetNumberOfPlayers) {
-  NanScope();
-  if (args.Length() < 1 || !args[0]->IsFunction()) {
+  Nan::HandleScope scope;
+  if (info.Length() < 1 || !info[0]->IsFunction()) {
     THROW_BAD_ARGS("Bad arguments");
   }
-  NanCallback* success_callback = new NanCallback(args[0].As<v8::Function>());
-  NanCallback* error_callback = NULL;
+  Nan::Callback* success_callback = new Nan::Callback(info[0].As<v8::Function>());
+  Nan::Callback* error_callback = NULL;
 
-  if (args.Length() > 1 && args[1]->IsFunction())
-    error_callback = new NanCallback(args[1].As<v8::Function>());
+  if (info.Length() > 1 && info[1]->IsFunction())
+    error_callback = new Nan::Callback(info[1].As<v8::Function>());
 
-  NanAsyncQueueWorker(new greenworks::GetNumberOfPlayersWorker(
+  Nan::AsyncQueueWorker(new greenworks::GetNumberOfPlayersWorker(
       success_callback, error_callback));
-  NanReturnUndefined();
+  info.GetReturnValue().Set(Nan::Undefined());
 }
 
 NAN_METHOD(IsGameOverlayEnabled) {
-  NanScope();
-  NanReturnValue(NanNew(SteamUtils()->IsOverlayEnabled()));
+  Nan::HandleScope scope;
+  info.GetReturnValue().Set(Nan::New(SteamUtils()->IsOverlayEnabled()));
 }
 
 NAN_METHOD(ActivateGameOverlay) {
-  NanScope();
-  if (args.Length() < 1 || !args[0]->IsString()) {
+  Nan::HandleScope scope;
+  if (info.Length() < 1 || !info[0]->IsString()) {
     THROW_BAD_ARGS("Bad arguments");
   }
-  std::string option(*(v8::String::Utf8Value(args[0])));
+  std::string option(*(v8::String::Utf8Value(info[0])));
   SteamFriends()->ActivateGameOverlay(option.c_str());
-  NanReturnUndefined();
+  info.GetReturnValue().Set(Nan::Undefined());
 }
 
 NAN_METHOD(FileShare) {
-  NanScope();
+  Nan::HandleScope scope;
 
-  if (args.Length() < 2 || !args[0]->IsString() || !args[1]->IsFunction()) {
+  if (info.Length() < 2 || !info[0]->IsString() || !info[1]->IsFunction()) {
     THROW_BAD_ARGS("Bad arguments");
   }
-  std::string file_name(*(v8::String::Utf8Value(args[0])));
-  NanCallback* success_callback = new NanCallback(args[1].As<v8::Function>());
-  NanCallback* error_callback = NULL;
+  std::string file_name(*(v8::String::Utf8Value(info[0])));
+  Nan::Callback* success_callback = new Nan::Callback(info[1].As<v8::Function>());
+  Nan::Callback* error_callback = NULL;
 
-  if (args.Length() > 2 && args[2]->IsFunction())
-    error_callback = new NanCallback(args[2].As<v8::Function>());
+  if (info.Length() > 2 && info[2]->IsFunction())
+    error_callback = new Nan::Callback(info[2].As<v8::Function>());
 
-  NanAsyncQueueWorker(new greenworks::FileShareWorker(
+  Nan::AsyncQueueWorker(new greenworks::FileShareWorker(
       success_callback, error_callback, file_name));
-  NanReturnUndefined();
+  info.GetReturnValue().Set(Nan::Undefined());
 }
 
 NAN_METHOD(PublishWorkshopFile) {
-  NanScope();
+  Nan::HandleScope scope;
 
-  if (args.Length() < 5 || !args[0]->IsString() || !args[1]->IsString() ||
-      !args[2]->IsString() || !args[3]->IsString() || !args[4]->IsFunction()) {
+  if (info.Length() < 5 || !info[0]->IsString() || !info[1]->IsString() ||
+      !info[2]->IsString() || !info[3]->IsString() || !info[4]->IsFunction()) {
     THROW_BAD_ARGS("Bad arguments");
   }
-  std::string file_name(*(v8::String::Utf8Value(args[0])));
-  std::string image_name(*(v8::String::Utf8Value(args[1])));
-  std::string title(*(v8::String::Utf8Value(args[2])));
-  std::string description(*(v8::String::Utf8Value(args[3])));
+  std::string file_name(*(v8::String::Utf8Value(info[0])));
+  std::string image_name(*(v8::String::Utf8Value(info[1])));
+  std::string title(*(v8::String::Utf8Value(info[2])));
+  std::string description(*(v8::String::Utf8Value(info[3])));
 
-  NanCallback* success_callback = new NanCallback(args[4].As<v8::Function>());
-  NanCallback* error_callback = NULL;
+  Nan::Callback* success_callback = new Nan::Callback(info[4].As<v8::Function>());
+  Nan::Callback* error_callback = NULL;
 
-  if (args.Length() > 5 && args[5]->IsFunction())
-    error_callback = new NanCallback(args[5].As<v8::Function>());
+  if (info.Length() > 5 && info[5]->IsFunction())
+    error_callback = new Nan::Callback(info[5].As<v8::Function>());
 
-  NanAsyncQueueWorker(new greenworks::PublishWorkshopFileWorker(
+  Nan::AsyncQueueWorker(new greenworks::PublishWorkshopFileWorker(
       success_callback, error_callback, file_name, image_name, title,
       description));
-  NanReturnUndefined();
+  info.GetReturnValue().Set(Nan::Undefined());
 }
 
 NAN_METHOD(UpdatePublishedWorkshopFile) {
-  NanScope();
+  Nan::HandleScope scope;
 
-  if (args.Length() < 6 || !args[0]->IsString() || !args[1]->IsString() ||
-      !args[2]->IsString() || !args[3]->IsString() || !args[4]->IsString() ||
-      !args[5]->IsFunction()) {
+  if (info.Length() < 6 || !info[0]->IsString() || !info[1]->IsString() ||
+      !info[2]->IsString() || !info[3]->IsString() || !info[4]->IsString() ||
+      !info[5]->IsFunction()) {
     THROW_BAD_ARGS("Bad arguments");
   }
 
   PublishedFileId_t published_file_id = utils::strToUint64(
-      *(v8::String::Utf8Value(args[0])));
-  std::string file_name(*(v8::String::Utf8Value(args[1])));
-  std::string image_name(*(v8::String::Utf8Value(args[2])));
-  std::string title(*(v8::String::Utf8Value(args[3])));
-  std::string description(*(v8::String::Utf8Value(args[4])));
+      *(v8::String::Utf8Value(info[0])));
+  std::string file_name(*(v8::String::Utf8Value(info[1])));
+  std::string image_name(*(v8::String::Utf8Value(info[2])));
+  std::string title(*(v8::String::Utf8Value(info[3])));
+  std::string description(*(v8::String::Utf8Value(info[4])));
 
-  NanCallback* success_callback = new NanCallback(args[5].As<v8::Function>());
-  NanCallback* error_callback = NULL;
+  Nan::Callback* success_callback = new Nan::Callback(info[5].As<v8::Function>());
+  Nan::Callback* error_callback = NULL;
 
-  if (args.Length() > 6 && args[6]->IsFunction())
-    error_callback = new NanCallback(args[6].As<v8::Function>());
+  if (info.Length() > 6 && info[6]->IsFunction())
+    error_callback = new Nan::Callback(info[6].As<v8::Function>());
 
-  NanAsyncQueueWorker(new greenworks::UpdatePublishedWorkshopFileWorker(
+  Nan::AsyncQueueWorker(new greenworks::UpdatePublishedWorkshopFileWorker(
       success_callback, error_callback, published_file_id, file_name,
       image_name, title, description));
-  NanReturnUndefined();
+  info.GetReturnValue().Set(Nan::Undefined());
 }
 
 NAN_METHOD(UGCGetItems) {
-  NanScope();
-  if (args.Length() < 3 || !args[0]->IsInt32() || !args[1]->IsInt32() ||
-      !args[2]->IsFunction()) {
+  Nan::HandleScope scope;
+  if (info.Length() < 3 || !info[0]->IsInt32() || !info[1]->IsInt32() ||
+      !info[2]->IsFunction()) {
     THROW_BAD_ARGS("Bad arguments");
   }
 
   EUGCMatchingUGCType ugc_matching_type = static_cast<EUGCMatchingUGCType>(
-      args[0]->Int32Value());
-  EUGCQuery ugc_query_type = static_cast<EUGCQuery>(args[1]->Int32Value());
+      info[0]->Int32Value());
+  EUGCQuery ugc_query_type = static_cast<EUGCQuery>(info[1]->Int32Value());
 
-  NanCallback* success_callback = new NanCallback(args[2].As<v8::Function>());
-  NanCallback* error_callback = NULL;
+  Nan::Callback* success_callback = new Nan::Callback(info[2].As<v8::Function>());
+  Nan::Callback* error_callback = NULL;
 
-  if (args.Length() > 3 && args[3]->IsFunction())
-    error_callback = new NanCallback(args[3].As<v8::Function>());
+  if (info.Length() > 3 && info[3]->IsFunction())
+    error_callback = new Nan::Callback(info[3].As<v8::Function>());
 
-  NanAsyncQueueWorker(new greenworks::QueryAllUGCWorker(
+  Nan::AsyncQueueWorker(new greenworks::QueryAllUGCWorker(
       success_callback, error_callback, ugc_matching_type, ugc_query_type));
-  NanReturnUndefined();
+  info.GetReturnValue().Set(Nan::Undefined());
 }
 
 NAN_METHOD(UGCGetUserItems) {
-  NanScope();
-  if (args.Length() < 4 || !args[0]->IsInt32() || !args[1]->IsInt32() ||
-      !args[2]->IsInt32() || !args[3]->IsFunction()) {
+  Nan::HandleScope scope;
+  if (info.Length() < 4 || !info[0]->IsInt32() || !info[1]->IsInt32() ||
+      !info[2]->IsInt32() || !info[3]->IsFunction()) {
     THROW_BAD_ARGS("Bad arguments");
   }
 
   EUGCMatchingUGCType ugc_matching_type = static_cast<EUGCMatchingUGCType>(
-      args[0]->Int32Value());
+      info[0]->Int32Value());
   EUserUGCListSortOrder ugc_list_order = static_cast<EUserUGCListSortOrder>(
-      args[1]->Int32Value());
-  EUserUGCList ugc_list = static_cast<EUserUGCList>(args[2]->Int32Value());
+      info[1]->Int32Value());
+  EUserUGCList ugc_list = static_cast<EUserUGCList>(info[2]->Int32Value());
 
-  NanCallback* success_callback = new NanCallback(args[3].As<v8::Function>());
-  NanCallback* error_callback = NULL;
+  Nan::Callback* success_callback = new Nan::Callback(info[3].As<v8::Function>());
+  Nan::Callback* error_callback = NULL;
 
-  if (args.Length() > 4 && args[4]->IsFunction())
-    error_callback = new NanCallback(args[4].As<v8::Function>());
+  if (info.Length() > 4 && info[4]->IsFunction())
+    error_callback = new Nan::Callback(info[4].As<v8::Function>());
 
-  NanAsyncQueueWorker(new greenworks::QueryUserUGCWorker(
+  Nan::AsyncQueueWorker(new greenworks::QueryUserUGCWorker(
       success_callback, error_callback, ugc_matching_type, ugc_list,
       ugc_list_order));
-  NanReturnUndefined();
+  info.GetReturnValue().Set(Nan::Undefined());
 }
 
 NAN_METHOD(UGCDownloadItem) {
-  NanScope();
-  if (args.Length() < 3 || !args[0]->IsString() || !args[1]->IsString() ||
-      !args[2]->IsFunction()) {
+  Nan::HandleScope scope;
+  if (info.Length() < 3 || !info[0]->IsString() || !info[1]->IsString() ||
+      !info[2]->IsFunction()) {
     THROW_BAD_ARGS("Bad arguments");
   }
   UGCHandle_t download_file_handle = utils::strToUint64(
-      *(v8::String::Utf8Value(args[0])));
-  std::string download_dir = *(v8::String::Utf8Value(args[1]));
+      *(v8::String::Utf8Value(info[0])));
+  std::string download_dir = *(v8::String::Utf8Value(info[1]));
 
-  NanCallback* success_callback = new NanCallback(args[2].As<v8::Function>());
-  NanCallback* error_callback = NULL;
+  Nan::Callback* success_callback = new Nan::Callback(info[2].As<v8::Function>());
+  Nan::Callback* error_callback = NULL;
 
-  if (args.Length() > 3 && args[3]->IsFunction())
-    error_callback = new NanCallback(args[3].As<v8::Function>());
+  if (info.Length() > 3 && info[3]->IsFunction())
+    error_callback = new Nan::Callback(info[3].As<v8::Function>());
 
-  NanAsyncQueueWorker(new greenworks::DownloadItemWorker(
+  Nan::AsyncQueueWorker(new greenworks::DownloadItemWorker(
       success_callback, error_callback, download_file_handle, download_dir));
-  NanReturnUndefined();
+  info.GetReturnValue().Set(Nan::Undefined());
 }
 
 NAN_METHOD(UGCSynchronizeItems) {
-  NanScope();
-  if (args.Length() < 2 || !args[0]->IsString() || !args[1]->IsFunction()) {
+  Nan::HandleScope scope;
+  if (info.Length() < 2 || !info[0]->IsString() || !info[1]->IsFunction()) {
     THROW_BAD_ARGS("Bad arguments");
   }
-  std::string download_dir = *(v8::String::Utf8Value(args[0]));
+  std::string download_dir = *(v8::String::Utf8Value(info[0]));
 
-  NanCallback* success_callback = new NanCallback(args[1].As<v8::Function>());
-  NanCallback* error_callback = NULL;
+  Nan::Callback* success_callback = new Nan::Callback(info[1].As<v8::Function>());
+  Nan::Callback* error_callback = NULL;
 
-  if (args.Length() > 2 && args[2]->IsFunction())
-    error_callback = new NanCallback(args[2].As<v8::Function>());
+  if (info.Length() > 2 && info[2]->IsFunction())
+    error_callback = new Nan::Callback(info[2].As<v8::Function>());
 
-  NanAsyncQueueWorker(new greenworks::SynchronizeItemsWorker(
+  Nan::AsyncQueueWorker(new greenworks::SynchronizeItemsWorker(
       success_callback, error_callback, download_dir));
-  NanReturnUndefined();
+  info.GetReturnValue().Set(Nan::Undefined());
 }
 
 NAN_METHOD(UGCShowOverlay) {
-  NanScope();
+  Nan::HandleScope scope;
   std::string steam_store_url;
-  if (args.Length() < 1) {
+  if (info.Length() < 1) {
     uint32 appId = SteamUtils()->GetAppID();
     steam_store_url = "http://steamcommunity.com/app/" +
         utils::uint64ToString(appId) + "/workshop/";
   } else {
-    if (!args[0]->IsString()) {
+    if (!info[0]->IsString()) {
       THROW_BAD_ARGS("Bad arguments");
     }
-    std::string item_id = *(v8::String::Utf8Value(args[0]));
+    std::string item_id = *(v8::String::Utf8Value(info[0]));
     steam_store_url = "http://steamcommunity.com/sharedfiles/filedetails/?id="
       + item_id;
   }
 
   SteamFriends()->ActivateGameOverlayToWebPage(steam_store_url.c_str());
-  NanReturnUndefined();
+  info.GetReturnValue().Set(Nan::Undefined());
 }
 
 NAN_METHOD(UGCUnsubscribe) {
-  NanScope();
-  if (args.Length() < 2 || !args[0]->IsString() || !args[1]->IsFunction()) {
+  Nan::HandleScope scope;
+  if (info.Length() < 2 || !info[0]->IsString() || !info[1]->IsFunction()) {
     THROW_BAD_ARGS("Bad arguments");
   }
   PublishedFileId_t unsubscribed_file_id = utils::strToUint64(
-      *(v8::String::Utf8Value(args[0])));
-  NanCallback* success_callback = new NanCallback(args[1].As<v8::Function>());
-  NanCallback* error_callback = NULL;
+      *(v8::String::Utf8Value(info[0])));
+  Nan::Callback* success_callback = new Nan::Callback(info[1].As<v8::Function>());
+  Nan::Callback* error_callback = NULL;
 
-  if (args.Length() > 2 && args[2]->IsFunction())
-    error_callback = new NanCallback(args[2].As<v8::Function>());
+  if (info.Length() > 2 && info[2]->IsFunction())
+    error_callback = new Nan::Callback(info[2].As<v8::Function>());
 
-  NanAsyncQueueWorker(new greenworks::UnsubscribePublishedFileWorker(
+  Nan::AsyncQueueWorker(new greenworks::UnsubscribePublishedFileWorker(
       success_callback, error_callback, unsubscribed_file_id));
-  NanReturnUndefined();
+  info.GetReturnValue().Set(Nan::Undefined());
 }
 
 NAN_METHOD(CreateArchive) {
-  NanScope();
-  if (args.Length() < 5 || !args[0]->IsString() || !args[1]->IsString() ||
-      !args[2]->IsString() || !args[3]->IsInt32() || !args[4]->IsFunction()) {
+  Nan::HandleScope scope;
+  if (info.Length() < 5 || !info[0]->IsString() || !info[1]->IsString() ||
+      !info[2]->IsString() || !info[3]->IsInt32() || !info[4]->IsFunction()) {
     THROW_BAD_ARGS("bad arguments");
   }
-  std::string zip_file_path = *(v8::String::Utf8Value(args[0]));
-  std::string source_dir = *(v8::String::Utf8Value(args[1]));
-  std::string password = *(v8::String::Utf8Value(args[2]));
-  int compress_level = args[3]->Int32Value();
+  std::string zip_file_path = *(v8::String::Utf8Value(info[0]));
+  std::string source_dir = *(v8::String::Utf8Value(info[1]));
+  std::string password = *(v8::String::Utf8Value(info[2]));
+  int compress_level = info[3]->Int32Value();
 
-  NanCallback* success_callback = new NanCallback(args[4].As<v8::Function>());
-  NanCallback* error_callback = NULL;
+  Nan::Callback* success_callback = new Nan::Callback(info[4].As<v8::Function>());
+  Nan::Callback* error_callback = NULL;
 
-  if (args.Length() > 5 && args[5]->IsFunction())
-    error_callback = new NanCallback(args[5].As<v8::Function>());
+  if (info.Length() > 5 && info[5]->IsFunction())
+    error_callback = new Nan::Callback(info[5].As<v8::Function>());
 
-  NanAsyncQueueWorker(new greenworks::CreateArchiveWorker(
+  Nan::AsyncQueueWorker(new greenworks::CreateArchiveWorker(
       success_callback, error_callback, zip_file_path, source_dir, password,
       compress_level));
-  NanReturnUndefined();
+  info.GetReturnValue().Set(Nan::Undefined());
 }
 
 NAN_METHOD(ExtractArchive) {
-  NanScope();
-  if (args.Length() < 4 || !args[0]->IsString() || !args[1]->IsString() ||
-      !args[2]->IsString() || !args[3]->IsFunction()) {
+  Nan::HandleScope scope;
+  if (info.Length() < 4 || !info[0]->IsString() || !info[1]->IsString() ||
+      !info[2]->IsString() || !info[3]->IsFunction()) {
     THROW_BAD_ARGS("bad arguments");
   }
-  std::string zip_file_path = *(v8::String::Utf8Value(args[0]));
-  std::string extract_dir = *(v8::String::Utf8Value(args[1]));
-  std::string password = *(v8::String::Utf8Value(args[2]));
+  std::string zip_file_path = *(v8::String::Utf8Value(info[0]));
+  std::string extract_dir = *(v8::String::Utf8Value(info[1]));
+  std::string password = *(v8::String::Utf8Value(info[2]));
 
-  NanCallback* success_callback = new NanCallback(args[3].As<v8::Function>());
-  NanCallback* error_callback = NULL;
+  Nan::Callback* success_callback = new Nan::Callback(info[3].As<v8::Function>());
+  Nan::Callback* error_callback = NULL;
 
-  if (args.Length() > 4 && args[4]->IsFunction())
-    error_callback = new NanCallback(args[4].As<v8::Function>());
+  if (info.Length() > 4 && info[4]->IsFunction())
+    error_callback = new Nan::Callback(info[4].As<v8::Function>());
 
-  NanAsyncQueueWorker(new greenworks::ExtractArchiveWorker(
+  Nan::AsyncQueueWorker(new greenworks::ExtractArchiveWorker(
       success_callback, error_callback, zip_file_path, extract_dir, password));
-  NanReturnUndefined();
+  info.GetReturnValue().Set(Nan::Undefined());
 }
 
 NAN_METHOD(GetAuthSessionTicket) {
-  NanScope();
-  if (args.Length() < 1 || !args[0]->IsFunction()) {
+  Nan::HandleScope scope;
+  if (info.Length() < 1 || !info[0]->IsFunction()) {
     THROW_BAD_ARGS("Bad arguments");
   }
-  NanCallback* success_callback = new NanCallback(args[0].As<v8::Function>());
-  NanCallback* error_callback = NULL;
-  if (args.Length() > 1 && args[1]->IsFunction())
-    error_callback = new NanCallback(args[1].As<v8::Function>());
-  NanAsyncQueueWorker(new greenworks::GetAuthSessionTicketWorker(
+  Nan::Callback* success_callback = new Nan::Callback(info[0].As<v8::Function>());
+  Nan::Callback* error_callback = NULL;
+  if (info.Length() > 1 && info[1]->IsFunction())
+    error_callback = new Nan::Callback(info[1].As<v8::Function>());
+  Nan::AsyncQueueWorker(new greenworks::GetAuthSessionTicketWorker(
     success_callback, error_callback));
-  NanReturnUndefined();
+  info.GetReturnValue().Set(Nan::Undefined());
 }
 
 NAN_METHOD(CancelAuthTicket) {
-  NanScope();
-  if (args.Length() < 1 || !args[0]->IsNumber()) {
+  Nan::HandleScope scope;
+  if (info.Length() < 1 || !info[0]->IsNumber()) {
     THROW_BAD_ARGS("Bad arguments");
   }
-  HAuthTicket h = args[1].As<v8::Number>()->Int32Value();
+  HAuthTicket h = info[1].As<v8::Number>()->Int32Value();
   SteamUser()->CancelAuthTicket(h);
-  NanReturnUndefined();
+  info.GetReturnValue().Set(Nan::Undefined());
 }
 
 NAN_METHOD(GetEncryptedAppTicket) {
-  NanScope();
-  if (args.Length() < 2 || !args[0]->IsString() || !args[1]->IsFunction()) {
+  Nan::HandleScope scope;
+  if (info.Length() < 2 || !info[0]->IsString() || !info[1]->IsFunction()) {
     THROW_BAD_ARGS("Bad arguments");
   }
-  char* user_data = *(static_cast<v8::String::Utf8Value>(args[0]->ToString()));
+  char* user_data = *(static_cast<v8::String::Utf8Value>(info[0]->ToString()));
   if (!user_data) {
     THROW_BAD_ARGS("Bad arguments");
   }
-  NanCallback* success_callback = new NanCallback(args[1].As<v8::Function>());
-  NanCallback* error_callback = NULL;
-  if (args.Length() > 2 && args[2]->IsFunction())
-    error_callback = new NanCallback(args[2].As<v8::Function>());
-  NanAsyncQueueWorker(new greenworks::RequestEncryptedAppTicketWorker(
+  Nan::Callback* success_callback = new Nan::Callback(info[1].As<v8::Function>());
+  Nan::Callback* error_callback = NULL;
+  if (info.Length() > 2 && info[2]->IsFunction())
+    error_callback = new Nan::Callback(info[2].As<v8::Function>());
+  Nan::AsyncQueueWorker(new greenworks::RequestEncryptedAppTicketWorker(
     user_data, success_callback, error_callback));
-  NanReturnUndefined();
+  info.GetReturnValue().Set(Nan::Undefined());
 }
 
 NAN_METHOD(ActivateGameOverlayToWebPage) {
-  NanScope();
-  if (args.Length() < 1 || !args[0]->IsString()) {
+  Nan::HandleScope scope;
+  if (info.Length() < 1 || !info[0]->IsString()) {
     THROW_BAD_ARGS("bad arguments");
   }
-  std::string url = *(v8::String::Utf8Value(args[0]));
+  std::string url = *(v8::String::Utf8Value(info[0]));
   SteamFriends()->ActivateGameOverlayToWebPage(url.c_str());
-  NanReturnUndefined();
+  info.GetReturnValue().Set(Nan::Undefined());
 }
 
 void InitUtilsObject(v8::Handle<v8::Object> exports) {
   // Prepare constructor template
-  v8::Local<v8::FunctionTemplate> tpl = NanNew<v8::FunctionTemplate>();
-  tpl->Set(NanNew("createArchive"),
-      NanNew<v8::FunctionTemplate>(CreateArchive)->GetFunction());
-  tpl->Set(NanNew("extractArchive"),
-      NanNew<v8::FunctionTemplate>(ExtractArchive)->GetFunction());
-  v8::Persistent<v8::Function> constructor;
-  NanAssignPersistent(constructor, tpl->GetFunction());
-  exports->Set(NanNew("Utils"), tpl->GetFunction());
+  v8::Local<v8::FunctionTemplate> tpl = Nan::New<v8::FunctionTemplate>();
+  tpl->Set(Nan::New("createArchive").ToLocalChecked(),
+      Nan::New<v8::FunctionTemplate>(CreateArchive)->GetFunction());
+  tpl->Set(Nan::New("extractArchive").ToLocalChecked(),
+      Nan::New<v8::FunctionTemplate>(ExtractArchive)->GetFunction());
+  Nan::Persistent<v8::Function> constructor;
+  constructor.Reset(tpl->GetFunction());
+  Nan::Set(exports, Nan::New("Utils").ToLocalChecked(), tpl->GetFunction());
 }
 
-void init(v8::Handle<v8::Object> exports) {
+NAN_MODULE_INIT(init) {
   // Set internal steam event handler.
-  v8::Local<v8::Object> steam_events = NanNew<v8::Object>();
-  NanAssignPersistent(g_persistent_steam_events, steam_events);
-  exports->Set(NanNew<v8::String>("_steam_events"), steam_events);
+  v8::Local<v8::Object> steam_events = Nan::New<v8::Object>();
+  g_persistent_steam_events.Reset(steam_events);
+  Nan::Set(target, Nan::New("_steam_events").ToLocalChecked(), steam_events);
 
   // Common APIs.
-  exports->Set(NanNew("initAPI"),
-               NanNew<v8::FunctionTemplate>(InitAPI)->GetFunction());
-  exports->Set(NanNew("getSteamId"),
-               NanNew<v8::FunctionTemplate>(GetSteamId)->GetFunction());
+  Nan::Set(target,
+           Nan::New("initAPI").ToLocalChecked(),
+           Nan::New<v8::FunctionTemplate>(InitAPI)->GetFunction());
+  Nan::Set(target,
+           Nan::New("getSteamId").ToLocalChecked(),
+           Nan::New<v8::FunctionTemplate>(GetSteamId)->GetFunction());
   // File related APIs.
-  exports->Set(NanNew("saveTextToFile"),
-               NanNew<v8::FunctionTemplate>(SaveTextToFile)->GetFunction());
-  exports->Set(NanNew("readTextFromFile"),
-               NanNew<v8::FunctionTemplate>(ReadTextFromFile)->GetFunction());
-  exports->Set(NanNew("saveFilesToCloud"),
-               NanNew<v8::FunctionTemplate>(SaveFilesToCloud)->GetFunction());
+  Nan::Set(target,
+           Nan::New("saveTextToFile").ToLocalChecked(),
+           Nan::New<v8::FunctionTemplate>(SaveTextToFile)->GetFunction());
+  Nan::Set(target,
+           Nan::New("readTextFromFile").ToLocalChecked(),
+           Nan::New<v8::FunctionTemplate>(ReadTextFromFile)->GetFunction());
+  Nan::Set(target,
+           Nan::New("saveFilesToCloud").ToLocalChecked(),
+           Nan::New<v8::FunctionTemplate>(SaveFilesToCloud)->GetFunction());
   // Cloud related APIs.
-  exports->Set(NanNew("isCloudEnabled"),
-               NanNew<v8::FunctionTemplate>(IsCloudEnabled)->GetFunction());
-  exports->Set(NanNew("isCloudEnabledForUser"),
-               NanNew<v8::FunctionTemplate>(
-                   IsCloudEnabledForUser)->GetFunction());
-  exports->Set(NanNew("enableCloud"),
-               NanNew<v8::FunctionTemplate>(EnableCloud)->GetFunction());
-  exports->Set(NanNew("getCloudQuota"),
-               NanNew<v8::FunctionTemplate>(GetCloudQuota)->GetFunction());
+  Nan::Set(target,
+           Nan::New("isCloudEnabled").ToLocalChecked(),
+           Nan::New<v8::FunctionTemplate>(IsCloudEnabled)->GetFunction());
+  Nan::Set(target,
+           Nan::New("isCloudEnabledForUser").ToLocalChecked(),
+           Nan::New<v8::FunctionTemplate>(
+               IsCloudEnabledForUser)->GetFunction());
+  Nan::Set(target,
+           Nan::New("enableCloud").ToLocalChecked(),
+           Nan::New<v8::FunctionTemplate>(EnableCloud)->GetFunction());
+  Nan::Set(target,
+           Nan::New("getCloudQuota").ToLocalChecked(),
+           Nan::New<v8::FunctionTemplate>(GetCloudQuota)->GetFunction());
   // Achievement related APIs.
-  exports->Set(NanNew("activateAchievement"),
-               NanNew<v8::FunctionTemplate>(
-                   ActivateAchievement)->GetFunction());
-  exports->Set(NanNew("getAchievement"),
-               NanNew<v8::FunctionTemplate>(GetAchievement)->GetFunction());
-  exports->Set(NanNew("clearAchievement"),
-               NanNew<v8::FunctionTemplate>(ClearAchievement)->GetFunction());
-  exports->Set(NanNew("getAchievementNames"),
-               NanNew<v8::FunctionTemplate>(
-                   GetAchievementNames)->GetFunction());
-  exports->Set(NanNew("getNumberOfAchievements"),
-               NanNew<v8::FunctionTemplate>(
-                   GetNumberOfAchievements)->GetFunction());
+  Nan::Set(target,
+           Nan::New("activateAchievement").ToLocalChecked(),
+           Nan::New<v8::FunctionTemplate>(ActivateAchievement)->GetFunction());
+  Nan::Set(target,
+           Nan::New("getAchievement").ToLocalChecked(),
+           Nan::New<v8::FunctionTemplate>(GetAchievement)->GetFunction());
+  Nan::Set(target,
+           Nan::New("clearAchievement").ToLocalChecked(),
+           Nan::New<v8::FunctionTemplate>(ClearAchievement)->GetFunction());
+  Nan::Set(target,
+           Nan::New("getAchievementNames").ToLocalChecked(),
+           Nan::New<v8::FunctionTemplate>(GetAchievementNames)->GetFunction());
+  Nan::Set(target,
+           Nan::New("getNumberOfAchievements").ToLocalChecked(),
+           Nan::New<v8::FunctionTemplate>(
+               GetNumberOfAchievements)->GetFunction());
   // Game setting related APIs.
-  exports->Set(NanNew("getCurrentGameLanguage"),
-                      NanNew<v8::FunctionTemplate>(
-                          GetCurrentGameLanguage)->GetFunction());
-  exports->Set(NanNew("getCurrentUILanguage"),
-               NanNew<v8::FunctionTemplate>(
-                   GetCurrentUILanguage)->GetFunction());
-  exports->Set(NanNew("getCurrentGameInstallDir"),
-               NanNew<v8::FunctionTemplate>(
-                   GetCurrentGameInstallDir)->GetFunction());
-  exports->Set(NanNew("getNumberOfPlayers"),
-               NanNew<v8::FunctionTemplate>(GetNumberOfPlayers)->GetFunction());
-  exports->Set(NanNew("isGameOverlayEnabled"),
-               NanNew<v8::FunctionTemplate>(
-                   IsGameOverlayEnabled)->GetFunction());
-  exports->Set(NanNew("activateGameOverlay"),
-               NanNew<v8::FunctionTemplate>(
-                   ActivateGameOverlay)->GetFunction());
-  exports->Set(NanNew("activateGameOverlayToWebPage"),
-               NanNew<v8::FunctionTemplate>(
-                   ActivateGameOverlayToWebPage)->GetFunction());
+  Nan::Set(target,
+           Nan::New("getCurrentGameLanguage").ToLocalChecked(),
+           Nan::New<v8::FunctionTemplate>(
+               GetCurrentGameLanguage)->GetFunction());
+  Nan::Set(target,
+           Nan::New("getCurrentUILanguage").ToLocalChecked(),
+           Nan::New<v8::FunctionTemplate>(GetCurrentUILanguage)->GetFunction());
+  Nan::Set(target,
+           Nan::New("getCurrentGameInstallDir").ToLocalChecked(),
+           Nan::New<v8::FunctionTemplate>(
+               GetCurrentGameInstallDir)->GetFunction());
+  Nan::Set(target,
+           Nan::New("getNumberOfPlayers").ToLocalChecked(),
+           Nan::New<v8::FunctionTemplate>(GetNumberOfPlayers)->GetFunction());
+  Nan::Set(target,
+           Nan::New("isGameOverlayEnabled").ToLocalChecked(),
+           Nan::New<v8::FunctionTemplate>(IsGameOverlayEnabled)->GetFunction());
+  Nan::Set(target,
+           Nan::New("activateGameOverlay").ToLocalChecked(),
+           Nan::New<v8::FunctionTemplate>(ActivateGameOverlay)->GetFunction());
+  Nan::Set(target,
+           Nan::New("activateGameOverlayToWebPage").ToLocalChecked(),
+           Nan::New<v8::FunctionTemplate>(
+               ActivateGameOverlayToWebPage)->GetFunction());
   // WorkShop related APIs
-  exports->Set(NanNew("fileShare"),
-               NanNew<v8::FunctionTemplate>(FileShare)->GetFunction());
-  exports->Set(NanNew("publishWorkshopFile"),
-               NanNew<v8::FunctionTemplate>(
-                   PublishWorkshopFile)->GetFunction());
-  exports->Set(NanNew("updatePublishedWorkshopFile"),
-               NanNew<v8::FunctionTemplate>(
-                   UpdatePublishedWorkshopFile)->GetFunction());
-  exports->Set(NanNew("ugcGetItems"),
-               NanNew<v8::FunctionTemplate>(UGCGetItems)->GetFunction());
-  exports->Set(NanNew("ugcGetUserItems"),
-               NanNew<v8::FunctionTemplate>(UGCGetUserItems)->GetFunction());
-  exports->Set(NanNew("ugcDownloadItem"),
-               NanNew<v8::FunctionTemplate>(UGCDownloadItem)->GetFunction());
-  exports->Set(NanNew("ugcSynchronizeItems"),
-               NanNew<v8::FunctionTemplate>(
-                   UGCSynchronizeItems)->GetFunction());
-  exports->Set(NanNew("ugcShowOverlay"),
-               NanNew<v8::FunctionTemplate>(UGCShowOverlay)->GetFunction());
-  exports->Set(NanNew("ugcUnsubscribe"),
-               NanNew<v8::FunctionTemplate>(UGCUnsubscribe)->GetFunction());
+  Nan::Set(target,
+           Nan::New("fileShare").ToLocalChecked(),
+           Nan::New<v8::FunctionTemplate>(FileShare)->GetFunction());
+  Nan::Set(target,
+           Nan::New("publishWorkshopFile").ToLocalChecked(),
+           Nan::New<v8::FunctionTemplate>(PublishWorkshopFile)->GetFunction());
+  Nan::Set(target,
+           Nan::New("updatePublishedWorkshopFile").ToLocalChecked(),
+           Nan::New<v8::FunctionTemplate>(
+               UpdatePublishedWorkshopFile)->GetFunction());
+  Nan::Set(target,
+           Nan::New("ugcGetItems").ToLocalChecked(),
+           Nan::New<v8::FunctionTemplate>(UGCGetItems)->GetFunction());
+  Nan::Set(target,
+           Nan::New("ugcGetUserItems").ToLocalChecked(),
+           Nan::New<v8::FunctionTemplate>(UGCGetUserItems)->GetFunction());
+  Nan::Set(target,
+           Nan::New("ugcDownloadItem").ToLocalChecked(),
+           Nan::New<v8::FunctionTemplate>(UGCDownloadItem)->GetFunction());
+  Nan::Set(target,
+           Nan::New("ugcSynchronizeItems").ToLocalChecked(),
+           Nan::New<v8::FunctionTemplate>(UGCSynchronizeItems)->GetFunction());
+  Nan::Set(target,
+           Nan::New("ugcShowOverlay").ToLocalChecked(),
+           Nan::New<v8::FunctionTemplate>(UGCShowOverlay)->GetFunction());
+  Nan::Set(target,
+           Nan::New("ugcUnsubscribe").ToLocalChecked(),
+           Nan::New<v8::FunctionTemplate>(UGCUnsubscribe)->GetFunction());
   // Authentication related APIs
-  exports->Set(NanNew("getAuthSessionTicket"),
-               NanNew<v8::FunctionTemplate>(
-                   GetAuthSessionTicket)->GetFunction());
-  exports->Set(NanNew("getEncryptedAppTicket"),
-               NanNew<v8::FunctionTemplate>(
-                   GetEncryptedAppTicket)->GetFunction());
-  exports->Set(NanNew("cancelAuthTicket"),
-               NanNew<v8::FunctionTemplate>(CancelAuthTicket)->GetFunction());
+  Nan::Set(target,
+           Nan::New("getAuthSessionTicket").ToLocalChecked(),
+           Nan::New<v8::FunctionTemplate>(GetAuthSessionTicket)->GetFunction());
+  Nan::Set(target,
+           Nan::New("getEncryptedAppTicket").ToLocalChecked(),
+           Nan::New<v8::FunctionTemplate>(
+               GetEncryptedAppTicket)->GetFunction());
+  Nan::Set(target,
+           Nan::New("cancelAuthTicket").ToLocalChecked(),
+               Nan::New<v8::FunctionTemplate>(CancelAuthTicket)->GetFunction());
 
-  utils::InitUgcMatchingTypes(exports);
-  utils::InitUgcQueryTypes(exports);
-  utils::InitUserUgcListSortOrder(exports);
-  utils::InitUserUgcList(exports);
+  utils::InitUgcMatchingTypes(target);
+  utils::InitUgcQueryTypes(target);
+  utils::InitUserUgcListSortOrder(target);
+  utils::InitUserUgcList(target);
 
   // Utils related APIs.
-  InitUtilsObject(exports);
+  InitUtilsObject(target);
 }
 
 }  // namespace

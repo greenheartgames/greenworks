@@ -40,8 +40,8 @@ std::string bytesToHexString(const unsigned char* bytes, size_t length) {
 
 namespace greenworks {
 
-FileContentSaveWorker::FileContentSaveWorker(NanCallback* success_callback,
-    NanCallback* error_callback, std::string file_name, std::string content):
+FileContentSaveWorker::FileContentSaveWorker(Nan::Callback* success_callback,
+    Nan::Callback* error_callback, std::string file_name, std::string content):
         SteamAsyncWorker(success_callback, error_callback),
         file_name_(file_name),
         content_(content) {
@@ -53,8 +53,8 @@ void FileContentSaveWorker::Execute() {
     SetErrorMessage("Error on writing to file.");
 }
 
-FilesSaveWorker::FilesSaveWorker(NanCallback* success_callback,
-    NanCallback* error_callback, const std::vector<std::string>& files_path):
+FilesSaveWorker::FilesSaveWorker(Nan::Callback* success_callback,
+    Nan::Callback* error_callback, const std::vector<std::string>& files_path):
         SteamAsyncWorker(success_callback, error_callback),
         files_path_(files_path) {
 }
@@ -84,8 +84,8 @@ void FilesSaveWorker::Execute() {
   }
 }
 
-FileReadWorker::FileReadWorker(NanCallback* success_callback,
-    NanCallback* error_callback, std::string file_name):
+FileReadWorker::FileReadWorker(Nan::Callback* success_callback,
+    Nan::Callback* error_callback, std::string file_name):
         SteamAsyncWorker(success_callback, error_callback),
         file_name_(file_name) {
 }
@@ -115,14 +115,14 @@ void FileReadWorker::Execute() {
 }
 
 void FileReadWorker::HandleOKCallback() {
-  NanScope();
+  Nan::HandleScope scope;
 
-  v8::Local<v8::Value> argv[] = { NanNew<v8::String>(content_) };
+  v8::Local<v8::Value> argv[] = { Nan::New(content_).ToLocalChecked() };
   callback->Call(1, argv);
 }
 
-CloudQuotaGetWorker::CloudQuotaGetWorker(NanCallback* success_callback,
-      NanCallback* error_callback):SteamAsyncWorker(success_callback,
+CloudQuotaGetWorker::CloudQuotaGetWorker(Nan::Callback* success_callback,
+      Nan::Callback* error_callback):SteamAsyncWorker(success_callback,
           error_callback), total_bytes_(-1), available_bytes_(-1) {
 }
 
@@ -136,15 +136,15 @@ void CloudQuotaGetWorker::Execute() {
 }
 
 void CloudQuotaGetWorker::HandleOKCallback() {
-  NanScope();
-  v8::Local<v8::Value> argv[] = { NanNew<v8::Integer>(total_bytes_),
-                                  NanNew<v8::Integer>(available_bytes_) };
+  Nan::HandleScope scope;
+  v8::Local<v8::Value> argv[] = { Nan::New<v8::Integer>(total_bytes_),
+                                  Nan::New<v8::Integer>(available_bytes_) };
   callback->Call(2, argv);
 }
 
 
 ActivateAchievementWorker::ActivateAchievementWorker(
-    NanCallback* success_callback, NanCallback* error_callback,
+    Nan::Callback* success_callback, Nan::Callback* error_callback,
     const std::string& achievement):
         SteamAsyncWorker(success_callback,
         error_callback), achievement_(achievement) {
@@ -159,8 +159,8 @@ void ActivateAchievementWorker::Execute() {
 }
 
 GetAchievementWorker::GetAchievementWorker(
-    NanCallback* success_callback,
-    NanCallback* error_callback,
+    Nan::Callback* success_callback,
+    Nan::Callback* error_callback,
     const std::string& achievement):
         SteamAsyncWorker(success_callback, error_callback),
         achievement_(achievement),
@@ -177,14 +177,14 @@ void GetAchievementWorker::Execute() {
 }
 
 void GetAchievementWorker::HandleOKCallback() {
-  NanScope();
-  v8::Local<v8::Value> argv[] = { NanNew(is_achieved_) };
+  Nan::HandleScope scope;
+  v8::Local<v8::Value> argv[] = { Nan::New(is_achieved_) };
   callback->Call(1, argv);
 }
 
 ClearAchievementWorker::ClearAchievementWorker(
-    NanCallback* success_callback,
-    NanCallback* error_callback,
+    Nan::Callback* success_callback,
+    Nan::Callback* error_callback,
     const std::string& achievement):
         SteamAsyncWorker(success_callback, error_callback),
         achievement_(achievement),
@@ -202,12 +202,12 @@ void ClearAchievementWorker::Execute() {
 }
 
 void ClearAchievementWorker::HandleOKCallback() {
-  NanScope();
+  Nan::HandleScope scope;
   callback->Call(0, NULL);
 }
 
 GetNumberOfPlayersWorker::GetNumberOfPlayersWorker(
-    NanCallback* success_callback, NanCallback* error_callback)
+    Nan::Callback* success_callback, Nan::Callback* error_callback)
        :SteamCallbackAsyncWorker(success_callback, error_callback),
         num_of_players_(-1) {
 }
@@ -233,14 +233,14 @@ void GetNumberOfPlayersWorker::OnGetNumberOfPlayersCompleted(
 }
 
 void GetNumberOfPlayersWorker::HandleOKCallback() {
-  NanScope();
+  Nan::HandleScope scope;
 
-  v8::Local<v8::Value> argv[] = { NanNew(num_of_players_) };
+  v8::Local<v8::Value> argv[] = { Nan::New(num_of_players_) };
   callback->Call(1, argv);
 }
 
-CreateArchiveWorker::CreateArchiveWorker(NanCallback* success_callback,
-    NanCallback* error_callback, const std::string& zip_file_path,
+CreateArchiveWorker::CreateArchiveWorker(Nan::Callback* success_callback,
+    Nan::Callback* error_callback, const std::string& zip_file_path,
     const std::string& source_dir, const std::string& password,
     int compress_level)
         :SteamAsyncWorker(success_callback, error_callback),
@@ -259,8 +259,8 @@ void CreateArchiveWorker::Execute() {
     SetErrorMessage("Error on creating zip file.");
 }
 
-ExtractArchiveWorker::ExtractArchiveWorker(NanCallback* success_callback,
-    NanCallback* error_callback, const std::string& zip_file_path,
+ExtractArchiveWorker::ExtractArchiveWorker(Nan::Callback* success_callback,
+    Nan::Callback* error_callback, const std::string& zip_file_path,
     const std::string& extract_path, const std::string& password)
         : SteamAsyncWorker(success_callback, error_callback),
           zip_file_path_(zip_file_path),
@@ -276,8 +276,8 @@ void ExtractArchiveWorker::Execute() {
 }
 
 GetAuthSessionTicketWorker::GetAuthSessionTicketWorker(
-  NanCallback* success_callback,
-  NanCallback* error_callback )
+  Nan::Callback* success_callback,
+  Nan::Callback* error_callback )
     : SteamCallbackAsyncWorker(success_callback, error_callback),
       result(this, &GetAuthSessionTicketWorker::OnGetAuthSessionCompleted),
       handle_(0), ticket_buf_size_(0) {
@@ -301,18 +301,18 @@ void GetAuthSessionTicketWorker::OnGetAuthSessionCompleted(
 }
 
 void GetAuthSessionTicketWorker::HandleOKCallback() {
-  NanScope();
-  v8::Local<v8::Object> ticket = NanNew<v8::Object>();
-  ticket->Set(NanNew("ticket"), NanNew(ticket_));
-  ticket->Set(NanNew("handle"), NanNew(handle_));
+  Nan::HandleScope scope;
+  v8::Local<v8::Object> ticket = Nan::New<v8::Object>();
+  ticket->Set(Nan::New("ticket").ToLocalChecked(), Nan::New(ticket_).ToLocalChecked());
+  ticket->Set(Nan::New("handle").ToLocalChecked(), Nan::New(handle_));
   v8::Local<v8::Value> argv[] = { ticket };
   callback->Call(1, argv);
 }
 
 RequestEncryptedAppTicketWorker::RequestEncryptedAppTicketWorker(
   std::string user_data,
-  NanCallback* success_callback,
-  NanCallback* error_callback)
+  Nan::Callback* success_callback,
+  Nan::Callback* error_callback)
     : SteamCallbackAsyncWorker(success_callback, error_callback),
       user_data_(user_data), ticket_buf_size_(0) {
 }
@@ -339,8 +339,8 @@ void RequestEncryptedAppTicketWorker::OnRequestEncryptedAppTicketCompleted(
 }
 
 void RequestEncryptedAppTicketWorker::HandleOKCallback() {
-  NanScope();
-  v8::Local<v8::Value> argv[] = { NanNew(ticket_) };
+  Nan::HandleScope scope;
+  v8::Local<v8::Value> argv[] = { Nan::New(ticket_).ToLocalChecked() };
   callback->Call(1, argv);
 }
 
