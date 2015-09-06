@@ -15,44 +15,66 @@
 namespace {
 
 v8::Local<v8::Object> ConvertToJsObject(const SteamUGCDetails_t& item) {
-  v8::Local<v8::Object> result = NanNew<v8::Object>();
+  v8::Local<v8::Object> result = Nan::New<v8::Object>();
 
-  result->Set(NanNew("acceptedForUse"), NanNew(item.m_bAcceptedForUse));
-  result->Set(NanNew("banned"), NanNew(item.m_bBanned));
-  result->Set(NanNew("tagsTruncated"), NanNew(item.m_bTagsTruncated));
-  result->Set(NanNew("fileType"), NanNew(item.m_eFileType));
-  result->Set(NanNew("result"), NanNew(item.m_eResult));
-  result->Set(NanNew("visibility"), NanNew(item.m_eVisibility));
-  result->Set(NanNew("score"), NanNew(item.m_flScore));
+  result->Set(Nan::New("acceptedForUse").ToLocalChecked(),
+              Nan::New(item.m_bAcceptedForUse));
+  result->Set(Nan::New("banned").ToLocalChecked(),
+              Nan::New(item.m_bBanned));
+  result->Set(Nan::New("tagsTruncated").ToLocalChecked(),
+              Nan::New(item.m_bTagsTruncated));
+  result->Set(Nan::New("fileType").ToLocalChecked(),
+              Nan::New(item.m_eFileType));
+  result->Set(Nan::New("result").ToLocalChecked(),
+              Nan::New(item.m_eResult));
+  result->Set(Nan::New("visibility").ToLocalChecked(),
+              Nan::New(item.m_eVisibility));
+  result->Set(Nan::New("score").ToLocalChecked(),
+              Nan::New(item.m_flScore));
 
-  result->Set(NanNew("file"),
-              NanNew<v8::String>(utils::uint64ToString(item.m_hFile)));
-  result->Set(NanNew("fileName"), NanNew(item.m_pchFileName));
-  result->Set(NanNew("fileSize"), NanNew(item.m_nFileSize));
+  result->Set(Nan::New("file").ToLocalChecked(),
+              Nan::New(utils::uint64ToString(item.m_hFile)).ToLocalChecked());
+  result->Set(Nan::New("fileName").ToLocalChecked(),
+              Nan::New(item.m_pchFileName).ToLocalChecked());
+  result->Set(Nan::New("fileSize").ToLocalChecked(),
+              Nan::New(item.m_nFileSize));
 
-  result->Set(NanNew("previewFile"),
-              NanNew<v8::String>(utils::uint64ToString(item.m_hPreviewFile)));
-  result->Set(NanNew("previewFileSize"), NanNew(item.m_nPreviewFileSize));
+  result->Set(Nan::New("previewFile").ToLocalChecked(),
+              Nan::New(
+                  utils::uint64ToString(item.m_hPreviewFile)).ToLocalChecked());
+  result->Set(Nan::New("previewFileSize").ToLocalChecked(),
+              Nan::New(item.m_nPreviewFileSize));
 
-  result->Set(NanNew("steamIDOwner"),
-              NanNew<v8::String>(utils::uint64ToString(item.m_ulSteamIDOwner)));
-  result->Set(NanNew("consumerAppID"), NanNew(item.m_nConsumerAppID));
-  result->Set(NanNew("creatorAppID"), NanNew(item.m_nCreatorAppID));
-  result->Set(NanNew("publishedFileId"),
-              NanNew<v8::String>(utils::uint64ToString(
-                  item.m_nPublishedFileId)));
+  result->Set(Nan::New("steamIDOwner").ToLocalChecked(),
+              Nan::New(utils::uint64ToString(
+                  item.m_ulSteamIDOwner)).ToLocalChecked());
+  result->Set(Nan::New("consumerAppID").ToLocalChecked(),
+              Nan::New(item.m_nConsumerAppID));
+  result->Set(Nan::New("creatorAppID").ToLocalChecked(),
+              Nan::New(item.m_nCreatorAppID));
+  result->Set(Nan::New("publishedFileId").ToLocalChecked(),
+              Nan::New(utils::uint64ToString(
+                  item.m_nPublishedFileId)).ToLocalChecked());
 
-  result->Set(NanNew("title"), NanNew(item.m_rgchTitle));
-  result->Set(NanNew("description"), NanNew(item.m_rgchDescription));
-  result->Set(NanNew("URL"), NanNew(item.m_rgchURL));
-  result->Set(NanNew("tags"), NanNew(item.m_rgchTags));
+  result->Set(Nan::New("title").ToLocalChecked(),
+              Nan::New(item.m_rgchTitle).ToLocalChecked());
+  result->Set(Nan::New("description").ToLocalChecked(),
+              Nan::New(item.m_rgchDescription).ToLocalChecked());
+  result->Set(Nan::New("URL").ToLocalChecked(),
+              Nan::New(item.m_rgchURL).ToLocalChecked());
+  result->Set(Nan::New("tags").ToLocalChecked(),
+              Nan::New(item.m_rgchTags).ToLocalChecked());
 
-  result->Set(NanNew("timeAddedToUserList"), NanNew(
-      item.m_rtimeAddedToUserList));
-  result->Set(NanNew("timeCreated"), NanNew(item.m_rtimeCreated));
-  result->Set(NanNew("timeUpdated"), NanNew(item.m_rtimeUpdated));
-  result->Set(NanNew("votesDown"), NanNew(item.m_unVotesDown));
-  result->Set(NanNew("votesUp"), NanNew(item.m_unVotesUp));
+  result->Set(Nan::New("timeAddedToUserList").ToLocalChecked(),
+              Nan::New(item.m_rtimeAddedToUserList));
+  result->Set(Nan::New("timeCreated").ToLocalChecked(),
+              Nan::New(item.m_rtimeCreated));
+  result->Set(Nan::New("timeUpdated").ToLocalChecked(),
+              Nan::New(item.m_rtimeUpdated));
+  result->Set(Nan::New("votesDown").ToLocalChecked(),
+              Nan::New(item.m_unVotesDown));
+  result->Set(Nan::New("votesUp").ToLocalChecked(),
+              Nan::New(item.m_unVotesUp));
 
   return result;
 }
@@ -67,8 +89,8 @@ inline std::string GetAbsoluteFilePath(const std::string& file_path,
 
 namespace greenworks {
 
-FileShareWorker::FileShareWorker(NanCallback* success_callback,
-    NanCallback* error_callback, const std::string& file_path)
+FileShareWorker::FileShareWorker(Nan::Callback* success_callback,
+    Nan::Callback* error_callback, const std::string& file_path)
         :SteamCallbackAsyncWorker(success_callback, error_callback),
          file_path_(file_path) {
 }
@@ -99,15 +121,15 @@ void FileShareWorker::OnFileShareCompleted(
 }
 
 void FileShareWorker::HandleOKCallback() {
-  NanScope();
+  Nan::HandleScope scope;
 
-  v8::Local<v8::Value> argv[] = { NanNew<v8::String>(
-      utils::uint64ToString(share_file_handle_)) };
+  v8::Local<v8::Value> argv[] = {
+      Nan::New(utils::uint64ToString(share_file_handle_)).ToLocalChecked() };
   callback->Call(1, argv);
 }
 
 PublishWorkshopFileWorker::PublishWorkshopFileWorker(
-    NanCallback* success_callback, NanCallback* error_callback,
+    Nan::Callback* success_callback, Nan::Callback* error_callback,
     const std::string& file_path, const std::string& image_path,
     const std::string& title, const std::string& description):
         SteamCallbackAsyncWorker(success_callback, error_callback),
@@ -152,15 +174,15 @@ void PublishWorkshopFileWorker::OnFilePublishCompleted(
 }
 
 void PublishWorkshopFileWorker::HandleOKCallback() {
-  NanScope();
+  Nan::HandleScope scope;
 
-  v8::Local<v8::Value> argv[] = { NanNew<v8::String>(
-      utils::uint64ToString(publish_file_id_)) };
+  v8::Local<v8::Value> argv[] = {
+      Nan::New(utils::uint64ToString(publish_file_id_)).ToLocalChecked() };
   callback->Call(1, argv);
 }
 
 UpdatePublishedWorkshopFileWorker::UpdatePublishedWorkshopFileWorker(
-    NanCallback* success_callback, NanCallback* error_callback,
+    Nan::Callback* success_callback, Nan::Callback* error_callback,
     PublishedFileId_t published_file_id, const std::string& file_path,
     const std::string& image_path, const std::string& title,
     const std::string& description):
@@ -213,17 +235,17 @@ void UpdatePublishedWorkshopFileWorker::OnCommitPublishedFileUpdateCompleted(
   is_completed_ = true;
 }
 
-QueryUGCWorker::QueryUGCWorker(NanCallback* success_callback,
-    NanCallback* error_callback, EUGCMatchingUGCType ugc_matching_type)
+QueryUGCWorker::QueryUGCWorker(Nan::Callback* success_callback,
+    Nan::Callback* error_callback, EUGCMatchingUGCType ugc_matching_type)
         :SteamCallbackAsyncWorker(success_callback, error_callback),
          ugc_matching_type_(ugc_matching_type) {
 }
 
 
 void QueryUGCWorker::HandleOKCallback() {
-  NanScope();
+  Nan::HandleScope scope;
 
-  v8::Local<v8::Array> items = NanNew<v8::Array>(
+  v8::Local<v8::Array> items = Nan::New<v8::Array>(
       static_cast<int>(ugc_items_.size()));
   for (size_t i = 0; i < ugc_items_.size(); ++i)
     items->Set(i, ConvertToJsObject(ugc_items_[i]));
@@ -249,8 +271,8 @@ void QueryUGCWorker::OnUGCQueryCompleted(SteamUGCQueryCompleted_t* result,
   is_completed_ = true;
 }
 
-QueryAllUGCWorker::QueryAllUGCWorker(NanCallback* success_callback,
-    NanCallback* error_callback, EUGCMatchingUGCType ugc_matching_type,
+QueryAllUGCWorker::QueryAllUGCWorker(Nan::Callback* success_callback,
+    Nan::Callback* error_callback, EUGCMatchingUGCType ugc_matching_type,
     EUGCQuery ugc_query_type)
         :QueryUGCWorker(success_callback, error_callback, ugc_matching_type),
          ugc_query_type_(ugc_query_type) {
@@ -268,8 +290,8 @@ void QueryAllUGCWorker::Execute() {
   WaitForCompleted();
 }
 
-QueryUserUGCWorker::QueryUserUGCWorker(NanCallback* success_callback,
-    NanCallback* error_callback, EUGCMatchingUGCType ugc_matching_type,
+QueryUserUGCWorker::QueryUserUGCWorker(Nan::Callback* success_callback,
+    Nan::Callback* error_callback, EUGCMatchingUGCType ugc_matching_type,
     EUserUGCList ugc_list, EUserUGCListSortOrder ugc_list_sort_order)
         :QueryUGCWorker(success_callback, error_callback, ugc_matching_type),
          ugc_list_(ugc_list),
@@ -295,8 +317,8 @@ void QueryUserUGCWorker::Execute() {
   WaitForCompleted();
 }
 
-DownloadItemWorker::DownloadItemWorker(NanCallback* success_callback,
-    NanCallback* error_callback, UGCHandle_t download_file_handle,
+DownloadItemWorker::DownloadItemWorker(Nan::Callback* success_callback,
+    Nan::Callback* error_callback, UGCHandle_t download_file_handle,
     const std::string& download_dir)
         :SteamCallbackAsyncWorker(success_callback, error_callback),
          download_file_handle_(download_file_handle),
@@ -337,8 +359,8 @@ void DownloadItemWorker::OnDownloadCompleted(
   is_completed_ = true;
 }
 
-SynchronizeItemsWorker::SynchronizeItemsWorker(NanCallback* success_callback,
-    NanCallback* error_callback, const std::string& download_dir)
+SynchronizeItemsWorker::SynchronizeItemsWorker(Nan::Callback* success_callback,
+    Nan::Callback* error_callback, const std::string& download_dir)
         :SteamCallbackAsyncWorker(success_callback, error_callback),
          current_download_items_pos_(0),
          download_dir_(download_dir) {
@@ -445,16 +467,16 @@ void SynchronizeItemsWorker::OnDownloadCompleted(
 }
 
 void SynchronizeItemsWorker::HandleOKCallback() {
-  NanScope();
+  Nan::HandleScope scope;
 
-  v8::Local<v8::Array> items = NanNew<v8::Array>(
+  v8::Local<v8::Array> items = Nan::New<v8::Array>(
       static_cast<int>(ugc_items_.size()));
   for (size_t i = 0; i < ugc_items_.size(); ++i) {
     v8::Local<v8::Object> item = ConvertToJsObject(ugc_items_[i]);
     bool is_updated = std::find(download_ugc_items_handle_.begin(),
         download_ugc_items_handle_.end(), ugc_items_[i].m_hFile) !=
         download_ugc_items_handle_.end();
-    item->Set(NanNew("isUpdated"), NanNew(is_updated));
+    item->Set(Nan::New("isUpdated").ToLocalChecked(), Nan::New(is_updated));
     items->Set(i, item);
   }
   v8::Local<v8::Value> argv[] = { items };
@@ -462,7 +484,7 @@ void SynchronizeItemsWorker::HandleOKCallback() {
 }
 
 UnsubscribePublishedFileWorker::UnsubscribePublishedFileWorker(
-    NanCallback* success_callback, NanCallback* error_callback,
+    Nan::Callback* success_callback, Nan::Callback* error_callback,
     PublishedFileId_t unsubscribe_file_id)
         :SteamCallbackAsyncWorker(success_callback, error_callback),
          unsubscribe_file_id_(unsubscribe_file_id) {

@@ -18,8 +18,8 @@ namespace greenworks {
 
 class FileContentSaveWorker : public SteamAsyncWorker {
  public:
-  FileContentSaveWorker(NanCallback* success_callback,
-      NanCallback* error_callback, std::string file_name, std::string content);
+  FileContentSaveWorker(Nan::Callback* success_callback,
+      Nan::Callback* error_callback, std::string file_name, std::string content);
 
   // Override NanAsyncWorker methods.
   virtual void Execute();
@@ -31,7 +31,7 @@ class FileContentSaveWorker : public SteamAsyncWorker {
 
 class FilesSaveWorker : public SteamAsyncWorker {
  public:
-  FilesSaveWorker(NanCallback* success_callback, NanCallback* error_callback,
+  FilesSaveWorker(Nan::Callback* success_callback, Nan::Callback* error_callback,
       const std::vector<std::string>& files_path);
 
   // Override NanAsyncWorker methods.
@@ -43,7 +43,7 @@ class FilesSaveWorker : public SteamAsyncWorker {
 
 class FileReadWorker : public SteamAsyncWorker {
  public:
-  FileReadWorker(NanCallback* success_callback, NanCallback* error_callback,
+  FileReadWorker(Nan::Callback* success_callback, Nan::Callback* error_callback,
       std::string file_name);
 
   // Override NanAsyncWorker methods.
@@ -57,8 +57,8 @@ class FileReadWorker : public SteamAsyncWorker {
 
 class CloudQuotaGetWorker : public SteamAsyncWorker {
  public:
-  CloudQuotaGetWorker(NanCallback* success_callback,
-      NanCallback* error_callback);
+  CloudQuotaGetWorker(Nan::Callback* success_callback,
+      Nan::Callback* error_callback);
 
   // Override NanAsyncWorker methods.
   virtual void Execute();
@@ -71,8 +71,8 @@ class CloudQuotaGetWorker : public SteamAsyncWorker {
 
 class ActivateAchievementWorker : public SteamAsyncWorker {
  public:
-  ActivateAchievementWorker(NanCallback* success_callback,
-      NanCallback* error_callback, const std::string& achievement);
+  ActivateAchievementWorker(Nan::Callback* success_callback,
+      Nan::Callback* error_callback, const std::string& achievement);
 
   // Override NanAsyncWorker methods.
   virtual void Execute();
@@ -83,8 +83,8 @@ class ActivateAchievementWorker : public SteamAsyncWorker {
 
 class GetAchievementWorker : public SteamAsyncWorker {
  public:
-  GetAchievementWorker(NanCallback* success_callback,
-                       NanCallback* error_callback,
+  GetAchievementWorker(Nan::Callback* success_callback,
+                       Nan::Callback* error_callback,
                        const std::string& achievement);
 
   // Override NanAsyncWorker methods.
@@ -98,8 +98,8 @@ class GetAchievementWorker : public SteamAsyncWorker {
 
 class ClearAchievementWorker : public SteamAsyncWorker {
  public:
-  ClearAchievementWorker(NanCallback* success_callback,
-                       NanCallback* error_callback,
+  ClearAchievementWorker(Nan::Callback* success_callback,
+                       Nan::Callback* error_callback,
                        const std::string& achievement);
 
   // Override NanAsyncWorker methods.
@@ -113,8 +113,8 @@ class ClearAchievementWorker : public SteamAsyncWorker {
 
 class GetNumberOfPlayersWorker : public SteamCallbackAsyncWorker {
  public:
-  GetNumberOfPlayersWorker(NanCallback* success_callback,
-                           NanCallback* error_callback);
+  GetNumberOfPlayersWorker(Nan::Callback* success_callback,
+                           Nan::Callback* error_callback);
   void OnGetNumberOfPlayersCompleted(NumberOfCurrentPlayers_t* result,
                                      bool io_failure);
   // Override NanAsyncWorker methods.
@@ -128,8 +128,8 @@ class GetNumberOfPlayersWorker : public SteamCallbackAsyncWorker {
 
 class CreateArchiveWorker : public SteamAsyncWorker {
  public:
-  CreateArchiveWorker(NanCallback* success_callback,
-                      NanCallback* error_callback,
+  CreateArchiveWorker(Nan::Callback* success_callback,
+                      Nan::Callback* error_callback,
                       const std::string& zip_file_path,
                       const std::string& source_dir,
                       const std::string& password,
@@ -147,8 +147,8 @@ class CreateArchiveWorker : public SteamAsyncWorker {
 
 class ExtractArchiveWorker : public SteamAsyncWorker {
  public:
-  ExtractArchiveWorker(NanCallback* success_callback,
-                       NanCallback* error_callback,
+  ExtractArchiveWorker(Nan::Callback* success_callback,
+                       Nan::Callback* error_callback,
                        const std::string& zip_file_path,
                        const std::string& extract_path,
                        const std::string& password);
@@ -164,8 +164,8 @@ class ExtractArchiveWorker : public SteamAsyncWorker {
 
 class GetAuthSessionTicketWorker : public SteamCallbackAsyncWorker {
  public:
-  GetAuthSessionTicketWorker(NanCallback* success_callback,
-                             NanCallback* error_callback);
+  GetAuthSessionTicketWorker(Nan::Callback* success_callback,
+                             Nan::Callback* error_callback);
   STEAM_CALLBACK(GetAuthSessionTicketWorker,
                  OnGetAuthSessionCompleted,
                  GetAuthSessionTicketResponse_t,
@@ -183,8 +183,8 @@ class GetAuthSessionTicketWorker : public SteamCallbackAsyncWorker {
 class RequestEncryptedAppTicketWorker : public SteamCallbackAsyncWorker {
  public:
   RequestEncryptedAppTicketWorker(std::string user_data,
-                                  NanCallback* success_callback,
-                                  NanCallback* error_callback);
+                                  Nan::Callback* success_callback,
+                                  Nan::Callback* error_callback);
   void OnRequestEncryptedAppTicketCompleted(
       EncryptedAppTicketResponse_t*, bool);
   virtual void Execute();

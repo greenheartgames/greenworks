@@ -11,9 +11,9 @@
 
 namespace greenworks {
 
-SteamAsyncWorker::SteamAsyncWorker(NanCallback* success_callback,
-    NanCallback* error_callback): NanAsyncWorker(success_callback),
-                                  error_callback_(error_callback) {
+SteamAsyncWorker::SteamAsyncWorker(Nan::Callback* success_callback,
+    Nan::Callback* error_callback): Nan::AsyncWorker(success_callback),
+                                    error_callback_(error_callback) {
 }
 
 SteamAsyncWorker::~SteamAsyncWorker() {
@@ -22,13 +22,13 @@ SteamAsyncWorker::~SteamAsyncWorker() {
 
 void SteamAsyncWorker::HandleErrorCallback() {
   if (!error_callback_) return;
-  NanScope();
-  v8::Local<v8::Value> argv[] = { NanNew(ErrorMessage()) };
+  Nan::HandleScope scope;
+  v8::Local<v8::Value> argv[] = { Nan::New(ErrorMessage()).ToLocalChecked() };
   error_callback_->Call(1, argv);
 }
 
 SteamCallbackAsyncWorker::SteamCallbackAsyncWorker(
-    NanCallback* success_callback, NanCallback* error_callback):
+    Nan::Callback* success_callback, Nan::Callback* error_callback):
         SteamAsyncWorker(success_callback, error_callback),
         is_completed_(false) {
 }

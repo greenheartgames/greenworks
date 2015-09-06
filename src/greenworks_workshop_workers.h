@@ -15,13 +15,13 @@ namespace greenworks {
 
 class FileShareWorker : public SteamCallbackAsyncWorker {
  public:
-  FileShareWorker(NanCallback* success_callback,
-                  NanCallback* error_callback,
+  FileShareWorker(Nan::Callback* success_callback,
+                  Nan::Callback* error_callback,
                   const std::string& file_path);
   void OnFileShareCompleted(RemoteStorageFileShareResult_t* result,
                             bool io_failure);
 
-  // Override NanAsyncWorker methods.
+  // Override Nan::AsyncWorker methods.
   virtual void Execute();
   virtual void HandleOKCallback();
 
@@ -33,8 +33,8 @@ class FileShareWorker : public SteamCallbackAsyncWorker {
 
 class PublishWorkshopFileWorker : public SteamCallbackAsyncWorker {
  public:
-  PublishWorkshopFileWorker(NanCallback* success_callback,
-                            NanCallback* error_callback,
+  PublishWorkshopFileWorker(Nan::Callback* success_callback,
+                            Nan::Callback* error_callback,
                             const std::string& file_path,
                             const std::string& image_path,
                             const std::string& title,
@@ -42,7 +42,7 @@ class PublishWorkshopFileWorker : public SteamCallbackAsyncWorker {
   void OnFilePublishCompleted(RemoteStoragePublishFileResult_t* result,
                               bool io_failure);
 
-  // Override NanAsyncWorker methods.
+  // Override Nan::AsyncWorker methods.
   virtual void Execute();
   virtual void HandleOKCallback();
 
@@ -59,8 +59,8 @@ class PublishWorkshopFileWorker : public SteamCallbackAsyncWorker {
 
 class UpdatePublishedWorkshopFileWorker : public SteamCallbackAsyncWorker {
  public:
-  UpdatePublishedWorkshopFileWorker(NanCallback* success_callback,
-                                    NanCallback* error_callback,
+  UpdatePublishedWorkshopFileWorker(Nan::Callback* success_callback,
+                                    Nan::Callback* error_callback,
                                     PublishedFileId_t published_file_id,
                                     const std::string& file_path,
                                     const std::string& image_path,
@@ -69,7 +69,7 @@ class UpdatePublishedWorkshopFileWorker : public SteamCallbackAsyncWorker {
   void OnCommitPublishedFileUpdateCompleted(
       RemoteStorageUpdatePublishedFileResult_t* result, bool io_failure);
 
-  // Override NanAsyncWorker methods.
+  // Override Nan::AsyncWorker methods.
   virtual void Execute();
 
  private:
@@ -87,13 +87,13 @@ class UpdatePublishedWorkshopFileWorker : public SteamCallbackAsyncWorker {
 // A base worker class for querying (user/all) ugc.
 class QueryUGCWorker : public SteamCallbackAsyncWorker {
  public:
-  QueryUGCWorker(NanCallback* success_callback,
-                 NanCallback* error_callback,
+  QueryUGCWorker(Nan::Callback* success_callback,
+                 Nan::Callback* error_callback,
                  EUGCMatchingUGCType ugc_matching_type);
   void OnUGCQueryCompleted(SteamUGCQueryCompleted_t* result,
                            bool io_failure);
 
-  // Override NanAsyncWorker methods.
+  // Override Nan::AsyncWorker methods.
   virtual void HandleOKCallback();
 
  protected:
@@ -106,12 +106,12 @@ class QueryUGCWorker : public SteamCallbackAsyncWorker {
 
 class QueryAllUGCWorker : public QueryUGCWorker {
  public:
-  QueryAllUGCWorker(NanCallback* success_callback,
-                    NanCallback* error_callback,
+  QueryAllUGCWorker(Nan::Callback* success_callback,
+                    Nan::Callback* error_callback,
                     EUGCMatchingUGCType ugc_matching_type,
                     EUGCQuery ugc_query_type);
 
-  // Override NanAsyncWorker methods.
+  // Override Nan::AsyncWorker methods.
   virtual void Execute();
 
  private:
@@ -120,13 +120,13 @@ class QueryAllUGCWorker : public QueryUGCWorker {
 
 class QueryUserUGCWorker : public QueryUGCWorker {
  public:
-  QueryUserUGCWorker(NanCallback* success_callback,
-                     NanCallback* error_callback,
+  QueryUserUGCWorker(Nan::Callback* success_callback,
+                     Nan::Callback* error_callback,
                      EUGCMatchingUGCType ugc_matching_type,
                      EUserUGCList ugc_list,
                      EUserUGCListSortOrder ugc_list_sort_order);
 
-  // Override NanAsyncWorker methods.
+  // Override Nan::AsyncWorker methods.
   virtual void Execute();
 
  private:
@@ -136,15 +136,15 @@ class QueryUserUGCWorker : public QueryUGCWorker {
 
 class DownloadItemWorker : public SteamCallbackAsyncWorker {
  public:
-  DownloadItemWorker(NanCallback* success_callback,
-                     NanCallback* error_callback,
+  DownloadItemWorker(Nan::Callback* success_callback,
+                     Nan::Callback* error_callback,
                      UGCHandle_t download_file_handle,
                      const std::string& download_dir);
 
   void OnDownloadCompleted(RemoteStorageDownloadUGCResult_t* result,
       bool io_failure);
 
-  // Override NanAsyncWorker methods.
+  // Override Nan::AsyncWorker methods.
   virtual void Execute();
 
  private:
@@ -156,8 +156,8 @@ class DownloadItemWorker : public SteamCallbackAsyncWorker {
 
 class SynchronizeItemsWorker : public SteamCallbackAsyncWorker {
  public:
-  SynchronizeItemsWorker(NanCallback* success_callback,
-                         NanCallback* error_callback,
+  SynchronizeItemsWorker(Nan::Callback* success_callback,
+                         Nan::Callback* error_callback,
                          const std::string& download_dir);
 
   void OnUGCQueryCompleted(SteamUGCQueryCompleted_t* result,
@@ -165,7 +165,7 @@ class SynchronizeItemsWorker : public SteamCallbackAsyncWorker {
   void OnDownloadCompleted(RemoteStorageDownloadUGCResult_t* result,
       bool io_failure);
 
-  // Override NanAsyncWorker methods.
+  // Override Nan::AsyncWorker methods.
   virtual void Execute();
   virtual void HandleOKCallback();
 
@@ -182,14 +182,14 @@ class SynchronizeItemsWorker : public SteamCallbackAsyncWorker {
 
 class UnsubscribePublishedFileWorker : public SteamCallbackAsyncWorker {
  public:
-  UnsubscribePublishedFileWorker(NanCallback* success_callback,
-                                 NanCallback* error_callback,
+  UnsubscribePublishedFileWorker(Nan::Callback* success_callback,
+                                 Nan::Callback* error_callback,
                                  PublishedFileId_t unsubscribe_file_id);
 
   void OnUnsubscribeCompleted(RemoteStoragePublishedFileUnsubscribed_t* result,
       bool io_failure);
 
-  // Override NanAsyncWorker methods.
+  // Override Nan::AsyncWorker methods.
   virtual void Execute();
 
  private:
