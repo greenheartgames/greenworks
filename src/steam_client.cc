@@ -6,6 +6,7 @@
 
 #include <algorithm>
 
+#include "nan.h"
 
 namespace greenworks {
 
@@ -16,6 +17,15 @@ uv_timer_t* g_steam_timer = NULL;
 
 void on_timer_close_complete(uv_handle_t* handle) {
   delete reinterpret_cast<uv_timer_t*>(handle);
+}
+
+// uv v0.11.23 has changed uv_timer_cb interface by removing status_code.
+#if NAUV_UVVERSION < 0x000b17
+void RunSteamAPICallback(uv_timer_t* handle, int status_code) {
+#else
+void RunSteamAPICallback(uv_timer_t* handle) {
+#endif
+  SteamAPI_RunCallbacks();
 }
 
 }  // namespace
@@ -87,11 +97,7 @@ void SteamClient::StartSteamLoop() {
   SteamClient::GetInstance();
   g_steam_timer = new uv_timer_t();
   uv_timer_init(uv_default_loop(), g_steam_timer);
-  uv_timer_start(g_steam_timer, &SteamClient::RunSteamAPICallback, 0, 100);
-}
-
-void SteamClient::RunSteamAPICallback(uv_timer_t* handle) {
-  SteamAPI_RunCallbacks();
+  uv_timer_start(g_steam_timer, &RunSteamAPICallback, 0, 100);
 }
 
 void SteamClient::AddObserver(Observer* observer) {

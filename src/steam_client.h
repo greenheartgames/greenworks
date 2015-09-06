@@ -30,7 +30,6 @@ class SteamClient {
 
   static SteamClient* GetInstance();
   static void StartSteamLoop();
-  static void RunSteamAPICallback(uv_timer_t* handle);
 
  private:
   SteamClient();
