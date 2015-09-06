@@ -1,5 +1,7 @@
-##New Release 0.4
-The newest release enables compatibility with node v0.11.x and v0.12.x, NW.js v0.12.X and Electron v0.21.X. If you find the release useful, please consider donating.
+##New Release 0.5
+The newest release adds more Steam achievements functionality as well as Steam Authentication methods. You can find the full list of added features on the <a href="https://github.com/greenheartgames/greenworks/releases/tag/v0.5.0">releases page</a>
+
+If you find the release useful, please consider donating.
 
 <a href='https://pledgie.com/campaigns/27218'><img alt='Click here to lend your support to: Greenworks v0.3+ and make a donation at pledgie.com !' src='https://pledgie.com/campaigns/27218.png?skin_name=chrome' border='0' ></a>
 
