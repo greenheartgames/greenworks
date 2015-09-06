@@ -21,7 +21,12 @@ void on_timer_close_complete(uv_handle_t* handle) {
 }  // namespace
 
 SteamClient::SteamClient() :
-    game_overlay_activated_(this, &SteamClient::OnGameOverlayActivated) {
+    game_overlay_activated_(this, &SteamClient::OnGameOverlayActivated),
+    steam_servers_connected_(this, &SteamClient::OnSteamServersConnected),
+    steam_servers_disconnected_(this, &SteamClient::OnSteamServersDisconnected),
+    steam_server_connect_failure_(this,
+                                  &SteamClient::OnSteamServerConnectFailure),
+    steam_shutfown_(this, &SteamClient::OnSteamShutdown) {
 }
 
 SteamClient::~SteamClient() {
@@ -42,10 +47,37 @@ SteamClient* SteamClient::GetInstance() {
   return g_steam_client;
 }
 
-void SteamClient::OnGameOverlayActivated(GameOverlayActivated_t*callback) {
+void SteamClient::OnGameOverlayActivated(GameOverlayActivated_t* callback) {
   for (size_t i = 0; i < observer_list_.size(); ++i) {
     observer_list_[i]->OnGameOverlayActivated(
         static_cast<bool>(callback->m_bActive));
+  }
+}
+
+void SteamClient::OnSteamServersConnected(SteamServersConnected_t* callback) {
+  for (size_t i = 0; i < observer_list_.size(); ++i) {
+    observer_list_[i]->OnSteamServersConnected();
+  }
+}
+
+void SteamClient::OnSteamServersDisconnected(
+    SteamServersDisconnected_t* callback) {
+  for (size_t i = 0; i < observer_list_.size(); ++i) {
+    observer_list_[i]->OnSteamServersDisconnected();
+  }
+}
+
+void SteamClient::OnSteamServerConnectFailure(
+    SteamServerConnectFailure_t* callback) {
+  for (size_t i = 0; i < observer_list_.size(); ++i) {
+    observer_list_[i]->OnSteamServerConnectFailure(
+        static_cast<int>(callback->m_eResult));
+  }
+}
+
+void SteamClient::OnSteamShutdown(SteamShutdown_t* callback) {
+  for (size_t i = 0; i < observer_list_.size(); ++i) {
+    observer_list_[i]->OnSteamShutdown();
   }
 }
 

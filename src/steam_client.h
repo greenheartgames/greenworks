@@ -17,6 +17,11 @@ class SteamClient {
   class Observer {
    public:
     virtual void OnGameOverlayActivated(bool is_active);
+    virtual void OnSteamServersConnected();
+    virtual void OnSteamServersDisconnected();
+    virtual void OnSteamServerConnectFailure(int status_code);
+    virtual void OnSteamShutdown();
+
     virtual ~Observer() {}
   };
 
@@ -34,7 +39,15 @@ class SteamClient {
   // SteamClient owns observer object
   std::vector<Observer*> observer_list_;
 
-  STEAM_CALLBACK(SteamClient, OnGameOverlayActivated, GameOverlayActivated_t, game_overlay_activated_);
+  STEAM_CALLBACK(SteamClient, OnGameOverlayActivated,
+      GameOverlayActivated_t, game_overlay_activated_);
+  STEAM_CALLBACK(SteamClient, OnSteamServersConnected,
+      SteamServersConnected_t, steam_servers_connected_);
+  STEAM_CALLBACK(SteamClient, OnSteamServersDisconnected,
+      SteamServersDisconnected_t, steam_servers_disconnected_);
+  STEAM_CALLBACK(SteamClient, OnSteamServerConnectFailure,
+      SteamServerConnectFailure_t, steam_server_connect_failure_);
+  STEAM_CALLBACK(SteamClient, OnSteamShutdown, SteamShutdown_t, steam_shutfown_);
 };
 
 }  // namespace greenworks
