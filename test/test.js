@@ -1,3 +1,7 @@
+// Copyright (c) 2015 Greenheart Games Pty. Ltd. All rights reserved.
+// Use of this source code is governed by the MIT license that can be
+// found in the LICENSE file.
+
 var assert = require("assert");
 var greenworks = require('../greenworks');
 
