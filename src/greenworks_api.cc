@@ -13,6 +13,7 @@
 #include "greenworks_async_workers.h"
 #include "greenworks_workshop_workers.h"
 #include "greenworks_utils.h"
+#include "steam_client.h"
 
 namespace {
 
@@ -21,6 +22,46 @@ namespace {
        NanThrowTypeError(msg); \
        NanReturnUndefined();   \
     } while (0);
+
+
+v8::Persistent<v8::Object> g_persistent_steam_events;
+
+class SteamEvent : public greenworks::SteamClient::Observer {
+ public:
+   // Override SteamClient::Observer methods.
+   virtual void OnGameOverlayActivated(bool is_active);
+   virtual void OnSteamServersConnected();
+   virtual void OnSteamServersDisconnected();
+   virtual void OnSteamServerConnectFailure(int status_code);
+   virtual void OnSteamShutdown();
+};
+
+void SteamEvent::OnGameOverlayActivated(bool is_active) {
+  v8::Local<v8::Value> argv[] = { NanNew("game-overlay-activated"),
+                                  NanNew(is_active) };
+  NanMakeCallback(NanNew(g_persistent_steam_events), "on", 2, argv);
+}
+
+void SteamEvent::OnSteamServersConnected() {
+  v8::Local<v8::Value> argv[] = { NanNew("steam-servers-connected") };
+  NanMakeCallback(NanNew(g_persistent_steam_events), "on", 1, argv);
+}
+
+void SteamEvent::OnSteamServersDisconnected() {
+  v8::Local<v8::Value> argv[] = { NanNew("steam-servers-disconnected") };
+  NanMakeCallback(NanNew(g_persistent_steam_events), "on", 1, argv);
+}
+
+void SteamEvent::OnSteamServerConnectFailure(int status_code) {
+  v8::Local<v8::Value> argv[] = { NanNew("steam-server-connect-failure"),
+                                  NanNew(status_code) };
+  NanMakeCallback(NanNew(g_persistent_steam_events), "on", 2, argv);
+}
+
+void SteamEvent::OnSteamShutdown() {
+  v8::Local<v8::Value> argv[] = { NanNew("steam-shutdown") };
+  NanMakeCallback(NanNew(g_persistent_steam_events), "on", 1, argv);
+}
 
 v8::Local<v8::Object> GetSteamUserCountType(int type_id) {
   v8::Local<v8::Object> account_type = NanNew<v8::Object>();
@@ -78,6 +119,8 @@ NAN_METHOD(InitAPI) {
     stream_user_stats->RequestCurrentStats();
   }
 
+  greenworks::SteamClient::GetInstance()->AddObserver(new SteamEvent());
+  greenworks::SteamClient::StartSteamLoop();
   NanReturnValue(NanNew(success));
 }
 
@@ -652,6 +695,11 @@ void InitUtilsObject(v8::Handle<v8::Object> exports) {
 }
 
 void init(v8::Handle<v8::Object> exports) {
+  // Set internal steam event handler.
+  v8::Local<v8::Object> steam_events = NanNew<v8::Object>();
+  NanAssignPersistent(g_persistent_steam_events, steam_events);
+  exports->Set(NanNew<v8::String>("_steam_events"), steam_events);
+
   // Common APIs.
   exports->Set(NanNew("initAPI"),
                NanNew<v8::FunctionTemplate>(InitAPI)->GetFunction());

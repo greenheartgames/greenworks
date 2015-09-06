@@ -91,4 +91,12 @@ greenworks.Utils.move = function(source_dir, target_dir, success_callback,
   });
 }
 
+var EventEmitter = require('events').EventEmitter;
+greenworks.__proto__ = EventEmitter.prototype;
+EventEmitter.call(greenworks);
+
+greenworks._steam_events.on = function () {
+  greenworks.emit.apply(greenworks, arguments);
+};
+
 module.exports = greenworks;
