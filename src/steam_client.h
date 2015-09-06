@@ -16,11 +16,11 @@ class SteamClient {
  public:
   class Observer {
    public:
-    virtual void OnGameOverlayActivated(bool is_active);
-    virtual void OnSteamServersConnected();
-    virtual void OnSteamServersDisconnected();
-    virtual void OnSteamServerConnectFailure(int status_code);
-    virtual void OnSteamShutdown();
+    virtual void OnGameOverlayActivated(bool is_active) = 0;
+    virtual void OnSteamServersConnected() = 0;
+    virtual void OnSteamServersDisconnected() = 0;
+    virtual void OnSteamServerConnectFailure(int status_code) = 0;
+    virtual void OnSteamShutdown() = 0;
 
     virtual ~Observer() {}
   };

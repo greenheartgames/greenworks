@@ -28,12 +28,12 @@ Nan::Persistent<v8::Object> g_persistent_steam_events;
 
 class SteamEvent : public greenworks::SteamClient::Observer {
  public:
-   // Override SteamClient::Observer methods.
-   virtual void OnGameOverlayActivated(bool is_active);
-   virtual void OnSteamServersConnected();
-   virtual void OnSteamServersDisconnected();
-   virtual void OnSteamServerConnectFailure(int status_code);
-   virtual void OnSteamShutdown();
+  // Override SteamClient::Observer methods.
+  virtual void OnGameOverlayActivated(bool is_active);
+  virtual void OnSteamServersConnected();
+  virtual void OnSteamServersDisconnected();
+  virtual void OnSteamServerConnectFailure(int status_code);
+  virtual void OnSteamShutdown();
 };
 
 void SteamEvent::OnGameOverlayActivated(bool is_active) {
