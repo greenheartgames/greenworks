@@ -35,7 +35,6 @@ SteamCallbackAsyncWorker::SteamCallbackAsyncWorker(
 
 void SteamCallbackAsyncWorker::WaitForCompleted() {
   while (!is_completed_) {
-    SteamAPI_RunCallbacks();
     // sleep 100ms.
     utils::sleep(100);
   }
