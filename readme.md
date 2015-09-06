@@ -14,7 +14,7 @@ The project is built using [NAN](https://github.com/rvagg/nan) to support both d
 Currently greenworks supports:
 
 * node v0.10.X, v0.11.X and v0.12.X
-* iojs v1.6.2
+* io.js v3.2.0
 * NW.js(formerly node-webkit) v0.8.X, v0.11.X and v0.12.X
 * Electron(formerly atom-shell) v0.21.X or above
 
@@ -97,7 +97,7 @@ to `<app-dir>/lib/`.
 
 ###Prerequisties
 
-* Steamworks SDK 1.30
+* Steamworks SDK 1.34
 * nodejs v0.10.X or v0.11.X
 * node-gyp (or nw-gyp if you use NW.js)
 
