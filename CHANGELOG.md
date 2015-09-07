@@ -1,3 +1,27 @@
+## 2015.09.07 v0.5.0 stable
+
+* Greenworks compiled for NW.js v0.12.1 with Steamworks SDK 1.34
+* Upgrade nan to v2 to support iojs v3.
+* Add achievements and authentication APIs and support listening steam events:
+  * greenworks.getNumberOfAchievements
+  * greenworks.getAchievement
+  * greenworks.clearAchievement
+  * greenworks.getAchievementNames
+  * greenworks.getAuthSessionTicket
+  * greenworks.getEncryptedAppTicket
+  * greenworks.cancelAuthTicket
+  * greenworks.activateGameOverlayToWebPage
+  * greenworks.on('game-overlay-activated')
+  * greenworks.on('steam-severs-connected')
+  * greenworks.on('steam-severs-disconnected')
+  * greenworks.on('steam-sever-connect-failure')
+  * greenworks.on('steam-shutdown')
+
+## 2015.03.26 v0.4.1 stable
+
+* Upgrade nan module to support node v0.12 as well as iojs
+* Greenworks complied for NW.js(formerly node-webkit) v0.12.0 with Steamworks SDK 1.30
+
 ## 2014.10.24 v0.4.0 stable
 
 * Greenworks complied for node-webkit v0.8.6 and v0.11.2 with Steamworks SDK 1.30
