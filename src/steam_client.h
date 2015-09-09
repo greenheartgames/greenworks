@@ -26,7 +26,6 @@ class SteamClient {
   };
 
   void AddObserver(Observer* observer);
-  void RemoveObserver(Observer* observer);
 
   static SteamClient* GetInstance();
   static void StartSteamLoop();
