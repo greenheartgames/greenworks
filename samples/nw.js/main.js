@@ -6,8 +6,8 @@ function log(msg) {
 }
 
 function testSteamAPI() {
-  var os = require('os')
-  var greenworks = require('../../greenworks');
+  var os = require('os');
+  var greenworks = require('../../greenworks.js');
   if (!greenworks) {
     log('Greenworks not support for ' + os.platform() + ' platform');
   } else {
@@ -16,11 +16,13 @@ function testSteamAPI() {
     } else {
       log('Steam API initialized successfully.');
 
-      greenworks.on('activated', function() { log('receive activated'); });
-      greenworks.on('activated', function() { log('receive activated'); });
-      greenworks.on('steam-severs-connected', function() { log('connected'); });
-      greenworks.on('steam-severs-disconnected', function() { log('disconnected'); });
-      greenworks.on('steam-sever-connect-failure', function() { log('connected failure'); });
+      log('Cloud enabled: ' + greenworks.isCloudEnabled());
+      log('Cloud enabled for user: ' + greenworks.isCloudEnabledForUser());
+
+      greenworks.on('game-overlay-activated', function(is_active) { log('overlay active: '+is_active); });
+      greenworks.on('steam-servers-connected', function() { log('connected'); });
+      greenworks.on('steam-servers-disconnected', function() { log('disconnected'); });
+      greenworks.on('steam-server-connect-failure', function() { log('connected failure'); });
       greenworks.on('steam-shutdown', function() { log('shutdown'); });
 
       greenworks.saveTextToFile('test_file.txt', 'test_content',
@@ -32,13 +34,12 @@ function testSteamAPI() {
           log('Failed on reading text from file'); });
 
       greenworks.getCloudQuota(
-          function() { log('Getting cloud quota successfully.') },
+          function(quota, used) { log('Getting cloud quota successfully: '+used+' of '+quota) },
           function(err) { log('Failed on getting cloud quota.') });
 
       greenworks.activateAchievement('achievement',
           function() { log('Activating achievement successfully'); },
           function(err) { log('Failed on activating achievement.'); });
-      log('Cloud Enabled: ' + greenworks.isCloudEnabled());
 
       greenworks.getNumberOfPlayers(
           function(a) { log("Number of players " + a) },
@@ -48,4 +49,14 @@ function testSteamAPI() {
 }
 
 document.addEventListener('DOMContentLoaded', function() { testSteamAPI() });
+
+var fps = 30;
+function forceRefresh() {
+  // this function updates the renderer at a given frame rate, even if the user is idle.
+  // without this function, the Steam overlay would feel like "frozen".
+  setTimeout(function() {
+    document.getElementById("forceRefresh").getContext("2d").clearRect(0, 0, 1, 1);
+    window.requestAnimationFrame(forceRefresh);
+  }, 1000 / fps);
+}
 

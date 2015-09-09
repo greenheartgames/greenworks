@@ -1,14 +1,17 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8"/>
   <title>Hello Greenworks</title>
   <script src="main.js"></script>
 </head>
 
-<body>
+<body onload="forceRefresh();">
   <h1>Greenworks Test</h1>
-    NW.js version: <i><script>document.write(process.versions['node-webkit'])</script></i>.</br>
-    io.js version: <i><script>document.write(process.version)</script></i>.</br>
+    NW.js version: <i><script>document.write(process.versions['node-webkit'])</script></i>.<br/>
+    io.js version: <i><script>document.write(process.version)</script></i>.<br/>
   <div id="logs" style="width: 70%; border: 1px dashed #ccc; padding: 3px; margin-top:10px;"></div>
+
+  <canvas id="forceRefresh" width="1" height="1"></canvas>
+
 </body>
