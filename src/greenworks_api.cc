@@ -37,6 +37,7 @@ class SteamEvent : public greenworks::SteamClient::Observer {
 };
 
 void SteamEvent::OnGameOverlayActivated(bool is_active) {
+  Nan::HandleScope scope;
   v8::Local<v8::Value> argv[] = {
       Nan::New("game-overlay-activated").ToLocalChecked(),
       Nan::New(is_active) };
@@ -45,6 +46,7 @@ void SteamEvent::OnGameOverlayActivated(bool is_active) {
 }
 
 void SteamEvent::OnSteamServersConnected() {
+  Nan::HandleScope scope;
   v8::Local<v8::Value> argv[] = {
       Nan::New("steam-servers-connected").ToLocalChecked() };
   Nan::MakeCallback(
@@ -52,6 +54,7 @@ void SteamEvent::OnSteamServersConnected() {
 }
 
 void SteamEvent::OnSteamServersDisconnected() {
+  Nan::HandleScope scope;
   v8::Local<v8::Value> argv[] = {
       Nan::New("steam-servers-disconnected").ToLocalChecked() };
   Nan::MakeCallback(
@@ -59,6 +62,7 @@ void SteamEvent::OnSteamServersDisconnected() {
 }
 
 void SteamEvent::OnSteamServerConnectFailure(int status_code) {
+  Nan::HandleScope scope;
   v8::Local<v8::Value> argv[] = {
       Nan::New("steam-server-connect-failure").ToLocalChecked(),
       Nan::New(status_code) };
@@ -67,6 +71,7 @@ void SteamEvent::OnSteamServerConnectFailure(int status_code) {
 }
 
 void SteamEvent::OnSteamShutdown() {
+  Nan::HandleScope scope;
   v8::Local<v8::Value> argv[] = { Nan::New("steam-shutdown").ToLocalChecked() };
   Nan::MakeCallback(
       Nan::New(g_persistent_steam_events), "on", 1, argv);
