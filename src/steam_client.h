@@ -45,7 +45,7 @@ class SteamClient {
       SteamServersDisconnected_t, steam_servers_disconnected_);
   STEAM_CALLBACK(SteamClient, OnSteamServerConnectFailure,
       SteamServerConnectFailure_t, steam_server_connect_failure_);
-  STEAM_CALLBACK(SteamClient, OnSteamShutdown, SteamShutdown_t, steam_shutfown_);
+  STEAM_CALLBACK(SteamClient, OnSteamShutdown, SteamShutdown_t, steam_shutdown_);
 };
 
 }  // namespace greenworks

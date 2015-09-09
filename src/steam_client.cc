@@ -36,7 +36,7 @@ SteamClient::SteamClient() :
     steam_servers_disconnected_(this, &SteamClient::OnSteamServersDisconnected),
     steam_server_connect_failure_(this,
                                   &SteamClient::OnSteamServerConnectFailure),
-    steam_shutfown_(this, &SteamClient::OnSteamShutdown) {
+    steam_shutdown_(this, &SteamClient::OnSteamShutdown) {
 }
 
 SteamClient::~SteamClient() {
