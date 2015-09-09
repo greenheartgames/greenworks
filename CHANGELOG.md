@@ -12,9 +12,9 @@
   * greenworks.cancelAuthTicket
   * greenworks.activateGameOverlayToWebPage
   * greenworks.on('game-overlay-activated')
-  * greenworks.on('steam-severs-connected')
-  * greenworks.on('steam-severs-disconnected')
-  * greenworks.on('steam-sever-connect-failure')
+  * greenworks.on('steam-servers-connected')
+  * greenworks.on('steam-servers-disconnected')
+  * greenworks.on('steam-servers-connect-failure')
   * greenworks.on('steam-shutdown')
 
 ## 2015.03.26 v0.4.1 stable
