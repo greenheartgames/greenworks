@@ -19,7 +19,7 @@ function testSteamAPI() {
       log('Cloud enabled: ' + greenworks.isCloudEnabled());
       log('Cloud enabled for user: ' + greenworks.isCloudEnabledForUser());
 
-      greenworks.on('activated', function(is_active) { log('receive activated: '+is_active); });
+      greenworks.on('game-overlay-activated', function(is_active) { log('overlay active: '+is_active); });
       greenworks.on('steam-servers-connected', function() { log('connected'); });
       greenworks.on('steam-servers-disconnected', function() { log('disconnected'); });
       greenworks.on('steam-server-connect-failure', function() { log('connected failure'); });
