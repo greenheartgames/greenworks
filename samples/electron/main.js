@@ -6,7 +6,7 @@ function log(msg) {
 }
 
 function testSteamAPI() {
-  var os = require('os')
+  var os = require('os');
   var greenworks = require('../../greenworks');
   if (!greenworks) {
     log('Greenworks not support for ' + os.platform() + ' platform');
@@ -16,11 +16,12 @@ function testSteamAPI() {
     } else {
       log('Steam API initialized successfully.');
 
-      greenworks.on('activated', function() { log('receive activated'); });
-      greenworks.on('activated', function() { log('receive activated'); });
-      greenworks.on('steam-severs-connected', function() { log('connected'); });
-      greenworks.on('steam-severs-disconnected', function() { log('disconnected'); });
-      greenworks.on('steam-sever-connect-failure', function() { log('connected failure'); });
+      log('Cloud enabled: ' + greenworks.isCloudEnabled());
+      log('Cloud enabled for user: ' + greenworks.isCloudEnabledForUser());
+
+      greenworks.on('steam-servers-connected', function() { log('connected'); });
+      greenworks.on('steam-servers-disconnected', function() { log('disconnected'); });
+      greenworks.on('steam-server-connect-failure', function() { log('connected failure'); });
       greenworks.on('steam-shutdown', function() { log('shutdown'); });
 
       greenworks.saveTextToFile('test_file.txt', 'test_content',
@@ -38,7 +39,6 @@ function testSteamAPI() {
       greenworks.activateAchievement('achievement',
           function() { log('Activating achievement successfully'); },
           function(err) { log('Failed on activating achievement.'); });
-      log('Cloud Enabled: ' + greenworks.isCloudEnabled());
 
       greenworks.getNumberOfPlayers(
           function(a) { log("Number of players " + a) },

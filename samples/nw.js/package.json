@@ -1,5 +1,4 @@
 {
   "name": "greenworks-nw-demo",
-  "main": "index.html",
-  "chromium-args": "--in-process-gpu"
+  "main": "index.html"
 }
