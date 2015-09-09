@@ -59,4 +59,3 @@ function forceRefresh() {
     window.requestAnimationFrame(forceRefresh);
   }, 1000 / fps);
 }
-
