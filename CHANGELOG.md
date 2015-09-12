@@ -1,3 +1,7 @@
+## 2015.09.12 v0.5.1 stable
+
+* Fix a crash issue when emitting `game-overlay-activated` event on Windows/Linux.
+
 ## 2015.09.07 v0.5.0 stable
 
 * Greenworks compiled for NW.js v0.12.1 with Steamworks SDK 1.34
