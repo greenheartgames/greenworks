@@ -1,5 +1,5 @@
 ##New Release 0.5
-The newest release adds more Steam achievements functionality as well as Steam Authentication methods. You can find the full list of added features on the <a href="https://github.com/greenheartgames/greenworks/releases/tag/v0.5.0">releases page</a>
+The newest release adds more Steam achievements functionality as well as Steam Authentication methods. You can find the full list of added features on the <a href="https://github.com/greenheartgames/greenworks/releases">releases page</a>
 
 If you find the release useful, please consider donating.
 
