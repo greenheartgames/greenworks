@@ -77,6 +77,7 @@
         'src/greenworks_utils.h',
         'src/greenworks_unzip.cc',
         'src/greenworks_unzip.h',
+        'src/greenworks_version.h',
         'src/greenworks_zip.cc',
         'src/greenworks_zip.h',
         'src/steam_client.cc',
