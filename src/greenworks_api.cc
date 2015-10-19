@@ -13,6 +13,7 @@
 #include "greenworks_async_workers.h"
 #include "greenworks_workshop_workers.h"
 #include "greenworks_utils.h"
+#include "greenworks_version.h"
 #include "steam_client.h"
 
 namespace {
@@ -730,6 +731,10 @@ NAN_MODULE_INIT(init) {
   g_persistent_steam_events.Reset(steam_events);
   Nan::Set(target, Nan::New("_steam_events").ToLocalChecked(), steam_events);
 
+  // Set versions.
+  Nan::Set(target,
+           Nan::New("_version").ToLocalChecked(),
+           Nan::New(GREENWORKS_VERSION).ToLocalChecked());
   // Common APIs.
   Nan::Set(target,
            Nan::New("initAPI").ToLocalChecked(),

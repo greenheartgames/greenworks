@@ -104,4 +104,6 @@ greenworks._steam_events.on = function () {
   greenworks.emit.apply(greenworks, arguments);
 };
 
+process.versions['greenworks'] = greenworks._version;
+
 module.exports = greenworks;
