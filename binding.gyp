@@ -126,6 +126,9 @@
           '-Wno-deprecated-declarations',
         ],
       },
+      'msvs_disabled_warnings': [
+        4267,  # conversion from 'size_t' to 'int', popssible loss of data
+      ],
     },
     {
       'target_name': 'copy_binaries',

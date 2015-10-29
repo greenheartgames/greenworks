@@ -51,6 +51,9 @@
           'toolsets': ['target', 'host'],
         }],
       ],
+      'msvs_disabled_warnings': [
+        4244,  # conversion from '__int64' to 'long'(gzlib.c)
+      ],
     },
     {
       'target_name': 'minizip',
