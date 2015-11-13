@@ -21,6 +21,7 @@ class SteamClient {
     virtual void OnSteamServersDisconnected() = 0;
     virtual void OnSteamServerConnectFailure(int status_code) = 0;
     virtual void OnSteamShutdown() = 0;
+    virtual void OnGamepadTextInputDismissed(bool submitted, uint32 text) = 0;
 
     virtual ~Observer() {}
   };
@@ -45,6 +46,8 @@ class SteamClient {
       SteamServersDisconnected_t, steam_servers_disconnected_);
   STEAM_CALLBACK(SteamClient, OnSteamServerConnectFailure,
       SteamServerConnectFailure_t, steam_server_connect_failure_);
+  STEAM_CALLBACK(SteamClient, OnGamepadTextInputDismissed,
+      GamepadTextInputDismissed_t, gamepad_text_input_dismissed_);
   STEAM_CALLBACK(SteamClient, OnSteamShutdown, SteamShutdown_t, steam_shutdown_);
 };
 

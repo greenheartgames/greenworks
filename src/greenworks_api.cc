@@ -35,6 +35,7 @@ class SteamEvent : public greenworks::SteamClient::Observer {
   virtual void OnSteamServersDisconnected();
   virtual void OnSteamServerConnectFailure(int status_code);
   virtual void OnSteamShutdown();
+  virtual void OnGamepadTextInputDismissed(bool submitted, uint32 text);
 };
 
 void SteamEvent::OnGameOverlayActivated(bool is_active) {
@@ -76,6 +77,16 @@ void SteamEvent::OnSteamShutdown() {
   v8::Local<v8::Value> argv[] = { Nan::New("steam-shutdown").ToLocalChecked() };
   Nan::MakeCallback(
       Nan::New(g_persistent_steam_events), "on", 1, argv);
+}
+
+void SteamEvent::OnGamepadTextInputDismissed(bool submitted, uint32 text) {
+  Nan::HandleScope scope;
+  v8::Local<v8::Value> argv[] = {
+      Nan::New("gamepad-text-input-dismissed").ToLocalChecked(),
+      Nan::New(submitted),
+      Nan::New(text) };
+  Nan::MakeCallback(
+      Nan::New(g_persistent_steam_events), "on", 3, argv);
 }
 
 v8::Local<v8::Object> GetSteamUserCountType(int type_id) {
