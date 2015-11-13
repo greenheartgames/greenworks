@@ -21,6 +21,10 @@ void InitUserUgcListSortOrder(v8::Handle<v8::Object> exports);
 
 void InitUserUgcList(v8::Handle<v8::Object> exports);
 
+void InitGamepadTextInputMode(v8::Handle<v8::Object> exports);
+
+void InitGamepadTextInputLineMode(v8::Handle<v8::Object> exports);
+
 void sleep(int milliseconds);
 
 bool ReadFile(const char* path, char* &content, int& length);
