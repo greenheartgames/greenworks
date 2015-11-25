@@ -11,14 +11,13 @@ Greenworks is a MIT-licensed node.js addon allowing you to integrate your HTML5 
 
 Greenworks is developed by Greenheart Games, originally to enable Steam integration in [Game Dev Tycoon](http://www.greenheartgames.com/app/game-dev-tycoon/), and has since been open-sourced and [used in other projects](https://github.com/greenheartgames/greenworks/wiki/Apps-games-using-greenworks). The project is funded by Greenheart Games and other [donors](https://pledgie.com/campaigns/27218#donors).
 
-The project is built using [NAN](https://github.com/rvagg/nan) to support both different node versions.
+The project is built using [NAN](https://github.com/nodejs/nan) module to support different node versions.
 
 Currently greenworks supports:
 
-* node v0.10.X, v0.11.X and v0.12.X
-* io.js v3.2.0
-* NW.js(formerly node-webkit) v0.8.X, v0.11.X and v0.12.X
-* Electron(formerly atom-shell) v0.21.X or above
+* node v0.8, v0.10, v0.12 and v4
+* NW.js (formerly node-webkit) v0.8, v0.11 and v0.12
+* Electron (formerly atom-shell) v0.21.X or above
 
 ##Download
 
@@ -181,7 +180,7 @@ See [how to find the application ID for a Steam Game](https://support.steampower
 
 Greenworks is published under the MIT license. See `LICENSE` file for details.
 
-If you use Greenworks, please let us know at [@GreenheartGames](https://twitter.com/GreenheartGames) and feel free to add your product to our  [product list](https://github.com/greenheartgames/greenworks/wiki/Apps-games-using-greenworks).
+If you use Greenworks, please let us know at [@GreenheartGames](https://twitter.com/GreenheartGames) and feel free to add your product to our [product list](https://github.com/greenheartgames/greenworks/wiki/Apps-games-using-greenworks).
 
 ##Donate
 
