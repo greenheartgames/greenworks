@@ -724,10 +724,11 @@ NAN_METHOD(ShowGamepadTextInput) {
       info[0]->Int32Value());
   EGamepadTextInputLineMode input_line_mode =
       static_cast<EGamepadTextInputLineMode>(info[1]->Int32Value());
-  char* description = *(static_cast<v8::String::Utf8Value>(info[2]->ToString()));
+  char* description =
+      *(static_cast<v8::String::Utf8Value>(info[2]->ToString()));
   int char_max = info[3]->Int32Value();
   char* existing_text =
-     *(static_cast<v8::String::Utf8Value>(info[4]->ToString()));
+      *(static_cast<v8::String::Utf8Value>(info[4]->ToString()));
   bool success = SteamUtils()->ShowGamepadTextInput(
       input_mode, input_line_mode, description, char_max, existing_text);
   info.GetReturnValue().Set(Nan::New(success));

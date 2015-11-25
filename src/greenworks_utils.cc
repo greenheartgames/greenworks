@@ -132,13 +132,13 @@ void InitGamepadTextInputMode(v8::Handle<v8::Object> exports) {
 void InitGamepadTextInputLineMode(v8::Handle<v8::Object> exports) {
   v8::Local<v8::Object> line_mode = Nan::New<v8::Object>();
   line_mode->Set(Nan::New("SingleLine").ToLocalChecked(),
-            Nan::New(k_EGamepadTextInputLineModeSingleLine));
+                 Nan::New(k_EGamepadTextInputLineModeSingleLine));
   line_mode->Set(Nan::New("MultipleLines").ToLocalChecked(),
-            Nan::New(k_EGamepadTextInputLineModeMultipleLines));
+                 Nan::New(k_EGamepadTextInputLineModeMultipleLines));
   Nan::Persistent<v8::Object> constructor;
   constructor.Reset(line_mode);
   Nan::Set(exports,
-           Nan::New("GamepadTextInputLIneMode").ToLocalChecked(),
+           Nan::New("GamepadTextInputLineMode").ToLocalChecked(),
            line_mode);
 }
 
