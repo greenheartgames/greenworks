@@ -118,6 +118,30 @@ void InitUserUgcList(v8::Handle<v8::Object> exports) {
   Nan::Set(exports, Nan::New("UserUGCList").ToLocalChecked(), ugc_list);
 }
 
+void InitGamepadTextInputMode(v8::Handle<v8::Object> exports) {
+  v8::Local<v8::Object> mode = Nan::New<v8::Object>();
+  mode->Set(Nan::New("Normal").ToLocalChecked(),
+            Nan::New(k_EGamepadTextInputModeNormal));
+  mode->Set(Nan::New("Password").ToLocalChecked(),
+            Nan::New(k_EGamepadTextInputModePassword));
+  Nan::Persistent<v8::Object> constructor;
+  constructor.Reset(mode);
+  Nan::Set(exports, Nan::New("GamepadTextInputMode").ToLocalChecked(), mode);
+}
+
+void InitGamepadTextInputLineMode(v8::Handle<v8::Object> exports) {
+  v8::Local<v8::Object> line_mode = Nan::New<v8::Object>();
+  line_mode->Set(Nan::New("SingleLine").ToLocalChecked(),
+                 Nan::New(k_EGamepadTextInputLineModeSingleLine));
+  line_mode->Set(Nan::New("MultipleLines").ToLocalChecked(),
+                 Nan::New(k_EGamepadTextInputLineModeMultipleLines));
+  Nan::Persistent<v8::Object> constructor;
+  constructor.Reset(line_mode);
+  Nan::Set(exports,
+           Nan::New("GamepadTextInputLineMode").ToLocalChecked(),
+           line_mode);
+}
+
 void InitUserUgcListSortOrder(v8::Handle<v8::Object> exports) {
   v8::Local<v8::Object> ugc_list_sort_order = Nan::New<v8::Object>();
   ugc_list_sort_order->Set(Nan::New("CreationOrderDesc").ToLocalChecked(),

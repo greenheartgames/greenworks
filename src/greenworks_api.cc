@@ -35,6 +35,7 @@ class SteamEvent : public greenworks::SteamClient::Observer {
   virtual void OnSteamServersDisconnected();
   virtual void OnSteamServerConnectFailure(int status_code);
   virtual void OnSteamShutdown();
+  virtual void OnGamepadTextInputDismissed(bool submitted, uint32 text);
 };
 
 void SteamEvent::OnGameOverlayActivated(bool is_active) {
@@ -76,6 +77,16 @@ void SteamEvent::OnSteamShutdown() {
   v8::Local<v8::Value> argv[] = { Nan::New("steam-shutdown").ToLocalChecked() };
   Nan::MakeCallback(
       Nan::New(g_persistent_steam_events), "on", 1, argv);
+}
+
+void SteamEvent::OnGamepadTextInputDismissed(bool submitted, uint32 text) {
+  Nan::HandleScope scope;
+  v8::Local<v8::Value> argv[] = {
+      Nan::New("gamepad-text-input-dismissed").ToLocalChecked(),
+      Nan::New(submitted),
+      Nan::New(text) };
+  Nan::MakeCallback(
+      Nan::New(g_persistent_steam_events), "on", 3, argv);
 }
 
 v8::Local<v8::Object> GetSteamUserCountType(int type_id) {
@@ -703,6 +714,45 @@ NAN_METHOD(GetEncryptedAppTicket) {
   info.GetReturnValue().Set(Nan::Undefined());
 }
 
+NAN_METHOD(ShowGamepadTextInput) {
+  Nan::HandleScope scope;
+  if (info.Length() < 5 || !info[0]->IsInt32() || !info[1]->IsInt32() ||
+      !info[2]->IsString() || !info[3]->IsInt32() || !info[4]->IsString()) {
+    THROW_BAD_ARGS("Bad arguments");
+  }
+  EGamepadTextInputMode input_mode = static_cast<EGamepadTextInputMode>(
+      info[0]->Int32Value());
+  EGamepadTextInputLineMode input_line_mode =
+      static_cast<EGamepadTextInputLineMode>(info[1]->Int32Value());
+  char* description =
+      *(static_cast<v8::String::Utf8Value>(info[2]->ToString()));
+  int char_max = info[3]->Int32Value();
+  char* existing_text =
+      *(static_cast<v8::String::Utf8Value>(info[4]->ToString()));
+  bool success = SteamUtils()->ShowGamepadTextInput(
+      input_mode, input_line_mode, description, char_max, existing_text);
+  info.GetReturnValue().Set(Nan::New(success));
+}
+
+NAN_METHOD(GetEnteredGamepadTextLength) {
+  Nan::HandleScope scope;
+  info.GetReturnValue().Set(
+      Nan::New(SteamUtils()->GetEnteredGamepadTextLength()));
+}
+
+NAN_METHOD(GetEnteredGamepadTextInput) {
+  Nan::HandleScope scope;
+  if (info.Length() < 1 || !info[0]->IsInt32()) {
+    THROW_BAD_ARGS("Bad arguments");
+  }
+  int length = SteamUtils()->GetEnteredGamepadTextLength();
+  char* text = new char[length+1];
+  text[length] = '\0';
+  SteamUtils()->GetEnteredGamepadTextInput(text, info[0]->Int32Value());
+  info.GetReturnValue().Set(Nan::New(text).ToLocalChecked());
+  delete text;
+}
+
 NAN_METHOD(ActivateGameOverlayToWebPage) {
   Nan::HandleScope scope;
   if (info.Length() < 1 || !info[0]->IsString()) {
@@ -847,12 +897,24 @@ NAN_MODULE_INIT(init) {
                GetEncryptedAppTicket)->GetFunction());
   Nan::Set(target,
            Nan::New("cancelAuthTicket").ToLocalChecked(),
-               Nan::New<v8::FunctionTemplate>(CancelAuthTicket)->GetFunction());
+           Nan::New<v8::FunctionTemplate>(CancelAuthTicket)->GetFunction());
+  // Gamepad APIs.
+  Nan::Set(target,
+           Nan::New("showGamepadTextInput").ToLocalChecked(),
+           Nan::New<v8::FunctionTemplate>(ShowGamepadTextInput)->GetFunction());
+  Nan::Set(target,
+           Nan::New("getEnteredGamepadTextLength").ToLocalChecked(),
+           Nan::New<v8::FunctionTemplate>(GetEnteredGamepadTextLength)->GetFunction());
+  Nan::Set(target,
+           Nan::New("getEnteredGamepadTextInput").ToLocalChecked(),
+           Nan::New<v8::FunctionTemplate>(GetEnteredGamepadTextInput)->GetFunction());
 
   utils::InitUgcMatchingTypes(target);
   utils::InitUgcQueryTypes(target);
   utils::InitUserUgcListSortOrder(target);
   utils::InitUserUgcList(target);
+  utils::InitGamepadTextInputMode(target);
+  utils::InitGamepadTextInputLineMode(target);
 
   // Utils related APIs.
   InitUtilsObject(target);

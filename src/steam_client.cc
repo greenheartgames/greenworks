@@ -36,6 +36,8 @@ SteamClient::SteamClient() :
     steam_servers_disconnected_(this, &SteamClient::OnSteamServersDisconnected),
     steam_server_connect_failure_(this,
                                   &SteamClient::OnSteamServerConnectFailure),
+    gamepad_text_input_dismissed_(this,
+                                  &SteamClient::OnGamepadTextInputDismissed),
     steam_shutdown_(this, &SteamClient::OnSteamShutdown) {
 }
 
@@ -82,6 +84,14 @@ void SteamClient::OnSteamServerConnectFailure(
   for (size_t i = 0; i < observer_list_.size(); ++i) {
     observer_list_[i]->OnSteamServerConnectFailure(
         static_cast<int>(callback->m_eResult));
+  }
+}
+
+void SteamClient::OnGamepadTextInputDismissed(
+    GamepadTextInputDismissed_t* callback) {
+  for (size_t i = 0; i < observer_list_.size(); ++i) {
+    observer_list_[i]->OnGamepadTextInputDismissed(
+        callback->m_bSubmitted, callback->m_unSubmittedText);
   }
 }
 
