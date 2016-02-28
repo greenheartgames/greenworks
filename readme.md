@@ -1,5 +1,5 @@
 ##New Release 0.5
-The newest release adds more Steam achievements functionality as well as Steam Authentication methods. You can find the full list of added features on the <a href="https://github.com/greenheartgames/greenworks/releases">releases page</a>
+The newest release adds more Steam achievements functionality as well as Steam Authentication methods. You can find the full list of added features on the [releases page](https://github.com/greenheartgames/greenworks/releases").
 
 If you find the release useful, please consider donating.
 
@@ -15,8 +15,8 @@ The project is built using [NAN](https://github.com/nodejs/nan) module to suppor
 
 Currently greenworks supports:
 
-* node v0.8, v0.10, v0.12 and v4
-* NW.js (formerly node-webkit) v0.8, v0.11 and v0.12
+* node v0.8, v0.10, v0.12, v4 and v5
+* NW.js (formerly node-webkit) v0.8, v0.11, v0.12 and v0.13-beta6+
 * Electron (formerly atom-shell) v0.21.X or above
 
 ##Download
@@ -37,7 +37,7 @@ for details.
 2. Copy the `steam_api.dll`/`libsteam_api.dylib`/`libsteam_api.so` from Steamworks SDK(`<steam_sdk_path>/redistributable_bin/`) to
 `<greenworks_path>/lib`. Please make sure the architecture (32 bits or 64 bits) of the steam dynamic library is the same as NW.js's.
 3. Create a `steam_appid.txt` file with your Steam APP ID under `<greenworks_path>/` directory. (
-    You only need the `steam_appid.txt` file for developing. If you launch the game from Steam, Steam will automatically know the APPID of your game)
+    You only need the `steam_appid.txt` file for developing. If you launch the game from Steam, Steam will automatically know the APPID of your game.)
 4. Create your NW.js app code under `<greenworks_path>/` directory.
 
 **A hello-world sample**
@@ -126,8 +126,12 @@ If you encounter any issues consult the
 
 ###NW.js Building Steps
 
-Using Greenworks in NW.js, you need to use [nw-gyp](https://github.com/nwjs/nw-gyp)
+Using Greenworks in NW.js (before v0.13), you need to use [nw-gyp](https://github.com/nwjs/nw-gyp)
 instead of `node-gyp` to build.
+
+**Note**:
+NW.js v0.13 doesn't require to use `nw-gyp` any more. The native modules built by
+`node-gyp` are supported, see [tutorial](https://groups.google.com/forum/#!msg/nwjs-general/UqEq8ito2gI/W-ld9LSoDQAJ).
 
 ```shell
 # install nw-gyp
