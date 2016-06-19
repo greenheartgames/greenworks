@@ -12,5 +12,6 @@
   "devDependencies": {
     "mocha": "1.21.4"
   },
-  "gypfile": true
+  "gypfile": true,
+  "main": "greenworks.js"
 }
