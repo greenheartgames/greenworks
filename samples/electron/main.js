@@ -2,7 +2,14 @@ var message = '';
 
 function log(msg) {
   message = message + msg + '<br>';
-  document.getElementById('logs').innerHTML = message;
+  var logs = document.getElementById('logs');
+  if (!logs) {
+    logs = document.createElement('div');
+    logs.setAttribute("id", "logs");
+    logs.setAttribute("style", "width: 70%; border: 1px dashed #ccc; padding: 3px; margin-top:10px;");
+    document.body.appendChild(logs);
+  }
+  logs.innerHTML = message;
 }
 
 function testSteamAPI() {
