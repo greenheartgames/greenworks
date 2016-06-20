@@ -125,6 +125,25 @@ v8::Local<v8::Object> GetSteamUserCountType(int type_id) {
   return account_type;
 }
 
+NAN_METHOD(RestartAppIfNecessary) {
+  Nan::HandleScope scope;
+
+  if (info.Length() < 1) {
+    Nan::ThrowTypeError("You must pass your app ID to RestartAppIfNecessary");
+    return;
+  }
+
+  if (!info[0]->IsUint32()) {
+    Nan::ThrowTypeError("Your app ID argument should be an integer");
+    return;
+  }
+
+  uint32 arg0 = info[0]->Uint32Value();
+
+  bool restarting = SteamAPI_RestartAppIfNecessary(arg0);
+  info.GetReturnValue().Set(Nan::New(restarting));
+}
+
 NAN_METHOD(InitAPI) {
   Nan::HandleScope scope;
 
@@ -757,6 +776,9 @@ NAN_MODULE_INIT(init) {
   Nan::Set(target,
            Nan::New("initAPI").ToLocalChecked(),
            Nan::New<v8::FunctionTemplate>(InitAPI)->GetFunction());
+  Nan::Set(target,
+           Nan::New("restartAppIfNecessary").ToLocalChecked(),
+           Nan::New<v8::FunctionTemplate>(RestartAppIfNecessary)->GetFunction());
   Nan::Set(target,
            Nan::New("getSteamId").ToLocalChecked(),
            Nan::New<v8::FunctionTemplate>(GetSteamId)->GetFunction());
