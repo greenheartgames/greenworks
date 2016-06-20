@@ -96,6 +96,21 @@ greenworks.Utils.move = function(source_dir, target_dir, success_callback,
   });
 }
 
+greenworks.init = function() {
+  if (this.initAPI()) return;
+  if (!this.isSteamRunning()) throw new Error("Steam initialization failed. Steam is not running.");
+  var appId;
+  try {
+    appId = fs.readFileSync('steam_appid.txt', 'utf8');
+  } catch (e) {
+    throw new Error("Steam initialization failed. Steam is running, but steam_appid.txt is missing. Expected to find it in: " + require('path').resolve('steam_appid.txt'));
+  }
+  if (!/^\d+ *\r?\n?$/.test(appId)) {
+    throw new Error("Steam initialization failed. steam_appid.txt appears to be invalid; it should contain a numeric ID: " + appId);
+  }
+  throw new Error("Steam initialization failed, but Steam is running, and steam_appid.txt is present and valid. :shrug: Maybe that's not really YOUR app ID? " + appId.trim());
+}
+
 var EventEmitter = require('events').EventEmitter;
 greenworks.__proto__ = EventEmitter.prototype;
 EventEmitter.call(greenworks);
