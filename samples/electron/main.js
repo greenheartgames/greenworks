@@ -7,7 +7,13 @@ function log(msg) {
 
 function testSteamAPI() {
   var os = require('os');
-  var greenworks = require('../../greenworks');
+  var greenworks;
+  try {
+    // if greenworks is installed in a node_modules folder, this will work
+    greenworks = require('greenworks');
+  } catch(e) {
+    greenworks = require('../../greenworks');
+  }
   if (!greenworks) {
     log('Greenworks not support for ' + os.platform() + ' platform');
   } else {
