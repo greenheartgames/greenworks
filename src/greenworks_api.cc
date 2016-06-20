@@ -713,6 +713,24 @@ NAN_METHOD(ActivateGameOverlayToWebPage) {
   info.GetReturnValue().Set(Nan::Undefined());
 }
 
+NAN_METHOD(IsSubscribedApp) {
+  Nan::HandleScope scope;
+  if (info.Length() < 1) {
+    Nan::ThrowTypeError("You must pass an app ID to IsSubscribedApp");
+    return;
+  }
+
+  if (!info[0]->IsUint32()) {
+    Nan::ThrowTypeError("Your app ID argument should be an integer");
+    return;
+  }
+
+  uint32 arg0 = info[0]->Uint32Value();
+
+  bool subscribed = SteamApps()->BIsSubscribedApp();
+  info.GetReturnValue().Set(Nan::New(subscribed));
+}
+
 void InitUtilsObject(v8::Handle<v8::Object> exports) {
   // Prepare constructor template
   v8::Local<v8::FunctionTemplate> tpl = Nan::New<v8::FunctionTemplate>();
@@ -848,6 +866,9 @@ NAN_MODULE_INIT(init) {
   Nan::Set(target,
            Nan::New("cancelAuthTicket").ToLocalChecked(),
                Nan::New<v8::FunctionTemplate>(CancelAuthTicket)->GetFunction());
+Nan::Set(target,
+           Nan::New("isSubscribedApp").ToLocalChecked(),
+               Nan::New<v8::FunctionTemplate>(IsSubscribedApp)->GetFunction());
 
   utils::InitUgcMatchingTypes(target);
   utils::InitUgcQueryTypes(target);
