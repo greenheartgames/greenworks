@@ -746,7 +746,7 @@ NAN_METHOD(IsSubscribedApp) {
 
   uint32 arg0 = info[0]->Uint32Value();
 
-  bool subscribed = SteamApps()->BIsSubscribedApp();
+  bool subscribed = SteamApps()->BIsSubscribedApp(arg0);
   info.GetReturnValue().Set(Nan::New(subscribed));
 }
 
