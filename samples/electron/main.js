@@ -2,12 +2,25 @@ var message = '';
 
 function log(msg) {
   message = message + msg + '<br>';
-  document.getElementById('logs').innerHTML = message;
+  var logs = document.getElementById('logs');
+  if (!logs) {
+    logs = document.createElement('div');
+    logs.setAttribute("id", "logs");
+    logs.setAttribute("style", "width: 70%; border: 1px dashed #ccc; padding: 3px; margin-top:10px;");
+    document.body.appendChild(logs);
+  }
+  logs.innerHTML = message;
 }
 
 function testSteamAPI() {
   var os = require('os');
-  var greenworks = require('../../greenworks');
+  var greenworks;
+  try {
+    // if greenworks is installed in a node_modules folder, this will work
+    greenworks = require('greenworks');
+  } catch(e) {
+    greenworks = require('../../greenworks');
+  }
   if (!greenworks) {
     log('Greenworks not support for ' + os.platform() + ' platform');
   } else {

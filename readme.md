@@ -152,19 +152,51 @@ A sample NW.js application is provided [here](https://github.com/greenheartgames
 
 ###Electron Building Steps
 
-To build Greenworks for Electron, we use `node-gyp` with some custom settings.
+Greenworks builds a native addon for node. Addons are very sensitive to which version of node you use. For this reason, Electron provides an `electron-rebuild` tool for rebuilding all of the addons in a `node_modules` folder.
+
+A sample Electron application is provided [here](https://github.com/greenheartgames/greenworks/tree/master/samples/electron), but you'll need to install `greenworks` into _another_ npm module in order to use `electron-rebuild`.
+
+```shell
+mkdir sample-shell
+cd sample-shell
+npm init -y
+```
+
+... or just `cd` to your own npm module, e.g. the [Electron Quick Start](https://github.com/electron/electron-quick-start) repository.
+
+```shell
+# Install greenworks without building it, because it doesn't have Steamworks yet
+npm install --ignore-scripts git+https://github.com/greenheartgames/greenworks.git
+
+# Here, you must install Steamworks in node_modules/greenworks/deps/steamworks_sdk
+
+# npm install in your project's directory should now succeed
+npm install
+
+npm install --save electron-prebuilt
+npm install --save-dev electron-rebuild
+node_modules/.bin/electron-rebuild
+
+# create a steam_appid.txt file with your Steam App ID
+echo 123456 > steam_appid.txt
+
+node_modules/.bin/electron node_modules/greenworks/samples/electron/start.js
+
+```
+
+If you're using the Electron Quick Start, you can replace Quick Start's `renderer.js` with the `greenworks/sample/electron/main.js` file, and that'll work, too. Then you can run it with `npm start`.
+
+Electron's guide to [using native node modules](http://electron.atom.io/docs/tutorial/using-native-node-modules/) explains that you can also use `node-gyp` directly with custom settings to build a native module for a given Electron version.
 
 ```shell
 cd greenworks
 
-HOME=~/.electron-gyp node-gyp rebuild --target=<0.29.2 or other versions> --arch=x64 --dist-url=https://atom.io/download/atom-shell
+HOME=~/.electron-gyp node-gyp rebuild --target=<1.2.3 or other versions> --arch=x64 --dist-url=https://atom.io/download/atom-shell
 ```
 
-After building finished, you can find the `greenworks-(linux/win/osx).node` binaries in `build/Release`.
+The `--target` is the Electron version you're using (e.g. `1.2.3`), the `--arch` may be either `ia32` or `x64`. (If you want to use 32-bit Electron, we recommend installing it with the 32-bit version of node.)
 
-A sample for Electron application is provided [here](https://github.com/greenheartgames/greenworks/tree/master/samples/electron).
-
-For more details, you can refer to [Using native Node modules](https://github.com/atom/electron/blob/master/docs/tutorial/using-native-node-modules.md) page.
+After the `node-gyp` command is finished, you can find the `greenworks-(linux/win/osx).node` binaries in `build/Release`.
 
 ##Test
 
