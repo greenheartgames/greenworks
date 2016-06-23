@@ -144,6 +144,13 @@ NAN_METHOD(RestartAppIfNecessary) {
   info.GetReturnValue().Set(Nan::New(restarting));
 }
 
+NAN_METHOD(IsSteamRunning) {
+  Nan::HandleScope scope;
+
+  bool running = SteamAPI_IsSteamRunning();
+  info.GetReturnValue().Set(Nan::New(running));
+}
+
 NAN_METHOD(InitAPI) {
   Nan::HandleScope scope;
 
@@ -779,6 +786,9 @@ NAN_MODULE_INIT(init) {
   Nan::Set(target,
            Nan::New("restartAppIfNecessary").ToLocalChecked(),
            Nan::New<v8::FunctionTemplate>(RestartAppIfNecessary)->GetFunction());
+  Nan::Set(target,
+           Nan::New("isSteamRunning").ToLocalChecked(),
+           Nan::New<v8::FunctionTemplate>(IsSteamRunning)->GetFunction());
   Nan::Set(target,
            Nan::New("getSteamId").ToLocalChecked(),
            Nan::New<v8::FunctionTemplate>(GetSteamId)->GetFunction());
