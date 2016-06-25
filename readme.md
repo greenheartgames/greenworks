@@ -1,5 +1,7 @@
 ##New Release 0.5
-The newest release adds more Steam achievements functionality as well as Steam Authentication methods. You can find the full list of added features on the [releases page](https://github.com/greenheartgames/greenworks/releases).
+The newest release adds more Steam achievements functionality as well as Steam
+Authentication methods. You can find the full list of added features on the
+[releases page](https://github.com/greenheartgames/greenworks/releases).
 
 If you find the release useful, please consider donating.
 
@@ -7,11 +9,17 @@ If you find the release useful, please consider donating.
 
 #Greenworks
 
-Greenworks is a MIT-licensed node.js addon allowing you to integrate your HTML5 app or game with [Steamworks](http://www.steampowered.com/steamworks/) by exposing a number of Steamworks APIs to JavaScript.
+Greenworks is a MIT-licensed node.js addon allowing you to integrate your HTML5
+app or game with [Steamworks](http://www.steampowered.com/steamworks/) by
+exposing a number of Steamworks APIs to JavaScript.
 
-Greenworks is developed by Greenheart Games, originally to enable Steam integration in [Game Dev Tycoon](http://www.greenheartgames.com/app/game-dev-tycoon/), and has since been open-sourced and [used in other projects](https://github.com/greenheartgames/greenworks/wiki/Apps-games-using-greenworks). The project is funded by Greenheart Games and other [donors](https://pledgie.com/campaigns/27218#donors).
+Greenworks is developed by Greenheart Games, originally to enable Steam
+integration in [Game Dev Tycoon](http://www.greenheartgames.com/app/game-dev-tycoon/),
+and has since been open-sourced and [used in other projects](https://github.com/greenheartgames/greenworks/wiki/Apps-games-using-greenworks).
+The project is funded by Greenheart Games and other [donors](https://pledgie.com/campaigns/27218#donors).
 
-The project is built using [NAN](https://github.com/nodejs/nan) module to support different node versions.
+The project is built using [NAN](https://github.com/nodejs/nan) module to
+support different node versions.
 
 Currently greenworks supports:
 
@@ -26,18 +34,24 @@ the [release](https://github.com/greenheartgames/greenworks/releases) page.
 
 ##APIs
 
-Greenworks currently supports Steam Cloud, Steam Achievement and Workshop synchronization related methods.
+Greenworks currently supports Steam Cloud, Steam Achievement and Workshop
+synchronization related methods.
 
 For a complete list of supported methods see the [API Reference](https://github.com/greenheartgames/greenworks/wiki/API-Reference)
 for details.
 
 ##Start Greenworks in NW.js
 
-1. Download the release binaries from [release](https://github.com/greenheartgames/greenworks/releases) page and unzip.
-2. Copy the `steam_api.dll`/`libsteam_api.dylib`/`libsteam_api.so` from Steamworks SDK(`<steam_sdk_path>/redistributable_bin/`) to
-`<greenworks_path>/lib`. Please make sure the architecture (32 bits or 64 bits) of the steam dynamic library is the same as NW.js's.
-3. Create a `steam_appid.txt` file with your Steam APP ID under `<greenworks_path>/` directory. (
-    You only need the `steam_appid.txt` file for developing. If you launch the game from Steam, Steam will automatically know the APPID of your game.)
+1. Download the release binaries from [releases](https://github.com/greenheartgames/greenworks/releases)
+page and unzip them.
+2. Copy the `steam_api.dll`/`libsteam_api.dylib`/`libsteam_api.so` from
+Steamworks SDK (`<steam_sdk_path>/redistributable_bin/`) to
+`<greenworks_path>/lib`. Please make sure the architecture (32 bits or 64 bits)
+of the steam dynamic library is the same as NW.js's.
+3. Create a `steam_appid.txt` file with your Steam APP ID under
+`<greenworks_path>/` directory. (You only need the `steam_appid.txt` file for
+developing. If you launch the game from Steam, Steam will automatically know the
+APP ID of your game.)
 4. Create your NW.js app code under `<greenworks_path>/` directory.
 
 **A hello-world sample**
@@ -71,6 +85,7 @@ Create `package.json`:
 ```
 
 The NW.js v0.11.2 hello-world demo directory on Mac OS X like:
+
 ```
 |-- greenworks.js
 |-- index.html
@@ -89,9 +104,10 @@ The NW.js v0.11.2 hello-world demo directory on Mac OS X like:
 
 Before using greenworks, you need to:
 
-1. Copy `steam_api.dll`/`libsteam_api.dylib`/`libsteam_api.so` library from the Steamworks SDK(`<steam_sdk_path>/redistributable_bin/`)
-to `<app-dir>/lib/`.
-2. Create a `steam_appid.txt` file with your Steam APP ID under `<app-dir>` directory.
+1. Copy `steam_api.dll`/`libsteam_api.dylib`/`libsteam_api.so` library from the
+Steamworks SDK(`<steam_sdk_path>/redistributable_bin/`) to `<app-dir>/lib/`.
+2. Create a `steam_appid.txt` file with your Steam APP ID under `<app-dir>`
+directory.
 
 
 ##Building Instructions
@@ -102,8 +118,8 @@ to `<app-dir>/lib/`.
 * nodejs v0.10.X or v0.11.X
 * node-gyp (or nw-gyp if you use NW.js)
 
-Download [Steamworks SDK](https://partner.steamgames.com/) and unzip to `<greenworks_src_dir>/deps/steamworks_sdk`
-directory.
+Download [Steamworks SDK](https://partner.steamgames.com/) and unzip to
+`<greenworks_src_dir>/deps/steamworks_sdk` directory.
 
 ###Nodejs Addon Building Steps
 
@@ -121,8 +137,8 @@ node-gyp rebuild
 Once building is done, you can find `greenworks-(linux/win/osx).node` under
 `build/Release`.
 
-If you encounter any issues consult the
-[troubleshooting](https://github.com/greenheartgames/greenworks/wiki/Troubleshooting) page.
+If you encounter any issues consult the [troubleshooting](https://github.com/greenheartgames/greenworks/wiki/Troubleshooting)
+page.
 
 ###NW.js Building Steps
 
@@ -130,8 +146,8 @@ Using Greenworks in NW.js (before v0.13), you need to use [nw-gyp](https://githu
 instead of `node-gyp` to build.
 
 **Note**:
-NW.js v0.13 doesn't require to use `nw-gyp` any more. The native modules built by
-`node-gyp` are supported, see [tutorial](https://groups.google.com/forum/#!msg/nwjs-general/UqEq8ito2gI/W-ld9LSoDQAJ).
+NW.js v0.13 doesn't require to use `nw-gyp` any more. The native modules built
+by `node-gyp` are supported, see [tutorial](https://groups.google.com/forum/#!msg/nwjs-general/UqEq8ito2gI/W-ld9LSoDQAJ).
 
 ```shell
 # install nw-gyp
@@ -145,16 +161,21 @@ nw-gyp configure --target=<0.10.5 or other nw version> --arch=<x64 or ia32>
 nw-gyp build
 ```
 
-After building finished, you can find the `greenworks-(linux/win/osx).node` binaries in `build/Release`.
+After building finished, you can find the `greenworks-(linux/win/osx).node`
+binaries in `build/Release`.
 
 A sample NW.js application is provided [here](https://github.com/greenheartgames/greenworks/tree/master/samples/nw.js).
 
 
 ###Electron Building Steps
 
-Greenworks builds a native addon for node. Addons are very sensitive to which version of node you use. For this reason, Electron provides an `electron-rebuild` tool for rebuilding all of the addons in a `node_modules` folder.
+Greenworks builds a native addon for node. Addons are very sensitive to which
+version of node you use. For this reason, Electron provides an [`electron-rebuild`](https://github.com/electron/electron-rebuild)
+tool for rebuilding all of the addons in a `node_modules` folder.
 
-A sample Electron application is provided [here](https://github.com/greenheartgames/greenworks/tree/master/samples/electron), but you'll need to install `greenworks` into _another_ npm module in order to use `electron-rebuild`.
+A sample Electron application is provided [here](https://github.com/greenheartgames/greenworks/tree/master/samples/electron),
+but you'll need to install `greenworks` into _another_ npm module in order to use
+`electron-rebuild`.
 
 ```shell
 mkdir sample-shell
@@ -162,7 +183,8 @@ cd sample-shell
 npm init -y
 ```
 
-... or just `cd` to your own npm module, e.g. the [Electron Quick Start](https://github.com/electron/electron-quick-start) repository.
+... or just `cd` to your own npm module, e.g. the [Electron Quick Start](https://github.com/electron/electron-quick-start)
+repository.
 
 ```shell
 # Install greenworks without building it, because it doesn't have Steamworks yet
@@ -181,12 +203,15 @@ node_modules/.bin/electron-rebuild
 echo 123456 > steam_appid.txt
 
 node_modules/.bin/electron node_modules/greenworks/samples/electron/start.js
-
 ```
 
-If you're using the Electron Quick Start, you can replace Quick Start's `renderer.js` with the `greenworks/sample/electron/main.js` file, and that'll work, too. Then you can run it with `npm start`.
+If you're using the Electron Quick Start, you can replace Quick Start's
+`renderer.js` with the `greenworks/sample/electron/main.js` file, and that'll
+work, too. Then you can run it with `npm start`.
 
-Electron's guide to [using native node modules](http://electron.atom.io/docs/tutorial/using-native-node-modules/) explains that you can also use `node-gyp` directly with custom settings to build a native module for a given Electron version.
+Electron's guide to [using native node modules](http://electron.atom.io/docs/tutorial/using-native-node-modules/)
+explains that you can also use `node-gyp` directly with custom settings to build
+a native module for a given Electron version.
 
 ```shell
 cd greenworks
@@ -194,16 +219,21 @@ cd greenworks
 HOME=~/.electron-gyp node-gyp rebuild --target=<1.2.3 or other versions> --arch=x64 --dist-url=https://atom.io/download/atom-shell
 ```
 
-The `--target` is the Electron version you're using (e.g. `1.2.3`), the `--arch` may be either `ia32` or `x64`. (If you want to use 32-bit Electron, we recommend installing it with the 32-bit version of node.)
+The `--target` is the Electron version you're using (e.g. `1.2.3`), the `--arch`
+may be either `ia32` or `x64`. (If you want to use 32-bit Electron, we recommend
+installing it with the 32-bit version of node.)
 
-After the `node-gyp` command is finished, you can find the `greenworks-(linux/win/osx).node` binaries in `build/Release`.
+After the `node-gyp` command is finished, you can find the
+`greenworks-(linux/win/osx).node` binaries in `build/Release`.
 
 ##Test
 
-Greenworks uses [Mocha](http://visionmedia.github.io/mocha/) framework to test the steamworks APIs.
+Greenworks uses [Mocha](http://visionmedia.github.io/mocha/) framework to test
+the steamworks APIs.
 
-Since Greenworks is interacting with Steamworks, you need to create a `steam_appid.txt` file with
-a valid Steam Game Application ID in the `<greenworks_src_dir>/test` directory, in order to run the tests.
+Since Greenworks is interacting with Steamworks, you need to create a
+`steam_appid.txt` file with a valid Steam Game Application ID in the
+`<greenworks_src_dir>/test` directory, in order to run the tests.
 
 ```shell
 cd greenworks
@@ -216,7 +246,8 @@ See [how to find the application ID for a Steam Game](https://support.steampower
 
 Greenworks is published under the MIT license. See `LICENSE` file for details.
 
-If you use Greenworks, please let us know at [@GreenheartGames](https://twitter.com/GreenheartGames) and feel free to add your product to our [product list](https://github.com/greenheartgames/greenworks/wiki/Apps-games-using-greenworks).
+If you use Greenworks, please let us know at [@GreenheartGames](https://twitter.com/GreenheartGames)
+and feel free to add your product to our [product list](https://github.com/greenheartgames/greenworks/wiki/Apps-games-using-greenworks).
 
 ##Donate
 
