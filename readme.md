@@ -142,12 +142,16 @@ page.
 
 ###NW.js Building Steps
 
-Using Greenworks in NW.js (before v0.13), you need to use [nw-gyp](https://github.com/nwjs/nw-gyp)
+Using Greenworks in NW.js (before v0.13 and from v0.15), you need to use [nw-gyp](https://github.com/nwjs/nw-gyp)
 instead of `node-gyp` to build.
 
 **Note**:
-NW.js v0.13 doesn't require to use `nw-gyp` any more. The native modules built
+NW.js v0.13 and v0.14 don't require to use `nw-gyp`. The native modules built
 by `node-gyp` are supported, see [tutorial](https://groups.google.com/forum/#!msg/nwjs-general/UqEq8ito2gI/W-ld9LSoDQAJ).
+
+NW.js v0.15+ needs nw-gyp again see [http://docs.nwjs.io/en/latest/For%20Users/Advanced/Use%20Native%20Node%20Modules]
+
+Install additional needed tools depending on your platform see [https://github.com/nwjs/nw-gyp#installation]
 
 ```shell
 # install nw-gyp
@@ -157,8 +161,15 @@ cd greenworks
 # generate the building files
 nw-gyp configure --target=<0.10.5 or other nw version> --arch=<x64 or ia32>
 
+#if you have an error stating requiure('nan') fails then do a local
+sudo npm install nan
+
 # build Greenworks
 nw-gyp build
+
+#you will have error if you forget to install the additional tools as stated above, you may also
+#experience an issue building ia32 on linux 64, try installing g++-multilib
+sudo apt-get install g++-multilib
 ```
 
 After building finished, you can find the `greenworks-(linux/win/osx).node`
