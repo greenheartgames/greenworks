@@ -125,6 +125,44 @@ v8::Local<v8::Object> GetSteamUserCountType(int type_id) {
   return account_type;
 }
 
+v8::Local<v8::Object> GetSteamFriendRelationship(int type_id) {
+  v8::Local<v8::Object> friend_relationship = Nan::New<v8::Object>();
+  std::string name;
+  switch (type_id) {
+    case k_EFriendRelationshipNone:
+      name = "k_EFriendRelationshipNone";
+      break;
+    case k_EFriendRelationshipBlocked:
+      name = "k_EFriendRelationshipBlocked";
+      break;
+    case k_EFriendRelationshipRequestRecipient:
+      name = "k_EFriendRelationshipRequestRecipient";
+      break;
+    case k_EFriendRelationshipFriend:
+      name = "k_EFriendRelationshipFriend";
+      break;
+    case k_EFriendRelationshipRequestInitiator:
+      name = "k_EFriendRelationshipRequestInitiator";
+      break;
+    case k_EFriendRelationshipIgnored:
+      name = "k_EFriendRelationshipIgnored";
+      break;
+    case k_EFriendRelationshipIgnoredFriend:
+      name = "k_EFriendRelationshipIgnoredFriend";
+      break;
+    case k_EFriendRelationshipSuggested:
+      name = "k_EFriendRelationshipSuggested";
+      break;
+    case k_EFriendRelationshipMax:
+      name = "k_EFriendRelationshipMax";
+      break;
+  }
+  friend_relationship->Set(Nan::New("name").ToLocalChecked(),
+                    Nan::New(name).ToLocalChecked());
+  friend_relationship->Set(Nan::New("value").ToLocalChecked(), Nan::New(type_id));
+  return friend_relationship;
+}
+
 NAN_METHOD(RestartAppIfNecessary) {
   Nan::HandleScope scope;
 
@@ -217,6 +255,68 @@ NAN_METHOD(GetSteamId) {
                 Nan::New(sout.str()).ToLocalChecked());
   }
   info.GetReturnValue().Set(result);
+}
+
+NAN_METHOD(GetFriendCount) {
+  Nan::HandleScope scope;
+  if (info.Length() < 1 || !info[0]->IsInt32()) {
+    THROW_BAD_ARGS("Bad arguments");
+  }
+  EFriendFlags friend_flag = static_cast<EFriendFlags>(info[0]->Int32Value());
+
+  info.GetReturnValue().Set(Nan::New<v8::Integer>(
+    SteamFriends()->GetFriendCount(friend_flag)));
+}
+
+NAN_METHOD(GetFriends) {
+  Nan::HandleScope scope;
+  if (info.Length() < 1 || !info[0]->IsInt32()) {
+    THROW_BAD_ARGS("Bad arguments");
+  }
+  EFriendFlags friend_flag = static_cast<EFriendFlags>(info[0]->Int32Value());
+
+  int friendsCount = SteamFriends()->GetFriendCount(friend_flag);
+  v8::Local<v8::Array> friends = Nan::New<v8::Array>();
+
+  for ( int i = 0; i < friendsCount; i++ ) {
+      CSteamID friendSteamID = SteamFriends()->GetFriendByIndex( i, friend_flag );
+      v8::Local<v8::Object> aFriend = Nan::New<v8::Object>();
+      v8::Local<v8::Object> flags = Nan::New<v8::Object>();
+      flags->Set(Nan::New("anonymous").ToLocalChecked(), Nan::New(friendSteamID.BAnonAccount()));
+      flags->Set(Nan::New("anonymousGameServer").ToLocalChecked(),
+          Nan::New(friendSteamID.BAnonGameServerAccount()));
+      flags->Set(Nan::New("anonymousGameServerLogin").ToLocalChecked(),
+          Nan::New(friendSteamID.BBlankAnonAccount()));
+      flags->Set(Nan::New("anonymousUser").ToLocalChecked(),
+                Nan::New(friendSteamID.BAnonUserAccount()));
+      flags->Set(Nan::New("chat").ToLocalChecked(),
+                Nan::New(friendSteamID.BChatAccount()));
+      flags->Set(Nan::New("clan").ToLocalChecked(),
+                Nan::New(friendSteamID.BClanAccount()));
+      flags->Set(Nan::New("consoleUser").ToLocalChecked(),
+                Nan::New(friendSteamID.BConsoleUserAccount()));
+      flags->Set(Nan::New("contentServer").ToLocalChecked(),
+                Nan::New(friendSteamID.BContentServerAccount()));
+      flags->Set(Nan::New("gameServer").ToLocalChecked(),
+                Nan::New(friendSteamID.BGameServerAccount()));
+      flags->Set(Nan::New("individual").ToLocalChecked(),
+                Nan::New(friendSteamID.BIndividualAccount()));
+      flags->Set(Nan::New("gameServerPersistent").ToLocalChecked(),
+                Nan::New(friendSteamID.BPersistentGameServerAccount()));
+      flags->Set(Nan::New("lobby").ToLocalChecked(), Nan::New(friendSteamID.IsLobby()));
+      aFriend->Set(Nan::New("flags").ToLocalChecked(), flags);
+      aFriend->Set(Nan::New("type").ToLocalChecked(), GetSteamUserCountType(friendSteamID.GetEAccountType()));
+      aFriend->Set(Nan::New("relationship").ToLocalChecked(), GetSteamFriendRelationship(SteamFriends()->GetFriendRelationship(friendSteamID)));
+      aFriend->Set(Nan::New("accountId").ToLocalChecked(), Nan::New<v8::Integer>(friendSteamID.GetAccountID()));
+      aFriend->Set(Nan::New("staticAccountId").ToLocalChecked(),
+          Nan::New(utils::uint64ToString(friendSteamID.GetStaticAccountKey())).ToLocalChecked());
+      aFriend->Set(Nan::New("isValid").ToLocalChecked(),
+          Nan::New<v8::Integer>(friendSteamID.IsValid()));
+      aFriend->Set(Nan::New("screenName").ToLocalChecked(),
+          Nan::New(SteamFriends()->GetFriendPersonaName(friendSteamID)).ToLocalChecked());
+      friends->Set(i, aFriend);
+  }
+  info.GetReturnValue().Set(friends);
 }
 
 NAN_METHOD(SaveTextToFile) {
@@ -790,6 +890,13 @@ NAN_MODULE_INIT(init) {
   Nan::Set(target,
            Nan::New("getSteamId").ToLocalChecked(),
            Nan::New<v8::FunctionTemplate>(GetSteamId)->GetFunction());
+  // Friends related APIs.
+  Nan::Set(target,
+           Nan::New("getFriendCount").ToLocalChecked(),
+           Nan::New<v8::FunctionTemplate>(GetFriendCount)->GetFunction());
+  Nan::Set(target,
+           Nan::New("getFriends").ToLocalChecked(),
+           Nan::New<v8::FunctionTemplate>(GetFriends)->GetFunction());     
   // File related APIs.
   Nan::Set(target,
            Nan::New("saveTextToFile").ToLocalChecked(),
@@ -904,6 +1011,7 @@ Nan::Set(target,
   utils::InitUgcQueryTypes(target);
   utils::InitUserUgcListSortOrder(target);
   utils::InitUserUgcList(target);
+  utils::InitFriendFlags(target);
 
   // Utils related APIs.
   InitUtilsObject(target);
