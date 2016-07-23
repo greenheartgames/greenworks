@@ -1,3 +1,12 @@
+## 2016.07.23 v0.5.3 stable
+
+* Greenworks complied for NW.js v0.14.7 with Steamworks SDK 1.37
+* Add new APIs:
+  * `greeworks.init`
+  * `greenworks.restartAppIfNecessary`
+  * `greenworks.isSubscribedApp`
+  * `greenworks.isSteamRunning`
+
 ## 2016.02.28 v0.5.2 stable
 
 * Greenworks complied for NW.js v0.13.0-beta7 with Steamworks SDK 1.36
