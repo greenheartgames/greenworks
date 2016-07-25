@@ -760,10 +760,8 @@ NAN_METHOD(IsSubscribedApp) {
 void InitUtilsObject(v8::Handle<v8::Object> exports) {
   // Prepare constructor template
   v8::Local<v8::FunctionTemplate> tpl = Nan::New<v8::FunctionTemplate>();
-  tpl->Set(Nan::New("createArchive").ToLocalChecked(),
-      Nan::New<v8::FunctionTemplate>(CreateArchive)->GetFunction());
-  tpl->Set(Nan::New("extractArchive").ToLocalChecked(),
-      Nan::New<v8::FunctionTemplate>(ExtractArchive)->GetFunction());
+  Nan::SetMethod(tpl, "createArchive", CreateArchive);
+  Nan::SetMethod(tpl, "extractArchive", ExtractArchive);
   Nan::Persistent<v8::Function> constructor;
   constructor.Reset(tpl->GetFunction());
   Nan::Set(exports, Nan::New("Utils").ToLocalChecked(), tpl->GetFunction());
