@@ -23,8 +23,8 @@ support different node versions.
 
 Currently greenworks supports:
 
-* node v0.8, v0.10, v0.12, v4 and v5
-* NW.js (formerly node-webkit) v0.8, v0.11, v0.12 and v0.13-beta6+
+* node v0.8, v0.10, v0.12, v4, v5, and v6
+* NW.js (formerly node-webkit) v0.8, v0.11, v0.12, v0.13, v0.14, v0.15 and v0.16
 * Electron (formerly atom-shell) v0.21.X or above
 
 ##Download
