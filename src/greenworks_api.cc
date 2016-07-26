@@ -237,6 +237,9 @@ NAN_METHOD(GetSteamId) {
               GetSteamUserCountType(user_id.GetEAccountType()));
   result->Set(Nan::New("accountId").ToLocalChecked(),
               Nan::New<v8::Integer>(user_id.GetAccountID()));
+  result->Set(Nan::New("steamId").ToLocalChecked(),
+      Nan::New(utils::uint64ToString(
+          user_id.ConvertToUint64())).ToLocalChecked());
   result->Set(Nan::New("staticAccountId").ToLocalChecked(),
       Nan::New(utils::uint64ToString(
           user_id.GetStaticAccountKey())).ToLocalChecked());
@@ -308,6 +311,8 @@ NAN_METHOD(GetFriends) {
       aFriend->Set(Nan::New("type").ToLocalChecked(), GetSteamUserCountType(friendSteamID.GetEAccountType()));
       aFriend->Set(Nan::New("relationship").ToLocalChecked(), GetSteamFriendRelationship(SteamFriends()->GetFriendRelationship(friendSteamID)));
       aFriend->Set(Nan::New("accountId").ToLocalChecked(), Nan::New<v8::Integer>(friendSteamID.GetAccountID()));
+      aFriend->Set(Nan::New("steamId").ToLocalChecked(),
+          Nan::New(utils::uint64ToString(friendSteamID.ConvertToUint64())).ToLocalChecked());
       aFriend->Set(Nan::New("staticAccountId").ToLocalChecked(),
           Nan::New(utils::uint64ToString(friendSteamID.GetStaticAccountKey())).ToLocalChecked());
       aFriend->Set(Nan::New("isValid").ToLocalChecked(),
