@@ -75,7 +75,8 @@ void InitUgcQueryTypes(v8::Handle<v8::Object> exports) {
       Nan::New("RankedByNumTimesReported").ToLocalChecked(),
       Nan::New(k_EUGCQuery_RankedByNumTimesReported));
   ugc_query_type->Set(
-      Nan::New("CreatedByFollowedUsersRankedByPublicationDate").ToLocalChecked(),
+      Nan::New("CreatedByFollowedUsersRankedByPublicationDate")
+          .ToLocalChecked(),
       Nan::New(k_EUGCQuery_CreatedByFollowedUsersRankedByPublicationDate));
   ugc_query_type->Set(Nan::New("NotYetRated").ToLocalChecked(),
                       Nan::New(k_EUGCQuery_NotYetRated));
