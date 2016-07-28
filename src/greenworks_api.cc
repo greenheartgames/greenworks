@@ -2,6 +2,7 @@
 // Use of this source code is governed by the MIT license that can be
 // found in the LICENSE file.
 
+#include <map>
 #include <string>
 #include <sstream>
 #include <vector>
@@ -24,6 +25,8 @@ namespace {
        return;                   \
     } while (0);
 
+#define MAKE_ENUM_PAIR(name) \
+    { name, #name }
 
 Nan::Persistent<v8::Object> g_persistent_steam_events;
 
@@ -79,46 +82,27 @@ void SteamEvent::OnSteamShutdown() {
 }
 
 v8::Local<v8::Object> GetSteamUserCountType(int type_id) {
-  v8::Local<v8::Object> account_type = Nan::New<v8::Object>();
-  std::string name;
-  switch (type_id) {
-    case k_EAccountTypeAnonGameServer:
-      name = "k_EAccountTypeAnonGameServer";
-      break;
-    case k_EAccountTypeAnonUser:
-      name = "k_EAccountTypeAnonUser";
-      break;
-    case k_EAccountTypeChat:
-      name = "k_EAccountTypeChat";
-      break;
-    case k_EAccountTypeClan:
-      name = "k_EAccountTypeClan";
-      break;
-    case k_EAccountTypeConsoleUser:
-      name = "k_EAccountTypeConsoleUser";
-      break;
-    case k_EAccountTypeContentServer:
-      name = "k_EAccountTypeContentServer";
-      break;
-    case k_EAccountTypeGameServer:
-      name = "k_EAccountTypeGameServer";
-      break;
-    case k_EAccountTypeIndividual:
-      name = "k_EAccountTypeIndividual";
-      break;
-    case k_EAccountTypeInvalid:
-      name = "k_EAccountTypeInvalid";
-      break;
-    case k_EAccountTypeMax:
-      name = "k_EAccountTypeMax";
-      break;
-    case k_EAccountTypeMultiseat:
-      name = "k_EAccountTypeMultiseat";
-      break;
-    case k_EAccountTypePending:
-      name = "k_EAccountTypePending";
-      break;
+  if (type_id > k_EAccountTypeMax) {
+    Nan::ThrowTypeError("Bad argument");
+    return Nan::New<v8::Object>();
   }
+  EAccountType type = static_cast<EAccountType>(type_id);
+  std::map<EAccountType, std::string> account_types = {
+    MAKE_ENUM_PAIR(k_EAccountTypeInvalid),
+    MAKE_ENUM_PAIR(k_EAccountTypeIndividual),
+    MAKE_ENUM_PAIR(k_EAccountTypeMultiseat),
+    MAKE_ENUM_PAIR(k_EAccountTypeGameServer),
+    MAKE_ENUM_PAIR(k_EAccountTypeAnonGameServer),
+    MAKE_ENUM_PAIR(k_EAccountTypePending),
+    MAKE_ENUM_PAIR(k_EAccountTypeContentServer),
+    MAKE_ENUM_PAIR(k_EAccountTypeClan),
+    MAKE_ENUM_PAIR(k_EAccountTypeChat),
+    MAKE_ENUM_PAIR(k_EAccountTypeConsoleUser),
+    MAKE_ENUM_PAIR(k_EAccountTypeAnonUser),
+    MAKE_ENUM_PAIR(k_EAccountTypeMax)
+  };
+  std::string name = account_types[type];
+  v8::Local<v8::Object> account_type = Nan::New<v8::Object>();
   account_type->Set(Nan::New("name").ToLocalChecked(),
                     Nan::New(name).ToLocalChecked());
   account_type->Set(Nan::New("value").ToLocalChecked(), Nan::New(type_id));
@@ -127,39 +111,27 @@ v8::Local<v8::Object> GetSteamUserCountType(int type_id) {
 
 v8::Local<v8::Object> GetSteamFriendRelationship(int type_id) {
   v8::Local<v8::Object> friend_relationship = Nan::New<v8::Object>();
-  std::string name;
-  switch (type_id) {
-    case k_EFriendRelationshipNone:
-      name = "k_EFriendRelationshipNone";
-      break;
-    case k_EFriendRelationshipBlocked:
-      name = "k_EFriendRelationshipBlocked";
-      break;
-    case k_EFriendRelationshipRequestRecipient:
-      name = "k_EFriendRelationshipRequestRecipient";
-      break;
-    case k_EFriendRelationshipFriend:
-      name = "k_EFriendRelationshipFriend";
-      break;
-    case k_EFriendRelationshipRequestInitiator:
-      name = "k_EFriendRelationshipRequestInitiator";
-      break;
-    case k_EFriendRelationshipIgnored:
-      name = "k_EFriendRelationshipIgnored";
-      break;
-    case k_EFriendRelationshipIgnoredFriend:
-      name = "k_EFriendRelationshipIgnoredFriend";
-      break;
-    case k_EFriendRelationshipSuggested:
-      name = "k_EFriendRelationshipSuggested";
-      break;
-    case k_EFriendRelationshipMax:
-      name = "k_EFriendRelationshipMax";
-      break;
+  EFriendRelationship type = static_cast<EFriendRelationship>(type_id);
+  if (type > k_EFriendRelationshipMax) {
+    Nan::ThrowTypeError("Bad argument");
+    return Nan::New<v8::Object>();
   }
+  std::map<EFriendRelationship, std::string> friend_relationship_types = {
+    MAKE_ENUM_PAIR(k_EFriendRelationshipNone),
+    MAKE_ENUM_PAIR(k_EFriendRelationshipBlocked),
+    MAKE_ENUM_PAIR(k_EFriendRelationshipRequestRecipient),
+    MAKE_ENUM_PAIR(k_EFriendRelationshipFriend),
+    MAKE_ENUM_PAIR(k_EFriendRelationshipRequestInitiator),
+    MAKE_ENUM_PAIR(k_EFriendRelationshipIgnored),
+    MAKE_ENUM_PAIR(k_EFriendRelationshipIgnoredFriend),
+    MAKE_ENUM_PAIR(k_EFriendRelationshipSuggested),
+    MAKE_ENUM_PAIR(k_EFriendRelationshipMax)
+  };
+  std::string name = friend_relationship_types[type];
   friend_relationship->Set(Nan::New("name").ToLocalChecked(),
-                    Nan::New(name).ToLocalChecked());
-  friend_relationship->Set(Nan::New("value").ToLocalChecked(), Nan::New(type_id));
+                           Nan::New(name).ToLocalChecked());
+  friend_relationship->Set(Nan::New("value").ToLocalChecked(),
+                           Nan::New(type_id));
   return friend_relationship;
 }
 
@@ -208,11 +180,12 @@ NAN_METHOD(GetSteamId) {
   Nan::HandleScope scope;
   CSteamID user_id = SteamUser()->GetSteamID();
   v8::Local<v8::Object> flags = Nan::New<v8::Object>();
-  flags->Set(Nan::New("anonymous").ToLocalChecked(), Nan::New(user_id.BAnonAccount()));
+  flags->Set(Nan::New("anonymous").ToLocalChecked(),
+             Nan::New(user_id.BAnonAccount()));
   flags->Set(Nan::New("anonymousGameServer").ToLocalChecked(),
-      Nan::New(user_id.BAnonGameServerAccount()));
+             Nan::New(user_id.BAnonGameServerAccount()));
   flags->Set(Nan::New("anonymousGameServerLogin").ToLocalChecked(),
-      Nan::New(user_id.BBlankAnonAccount()));
+             Nan::New(user_id.BBlankAnonAccount()));
   flags->Set(Nan::New("anonymousUser").ToLocalChecked(),
              Nan::New(user_id.BAnonUserAccount()));
   flags->Set(Nan::New("chat").ToLocalChecked(),
@@ -250,7 +223,8 @@ NAN_METHOD(GetSteamId) {
 
   if (!SteamFriends()->RequestUserInformation(user_id, true)) {
     result->Set(Nan::New("screenName").ToLocalChecked(),
-                Nan::New(SteamFriends()->GetFriendPersonaName(user_id)).ToLocalChecked());
+                Nan::New(SteamFriends()->GetFriendPersonaName(user_id))
+                    .ToLocalChecked());
   } else {
     std::ostringstream sout;
     sout << user_id.GetAccountID();
@@ -285,40 +259,51 @@ NAN_METHOD(GetFriends) {
     CSteamID friendSteamID = SteamFriends()->GetFriendByIndex(i, friend_flag);
     v8::Local<v8::Object> aFriend = Nan::New<v8::Object>();
     v8::Local<v8::Object> flags = Nan::New<v8::Object>();
-    flags->Set(Nan::New("anonymous").ToLocalChecked(), Nan::New(friendSteamID.BAnonAccount()));
+    flags->Set(Nan::New("anonymous").ToLocalChecked(),
+               Nan::New(friendSteamID.BAnonAccount()));
     flags->Set(Nan::New("anonymousGameServer").ToLocalChecked(),
-        Nan::New(friendSteamID.BAnonGameServerAccount()));
+               Nan::New(friendSteamID.BAnonGameServerAccount()));
     flags->Set(Nan::New("anonymousGameServerLogin").ToLocalChecked(),
-        Nan::New(friendSteamID.BBlankAnonAccount()));
+               Nan::New(friendSteamID.BBlankAnonAccount()));
     flags->Set(Nan::New("anonymousUser").ToLocalChecked(),
-              Nan::New(friendSteamID.BAnonUserAccount()));
+               Nan::New(friendSteamID.BAnonUserAccount()));
     flags->Set(Nan::New("chat").ToLocalChecked(),
-              Nan::New(friendSteamID.BChatAccount()));
+               Nan::New(friendSteamID.BChatAccount()));
     flags->Set(Nan::New("clan").ToLocalChecked(),
-              Nan::New(friendSteamID.BClanAccount()));
+               Nan::New(friendSteamID.BClanAccount()));
     flags->Set(Nan::New("consoleUser").ToLocalChecked(),
-              Nan::New(friendSteamID.BConsoleUserAccount()));
+               Nan::New(friendSteamID.BConsoleUserAccount()));
     flags->Set(Nan::New("contentServer").ToLocalChecked(),
-              Nan::New(friendSteamID.BContentServerAccount()));
+               Nan::New(friendSteamID.BContentServerAccount()));
     flags->Set(Nan::New("gameServer").ToLocalChecked(),
-              Nan::New(friendSteamID.BGameServerAccount()));
+               Nan::New(friendSteamID.BGameServerAccount()));
     flags->Set(Nan::New("individual").ToLocalChecked(),
-              Nan::New(friendSteamID.BIndividualAccount()));
+               Nan::New(friendSteamID.BIndividualAccount()));
     flags->Set(Nan::New("gameServerPersistent").ToLocalChecked(),
-              Nan::New(friendSteamID.BPersistentGameServerAccount()));
-    flags->Set(Nan::New("lobby").ToLocalChecked(), Nan::New(friendSteamID.IsLobby()));
+               Nan::New(friendSteamID.BPersistentGameServerAccount()));
+    flags->Set(Nan::New("lobby").ToLocalChecked(),
+               Nan::New(friendSteamID.IsLobby()));
     aFriend->Set(Nan::New("flags").ToLocalChecked(), flags);
-    aFriend->Set(Nan::New("type").ToLocalChecked(), GetSteamUserCountType(friendSteamID.GetEAccountType()));
-    aFriend->Set(Nan::New("relationship").ToLocalChecked(), GetSteamFriendRelationship(SteamFriends()->GetFriendRelationship(friendSteamID)));
-    aFriend->Set(Nan::New("accountId").ToLocalChecked(), Nan::New<v8::Integer>(friendSteamID.GetAccountID()));
-    aFriend->Set(Nan::New("steamId").ToLocalChecked(),
-        Nan::New(utils::uint64ToString(friendSteamID.ConvertToUint64())).ToLocalChecked());
-    aFriend->Set(Nan::New("staticAccountId").ToLocalChecked(),
-        Nan::New(utils::uint64ToString(friendSteamID.GetStaticAccountKey())).ToLocalChecked());
+    aFriend->Set(Nan::New("type").ToLocalChecked(),
+                 GetSteamUserCountType(friendSteamID.GetEAccountType()));
+    aFriend->Set(Nan::New("relationship").ToLocalChecked(),
+                 GetSteamFriendRelationship(
+                     SteamFriends()->GetFriendRelationship(friendSteamID)));
+    aFriend->Set(Nan::New("accountId").ToLocalChecked(),
+                 Nan::New<v8::Integer>(friendSteamID.GetAccountID()));
+    aFriend->Set(
+        Nan::New("steamId").ToLocalChecked(),
+        Nan::New(utils::uint64ToString(friendSteamID.ConvertToUint64()))
+            .ToLocalChecked());
+    aFriend->Set(
+        Nan::New("staticAccountId").ToLocalChecked(),
+        Nan::New(utils::uint64ToString(friendSteamID.GetStaticAccountKey()))
+            .ToLocalChecked());
     aFriend->Set(Nan::New("isValid").ToLocalChecked(),
         Nan::New<v8::Integer>(friendSteamID.IsValid()));
     aFriend->Set(Nan::New("screenName").ToLocalChecked(),
-        Nan::New(SteamFriends()->GetFriendPersonaName(friendSteamID)).ToLocalChecked());
+                 Nan::New(SteamFriends()->GetFriendPersonaName(friendSteamID))
+                     .ToLocalChecked());
     friends->Set(i, aFriend);
   }
   info.GetReturnValue().Set(friends);
@@ -334,7 +319,8 @@ NAN_METHOD(SaveTextToFile) {
 
   std::string file_name(*(v8::String::Utf8Value(info[0])));
   std::string content(*(v8::String::Utf8Value(info[1])));
-  Nan::Callback* success_callback = new Nan::Callback(info[2].As<v8::Function>());
+  Nan::Callback* success_callback =
+      new Nan::Callback(info[2].As<v8::Function>());
   Nan::Callback* error_callback = NULL;
 
   if (info.Length() > 3 && info[3]->IsFunction())
@@ -363,7 +349,8 @@ NAN_METHOD(SaveFilesToCloud) {
       files_path.push_back(*string_array);
   }
 
-  Nan::Callback* success_callback = new Nan::Callback(info[1].As<v8::Function>());
+  Nan::Callback* success_callback =
+      new Nan::Callback(info[1].As<v8::Function>());
   Nan::Callback* error_callback = NULL;
 
   if (info.Length() > 2 && info[2]->IsFunction())
@@ -382,7 +369,8 @@ NAN_METHOD(ReadTextFromFile) {
   }
 
   std::string file_name(*(v8::String::Utf8Value(info[0])));
-  Nan::Callback* success_callback = new Nan::Callback(info[1].As<v8::Function>());
+  Nan::Callback* success_callback =
+      new Nan::Callback(info[1].As<v8::Function>());
   Nan::Callback* error_callback = NULL;
 
   if (info.Length() > 2 && info[2]->IsFunction())
@@ -425,7 +413,8 @@ NAN_METHOD(GetCloudQuota) {
   if (info.Length() < 1 || !info[0]->IsFunction()) {
     THROW_BAD_ARGS("Bad arguments");
   }
-  Nan::Callback* success_callback = new Nan::Callback(info[0].As<v8::Function>());
+  Nan::Callback* success_callback =
+      new Nan::Callback(info[0].As<v8::Function>());
   Nan::Callback* error_callback = NULL;
 
   if (info.Length() > 2 && info[1]->IsFunction())
@@ -443,7 +432,8 @@ NAN_METHOD(ActivateAchievement) {
     THROW_BAD_ARGS("Bad arguments");
   }
   std::string achievement = (*(v8::String::Utf8Value(info[0])));
-  Nan::Callback* success_callback = new Nan::Callback(info[1].As<v8::Function>());
+  Nan::Callback* success_callback =
+      new Nan::Callback(info[1].As<v8::Function>());
   Nan::Callback* error_callback = NULL;
 
   if (info.Length() > 2 && info[2]->IsFunction())
@@ -461,7 +451,8 @@ NAN_METHOD(GetAchievement) {
   }
 
   std::string achievement = (*(v8::String::Utf8Value(info[0])));
-  Nan::Callback* success_callback = new Nan::Callback(info[1].As<v8::Function>());
+  Nan::Callback* success_callback =
+      new Nan::Callback(info[1].As<v8::Function>());
   Nan::Callback* error_callback = NULL;
 
   if (info.Length() > 2 && info[2]->IsFunction())
@@ -477,7 +468,8 @@ NAN_METHOD(ClearAchievement) {
     THROW_BAD_ARGS("Bad arguments");
   }
   std::string achievement = (*(v8::String::Utf8Value(info[0])));
-  Nan::Callback* success_callback = new Nan::Callback(info[1].As<v8::Function>());
+  Nan::Callback* success_callback =
+      new Nan::Callback(info[1].As<v8::Function>());
   Nan::Callback* error_callback = NULL;
 
   if (info.Length() > 2 && info[2]->IsFunction())
@@ -493,8 +485,8 @@ NAN_METHOD(GetAchievementNames) {
   int count = static_cast<int>(SteamUserStats()->GetNumAchievements());
   v8::Local<v8::Array> names = Nan::New<v8::Array>(count);
   for (int i = 0; i < count; ++i) {
-    names->Set(i,
-       Nan::New(SteamUserStats()->GetAchievementName(i)).ToLocalChecked());
+    names->Set(
+        i, Nan::New(SteamUserStats()->GetAchievementName(i)).ToLocalChecked());
   }
   info.GetReturnValue().Set(names);
 }
@@ -528,7 +520,8 @@ NAN_METHOD(GetNumberOfPlayers) {
   if (info.Length() < 1 || !info[0]->IsFunction()) {
     THROW_BAD_ARGS("Bad arguments");
   }
-  Nan::Callback* success_callback = new Nan::Callback(info[0].As<v8::Function>());
+  Nan::Callback* success_callback =
+      new Nan::Callback(info[0].As<v8::Function>());
   Nan::Callback* error_callback = NULL;
 
   if (info.Length() > 1 && info[1]->IsFunction())
@@ -561,7 +554,8 @@ NAN_METHOD(FileShare) {
     THROW_BAD_ARGS("Bad arguments");
   }
   std::string file_name(*(v8::String::Utf8Value(info[0])));
-  Nan::Callback* success_callback = new Nan::Callback(info[1].As<v8::Function>());
+  Nan::Callback* success_callback =
+      new Nan::Callback(info[1].As<v8::Function>());
   Nan::Callback* error_callback = NULL;
 
   if (info.Length() > 2 && info[2]->IsFunction())
@@ -584,7 +578,8 @@ NAN_METHOD(PublishWorkshopFile) {
   std::string title(*(v8::String::Utf8Value(info[2])));
   std::string description(*(v8::String::Utf8Value(info[3])));
 
-  Nan::Callback* success_callback = new Nan::Callback(info[4].As<v8::Function>());
+  Nan::Callback* success_callback =
+      new Nan::Callback(info[4].As<v8::Function>());
   Nan::Callback* error_callback = NULL;
 
   if (info.Length() > 5 && info[5]->IsFunction())
@@ -612,7 +607,8 @@ NAN_METHOD(UpdatePublishedWorkshopFile) {
   std::string title(*(v8::String::Utf8Value(info[3])));
   std::string description(*(v8::String::Utf8Value(info[4])));
 
-  Nan::Callback* success_callback = new Nan::Callback(info[5].As<v8::Function>());
+  Nan::Callback* success_callback =
+      new Nan::Callback(info[5].As<v8::Function>());
   Nan::Callback* error_callback = NULL;
 
   if (info.Length() > 6 && info[6]->IsFunction())
@@ -635,7 +631,8 @@ NAN_METHOD(UGCGetItems) {
       info[0]->Int32Value());
   EUGCQuery ugc_query_type = static_cast<EUGCQuery>(info[1]->Int32Value());
 
-  Nan::Callback* success_callback = new Nan::Callback(info[2].As<v8::Function>());
+  Nan::Callback* success_callback =
+      new Nan::Callback(info[2].As<v8::Function>());
   Nan::Callback* error_callback = NULL;
 
   if (info.Length() > 3 && info[3]->IsFunction())
@@ -659,7 +656,8 @@ NAN_METHOD(UGCGetUserItems) {
       info[1]->Int32Value());
   EUserUGCList ugc_list = static_cast<EUserUGCList>(info[2]->Int32Value());
 
-  Nan::Callback* success_callback = new Nan::Callback(info[3].As<v8::Function>());
+  Nan::Callback* success_callback =
+      new Nan::Callback(info[3].As<v8::Function>());
   Nan::Callback* error_callback = NULL;
 
   if (info.Length() > 4 && info[4]->IsFunction())
@@ -681,7 +679,8 @@ NAN_METHOD(UGCDownloadItem) {
       *(v8::String::Utf8Value(info[0])));
   std::string download_dir = *(v8::String::Utf8Value(info[1]));
 
-  Nan::Callback* success_callback = new Nan::Callback(info[2].As<v8::Function>());
+  Nan::Callback* success_callback =
+      new Nan::Callback(info[2].As<v8::Function>());
   Nan::Callback* error_callback = NULL;
 
   if (info.Length() > 3 && info[3]->IsFunction())
@@ -699,7 +698,8 @@ NAN_METHOD(UGCSynchronizeItems) {
   }
   std::string download_dir = *(v8::String::Utf8Value(info[0]));
 
-  Nan::Callback* success_callback = new Nan::Callback(info[1].As<v8::Function>());
+  Nan::Callback* success_callback =
+      new Nan::Callback(info[1].As<v8::Function>());
   Nan::Callback* error_callback = NULL;
 
   if (info.Length() > 2 && info[2]->IsFunction())
@@ -737,7 +737,8 @@ NAN_METHOD(UGCUnsubscribe) {
   }
   PublishedFileId_t unsubscribed_file_id = utils::strToUint64(
       *(v8::String::Utf8Value(info[0])));
-  Nan::Callback* success_callback = new Nan::Callback(info[1].As<v8::Function>());
+  Nan::Callback* success_callback =
+      new Nan::Callback(info[1].As<v8::Function>());
   Nan::Callback* error_callback = NULL;
 
   if (info.Length() > 2 && info[2]->IsFunction())
@@ -759,7 +760,8 @@ NAN_METHOD(CreateArchive) {
   std::string password = *(v8::String::Utf8Value(info[2]));
   int compress_level = info[3]->Int32Value();
 
-  Nan::Callback* success_callback = new Nan::Callback(info[4].As<v8::Function>());
+  Nan::Callback* success_callback =
+      new Nan::Callback(info[4].As<v8::Function>());
   Nan::Callback* error_callback = NULL;
 
   if (info.Length() > 5 && info[5]->IsFunction())
@@ -781,7 +783,8 @@ NAN_METHOD(ExtractArchive) {
   std::string extract_dir = *(v8::String::Utf8Value(info[1]));
   std::string password = *(v8::String::Utf8Value(info[2]));
 
-  Nan::Callback* success_callback = new Nan::Callback(info[3].As<v8::Function>());
+  Nan::Callback* success_callback =
+      new Nan::Callback(info[3].As<v8::Function>());
   Nan::Callback* error_callback = NULL;
 
   if (info.Length() > 4 && info[4]->IsFunction())
@@ -797,7 +800,8 @@ NAN_METHOD(GetAuthSessionTicket) {
   if (info.Length() < 1 || !info[0]->IsFunction()) {
     THROW_BAD_ARGS("Bad arguments");
   }
-  Nan::Callback* success_callback = new Nan::Callback(info[0].As<v8::Function>());
+  Nan::Callback* success_callback =
+      new Nan::Callback(info[0].As<v8::Function>());
   Nan::Callback* error_callback = NULL;
   if (info.Length() > 1 && info[1]->IsFunction())
     error_callback = new Nan::Callback(info[1].As<v8::Function>());
@@ -825,7 +829,8 @@ NAN_METHOD(GetEncryptedAppTicket) {
   if (!user_data) {
     THROW_BAD_ARGS("Bad arguments");
   }
-  Nan::Callback* success_callback = new Nan::Callback(info[1].As<v8::Function>());
+  Nan::Callback* success_callback =
+      new Nan::Callback(info[1].As<v8::Function>());
   Nan::Callback* error_callback = NULL;
   if (info.Length() > 2 && info[2]->IsFunction())
     error_callback = new Nan::Callback(info[2].As<v8::Function>());
@@ -886,9 +891,9 @@ NAN_MODULE_INIT(init) {
   Nan::Set(target,
            Nan::New("initAPI").ToLocalChecked(),
            Nan::New<v8::FunctionTemplate>(InitAPI)->GetFunction());
-  Nan::Set(target,
-           Nan::New("restartAppIfNecessary").ToLocalChecked(),
-           Nan::New<v8::FunctionTemplate>(RestartAppIfNecessary)->GetFunction());
+  Nan::Set(
+      target, Nan::New("restartAppIfNecessary").ToLocalChecked(),
+      Nan::New<v8::FunctionTemplate>(RestartAppIfNecessary)->GetFunction());
   Nan::Set(target,
            Nan::New("isSteamRunning").ToLocalChecked(),
            Nan::New<v8::FunctionTemplate>(IsSteamRunning)->GetFunction());
@@ -1007,10 +1012,10 @@ NAN_MODULE_INIT(init) {
                GetEncryptedAppTicket)->GetFunction());
   Nan::Set(target,
            Nan::New("cancelAuthTicket").ToLocalChecked(),
-               Nan::New<v8::FunctionTemplate>(CancelAuthTicket)->GetFunction());
-Nan::Set(target,
+           Nan::New<v8::FunctionTemplate>(CancelAuthTicket)->GetFunction());
+  Nan::Set(target,
            Nan::New("isSubscribedApp").ToLocalChecked(),
-               Nan::New<v8::FunctionTemplate>(IsSubscribedApp)->GetFunction());
+           Nan::New<v8::FunctionTemplate>(IsSubscribedApp)->GetFunction());
 
   utils::InitUgcMatchingTypes(target);
   utils::InitUgcQueryTypes(target);

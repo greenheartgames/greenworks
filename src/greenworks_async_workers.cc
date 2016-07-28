@@ -303,7 +303,8 @@ void GetAuthSessionTicketWorker::OnGetAuthSessionCompleted(
 void GetAuthSessionTicketWorker::HandleOKCallback() {
   Nan::HandleScope scope;
   v8::Local<v8::Object> ticket = Nan::New<v8::Object>();
-  ticket->Set(Nan::New("ticket").ToLocalChecked(), Nan::New(ticket_).ToLocalChecked());
+  ticket->Set(Nan::New("ticket").ToLocalChecked(),
+              Nan::New(ticket_).ToLocalChecked());
   ticket->Set(Nan::New("handle").ToLocalChecked(), Nan::New(handle_));
   v8::Local<v8::Value> argv[] = { ticket };
   callback->Call(1, argv);
