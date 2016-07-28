@@ -96,6 +96,7 @@
           '<(source_root_dir)/<(steamworks_sdk_dir)/redistributable_bin/<(redist_bin_dir)/<(lib_steam)'
         ]
       },
+      'cflags': [ '-std=c++11' ],
       'conditions': [
         ['OS== "linux"',
           {
@@ -124,6 +125,13 @@
       'xcode_settings': {
         'WARNING_CFLAGS':  [
           '-Wno-deprecated-declarations',
+        ],
+        'OTHER_CPLUSPLUSFLAGS' : [
+          '-std=c++11',
+          '-stdlib=libc++'
+        ],
+        'OTHER_LDFLAGS': [
+          '-stdlib=libc++'
         ],
       },
       'msvs_disabled_warnings': [
