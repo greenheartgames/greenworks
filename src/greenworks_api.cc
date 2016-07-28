@@ -2,6 +2,7 @@
 // Use of this source code is governed by the MIT license that can be
 // found in the LICENSE file.
 
+#include <map>
 #include <string>
 #include <sstream>
 #include <vector>
@@ -24,6 +25,8 @@ namespace {
        return;                   \
     } while (0);
 
+#define MAKE_ENUM_PAIR(name) \
+    { name, #name }
 
 Nan::Persistent<v8::Object> g_persistent_steam_events;
 
@@ -79,46 +82,27 @@ void SteamEvent::OnSteamShutdown() {
 }
 
 v8::Local<v8::Object> GetSteamUserCountType(int type_id) {
-  v8::Local<v8::Object> account_type = Nan::New<v8::Object>();
-  std::string name;
-  switch (type_id) {
-    case k_EAccountTypeAnonGameServer:
-      name = "k_EAccountTypeAnonGameServer";
-      break;
-    case k_EAccountTypeAnonUser:
-      name = "k_EAccountTypeAnonUser";
-      break;
-    case k_EAccountTypeChat:
-      name = "k_EAccountTypeChat";
-      break;
-    case k_EAccountTypeClan:
-      name = "k_EAccountTypeClan";
-      break;
-    case k_EAccountTypeConsoleUser:
-      name = "k_EAccountTypeConsoleUser";
-      break;
-    case k_EAccountTypeContentServer:
-      name = "k_EAccountTypeContentServer";
-      break;
-    case k_EAccountTypeGameServer:
-      name = "k_EAccountTypeGameServer";
-      break;
-    case k_EAccountTypeIndividual:
-      name = "k_EAccountTypeIndividual";
-      break;
-    case k_EAccountTypeInvalid:
-      name = "k_EAccountTypeInvalid";
-      break;
-    case k_EAccountTypeMax:
-      name = "k_EAccountTypeMax";
-      break;
-    case k_EAccountTypeMultiseat:
-      name = "k_EAccountTypeMultiseat";
-      break;
-    case k_EAccountTypePending:
-      name = "k_EAccountTypePending";
-      break;
+  if (type_id > k_EAccountTypeMax) {
+    Nan::ThrowTypeError("Bad argument");
+    return Nan::New<v8::Object>();
   }
+  EAccountType type = static_cast<EAccountType>(type_id);
+  std::map<EAccountType, std::string> account_types = {
+    MAKE_ENUM_PAIR(k_EAccountTypeInvalid),
+    MAKE_ENUM_PAIR(k_EAccountTypeIndividual),
+    MAKE_ENUM_PAIR(k_EAccountTypeMultiseat),
+    MAKE_ENUM_PAIR(k_EAccountTypeGameServer),
+    MAKE_ENUM_PAIR(k_EAccountTypeAnonGameServer),
+    MAKE_ENUM_PAIR(k_EAccountTypePending),
+    MAKE_ENUM_PAIR(k_EAccountTypeContentServer),
+    MAKE_ENUM_PAIR(k_EAccountTypeClan),
+    MAKE_ENUM_PAIR(k_EAccountTypeChat),
+    MAKE_ENUM_PAIR(k_EAccountTypeConsoleUser),
+    MAKE_ENUM_PAIR(k_EAccountTypeAnonUser),
+    MAKE_ENUM_PAIR(k_EAccountTypeMax)
+  };
+  std::string name = account_types[type];
+  v8::Local<v8::Object> account_type = Nan::New<v8::Object>();
   account_type->Set(Nan::New("name").ToLocalChecked(),
                     Nan::New(name).ToLocalChecked());
   account_type->Set(Nan::New("value").ToLocalChecked(), Nan::New(type_id));
@@ -127,36 +111,23 @@ v8::Local<v8::Object> GetSteamUserCountType(int type_id) {
 
 v8::Local<v8::Object> GetSteamFriendRelationship(int type_id) {
   v8::Local<v8::Object> friend_relationship = Nan::New<v8::Object>();
-  std::string name;
-  switch (type_id) {
-    case k_EFriendRelationshipNone:
-      name = "k_EFriendRelationshipNone";
-      break;
-    case k_EFriendRelationshipBlocked:
-      name = "k_EFriendRelationshipBlocked";
-      break;
-    case k_EFriendRelationshipRequestRecipient:
-      name = "k_EFriendRelationshipRequestRecipient";
-      break;
-    case k_EFriendRelationshipFriend:
-      name = "k_EFriendRelationshipFriend";
-      break;
-    case k_EFriendRelationshipRequestInitiator:
-      name = "k_EFriendRelationshipRequestInitiator";
-      break;
-    case k_EFriendRelationshipIgnored:
-      name = "k_EFriendRelationshipIgnored";
-      break;
-    case k_EFriendRelationshipIgnoredFriend:
-      name = "k_EFriendRelationshipIgnoredFriend";
-      break;
-    case k_EFriendRelationshipSuggested:
-      name = "k_EFriendRelationshipSuggested";
-      break;
-    case k_EFriendRelationshipMax:
-      name = "k_EFriendRelationshipMax";
-      break;
+  EFriendRelationship type = static_cast<EFriendRelationship>(type_id);
+  if (type > k_EFriendRelationshipMax) {
+    Nan::ThrowTypeError("Bad argument");
+    return Nan::New<v8::Object>();
   }
+  std::map<EFriendRelationship, std::string> friend_relationship_types = {
+    MAKE_ENUM_PAIR(k_EFriendRelationshipNone),
+    MAKE_ENUM_PAIR(k_EFriendRelationshipBlocked),
+    MAKE_ENUM_PAIR(k_EFriendRelationshipRequestRecipient),
+    MAKE_ENUM_PAIR(k_EFriendRelationshipFriend),
+    MAKE_ENUM_PAIR(k_EFriendRelationshipRequestInitiator),
+    MAKE_ENUM_PAIR(k_EFriendRelationshipIgnored),
+    MAKE_ENUM_PAIR(k_EFriendRelationshipIgnoredFriend),
+    MAKE_ENUM_PAIR(k_EFriendRelationshipSuggested),
+    MAKE_ENUM_PAIR(k_EFriendRelationshipMax)
+  };
+  std::string name = friend_relationship_types[type];
   friend_relationship->Set(Nan::New("name").ToLocalChecked(),
                            Nan::New(name).ToLocalChecked());
   friend_relationship->Set(Nan::New("value").ToLocalChecked(),
