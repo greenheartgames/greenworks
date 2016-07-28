@@ -145,31 +145,31 @@ void InitUserUgcListSortOrder(v8::Handle<v8::Object> exports) {
 void InitFriendFlags(v8::Handle<v8::Object> exports) {
   v8::Local<v8::Object> friend_flags = Nan::New<v8::Object>();
   friend_flags->Set(Nan::New("None").ToLocalChecked(),
-                         Nan::New(k_EFriendFlagNone));
+                    Nan::New(k_EFriendFlagNone));
   friend_flags->Set(Nan::New("Blocked").ToLocalChecked(),
-                         Nan::New(k_EFriendFlagBlocked));
+                    Nan::New(k_EFriendFlagBlocked));
   friend_flags->Set(Nan::New("FriendshipRequested").ToLocalChecked(),
-                         Nan::New(k_EFriendFlagFriendshipRequested));
+                    Nan::New(k_EFriendFlagFriendshipRequested));
   friend_flags->Set(Nan::New("Immediate").ToLocalChecked(),
-                         Nan::New(k_EFriendFlagImmediate));
+                    Nan::New(k_EFriendFlagImmediate));
   friend_flags->Set(Nan::New("ClanMember").ToLocalChecked(),
-                         Nan::New(k_EFriendFlagClanMember));
+                    Nan::New(k_EFriendFlagClanMember));
   friend_flags->Set(Nan::New("OnGameServer").ToLocalChecked(),
-                         Nan::New(k_EFriendFlagOnGameServer));
+                    Nan::New(k_EFriendFlagOnGameServer));
   friend_flags->Set(Nan::New("RequestingFriendship").ToLocalChecked(),
-                         Nan::New(k_EFriendFlagRequestingFriendship));
+                    Nan::New(k_EFriendFlagRequestingFriendship));
   friend_flags->Set(Nan::New("RequestingInfo").ToLocalChecked(),
-                         Nan::New(k_EFriendFlagRequestingInfo));
+                    Nan::New(k_EFriendFlagRequestingInfo));
   friend_flags->Set(Nan::New("Ignored").ToLocalChecked(),
-                         Nan::New(k_EFriendFlagIgnored));
+                    Nan::New(k_EFriendFlagIgnored));
   friend_flags->Set(Nan::New("IgnoredFriend").ToLocalChecked(),
-                         Nan::New(k_EFriendFlagIgnoredFriend));
+                    Nan::New(k_EFriendFlagIgnoredFriend));
   friend_flags->Set(Nan::New("Suggested").ToLocalChecked(),
-                         Nan::New(k_EFriendFlagSuggested));
+                    Nan::New(k_EFriendFlagSuggested));
   friend_flags->Set(Nan::New("ChatMember").ToLocalChecked(),
-                         Nan::New(k_EFriendFlagChatMember));
+                    Nan::New(k_EFriendFlagChatMember));
   friend_flags->Set(Nan::New("All").ToLocalChecked(),
-                         Nan::New(k_EFriendFlagAll));
+                    Nan::New(k_EFriendFlagAll));
   Nan::Persistent<v8::Object> constructor;
   constructor.Reset(friend_flags);
   Nan::Set(exports,

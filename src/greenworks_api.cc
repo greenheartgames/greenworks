@@ -262,25 +262,25 @@ NAN_METHOD(GetFriends) {
     flags->Set(Nan::New("anonymous").ToLocalChecked(),
                Nan::New(friendSteamID.BAnonAccount()));
     flags->Set(Nan::New("anonymousGameServer").ToLocalChecked(),
-        Nan::New(friendSteamID.BAnonGameServerAccount()));
+               Nan::New(friendSteamID.BAnonGameServerAccount()));
     flags->Set(Nan::New("anonymousGameServerLogin").ToLocalChecked(),
-        Nan::New(friendSteamID.BBlankAnonAccount()));
+               Nan::New(friendSteamID.BBlankAnonAccount()));
     flags->Set(Nan::New("anonymousUser").ToLocalChecked(),
-              Nan::New(friendSteamID.BAnonUserAccount()));
+               Nan::New(friendSteamID.BAnonUserAccount()));
     flags->Set(Nan::New("chat").ToLocalChecked(),
-              Nan::New(friendSteamID.BChatAccount()));
+               Nan::New(friendSteamID.BChatAccount()));
     flags->Set(Nan::New("clan").ToLocalChecked(),
-              Nan::New(friendSteamID.BClanAccount()));
+               Nan::New(friendSteamID.BClanAccount()));
     flags->Set(Nan::New("consoleUser").ToLocalChecked(),
-              Nan::New(friendSteamID.BConsoleUserAccount()));
+               Nan::New(friendSteamID.BConsoleUserAccount()));
     flags->Set(Nan::New("contentServer").ToLocalChecked(),
-              Nan::New(friendSteamID.BContentServerAccount()));
+               Nan::New(friendSteamID.BContentServerAccount()));
     flags->Set(Nan::New("gameServer").ToLocalChecked(),
-              Nan::New(friendSteamID.BGameServerAccount()));
+               Nan::New(friendSteamID.BGameServerAccount()));
     flags->Set(Nan::New("individual").ToLocalChecked(),
-              Nan::New(friendSteamID.BIndividualAccount()));
+               Nan::New(friendSteamID.BIndividualAccount()));
     flags->Set(Nan::New("gameServerPersistent").ToLocalChecked(),
-              Nan::New(friendSteamID.BPersistentGameServerAccount()));
+               Nan::New(friendSteamID.BPersistentGameServerAccount()));
     flags->Set(Nan::New("lobby").ToLocalChecked(),
                Nan::New(friendSteamID.IsLobby()));
     aFriend->Set(Nan::New("flags").ToLocalChecked(), flags);
@@ -1012,10 +1012,10 @@ NAN_MODULE_INIT(init) {
                GetEncryptedAppTicket)->GetFunction());
   Nan::Set(target,
            Nan::New("cancelAuthTicket").ToLocalChecked(),
-               Nan::New<v8::FunctionTemplate>(CancelAuthTicket)->GetFunction());
-Nan::Set(target,
+           Nan::New<v8::FunctionTemplate>(CancelAuthTicket)->GetFunction());
+  Nan::Set(target,
            Nan::New("isSubscribedApp").ToLocalChecked(),
-               Nan::New<v8::FunctionTemplate>(IsSubscribedApp)->GetFunction());
+           Nan::New<v8::FunctionTemplate>(IsSubscribedApp)->GetFunction());
 
   utils::InitUgcMatchingTypes(target);
   utils::InitUgcQueryTypes(target);
