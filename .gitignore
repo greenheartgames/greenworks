@@ -1,9 +1,10 @@
 node_modules/
 build/
 lib/
-deps/steamworks_sdk/
+deps/steamworks*
 test/steam_appid.txt
 steam_appid.txt
 *.swp
 *.dylib
 *.node
+.DS_Store
