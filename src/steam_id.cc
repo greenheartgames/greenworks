@@ -34,6 +34,7 @@ v8::Local<v8::Object> SteamID::Create(CSteamID steam_id) {
   SetPrototypeMethod(tpl, "getStaticAccountKey", GetStaticAccountKey);
   SetPrototypeMethod(tpl, "getPersonaName", GetPersonaName);
   SetPrototypeMethod(tpl, "getRelationship", GetRelationship);
+  SetPrototypeMethod(tpl, "getSteamLevel", GetSteamLevel);
 
   SteamID* obj = new SteamID(steam_id);
   v8::Local<v8::Object> instance = tpl->GetFunction()->NewInstance();
@@ -143,6 +144,12 @@ NAN_METHOD(SteamID::GetRelationship) {
   SteamID* obj = ObjectWrap::Unwrap<SteamID>(info.Holder());
   info.GetReturnValue().Set(
       Nan::New(SteamFriends()->GetFriendRelationship(obj->steam_id_)));
+}
+
+NAN_METHOD(SteamID::GetSteamLevel) {
+  SteamID* obj = ObjectWrap::Unwrap<SteamID>(info.Holder());
+  info.GetReturnValue().Set(
+      Nan::New(SteamFriends()->GetFriendSteamLevel(obj->steam_id_)));
 }
 
 }  // namespace greenworks
