@@ -105,8 +105,7 @@ NAN_METHOD(SteamID::GetAccountID) {
 
 NAN_METHOD(SteamID::GetAccountType) {
   SteamID* obj = ObjectWrap::Unwrap<SteamID>(info.Holder());
-  info.GetReturnValue().Set(
-      Nan::New<v8::Integer>(obj->steam_id_.GetAccountID()));
+  info.GetReturnValue().Set(Nan::New(obj->steam_id_.GetEAccountType()));
 }
 
 NAN_METHOD(SteamID::IsValid) {
