@@ -192,7 +192,8 @@ NAN_METHOD(GetSteamId) {
              Nan::New(user_id.BPersistentGameServerAccount()));
   flags->Set(Nan::New("lobby").ToLocalChecked(), Nan::New(user_id.IsLobby()));
 
-  v8::Local<v8::Object> result = Nan::New<v8::Object>();
+  v8::Local<v8::Object> result = greenworks::SteamID::Create(user_id);
+  // For backwards compatiblilty.
   result->Set(Nan::New("flags").ToLocalChecked(), flags);
   result->Set(Nan::New("type").ToLocalChecked(),
               GetSteamUserCountType(user_id.GetEAccountType()));
