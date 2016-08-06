@@ -127,4 +127,10 @@ NAN_METHOD(SteamID::GetFriendPersonaName) {
           .ToLocalChecked());
 }
 
+NAN_METHOD(SteamID::GetFriendRelationship) {
+  SteamID* obj = ObjectWrap::Unwrap<SteamID>(info.Holder());
+  info.GetReturnValue().Set(
+      Nan::New(SteamFriends()->GetFriendRelationship(obj->steam_id_)));
+}
+
 }  // namespace greenworks
