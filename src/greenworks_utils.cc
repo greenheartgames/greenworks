@@ -21,6 +21,10 @@
 
 namespace utils {
 
+#define SET_TYPE(obj, type_name, type) \
+  obj->Set(Nan::New(type_name).ToLocalChecked(), \
+           Nan::New(type))
+
 void InitUgcMatchingTypes(v8::Handle<v8::Object> exports) {
   v8::Local<v8::Object> ugc_matching_type = Nan::New<v8::Object>();
   ugc_matching_type->Set(Nan::New("Items").ToLocalChecked(),
@@ -175,6 +179,26 @@ void InitFriendFlags(v8::Handle<v8::Object> exports) {
   Nan::Set(exports,
            Nan::New("FriendFlags").ToLocalChecked(),
            friend_flags);
+}
+
+void InitAccountType(v8::Handle<v8::Object> exports) {
+  v8::Local<v8::Object> account_type = Nan::New<v8::Object>();
+  SET_TYPE(account_type, "Invalid", k_EAccountTypeInvalid);
+  SET_TYPE(account_type, "Individual", k_EAccountTypeIndividual);
+  SET_TYPE(account_type, "Multiseat", k_EAccountTypeMultiseat);
+  SET_TYPE(account_type, "GameServer", k_EAccountTypeGameServer);
+  SET_TYPE(account_type, "AnonymousGameServer", k_EAccountTypeAnonGameServer);
+  SET_TYPE(account_type, "Pending", k_EAccountTypePending);
+  SET_TYPE(account_type, "ContentServer", k_EAccountTypeContentServer);
+  SET_TYPE(account_type, "Clan", k_EAccountTypeClan);
+  SET_TYPE(account_type, "Chat", k_EAccountTypeChat);
+  SET_TYPE(account_type, "ConsoleUser", k_EAccountTypeConsoleUser);
+  SET_TYPE(account_type, "AnonymousUser", k_EAccountTypeAnonUser);
+  Nan::Persistent<v8::Object> constructor;
+  constructor.Reset(account_type);
+  Nan::Set(exports,
+           Nan::New("AccountType").ToLocalChecked(),
+           account_type);
 }
 
 void sleep(int milliseconds) {
