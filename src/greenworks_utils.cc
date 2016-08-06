@@ -141,6 +141,25 @@ void InitFriendFlags(v8::Handle<v8::Object> exports) {
            friend_flags);
 }
 
+void InitFriendRelationship(v8::Handle<v8::Object> exports) {
+  v8::Local<v8::Object> relationship = Nan::New<v8::Object>();
+  SET_TYPE(relationship, "None", k_EFriendRelationshipNone);
+  SET_TYPE(relationship, "Blocked", k_EFriendRelationshipBlocked);
+  SET_TYPE(relationship, "RequestRecipient",
+           k_EFriendRelationshipRequestRecipient);
+  SET_TYPE(relationship, "Friend", k_EFriendRelationshipFriend);
+  SET_TYPE(relationship, "RequestInitiator",
+           k_EFriendRelationshipRequestInitiator);
+  SET_TYPE(relationship, "Ignored", k_EFriendRelationshipIgnored);
+  SET_TYPE(relationship, "IgnoredFriend", k_EFriendRelationshipIgnoredFriend);
+  SET_TYPE(relationship, "Suggested", k_EFriendRelationshipSuggested);
+  Nan::Persistent<v8::Object> constructor;
+  constructor.Reset(relationship);
+  Nan::Set(exports,
+           Nan::New("FriendRelationship").ToLocalChecked(),
+           relationship);
+}
+
 void InitAccountType(v8::Handle<v8::Object> exports) {
   v8::Local<v8::Object> account_type = Nan::New<v8::Object>();
   SET_TYPE(account_type, "Invalid", k_EAccountTypeInvalid);

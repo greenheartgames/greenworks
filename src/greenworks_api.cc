@@ -975,6 +975,7 @@ NAN_MODULE_INIT(init) {
   utils::InitUserUgcListSortOrder(target);
   utils::InitUserUgcList(target);
   utils::InitFriendFlags(target);
+  utils::InitFriendRelationship(target);
   utils::InitAccountType(target);
 
   // Utils related APIs.

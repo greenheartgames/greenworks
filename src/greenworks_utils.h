@@ -23,6 +23,8 @@ void InitUserUgcList(v8::Handle<v8::Object> exports);
 
 void InitFriendFlags(v8::Handle<v8::Object> exports);
 
+void InitFriendRelationship(v8::Handle<v8::Object> exports);
+
 void InitAccountType(v8::Handle<v8::Object> exports);
 
 void sleep(int milliseconds);
