@@ -110,32 +110,6 @@ v8::Local<v8::Object> GetSteamUserCountType(int type_id) {
   return account_type;
 }
 
-v8::Local<v8::Object> GetSteamFriendRelationship(int type_id) {
-  v8::Local<v8::Object> friend_relationship = Nan::New<v8::Object>();
-  EFriendRelationship type = static_cast<EFriendRelationship>(type_id);
-  if (type > k_EFriendRelationshipMax) {
-    Nan::ThrowTypeError("Bad argument");
-    return Nan::New<v8::Object>();
-  }
-  std::map<EFriendRelationship, std::string> friend_relationship_types = {
-    MAKE_ENUM_PAIR(k_EFriendRelationshipNone),
-    MAKE_ENUM_PAIR(k_EFriendRelationshipBlocked),
-    MAKE_ENUM_PAIR(k_EFriendRelationshipRequestRecipient),
-    MAKE_ENUM_PAIR(k_EFriendRelationshipFriend),
-    MAKE_ENUM_PAIR(k_EFriendRelationshipRequestInitiator),
-    MAKE_ENUM_PAIR(k_EFriendRelationshipIgnored),
-    MAKE_ENUM_PAIR(k_EFriendRelationshipIgnoredFriend),
-    MAKE_ENUM_PAIR(k_EFriendRelationshipSuggested),
-    MAKE_ENUM_PAIR(k_EFriendRelationshipMax)
-  };
-  std::string name = friend_relationship_types[type];
-  friend_relationship->Set(Nan::New("name").ToLocalChecked(),
-                           Nan::New(name).ToLocalChecked());
-  friend_relationship->Set(Nan::New("value").ToLocalChecked(),
-                           Nan::New(type_id));
-  return friend_relationship;
-}
-
 NAN_METHOD(RestartAppIfNecessary) {
   Nan::HandleScope scope;
 
