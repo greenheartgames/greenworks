@@ -33,6 +33,7 @@ v8::Local<v8::Object> SteamID::Create(CSteamID steam_id) {
   SetPrototypeMethod(tpl, "isValid", IsValid);
   SetPrototypeMethod(tpl, "getStaticAccountKey", GetStaticAccountKey);
   SetPrototypeMethod(tpl, "getPersonaName", GetPersonaName);
+  SetPrototypeMethod(tpl, "getNickname", GetNickname);
   SetPrototypeMethod(tpl, "getRelationship", GetRelationship);
   SetPrototypeMethod(tpl, "getSteamLevel", GetSteamLevel);
 
@@ -137,6 +138,13 @@ NAN_METHOD(SteamID::GetPersonaName) {
   SteamID* obj = ObjectWrap::Unwrap<SteamID>(info.Holder());
   info.GetReturnValue().Set(
       Nan::New(SteamFriends()->GetFriendPersonaName(obj->steam_id_))
+          .ToLocalChecked());
+}
+
+NAN_METHOD(SteamID::GetNickname) {
+  SteamID* obj = ObjectWrap::Unwrap<SteamID>(info.Holder());
+  info.GetReturnValue().Set(
+      Nan::New(SteamFriends()->GetPlayerNickname(obj->steam_id_))
           .ToLocalChecked());
 }
 

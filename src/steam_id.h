@@ -32,6 +32,7 @@ class SteamID : public Nan::ObjectWrap {
   static NAN_METHOD(IsValid);
   static NAN_METHOD(GetStaticAccountKey);
   static NAN_METHOD(GetPersonaName);
+  static NAN_METHOD(GetNickname);
   static NAN_METHOD(GetRelationship);
   static NAN_METHOD(GetSteamLevel);
 
