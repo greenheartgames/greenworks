@@ -36,7 +36,8 @@ SteamClient::SteamClient() :
     steam_servers_disconnected_(this, &SteamClient::OnSteamServersDisconnected),
     steam_server_connect_failure_(this,
                                   &SteamClient::OnSteamServerConnectFailure),
-    steam_shutdown_(this, &SteamClient::OnSteamShutdown) {
+    steam_shutdown_(this, &SteamClient::OnSteamShutdown),
+    steam_persona_state_change_(this, &SteamClient::OnPeronaStateChange) {
 }
 
 SteamClient::~SteamClient() {
@@ -91,6 +92,13 @@ void SteamClient::OnSteamShutdown(SteamShutdown_t* callback) {
   }
 }
 
+void SteamClient::OnPeronaStateChange(PersonaStateChange_t* callback) {
+  for (size_t i = 0; i < observer_list_.size(); ++i) {
+    observer_list_[i]->OnPersonaStateChange(callback->m_ulSteamID,
+                                            callback->m_nChangeFlags);
+  }
+}
+
 void SteamClient::StartSteamLoop() {
   if (g_steam_timer)
     return;
@@ -106,6 +114,5 @@ void SteamClient::AddObserver(Observer* observer) {
     observer_list_.push_back(observer);
   }
 }
-
 
 }  // namespace greenworks

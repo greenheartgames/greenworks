@@ -39,6 +39,8 @@ class SteamEvent : public greenworks::SteamClient::Observer {
   virtual void OnSteamServersDisconnected();
   virtual void OnSteamServerConnectFailure(int status_code);
   virtual void OnSteamShutdown();
+  virtual void OnPersonaStateChange(uint64 raw_steam_id,
+                                    int persona_change_flag);
 };
 
 void SteamEvent::OnGameOverlayActivated(bool is_active) {
@@ -80,6 +82,17 @@ void SteamEvent::OnSteamShutdown() {
   v8::Local<v8::Value> argv[] = { Nan::New("steam-shutdown").ToLocalChecked() };
   Nan::MakeCallback(
       Nan::New(g_persistent_steam_events), "on", 1, argv);
+}
+
+void SteamEvent::OnPersonaStateChange(uint64 raw_steam_id,
+                                      int persona_change_flag) {
+  Nan::HandleScope scope;
+  v8::Local<v8::Value> argv[] = {
+      Nan::New("persona-state-change").ToLocalChecked(),
+      greenworks::SteamID::Create(raw_steam_id), Nan::New(persona_change_flag),
+  };
+  Nan::MakeCallback(
+      Nan::New(g_persistent_steam_events), "on", 3, argv);
 }
 
 v8::Local<v8::Object> GetSteamUserCountType(int type_id) {
@@ -234,6 +247,20 @@ NAN_METHOD(GetFriends) {
     friends->Set(i, greenworks::SteamID::Create(steam_id));
   }
   info.GetReturnValue().Set(friends);
+}
+
+NAN_METHOD(RequestUserInformation) {
+  Nan::HandleScope scope;
+  if (info.Length() < 2 || !info[0]->IsString() || !info[1]->IsBoolean()) {
+    THROW_BAD_ARGS("Bad arguments");
+  }
+  std::string steam_id_str(*(v8::String::Utf8Value(info[0])));
+  bool require_name_only = info[1]->BooleanValue();
+  CSteamID steam_id(utils::strToUint64(steam_id_str));
+  if (!steam_id.IsValid()) {
+    THROW_BAD_ARGS("Steam ID is invalid");
+  }
+  SteamFriends()->RequestUserInformation(steam_id, require_name_only);
 }
 
 NAN_METHOD(SaveTextToFile) {
@@ -834,6 +861,9 @@ NAN_MODULE_INIT(init) {
   Nan::Set(target,
            Nan::New("getFriends").ToLocalChecked(),
            Nan::New<v8::FunctionTemplate>(GetFriends)->GetFunction());
+  Nan::Set(
+      target, Nan::New("requestUserInformation").ToLocalChecked(),
+      Nan::New<v8::FunctionTemplate>(RequestUserInformation)->GetFunction());
   // File related APIs.
   Nan::Set(target,
            Nan::New("saveTextToFile").ToLocalChecked(),

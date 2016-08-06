@@ -160,6 +160,30 @@ void InitFriendRelationship(v8::Handle<v8::Object> exports) {
            relationship);
 }
 
+void InitFriendPersonaChange(v8::Handle<v8::Object> exports) {
+  v8::Local<v8::Object> persona_change = Nan::New<v8::Object>();
+  SET_TYPE(persona_change, "Name", k_EPersonaChangeName);
+  SET_TYPE(persona_change, "Status", k_EPersonaChangeStatus);
+  SET_TYPE(persona_change, "ComeOnline", k_EPersonaChangeComeOnline);
+  SET_TYPE(persona_change, "GoneOffline", k_EPersonaChangeGoneOffline);
+  SET_TYPE(persona_change, "GamePlayed", k_EPersonaChangeGamePlayed);
+  SET_TYPE(persona_change, "GameServer", k_EPersonaChangeGameServer);
+  SET_TYPE(persona_change, "Avator", k_EPersonaChangeAvatar);
+  SET_TYPE(persona_change, "JoinedSource", k_EPersonaChangeJoinedSource);
+  SET_TYPE(persona_change, "LeftSource", k_EPersonaChangeLeftSource);
+  SET_TYPE(persona_change, "RelationshipChanged",
+           k_EPersonaChangeRelationshipChanged);
+  SET_TYPE(persona_change, "NameFirstSet", k_EPersonaChangeNameFirstSet);
+  SET_TYPE(persona_change, "FacebookInfo", k_EPersonaChangeFacebookInfo);
+  SET_TYPE(persona_change, "NickName", k_EPersonaChangeNickname);
+  SET_TYPE(persona_change, "SteamLevel", k_EPersonaChangeSteamLevel);
+  Nan::Persistent<v8::Object> constructor;
+  constructor.Reset(persona_change);
+  Nan::Set(exports,
+           Nan::New("PersonaChange").ToLocalChecked(),
+           persona_change);
+}
+
 void InitAccountType(v8::Handle<v8::Object> exports) {
   v8::Local<v8::Object> account_type = Nan::New<v8::Object>();
   SET_TYPE(account_type, "Invalid", k_EAccountTypeInvalid);

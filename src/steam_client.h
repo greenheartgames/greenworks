@@ -21,6 +21,8 @@ class SteamClient {
     virtual void OnSteamServersDisconnected() = 0;
     virtual void OnSteamServerConnectFailure(int status_code) = 0;
     virtual void OnSteamShutdown() = 0;
+    virtual void OnPersonaStateChange(uint64 raw_steam_id,
+                                      int persona_change_flag) = 0;
 
     virtual ~Observer() {}
   };
@@ -45,7 +47,14 @@ class SteamClient {
       SteamServersDisconnected_t, steam_servers_disconnected_);
   STEAM_CALLBACK(SteamClient, OnSteamServerConnectFailure,
       SteamServerConnectFailure_t, steam_server_connect_failure_);
-  STEAM_CALLBACK(SteamClient, OnSteamShutdown, SteamShutdown_t, steam_shutdown_);
+  STEAM_CALLBACK(SteamClient,
+                 OnSteamShutdown,
+                 SteamShutdown_t,
+                 steam_shutdown_);
+  STEAM_CALLBACK(SteamClient,
+                 OnPeronaStateChange,
+                 PersonaStateChange_t,
+                 steam_persona_state_change_);
 };
 
 }  // namespace greenworks
