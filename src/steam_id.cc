@@ -32,7 +32,8 @@ v8::Local<v8::Object> SteamID::Create(CSteamID steam_id) {
   SetPrototypeMethod(tpl, "getAccountType", GetAccountType);
   SetPrototypeMethod(tpl, "isValid", IsValid);
   SetPrototypeMethod(tpl, "getStaticAccountKey", GetStaticAccountKey);
-  SetPrototypeMethod(tpl, "getFriendPersonaName", GetFriendPersonaName);
+  SetPrototypeMethod(tpl, "getPersonaName", GetPersonaName);
+  SetPrototypeMethod(tpl, "getRelationship", GetRelationship);
 
   SteamID* obj = new SteamID(steam_id);
   v8::Local<v8::Object> instance = tpl->GetFunction()->NewInstance();
@@ -131,14 +132,14 @@ NAN_METHOD(SteamID::GetStaticAccountKey) {
           obj->steam_id_.GetStaticAccountKey())).ToLocalChecked());
 }
 
-NAN_METHOD(SteamID::GetFriendPersonaName) {
+NAN_METHOD(SteamID::GetPersonaName) {
   SteamID* obj = ObjectWrap::Unwrap<SteamID>(info.Holder());
   info.GetReturnValue().Set(
       Nan::New(SteamFriends()->GetFriendPersonaName(obj->steam_id_))
           .ToLocalChecked());
 }
 
-NAN_METHOD(SteamID::GetFriendRelationship) {
+NAN_METHOD(SteamID::GetRelationship) {
   SteamID* obj = ObjectWrap::Unwrap<SteamID>(info.Holder());
   info.GetReturnValue().Set(
       Nan::New(SteamFriends()->GetFriendRelationship(obj->steam_id_)));
