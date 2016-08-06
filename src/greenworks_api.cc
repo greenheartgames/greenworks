@@ -16,6 +16,7 @@
 #include "greenworks_utils.h"
 #include "greenworks_version.h"
 #include "steam_client.h"
+#include "steam_id.h"
 
 namespace {
 
@@ -251,60 +252,12 @@ NAN_METHOD(GetFriends) {
     THROW_BAD_ARGS("Bad arguments");
   }
   EFriendFlags friend_flag = static_cast<EFriendFlags>(info[0]->Int32Value());
+  int friends_count = SteamFriends()->GetFriendCount(friend_flag);
+  v8::Local<v8::Array> friends = Nan::New<v8::Array>(friends_count);
 
-  int friendsCount = SteamFriends()->GetFriendCount(friend_flag);
-  v8::Local<v8::Array> friends = Nan::New<v8::Array>();
-
-  for (int i = 0; i < friendsCount; ++i) {
-    CSteamID friendSteamID = SteamFriends()->GetFriendByIndex(i, friend_flag);
-    v8::Local<v8::Object> aFriend = Nan::New<v8::Object>();
-    v8::Local<v8::Object> flags = Nan::New<v8::Object>();
-    flags->Set(Nan::New("anonymous").ToLocalChecked(),
-               Nan::New(friendSteamID.BAnonAccount()));
-    flags->Set(Nan::New("anonymousGameServer").ToLocalChecked(),
-               Nan::New(friendSteamID.BAnonGameServerAccount()));
-    flags->Set(Nan::New("anonymousGameServerLogin").ToLocalChecked(),
-               Nan::New(friendSteamID.BBlankAnonAccount()));
-    flags->Set(Nan::New("anonymousUser").ToLocalChecked(),
-               Nan::New(friendSteamID.BAnonUserAccount()));
-    flags->Set(Nan::New("chat").ToLocalChecked(),
-               Nan::New(friendSteamID.BChatAccount()));
-    flags->Set(Nan::New("clan").ToLocalChecked(),
-               Nan::New(friendSteamID.BClanAccount()));
-    flags->Set(Nan::New("consoleUser").ToLocalChecked(),
-               Nan::New(friendSteamID.BConsoleUserAccount()));
-    flags->Set(Nan::New("contentServer").ToLocalChecked(),
-               Nan::New(friendSteamID.BContentServerAccount()));
-    flags->Set(Nan::New("gameServer").ToLocalChecked(),
-               Nan::New(friendSteamID.BGameServerAccount()));
-    flags->Set(Nan::New("individual").ToLocalChecked(),
-               Nan::New(friendSteamID.BIndividualAccount()));
-    flags->Set(Nan::New("gameServerPersistent").ToLocalChecked(),
-               Nan::New(friendSteamID.BPersistentGameServerAccount()));
-    flags->Set(Nan::New("lobby").ToLocalChecked(),
-               Nan::New(friendSteamID.IsLobby()));
-    aFriend->Set(Nan::New("flags").ToLocalChecked(), flags);
-    aFriend->Set(Nan::New("type").ToLocalChecked(),
-                 GetSteamUserCountType(friendSteamID.GetEAccountType()));
-    aFriend->Set(Nan::New("relationship").ToLocalChecked(),
-                 GetSteamFriendRelationship(
-                     SteamFriends()->GetFriendRelationship(friendSteamID)));
-    aFriend->Set(Nan::New("accountId").ToLocalChecked(),
-                 Nan::New<v8::Integer>(friendSteamID.GetAccountID()));
-    aFriend->Set(
-        Nan::New("steamId").ToLocalChecked(),
-        Nan::New(utils::uint64ToString(friendSteamID.ConvertToUint64()))
-            .ToLocalChecked());
-    aFriend->Set(
-        Nan::New("staticAccountId").ToLocalChecked(),
-        Nan::New(utils::uint64ToString(friendSteamID.GetStaticAccountKey()))
-            .ToLocalChecked());
-    aFriend->Set(Nan::New("isValid").ToLocalChecked(),
-        Nan::New<v8::Integer>(friendSteamID.IsValid()));
-    aFriend->Set(Nan::New("screenName").ToLocalChecked(),
-                 Nan::New(SteamFriends()->GetFriendPersonaName(friendSteamID))
-                     .ToLocalChecked());
-    friends->Set(i, aFriend);
+  for (int i = 0; i < friends_count; ++i) {
+    CSteamID steam_id = SteamFriends()->GetFriendByIndex(i, friend_flag);
+    friends->Set(i, greenworks::SteamID::Create(steam_id));
   }
   info.GetReturnValue().Set(friends);
 }
