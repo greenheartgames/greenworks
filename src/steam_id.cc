@@ -1,6 +1,9 @@
+// Copyright (c) 2016 Greenheart Games Pty. Ltd. All rights reserved.
+// Use of this source code is governed by the MIT license that can be
+// found in the LICENSE file.
 
-#include "steam_id.h"
 #include "greenworks_utils.h"
+#include "steam_id.h"
 #include "v8.h"
 
 namespace greenworks {
@@ -25,6 +28,7 @@ v8::Local<v8::Object> SteamID::Create(CSteamID steam_id) {
                      IsPersistentGameServerAccount);
   SetPrototypeMethod(tpl, "isLobby", IsLobby);
   SetPrototypeMethod(tpl, "getAccountID", GetAccountID);
+  SetPrototypeMethod(tpl, "getRawSteamID", GetRawSteamID);
   SetPrototypeMethod(tpl, "getAccountType", GetAccountType);
   SetPrototypeMethod(tpl, "isValid", IsValid);
   SetPrototypeMethod(tpl, "getStaticAccountKey", GetStaticAccountKey);
@@ -101,6 +105,13 @@ NAN_METHOD(SteamID::GetAccountID) {
   SteamID* obj = ObjectWrap::Unwrap<SteamID>(info.Holder());
   info.GetReturnValue().Set(
       Nan::New<v8::Integer>(obj->steam_id_.GetAccountID()));
+}
+
+NAN_METHOD(SteamID::GetRawSteamID) {
+  SteamID* obj = ObjectWrap::Unwrap<SteamID>(info.Holder());
+  info.GetReturnValue().Set(
+      Nan::New(utils::uint64ToString(obj->steam_id_.ConvertToUint64()))
+          .ToLocalChecked());
 }
 
 NAN_METHOD(SteamID::GetAccountType) {
