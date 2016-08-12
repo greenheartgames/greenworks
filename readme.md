@@ -37,8 +37,8 @@ the [release](https://github.com/greenheartgames/greenworks/releases) page.
 Greenworks currently supports Steam Cloud, Steam Achievement and Workshop
 synchronization related methods.
 
-For a complete list of supported methods see the [API Reference](https://github.com/greenheartgames/greenworks/wiki/API-Reference)
-for details.
+API references are located in
+[docs](https://github.com/greenheartgames/greenworks/tree/master/docs) directory.
 
 ##Start Greenworks in NW.js
 
