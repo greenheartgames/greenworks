@@ -1,11 +1,11 @@
-# Greenwork Troubleshooting
+# Greenworks Troubleshooting
 
 ## Library not loaded: @loader_path/libsteam_api.dylib (or .dll for windows)
 
 That means you didn't copy this file to your app directory and it can't link it
 at runtime.
 
-### SteamAPI_Init() failed; unable to locate a running instance of Steam, or a local steamclient.dll
+## SteamAPI_Init() failed; unable to locate a running instance of Steam, or a local steamclient.dll
 
 Your steam client should be running (or you can copy the steamclient dynamic
 library into your app directory).
@@ -72,12 +72,12 @@ to your package.json as well.
 If the overlay appears strange, like other background windows are mixing with it
 try to remove the transparent flag in windows property of package json.
 
-```json
+```
   "window": {
     "toolbar": false,
     "fullscreen": true,
     "frame": false,
-    //"transparent": true, // now should work correctly
+    // "transparent": true, // now should work correctly
     "no-edit-menu" : true
   },
 ```
