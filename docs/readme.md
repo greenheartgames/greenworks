@@ -20,3 +20,7 @@ if (greenworks.initAPI()) {
 * [Setting](setting.md)
 * [Utils](utils.md)
 * [Workshop](workshop.md)
+
+## Troubleshooting
+
+* [Troubleshooting](troubleshooting.md)
