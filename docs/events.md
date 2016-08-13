@@ -25,25 +25,30 @@ greenworks.on('steam-server-connect-failure', function() { log('connected failur
 greenworks.on('steam-shutdown', function() { log('shutdown')});
 ```
 
-### Event: `game-overlay-activated`
+### Event: 'game-overlay-activated'
 
 Returns:
   * `is_active` Boolean:  Indicates whether the game overlay is shown or hidden.
 
-Emits when game overlay activates or deactivates.
+Emitted when game overlay activates or deactivates.
 
 ### Event: 'game-servers-connected'
 
-Emits when a game is connected to Steam server.
+Emitted when a game is connected to Steam server.
 
 ### Event: 'game-servers-disconnected'
 
-Emits when a game is disconnected to Steam server.
+Emitted when a game is disconnected to Steam server.
 
 ### Event: 'game-server-connect-failure'
 
-Emits when a game is failed to connect to Steam server.
+Emitted when a game is failed to connect to Steam server.
 
 ### Event: 'steam-shutdown'
 
-Emits when Steam client is going to shutdown.
+Emitted when Steam client is going to shutdown.
+
+### Event: 'persona-state-change'
+
+Emitted when a friends' status changes (Use with
+`greenworks.requestUserInformation`).

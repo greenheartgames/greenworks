@@ -281,7 +281,6 @@ int zip(const char* targetFile, const char* sourceDir, int compressionLevel, con
   int opt_overwrite = 1;// Overwrite existing zip file
   int opt_compress_level = compressionLevel;
   char filename_try[MAXFILENAME + 16];
-  int zipok;
   int err = 0;
   int size_buf = 0;
   void* buf = NULL;
@@ -293,7 +292,6 @@ int zip(const char* targetFile, const char* sourceDir, int compressionLevel, con
   if (buf == NULL)
     return ZIP_INTERNALERROR;
 
-  zipok = 1;
   strncpy(filename_try, targetFile, MAXFILENAME - 1);
   // strncpy doesnt append the trailing NULL, of the string is too long.
   filename_try[MAXFILENAME] = '\0';
@@ -309,7 +307,6 @@ int zip(const char* targetFile, const char* sourceDir, int compressionLevel, con
   }
 
   zipFile zf;
-  int errclose;
 
 #ifdef USEWIN32IOAPI
   zlib_filefunc64_def ffunc;
@@ -393,7 +390,7 @@ int zip(const char* targetFile, const char* sourceDir, int compressionLevel, con
         err = zipCloseFileInZip(zf);
     }
   }
-  errclose = zipClose(zf, NULL);
+  zipClose(zf, NULL);
   free(buf);
   return err;
 }

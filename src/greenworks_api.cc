@@ -16,6 +16,7 @@
 #include "greenworks_utils.h"
 #include "greenworks_version.h"
 #include "steam_client.h"
+#include "steam_id.h"
 
 namespace {
 
@@ -38,6 +39,8 @@ class SteamEvent : public greenworks::SteamClient::Observer {
   virtual void OnSteamServersDisconnected();
   virtual void OnSteamServerConnectFailure(int status_code);
   virtual void OnSteamShutdown();
+  virtual void OnPersonaStateChange(uint64 raw_steam_id,
+                                    int persona_change_flag);
 };
 
 void SteamEvent::OnGameOverlayActivated(bool is_active) {
@@ -81,6 +84,17 @@ void SteamEvent::OnSteamShutdown() {
       Nan::New(g_persistent_steam_events), "on", 1, argv);
 }
 
+void SteamEvent::OnPersonaStateChange(uint64 raw_steam_id,
+                                      int persona_change_flag) {
+  Nan::HandleScope scope;
+  v8::Local<v8::Value> argv[] = {
+      Nan::New("persona-state-change").ToLocalChecked(),
+      greenworks::SteamID::Create(raw_steam_id), Nan::New(persona_change_flag),
+  };
+  Nan::MakeCallback(
+      Nan::New(g_persistent_steam_events), "on", 3, argv);
+}
+
 v8::Local<v8::Object> GetSteamUserCountType(int type_id) {
   if (type_id > k_EAccountTypeMax) {
     Nan::ThrowTypeError("Bad argument");
@@ -107,32 +121,6 @@ v8::Local<v8::Object> GetSteamUserCountType(int type_id) {
                     Nan::New(name).ToLocalChecked());
   account_type->Set(Nan::New("value").ToLocalChecked(), Nan::New(type_id));
   return account_type;
-}
-
-v8::Local<v8::Object> GetSteamFriendRelationship(int type_id) {
-  v8::Local<v8::Object> friend_relationship = Nan::New<v8::Object>();
-  EFriendRelationship type = static_cast<EFriendRelationship>(type_id);
-  if (type > k_EFriendRelationshipMax) {
-    Nan::ThrowTypeError("Bad argument");
-    return Nan::New<v8::Object>();
-  }
-  std::map<EFriendRelationship, std::string> friend_relationship_types = {
-    MAKE_ENUM_PAIR(k_EFriendRelationshipNone),
-    MAKE_ENUM_PAIR(k_EFriendRelationshipBlocked),
-    MAKE_ENUM_PAIR(k_EFriendRelationshipRequestRecipient),
-    MAKE_ENUM_PAIR(k_EFriendRelationshipFriend),
-    MAKE_ENUM_PAIR(k_EFriendRelationshipRequestInitiator),
-    MAKE_ENUM_PAIR(k_EFriendRelationshipIgnored),
-    MAKE_ENUM_PAIR(k_EFriendRelationshipIgnoredFriend),
-    MAKE_ENUM_PAIR(k_EFriendRelationshipSuggested),
-    MAKE_ENUM_PAIR(k_EFriendRelationshipMax)
-  };
-  std::string name = friend_relationship_types[type];
-  friend_relationship->Set(Nan::New("name").ToLocalChecked(),
-                           Nan::New(name).ToLocalChecked());
-  friend_relationship->Set(Nan::New("value").ToLocalChecked(),
-                           Nan::New(type_id));
-  return friend_relationship;
 }
 
 NAN_METHOD(RestartAppIfNecessary) {
@@ -204,7 +192,8 @@ NAN_METHOD(GetSteamId) {
              Nan::New(user_id.BPersistentGameServerAccount()));
   flags->Set(Nan::New("lobby").ToLocalChecked(), Nan::New(user_id.IsLobby()));
 
-  v8::Local<v8::Object> result = Nan::New<v8::Object>();
+  v8::Local<v8::Object> result = greenworks::SteamID::Create(user_id);
+  // For backwards compatiblilty.
   result->Set(Nan::New("flags").ToLocalChecked(), flags);
   result->Set(Nan::New("type").ToLocalChecked(),
               GetSteamUserCountType(user_id.GetEAccountType()));
@@ -251,62 +240,28 @@ NAN_METHOD(GetFriends) {
     THROW_BAD_ARGS("Bad arguments");
   }
   EFriendFlags friend_flag = static_cast<EFriendFlags>(info[0]->Int32Value());
+  int friends_count = SteamFriends()->GetFriendCount(friend_flag);
+  v8::Local<v8::Array> friends = Nan::New<v8::Array>(friends_count);
 
-  int friendsCount = SteamFriends()->GetFriendCount(friend_flag);
-  v8::Local<v8::Array> friends = Nan::New<v8::Array>();
-
-  for (int i = 0; i < friendsCount; ++i) {
-    CSteamID friendSteamID = SteamFriends()->GetFriendByIndex(i, friend_flag);
-    v8::Local<v8::Object> aFriend = Nan::New<v8::Object>();
-    v8::Local<v8::Object> flags = Nan::New<v8::Object>();
-    flags->Set(Nan::New("anonymous").ToLocalChecked(),
-               Nan::New(friendSteamID.BAnonAccount()));
-    flags->Set(Nan::New("anonymousGameServer").ToLocalChecked(),
-               Nan::New(friendSteamID.BAnonGameServerAccount()));
-    flags->Set(Nan::New("anonymousGameServerLogin").ToLocalChecked(),
-               Nan::New(friendSteamID.BBlankAnonAccount()));
-    flags->Set(Nan::New("anonymousUser").ToLocalChecked(),
-               Nan::New(friendSteamID.BAnonUserAccount()));
-    flags->Set(Nan::New("chat").ToLocalChecked(),
-               Nan::New(friendSteamID.BChatAccount()));
-    flags->Set(Nan::New("clan").ToLocalChecked(),
-               Nan::New(friendSteamID.BClanAccount()));
-    flags->Set(Nan::New("consoleUser").ToLocalChecked(),
-               Nan::New(friendSteamID.BConsoleUserAccount()));
-    flags->Set(Nan::New("contentServer").ToLocalChecked(),
-               Nan::New(friendSteamID.BContentServerAccount()));
-    flags->Set(Nan::New("gameServer").ToLocalChecked(),
-               Nan::New(friendSteamID.BGameServerAccount()));
-    flags->Set(Nan::New("individual").ToLocalChecked(),
-               Nan::New(friendSteamID.BIndividualAccount()));
-    flags->Set(Nan::New("gameServerPersistent").ToLocalChecked(),
-               Nan::New(friendSteamID.BPersistentGameServerAccount()));
-    flags->Set(Nan::New("lobby").ToLocalChecked(),
-               Nan::New(friendSteamID.IsLobby()));
-    aFriend->Set(Nan::New("flags").ToLocalChecked(), flags);
-    aFriend->Set(Nan::New("type").ToLocalChecked(),
-                 GetSteamUserCountType(friendSteamID.GetEAccountType()));
-    aFriend->Set(Nan::New("relationship").ToLocalChecked(),
-                 GetSteamFriendRelationship(
-                     SteamFriends()->GetFriendRelationship(friendSteamID)));
-    aFriend->Set(Nan::New("accountId").ToLocalChecked(),
-                 Nan::New<v8::Integer>(friendSteamID.GetAccountID()));
-    aFriend->Set(
-        Nan::New("steamId").ToLocalChecked(),
-        Nan::New(utils::uint64ToString(friendSteamID.ConvertToUint64()))
-            .ToLocalChecked());
-    aFriend->Set(
-        Nan::New("staticAccountId").ToLocalChecked(),
-        Nan::New(utils::uint64ToString(friendSteamID.GetStaticAccountKey()))
-            .ToLocalChecked());
-    aFriend->Set(Nan::New("isValid").ToLocalChecked(),
-        Nan::New<v8::Integer>(friendSteamID.IsValid()));
-    aFriend->Set(Nan::New("screenName").ToLocalChecked(),
-                 Nan::New(SteamFriends()->GetFriendPersonaName(friendSteamID))
-                     .ToLocalChecked());
-    friends->Set(i, aFriend);
+  for (int i = 0; i < friends_count; ++i) {
+    CSteamID steam_id = SteamFriends()->GetFriendByIndex(i, friend_flag);
+    friends->Set(i, greenworks::SteamID::Create(steam_id));
   }
   info.GetReturnValue().Set(friends);
+}
+
+NAN_METHOD(RequestUserInformation) {
+  Nan::HandleScope scope;
+  if (info.Length() < 2 || !info[0]->IsString() || !info[1]->IsBoolean()) {
+    THROW_BAD_ARGS("Bad arguments");
+  }
+  std::string steam_id_str(*(v8::String::Utf8Value(info[0])));
+  bool require_name_only = info[1]->BooleanValue();
+  CSteamID steam_id(utils::strToUint64(steam_id_str));
+  if (!steam_id.IsValid()) {
+    THROW_BAD_ARGS("Steam ID is invalid");
+  }
+  SteamFriends()->RequestUserInformation(steam_id, require_name_only);
 }
 
 NAN_METHOD(SaveTextToFile) {
@@ -907,6 +862,9 @@ NAN_MODULE_INIT(init) {
   Nan::Set(target,
            Nan::New("getFriends").ToLocalChecked(),
            Nan::New<v8::FunctionTemplate>(GetFriends)->GetFunction());
+  Nan::Set(
+      target, Nan::New("requestUserInformation").ToLocalChecked(),
+      Nan::New<v8::FunctionTemplate>(RequestUserInformation)->GetFunction());
   // File related APIs.
   Nan::Set(target,
            Nan::New("saveTextToFile").ToLocalChecked(),
@@ -1022,6 +980,8 @@ NAN_MODULE_INIT(init) {
   utils::InitUserUgcListSortOrder(target);
   utils::InitUserUgcList(target);
   utils::InitFriendFlags(target);
+  utils::InitFriendRelationship(target);
+  utils::InitAccountType(target);
 
   // Utils related APIs.
   InitUtilsObject(target);

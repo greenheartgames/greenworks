@@ -80,10 +80,12 @@
         'src/greenworks_version.h',
         'src/greenworks_zip.cc',
         'src/greenworks_zip.h',
-        'src/steam_client.cc',
-        'src/steam_client.h',
         'src/steam_async_worker.cc',
         'src/steam_async_worker.h',
+        'src/steam_client.cc',
+        'src/steam_client.h',
+        'src/steam_id.cc',
+        'src/steam_id.h',
       ],
       'include_dirs': [
         'deps',
@@ -102,6 +104,11 @@
           {
             'ldflags': [
               '-Wl,-rpath,\$$ORIGIN',
+            ],
+            'cflags': [
+              # Disable compilation warnings on nw.js custom node_buffer.h
+              '-Wno-unknown-pragmas',
+              '-Wno-attributes',
             ],
           },
         ],
@@ -135,6 +142,7 @@
         ],
       },
       'msvs_disabled_warnings': [
+        4068,  # disable unknown pragma warnings from nw.js custom node_buffer.h.
         4267,  # conversion from 'size_t' to 'int', popssible loss of data
       ],
     },
