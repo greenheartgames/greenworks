@@ -105,6 +105,11 @@
             'ldflags': [
               '-Wl,-rpath,\$$ORIGIN',
             ],
+            'cflags': [
+              # Disable compilation warnings on nw.js custom node_buffer.h
+              '-Wno-unknown-pragmas',
+              '-Wno-attributes',
+            ],
           },
         ],
         ['OS== "win" and target_arch=="x64"',

@@ -50,6 +50,13 @@
         }], ['OS=="android"', {
           'toolsets': ['target', 'host'],
         }],
+        ['OS== "linux"',
+          {
+            'cflags': [
+              '-Wno-maybe-uninitialized',
+            ],
+          },
+        ],
       ],
       'msvs_disabled_warnings': [
         4244,  # conversion from '__int64' to 'long'(gzlib.c)
