@@ -17,11 +17,12 @@ PLATFORM_KEY = {
   'win32': 'win',
 }[sys.platform]
 
+
 EXECUTE_PATH = {
   'darwin': 'nwjs.app/Contents/MacOS/nwjs',
-  'cygwin': 'nwjs',
-  'linux2': 'nwjs',
-  'win32': 'nwjs',
+  'cygwin': 'nw',
+  'linux2': 'nw',
+  'win32': 'nw',
 }[sys.platform]
 
 
@@ -65,8 +66,9 @@ def main():
   execute_path = os.path.join(DOWNLOAD_DIR, nwjs_binary, EXECUTE_PATH)
   # FIXME: figure out why there is no execute permission in the file extracted
   # by zipfile.
-  execute(['chmod', '-R', '+x',
-           os.path.join(DOWNLOAD_DIR, nwjs_binary, 'nwjs.app')])
+  if PLATFORM_KEY == 'osx':
+    execute(['chmod', '-R', '+x',
+             os.path.join(DOWNLOAD_DIR, nwjs_binary, 'nwjs.app')])
   execute([execute_path, os.path.join(SOURCE_ROOT, 'samples/nw.js')])
 
 
