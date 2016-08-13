@@ -1,4 +1,4 @@
-## Object
+## Objects
 
 ### greenworks.UGCMatchingType
 

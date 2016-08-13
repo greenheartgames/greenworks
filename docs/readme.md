@@ -17,6 +17,7 @@ if (greenworks.initAPI()) {
 * [Authentication](authentication.md)
 * [Cloud](cloud.md)
 * [Events](events.md)
+* [Friends](friends.md)
 * [Setting](setting.md)
 * [Utils](utils.md)
 * [Workshop](workshop.md)
