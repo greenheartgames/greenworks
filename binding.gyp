@@ -137,6 +137,7 @@
         ],
       },
       'msvs_disabled_warnings': [
+        4068,  # disable unknown pragma warnings from nw.js custom node_buffer.h.
         4267,  # conversion from 'size_t' to 'int', popssible loss of data
       ],
     },
