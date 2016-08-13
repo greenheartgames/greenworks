@@ -8,7 +8,7 @@ import tarfile
 import zipfile
 
 SOURCE_ROOT = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
-DOWNLOAD_DIR = os.path.join(SOURCE_ROOT, "download")
+DOWNLOAD_DIR = os.path.join(SOURCE_ROOT, 'download')
 
 PLATFORM_KEY = {
   'cygwin': 'win',
@@ -36,7 +36,7 @@ def execute(argv):
 
 
 def EnsureBinaryExists(binary, args):
-  file_extension = ".tar.gz" if PLATFORM_KEY== 'linux' else ".zip"
+  file_extension = '.tar.gz' if PLATFORM_KEY== 'linux' else '.zip'
   binary_name_with_extension = binary + file_extension
   download_path = os.path.join(DOWNLOAD_DIR, binary_name_with_extension)
   if not os.path.exists(download_path):
