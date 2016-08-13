@@ -38,7 +38,8 @@ v8::Local<v8::Object> SteamID::Create(CSteamID steam_id) {
   SetPrototypeMethod(tpl, "getSteamLevel", GetSteamLevel);
 
   SteamID* obj = new SteamID(steam_id);
-  v8::Local<v8::Object> instance = tpl->GetFunction()->NewInstance();
+  v8::Local<v8::Object> instance =
+      Nan::NewInstance(tpl->GetFunction()).ToLocalChecked();
   Nan::SetInternalFieldPointer(instance, 0, obj);
   return scope.Escape(instance);
 }
