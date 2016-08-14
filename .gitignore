@@ -1,9 +1,12 @@
 node_modules/
 build/
 lib/
+download/
+dist/
 deps/steamworks*
 test/steam_appid.txt
 steam_appid.txt
+*.pyc
 *.swp
 *.dylib
 *.node
