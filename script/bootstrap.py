@@ -10,11 +10,18 @@ import zipfile
 SOURCE_ROOT = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 DOWNLOAD_DIR = os.path.join(SOURCE_ROOT, 'download')
 
-PLATFORM_KEY = {
+NW_PLATFORM_KEY = {
   'cygwin': 'win',
   'darwin': 'osx',
   'linux2': 'linux',
   'win32': 'win',
+}[sys.platform]
+
+ELECTRON_PLATFORM_KEY = {
+  'cygwin': 'win32',
+  'darwin': 'darwin',
+  'linux2': 'linux',
+  'win32': 'win32',
 }[sys.platform]
 
 
@@ -43,7 +50,7 @@ def execute(argv, env=os.environ):
     raise e
 
 
-def download_and_extract(download_url, binary_name):
+def download_and_extract(download_url, binary_name, target_dir):
   local_path = os.path.join(DOWNLOAD_DIR, binary_name)
   # Skip if downloaded.
   if os.path.exists(local_path):
@@ -51,41 +58,26 @@ def download_and_extract(download_url, binary_name):
   print 'Downloading ' + download_url
   execute(['wget', download_url, '-P', DOWNLOAD_DIR])
   if (binary_name.endswith('.zip')):
+    print (os.path.splitext(local_path)[0])
     with zipfile.ZipFile(local_path) as z:
-      z.extractall(DOWNLOAD_DIR)
+      z.extractall(target_dir)
   else:
     with tarfile.open(local_path) as t:
-      t.extractall(DOWNLOAD_DIR)
+      t.extractall(target_dir)
 
 
 def ensure_electron_exists(electron_binary, args):
   download_url = 'https://github.com/electron/electron/releases/download/' \
                  'v{0}/{1}'.format(args.version, electron_binary)
-  download_and_extract(download_url, electron_binary)
-  #if not os.path.exists(download_path):
-    #download_url = 'https://github.com/electron/electron/releases/download/
-                    #v{0}/{1}.zip'.format(args.version, electron_binary)
-    #print 'Downloading ' + download_url
-    #execute(['wget', download_url, '-P', DOWNLOAD_DIR])
-    #with zipfile.ZipFile(download_path) as z:
-      #z.extractall(DOWNLOAD_DIR)
+  electron_dir = os.path.splitext(os.path.basename(electron_binary))[0]
+  download_and_extract(download_url, electron_binary,
+                       os.path.join(DOWNLOAD_DIR, electron_dir))
 
 
 def ensure_nwjs_exists(nwjs_binary, args):
   download_url = 'http://dl.nwjs.io/v{0}/{1}'.format(args.version,
                                                      nwjs_binary)
-  download_and_extract(download_url, nwjs_binary)
-  #if not os.path.exists(download_path):
-    #download_url = 'http://dl.nwjs.io/v{0}/{1}'.format(args.version,
-        #binary_name_with_extension)
-    #print 'Downloading ' + download_url
-    #execute(['wget', download_url, '-P', DOWNLOAD_DIR])
-    #if (file_extension == '.zip'):
-      #with zipfile.ZipFile(download_path) as z:
-        #z.extractall(DOWNLOAD_DIR)
-    #else:
-      #with tarfile.open(download_path) as t:
-        #t.extractall(DOWNLOAD_DIR)
+  download_and_extract(download_url, nwjs_binary, DOWNLOAD_DIR)
 
 
 def main():
@@ -97,18 +89,20 @@ def main():
     execute(['nw-gyp', 'configure', '--target='+args.version,
              '--arch='+args.arch])
     execute(['nw-gyp', 'rebuild', '--target='+args.version, '--arch='+args.arch])
-    nwjs_binary = 'nwjs-v{0}-{1}-{2}'.format(args.version, PLATFORM_KEY,
+    nwjs_binary = 'nwjs-v{0}-{1}-{2}'.format(args.version, NW_PLATFORM_KEY,
                                              args.arch)
-    execute_path = os.path.join(DOWNLOAD_DIR, nwjs_binary, NW_EXECUTE_PATH)
     ensure_nwjs_exists(
-        nwjs_binary + ('.tar.gz' if PLATFORM_KEY == 'linux' else '.zip'),
+        nwjs_binary + ('.tar.gz' if NW_PLATFORM_KEY == 'linux' else '.zip'),
         args)
+
+    nwjs_dir = os.path.join(DOWNLOAD_DIR, nwjs_binary)
     # FIXME: figure out why there is no execute permission in the file extracted
     # by zipfile.
-    if PLATFORM_KEY == 'osx':
+    if NW_PLATFORM_KEY == 'osx':
       execute(['chmod', '-R', '+x',
-               os.path.join(DOWNLOAD_DIR, nwjs_binary, 'nwjs.app')])
-    execute([execute_path, os.path.join(SOURCE_ROOT, 'samples/nw.js')])
+               os.path.join(nwjs_dir, 'nwjs.app')])
+    execute([os.path.join(nwjs_dir, NW_EXECUTE_PATH),
+             os.path.join(SOURCE_ROOT, 'samples/nw.js')])
   elif args.target == 'electron':
     execute(['node-gyp', 'clean'])
     env = os.environ.copy()
@@ -117,12 +111,13 @@ def main():
              '--arch='+args.arch,
              '--dist-url=https://atom.io/download/atom-shell'], env)
     electron_binary = 'electron-v{0}-{1}-{2}'.format(args.version,
-                                                     sys.platform,
+                                                     ELECTRON_PLATFORM_KEY,
                                                      args.arch)
     ensure_electron_exists(electron_binary + '.zip', args)
     execute_path = os.path.join(DOWNLOAD_DIR, electron_binary,
                                 ELECTRON_EXECUTE_PATH)
-    print execute_path
+    if ELECTRON_PLATFORM_KEY == 'linux':
+      execute(['chmod', '+x', execute_path])
     execute([execute_path, os.path.join(SOURCE_ROOT, 'samples/electron')])
 
 
