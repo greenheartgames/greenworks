@@ -44,6 +44,14 @@ function testSteamAPI() {
       greenworks.getNumberOfPlayers(
           function(a) { log("Number of players " + a) },
           function(err) { log ('Failed on getting number of players'); });
+
+      log("Numer of friends: " +
+          greenworks.getFriendCount(greenworks.FriendFlags.Immediate));
+      var friends = greenworks.getFriends(greenworks.FriendFlags.Immediate);
+      var friends_names = [];
+      for (var i = 0; i < friends.length; ++i)
+        friends_names.push(friends[i].getPersonaName());
+      log("Friends: [" + friends_names.join(',') + "]");
     }
   }
 }
