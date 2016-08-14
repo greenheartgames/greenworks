@@ -23,7 +23,6 @@ PLATFORM_KEY = {
   'win32': 'win',
 }[sys.platform]
 
-
 def create_or_get_release_draft(github, releases, nwjs_version):
   # Search for existing draft.
   for release in releases:
@@ -74,6 +73,21 @@ def get_greenworks_version():
     return data['version']
 
 
+def execute(argv, env=os.environ):
+  print 'running', argv
+  try:
+    subprocess.check_call(argv, env=env)
+  except subprocess.CalledProcessError as e:
+    print e.output
+    raise e
+
+
+def force_build(args):
+  build = os.path.join(SOURCE_ROOT, 'script', 'bootstrap.py')
+  execute([sys.executable, build, '--target='+args.target,
+           '--version='+args.version, '--arch='+args.arch])
+
+
 def main():
   args = parse_args()
   shutil.rmtree(DIST_DIR, ignore_errors=True)
@@ -84,10 +98,18 @@ def main():
         '64' if args.arch == 'x64' else '32'),
       'greenworks.js'
   ]
-  # The name is like greenworks-v0.6.0-nw-v0.16.0-win-ia32.zip.
-  dist_name = 'greenworks-v{0}-nw-v{1}-{2}-{3}.zip'.format(
-      get_greenworks_version(), args.version, PLATFORM_KEY, args.arch)
+  if args.target == 'nw.js':
+    # The name is like greenworks-v0.6.0-nw-v0.16.0-win-ia32.zip.
+    dist_name = 'greenworks-v{0}-nw-v{1}-{2}-{3}.zip'.format(
+        get_greenworks_version(), args.version, PLATFORM_KEY, args.arch)
+  elif args.target == 'electron':
+    dist_name = 'greenworks-v{0}-electron-v{1}-{2}-{3}.zip'.format(
+        get_greenworks_version(), args.version, PLATFORM_KEY,
+        args.arch)
+  else:
+     raise 'Unknown target.'
 
+  force_build(args)
   zip_file = os.path.join(SOURCE_ROOT, 'dist', dist_name)
   print 'Creating ', zip_file
   make_zip(zip_file, want)
@@ -105,6 +127,10 @@ def parse_args():
   parser.add_argument('-v', '--version',
                       default='',
                       help='NW.js version',
+                      required=True)
+  parser.add_argument('-t', '--target',
+                      default='nw.js',
+                      help='Build for nw.js or electron',
                       required=True)
   return parser.parse_args()
 
