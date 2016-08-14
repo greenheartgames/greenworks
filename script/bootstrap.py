@@ -112,12 +112,15 @@ def main():
   os.chdir(SOURCE_ROOT)
   ensure_dir_exists(DOWNLOAD_DIR)
   args = parse_args()
-  execute(['rm', '-rf', os.path.join(SOURCE_ROOT, 'lib')])
+  if args.run_only:
+    execute(['rm', '-rf', os.path.join(SOURCE_ROOT, 'lib')])
   if args.target == 'nw.js':
-    execute([NW_GYP, 'clean'])
-    execute([NW_GYP, 'configure', '--target='+args.version,
-             '--arch='+args.arch])
-    execute([NW_GYP, 'rebuild', '--target='+args.version, '--arch='+args.arch])
+    if args.run_only:
+      execute([NW_GYP, 'clean'])
+      execute([NW_GYP, 'configure', '--target='+args.version,
+               '--arch='+args.arch])
+      execute([NW_GYP, 'rebuild', '--target='+args.version,
+               '--arch='+args.arch])
     nwjs_binary = 'nwjs-v{0}-{1}-{2}'.format(args.version, NW_PLATFORM_KEY,
                                              args.arch)
     ensure_nwjs_exists(
@@ -133,12 +136,13 @@ def main():
     execute([os.path.join(nwjs_dir, NW_EXECUTE_PATH),
              os.path.join(SOURCE_ROOT, 'samples/nw.js')])
   elif args.target == 'electron':
-    execute([NODE_GYP, 'clean'])
-    env = os.environ.copy()
-    env['HOME'] = os.path.join(env['HOME'], '.electron-gyp')
-    execute([NODE_GYP, 'rebuild', '--target='+args.version,
-             '--arch='+args.arch,
-             '--dist-url=https://atom.io/download/atom-shell'], env)
+    if not args.run_only:
+      execute([NODE_GYP, 'clean'])
+      env = os.environ.copy()
+      env['HOME'] = os.path.join(env['HOME'], '.electron-gyp')
+      execute([NODE_GYP, 'rebuild', '--target='+args.version,
+               '--arch='+args.arch,
+               '--dist-url=https://atom.io/download/atom-shell'], env)
     electron_binary = 'electron-v{0}-{1}-{2}'.format(args.version,
                                                      ELECTRON_PLATFORM_KEY,
                                                      args.arch)
@@ -155,6 +159,10 @@ def parse_args():
   parser.add_argument('-a', '--arch',
                       help='x64 or ia32',
                       default='x64',
+                      required=False)
+  parser.add_argument('-r', '--run-only',
+                      help='Only Run Greenworks on a specific target',
+                      action='store_false',
                       required=False)
   parser.add_argument('-v', '--version',
                       default='',
