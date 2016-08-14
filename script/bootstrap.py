@@ -115,7 +115,7 @@ def main():
   if args.run_only:
     execute(['rm', '-rf', os.path.join(SOURCE_ROOT, 'lib')])
   if args.target == 'nw.js':
-    if args.run_only:
+    if not args.run_only:
       execute([NW_GYP, 'clean'])
       execute([NW_GYP, 'configure', '--target='+args.version,
                '--arch='+args.arch])
@@ -162,7 +162,7 @@ def parse_args():
                       required=False)
   parser.add_argument('-r', '--run-only',
                       help='Only Run Greenworks on a specific target',
-                      action='store_false',
+                      action='store_true',
                       required=False)
   parser.add_argument('-v', '--version',
                       default='',
