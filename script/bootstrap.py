@@ -1,10 +1,13 @@
 #!/usr/bin/env python
 
 import argparse
+import contextlib
+import tempfile
 import os
 import subprocess
 import sys
 import tarfile
+import urllib2
 import zipfile
 
 SOURCE_ROOT = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
@@ -24,14 +27,12 @@ ELECTRON_PLATFORM_KEY = {
   'win32': 'win32',
 }[sys.platform]
 
-
 NW_EXECUTE_PATH = {
   'darwin': 'nwjs.app/Contents/MacOS/nwjs',
   'cygwin': 'nw',
   'linux2': 'nw',
   'win32': 'nw',
 }[sys.platform]
-
 
 ELECTRON_EXECUTE_PATH = {
   'darwin': 'Electron.app/Contents/MacOS/Electron',
@@ -40,9 +41,20 @@ ELECTRON_EXECUTE_PATH = {
   'win32': 'electron',
 }[sys.platform]
 
+NW_GYP = 'nw-gyp'
+NODE_GYP = 'node-gyp'
+if sys.platform in ['win32', 'cygwin']:
+  NW_GYP += '.cmd'
+  NODE_GYP += '.cmd'
+
+
+def log(message):
+  sys.stderr.write(message)
+  sys.stderr.flush()
+
 
 def execute(argv, env=os.environ):
-  print 'running', argv
+  log('Running: {0}.\n'.format(' '.join(argv)))
   try:
     subprocess.check_call(argv, env=env)
   except subprocess.CalledProcessError as e:
@@ -50,20 +62,36 @@ def execute(argv, env=os.environ):
     raise e
 
 
+def ensure_dir_exists(path):
+  if not os.path.exists(path):
+    log ("Creating directory {0}.\n".format(path))
+    os.makedirs(path)
+
+
 def download_and_extract(download_url, binary_name, target_dir):
-  local_path = os.path.join(DOWNLOAD_DIR, binary_name)
+  local_path = os.path.join(DOWNLOAD_DIR, os.path.splitext(binary_name)[0])
   # Skip if downloaded.
   if os.path.exists(local_path):
+    log('{0} exists, skipping download.\n'.format(local_path))
     return
-  print 'Downloading ' + download_url
-  execute(['wget', download_url, '-P', DOWNLOAD_DIR])
-  if (binary_name.endswith('.zip')):
-    print (os.path.splitext(local_path)[0])
-    with zipfile.ZipFile(local_path) as z:
-      z.extractall(target_dir)
-  else:
-    with tarfile.open(local_path) as t:
-      t.extractall(target_dir)
+  log('Downloading {0}\n'.format(download_url))
+  with tempfile.TemporaryFile() as t:
+    with contextlib.closing(urllib2.urlopen(download_url)) as u:
+      while True:
+        chunk = u.read(1024*1024)
+        if not len(chunk):
+          break
+        sys.stderr.write('.')
+        sys.stderr.flush()
+        t.write(chunk)
+
+    log('\nExtracting {0} to {1}.\n'.format(t.name, target_dir))
+    if (binary_name.endswith('.zip')):
+      with zipfile.ZipFile(t) as z:
+        z.extractall(target_dir)
+    else:
+      with tarfile.open(t) as t:
+        t.extractall(target_dir)
 
 
 def ensure_electron_exists(electron_binary, args):
@@ -82,13 +110,14 @@ def ensure_nwjs_exists(nwjs_binary, args):
 
 def main():
   os.chdir(SOURCE_ROOT)
+  ensure_dir_exists(DOWNLOAD_DIR)
   args = parse_args()
   execute(['rm', '-rf', os.path.join(SOURCE_ROOT, 'lib')])
   if args.target == 'nw.js':
-    execute(['nw-gyp', 'clean'])
-    execute(['nw-gyp', 'configure', '--target='+args.version,
+    execute([NW_GYP, 'clean'])
+    execute([NW_GYP, 'configure', '--target='+args.version,
              '--arch='+args.arch])
-    execute(['nw-gyp', 'rebuild', '--target='+args.version, '--arch='+args.arch])
+    execute([NW_GYP, 'rebuild', '--target='+args.version, '--arch='+args.arch])
     nwjs_binary = 'nwjs-v{0}-{1}-{2}'.format(args.version, NW_PLATFORM_KEY,
                                              args.arch)
     ensure_nwjs_exists(
@@ -104,10 +133,10 @@ def main():
     execute([os.path.join(nwjs_dir, NW_EXECUTE_PATH),
              os.path.join(SOURCE_ROOT, 'samples/nw.js')])
   elif args.target == 'electron':
-    execute(['node-gyp', 'clean'])
+    execute([NODE_GYP, 'clean'])
     env = os.environ.copy()
     env['HOME'] = os.path.join(env['HOME'], '.electron-gyp')
-    execute(['node-gyp', 'rebuild', '--target='+args.version,
+    execute([NODE_GYP, 'rebuild', '--target='+args.version,
              '--arch='+args.arch,
              '--dist-url=https://atom.io/download/atom-shell'], env)
     electron_binary = 'electron-v{0}-{1}-{2}'.format(args.version,
@@ -129,7 +158,7 @@ def parse_args():
                       required=False)
   parser.add_argument('-v', '--version',
                       default='',
-                      help='NW.js version',
+                      help='nw.js/electron version',
                       required=True)
   parser.add_argument('-t', '--target',
                       default='nw.js',

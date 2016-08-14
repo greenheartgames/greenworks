@@ -10,9 +10,7 @@ import zipfile
 
 from github import GitHub
 
-
 GITHUB_REPO = 'greenheartgames/greenworks'
-
 SOURCE_ROOT = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 DIST_DIR = os.path.join(SOURCE_ROOT, 'dist')
 
@@ -22,6 +20,7 @@ PLATFORM_KEY = {
   'linux2': 'linux',
   'win32': 'win',
 }[sys.platform]
+
 
 def create_or_get_release_draft(github, releases, nwjs_version):
   # Search for existing draft.
@@ -126,7 +125,7 @@ def parse_args():
                       required=False)
   parser.add_argument('-v', '--version',
                       default='',
-                      help='NW.js version',
+                      help='nw.js/electron version',
                       required=True)
   parser.add_argument('-t', '--target',
                       default='nw.js',
