@@ -13,7 +13,7 @@ if (greenworks.initAPI()) {
   });
   // Get the number of regular friends.
   console.log(greenworks.getFriendCount(greenworks.FriendFlags.Immediate));
-  var friends = greenworks.getFriends(greenworks.FriendFlags.Immediate));
+  var friends = greenworks.getFriends(greenworks.FriendFlags.Immediate);
   for (var i = 0; i < friends.length; ++i) {
     console.log(friends[i].getPersonaName());
     greenworks.requestUserInformation(friends[i].getRawSteamID(), true);
