@@ -1,3 +1,15 @@
+## 2016.8.15 v0.6.0 stable
+
+* Greenworks complied for NW.js v0.16.1 with Steamworks SDK 1.37
+* Greenworks complied for Electron v1.3.3 with Steamworks SDK 1.37
+* API documents are moved from wiki to [docs](https://github.com/greenheartgames/greenworks/tree/master/docs)
+* Add new friends APIs (Thanks for @marwanhilmi):
+   * `persona-state-change` event
+   * `greenworks.getFriendsAccount(friend_flag)`
+   * `greenworks.getFriends(friend_flag)`
+   * `greeenworks.requestUserInformation(raw_steam_id, require_name_only)`
+* `greenworks.getSteamId()` now returns an object of `SteamID`
+
 ## 2016.07.23 v0.5.3 stable
 
 * Greenworks complied for NW.js v0.14.7 with Steamworks SDK 1.37
