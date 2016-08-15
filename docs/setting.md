@@ -4,42 +4,32 @@
 
 Returns a `Boolean` whether Steam APIs were successfully initialized or not.
 
-Note: When testing this, you need to launch and log in the Steam Client, and put `steam_appid.txt` under your app directory.
+Note: When testing this, you need to launch and log in the Steam Client, and
+put `steam_appid.txt` under your app directory.
+
+### greenworks.init()
+
+Returns a `Boolean` whether Steam APIs were successfully initialized or not.
+The same as `greenworks.init()`, but this API shows better error messages.
+
+### greenworks.isSteamRunning()
+
+Returns a `Boolean` whether Steam is running.
 
 ### greenworks.restartAppIfNecessary(appId)
 
 * `appId` Integer: The APP ID of your game
 
-If your app was not launched via Steam, this will signal Steam to launch your app, and then cause your app to quit.
+If your app was not launched via Steam, this will signal Steam to launch your
+app, and then cause your app to quit.
 
-There's not a moment to lose after you call `restartAppIfNecessary()`, but if it returns `true`, your app is being restarted.
+There's not a moment to lose after you call `restartAppIfNecessary()`, but if
+it returns `true`, your app is being restarted.
 
 ### greenworks.getSteamId()
 
-Returns an 'Object' represents extensive information of the current Steam user.
-
-* Result `Object`
-  * accountId `Integer`: Steam account ID
-  * staticAccountId `Integer`: Static steam ID
-  * screenName `String`:  Steam screen name
-  * level `Integer`: Steam level
-  * isValid `Boolean`: whether is a valid account
-  * type `Object`: represents user account type
-    * name `String`: User account type name
-    * value `Integer`: User account type id
-  * flags `Object`: represents describing types of user account information
-    * anonymous `Boolean`: whether is an anonymous account
-    * anonymousGameServer `Boolean`: whether is an anonymous game server account
-    * anonymousGameServerLogin `Boolean`: whether is an anonymous game server account login request
-    * anonymousUser`Boolean`: whether is an anonymous user account
-    * chat `Boolean`: whether is a chat account
-    * clan `Boolean`: whether is a clan account
-    * consoleUser `Boolean`: whether is a console user(PSN) account
-    * contentServer `Boolean`: whether is a content server account
-    * gameServer `Boolean`: whether is a game server account
-    * individual  `Boolean`: whether is a individual account
-    * gameServerPersistent `Boolean`: whether is a persistent game server account
-    * lobby `Boolean`: whether is a lobby(chat) account
+Returns an [`SteamID`](friends.md#steamid) object represents the current Steam
+user.
 
 ### greenworks.activateAchievement(achievement, success_callback, [error_callback])
 
@@ -74,7 +64,8 @@ Returns a `Integer` represents the number of all achievements in the game.
 
 ### greenworks.getCurrentGameLanguage()
 
-Returns a `String` represents the current language from Steam specifically set for the game.
+Returns a `String` represents the current language from Steam specifically set
+for the game.
 
 ### greenworks.getCurrentUILanguage()
 
@@ -92,7 +83,8 @@ Not implement yet.
 
 ### greenworks.activateGameOverlay(option)
 
-* `option` String: valid options are `Friends`, `Community`, `Players`, `Settings`, `OfficialGameGroup`, `Stats` and `Achievements`.
+* `option` String: valid options are `Friends`, `Community`, `Players`,
+  `Settings`, `OfficialGameGroup`, `Stats` and `Achievements`.
 
 Activate the game overlay with the `option` dialog opens.
 

@@ -206,11 +206,12 @@ Returns an `Integer` represents the number of friends.
 
 * `friend_flag` greenworks.FriendFlags
 
-Returns an array of `SteamID` objects, each `SteamID` represents a friend.
+Returns an array of [`SteamID`](friends.md#steamid) objects, each `SteamID`
+represents a friend.
 
 ### greeenworks.requestUserInformation(raw_steam_id, require_name_only)
 
-* `raw_steam_id` String: a 64-bits steam ID (SteamID.getRawSteamID()).
+* `raw_steam_id` String: a 64-bits steam ID (`SteamID.getRawSteamID()`).
 * `require_name_only` Boolean: whether get name only.
 
 Requests information about a user (persona name & avatar).  Returns true, it
