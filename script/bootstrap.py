@@ -69,13 +69,15 @@ def ensure_dir_exists(path):
 
 
 def download_and_extract(download_url, binary_name, target_dir):
-  local_path = os.path.join(DOWNLOAD_DIR, os.path.splitext(binary_name)[0])
+  for ext in ['.zip', '.tar.gz']:
+    if binary_name.endswith(ext):
+      local_path = os.path.join(DOWNLOAD_DIR, binary_name[:-len(ext)])
   # Skip if downloaded.
   if os.path.exists(local_path):
     log('{0} exists, skipping download.\n'.format(local_path))
     return
   log('Downloading {0}\n'.format(download_url))
-  with tempfile.TemporaryFile() as t:
+  with tempfile.NamedTemporaryFile(delete=False) as t:
     with contextlib.closing(urllib2.urlopen(download_url)) as u:
       while True:
         chunk = u.read(1024*1024)
@@ -90,8 +92,9 @@ def download_and_extract(download_url, binary_name, target_dir):
       with zipfile.ZipFile(t) as z:
         z.extractall(target_dir)
     else:
-      with tarfile.open(t) as t:
-        t.extractall(target_dir)
+      t.close()
+      with tarfile.open(t.name) as tf:
+        tf.extractall(target_dir)
 
 
 def ensure_electron_exists(electron_binary, args):
@@ -112,7 +115,7 @@ def main():
   os.chdir(SOURCE_ROOT)
   ensure_dir_exists(DOWNLOAD_DIR)
   args = parse_args()
-  if args.run_only:
+  if not args.run_only:
     execute(['rm', '-rf', os.path.join(SOURCE_ROOT, 'lib')])
   if args.target == 'nw.js':
     if not args.run_only:
