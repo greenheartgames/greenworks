@@ -141,7 +141,7 @@ Once building is done, you can find `greenworks-(linux/win/osx).node` under
 `build/Release`.
 
 If you encounter any issues, please check the
-[troubleshooting](https://github.com/greenheartgames/greenworks/tree/master/troubleshooting.md)
+[troubleshooting](https://github.com/greenheartgames/greenworks/tree/master/docs/troubleshooting.md)
 page out before creating an issue.
 
 ### NW.js Building Steps
