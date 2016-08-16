@@ -12,7 +12,7 @@ namespace greenworks {
 
 class SteamID : public Nan::ObjectWrap {
  public:
-  static v8::Local<v8::Object> Create(CSteamID stream_id);
+  static v8::Local<v8::Object> Create(CSteamID steam_id);
 
   static NAN_METHOD(IsAnonymous);
   static NAN_METHOD(IsAnonymousGameServer);
