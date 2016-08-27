@@ -12,10 +12,11 @@
 #include "v8.h"
 
 #include "greenworks_async_workers.h"
-#include "greenworks_workshop_workers.h"
 #include "greenworks_utils.h"
 #include "greenworks_version.h"
+#include "greenworks_workshop_workers.h"
 #include "steam_client.h"
+#include "steam_event.h"
 #include "steam_id.h"
 
 namespace {
@@ -34,90 +35,6 @@ void FreeCallback(char* data, void* hint) {
 }
 
 Nan::Persistent<v8::Object> g_persistent_steam_events;
-
-class SteamEvent : public greenworks::SteamClient::Observer {
- public:
-  // Override SteamClient::Observer methods.
-  virtual void OnGameOverlayActivated(bool is_active);
-  virtual void OnSteamServersConnected();
-  virtual void OnSteamServersDisconnected();
-  virtual void OnSteamServerConnectFailure(int status_code);
-  virtual void OnSteamShutdown();
-  virtual void OnPersonaStateChange(uint64 raw_steam_id,
-                                    int persona_change_flag);
-  virtual void OnAvatarImageLoaded(uint64 raw_steam_id,
-                                   int image_handle,
-                                   int height,
-                                   int width);
-};
-
-void SteamEvent::OnGameOverlayActivated(bool is_active) {
-  Nan::HandleScope scope;
-  v8::Local<v8::Value> argv[] = {
-      Nan::New("game-overlay-activated").ToLocalChecked(),
-      Nan::New(is_active) };
-  Nan::MakeCallback(
-      Nan::New(g_persistent_steam_events), "on", 2, argv);
-}
-
-void SteamEvent::OnSteamServersConnected() {
-  Nan::HandleScope scope;
-  v8::Local<v8::Value> argv[] = {
-      Nan::New("steam-servers-connected").ToLocalChecked() };
-  Nan::MakeCallback(
-      Nan::New(g_persistent_steam_events), "on", 1, argv);
-}
-
-void SteamEvent::OnSteamServersDisconnected() {
-  Nan::HandleScope scope;
-  v8::Local<v8::Value> argv[] = {
-      Nan::New("steam-servers-disconnected").ToLocalChecked() };
-  Nan::MakeCallback(
-      Nan::New(g_persistent_steam_events), "on", 1, argv);
-}
-
-void SteamEvent::OnSteamServerConnectFailure(int status_code) {
-  Nan::HandleScope scope;
-  v8::Local<v8::Value> argv[] = {
-      Nan::New("steam-server-connect-failure").ToLocalChecked(),
-      Nan::New(status_code) };
-  Nan::MakeCallback(
-      Nan::New(g_persistent_steam_events), "on", 2, argv);
-}
-
-void SteamEvent::OnSteamShutdown() {
-  Nan::HandleScope scope;
-  v8::Local<v8::Value> argv[] = { Nan::New("steam-shutdown").ToLocalChecked() };
-  Nan::MakeCallback(
-      Nan::New(g_persistent_steam_events), "on", 1, argv);
-}
-
-void SteamEvent::OnPersonaStateChange(uint64 raw_steam_id,
-                                      int persona_change_flag) {
-  Nan::HandleScope scope;
-  v8::Local<v8::Value> argv[] = {
-      Nan::New("persona-state-change").ToLocalChecked(),
-      greenworks::SteamID::Create(raw_steam_id), Nan::New(persona_change_flag),
-  };
-  Nan::MakeCallback(
-      Nan::New(g_persistent_steam_events), "on", 3, argv);
-}
-
-void SteamEvent::OnAvatarImageLoaded(uint64 raw_steam_id,
-                                     int image_handle,
-                                     int height,
-                                     int width) {
-  Nan::HandleScope scope;
-  v8::Local<v8::Value> argv[] = {
-      Nan::New("avatar-image-loaded").ToLocalChecked(),
-      greenworks::SteamID::Create(raw_steam_id),
-      Nan::New(image_handle),
-      Nan::New(height),
-      Nan::New(width),
-  };
-  Nan::MakeCallback(
-      Nan::New(g_persistent_steam_events), "on", 5, argv);
-}
 
 v8::Local<v8::Object> GetSteamUserCountType(int type_id) {
   if (type_id > k_EAccountTypeMax) {
@@ -183,7 +100,8 @@ NAN_METHOD(InitAPI) {
     stream_user_stats->RequestCurrentStats();
   }
 
-  greenworks::SteamClient::GetInstance()->AddObserver(new SteamEvent());
+  greenworks::SteamClient::GetInstance()->AddObserver(
+      new greenworks::SteamEvent(g_persistent_steam_events));
   greenworks::SteamClient::StartSteamLoop();
   info.GetReturnValue().Set(Nan::New(success));
 }

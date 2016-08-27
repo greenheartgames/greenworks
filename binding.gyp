@@ -84,6 +84,8 @@
         'src/steam_async_worker.h',
         'src/steam_client.cc',
         'src/steam_client.h',
+        'src/steam_event.cc',
+        'src/steam_event.h',
         'src/steam_id.cc',
         'src/steam_id.h',
       ],
