@@ -52,3 +52,8 @@ Emitted when Steam client is going to shutdown.
 
 Emitted when a friends' status changes (Use with
 `greenworks.requestUserInformation`).
+
+### Event: 'avatar-image-loaded'
+
+Emitted when a large avatar is loaded in from a previous
+`getLargeFriendAvatar()` if the image wasn't already available.

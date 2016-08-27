@@ -29,6 +29,10 @@ namespace {
 #define MAKE_ENUM_PAIR(name) \
     { name, #name }
 
+void FreeCallback(char* data, void* hint) {
+  delete data;
+}
+
 Nan::Persistent<v8::Object> g_persistent_steam_events;
 
 class SteamEvent : public greenworks::SteamClient::Observer {
@@ -41,6 +45,10 @@ class SteamEvent : public greenworks::SteamClient::Observer {
   virtual void OnSteamShutdown();
   virtual void OnPersonaStateChange(uint64 raw_steam_id,
                                     int persona_change_flag);
+  virtual void OnAvatarImageLoaded(uint64 raw_steam_id,
+                                   int image_handle,
+                                   int height,
+                                   int width);
 };
 
 void SteamEvent::OnGameOverlayActivated(bool is_active) {
@@ -93,6 +101,22 @@ void SteamEvent::OnPersonaStateChange(uint64 raw_steam_id,
   };
   Nan::MakeCallback(
       Nan::New(g_persistent_steam_events), "on", 3, argv);
+}
+
+void SteamEvent::OnAvatarImageLoaded(uint64 raw_steam_id,
+                                     int image_handle,
+                                     int height,
+                                     int width) {
+  Nan::HandleScope scope;
+  v8::Local<v8::Value> argv[] = {
+      Nan::New("avatar-image-loaded").ToLocalChecked(),
+      greenworks::SteamID::Create(raw_steam_id),
+      Nan::New(image_handle),
+      Nan::New(height),
+      Nan::New(width),
+  };
+  Nan::MakeCallback(
+      Nan::New(g_persistent_steam_events), "on", 5, argv);
 }
 
 v8::Local<v8::Object> GetSteamUserCountType(int type_id) {
@@ -248,6 +272,88 @@ NAN_METHOD(GetFriends) {
     friends->Set(i, greenworks::SteamID::Create(steam_id));
   }
   info.GetReturnValue().Set(friends);
+}
+
+NAN_METHOD(GetSmallFriendAvatar) {
+  Nan::HandleScope scope;
+  if (info.Length() < 1 || !info[0]->IsString()) {
+    THROW_BAD_ARGS("Bad arguments");
+  }
+  std::string steam_id_str(*(v8::String::Utf8Value(info[0])));
+  CSteamID steam_id(utils::strToUint64(steam_id_str));
+  if (!steam_id.IsValid()) {
+    THROW_BAD_ARGS("Steam ID is invalid");
+  }
+  info.GetReturnValue().Set(
+      SteamFriends()->GetSmallFriendAvatar(steam_id));
+}
+
+NAN_METHOD(GetMediumFriendAvatar) {
+  Nan::HandleScope scope;
+  if (info.Length() < 1 || !info[0]->IsString()) {
+    THROW_BAD_ARGS("Bad arguments");
+  }
+  std::string steam_id_str(*(v8::String::Utf8Value(info[0])));
+  CSteamID steam_id(utils::strToUint64(steam_id_str));
+  if (!steam_id.IsValid()) {
+    THROW_BAD_ARGS("Steam ID is invalid");
+  }
+  info.GetReturnValue().Set(
+      SteamFriends()->GetMediumFriendAvatar(steam_id));
+}
+
+NAN_METHOD(GetLargeFriendAvatar) {
+  Nan::HandleScope scope;
+  if (info.Length() < 1 || !info[0]->IsString()) {
+    THROW_BAD_ARGS("Bad arguments");
+  }
+  std::string steam_id_str(*(v8::String::Utf8Value(info[0])));
+  CSteamID steam_id(utils::strToUint64(steam_id_str));
+  if (!steam_id.IsValid()) {
+    THROW_BAD_ARGS("Steam ID is invalid");
+  }
+  info.GetReturnValue().Set(
+      SteamFriends()->GetLargeFriendAvatar(steam_id));
+}
+
+NAN_METHOD(GetImageSize) {
+  Nan::HandleScope scope;
+  if (info.Length() < 1 && !info[0]->IsInt32()) {
+    THROW_BAD_ARGS("Bad arguments");
+  }
+  int image_handle = info[0]->Int32Value();
+  uint32 width = 0;
+  uint32 height = 0;
+  if (!SteamUtils()->GetImageSize(image_handle, &width, &height)) {
+    THROW_BAD_ARGS("Fail to get image size");
+  }
+  v8::Local<v8::Object> result = Nan::New<v8::Object>();
+  result->Set(Nan::New("width").ToLocalChecked(), Nan::New(width));
+  result->Set(Nan::New("height").ToLocalChecked(), Nan::New(height));
+  info.GetReturnValue().Set(result);
+}
+
+NAN_METHOD(GetImageRGBA) {
+  Nan::HandleScope scope;
+  if (info.Length() < 1 && !info[0]->IsInt32()) {
+    THROW_BAD_ARGS("Bad arguments");
+  }
+  int image_handle = info[0]->Int32Value();
+  uint32 width = 0;
+  uint32 height = 0;
+  if (!SteamUtils()->GetImageSize(image_handle, &width, &height)) {
+    THROW_BAD_ARGS("Fail to get image size");
+  }
+  int buffer_size = 4 * width * height;
+  char* image_buffer = new char[buffer_size];
+  if (!SteamUtils()->GetImageRGBA(image_handle,
+                                  reinterpret_cast<uint8*>(image_buffer),
+                                  buffer_size)) {
+    THROW_BAD_ARGS("Fail to get image");
+  }
+  info.GetReturnValue().Set(
+      Nan::NewBuffer(image_buffer, buffer_size, FreeCallback, 0)
+          .ToLocalChecked());
 }
 
 NAN_METHOD(RequestUserInformation) {
@@ -855,6 +961,12 @@ NAN_MODULE_INIT(init) {
   Nan::Set(target,
            Nan::New("getSteamId").ToLocalChecked(),
            Nan::New<v8::FunctionTemplate>(GetSteamId)->GetFunction());
+  Nan::Set(target,
+           Nan::New("getImageSize").ToLocalChecked(),
+           Nan::New<v8::FunctionTemplate>(GetImageSize)->GetFunction());
+  Nan::Set(target,
+           Nan::New("getImageRGBA").ToLocalChecked(),
+           Nan::New<v8::FunctionTemplate>(GetImageRGBA)->GetFunction());
   // Friends related APIs.
   Nan::Set(target,
            Nan::New("getFriendCount").ToLocalChecked(),
@@ -862,6 +974,14 @@ NAN_MODULE_INIT(init) {
   Nan::Set(target,
            Nan::New("getFriends").ToLocalChecked(),
            Nan::New<v8::FunctionTemplate>(GetFriends)->GetFunction());
+  Nan::Set(target, Nan::New("getSmallFriendAvatar").ToLocalChecked(),
+           Nan::New<v8::FunctionTemplate>(GetSmallFriendAvatar)->GetFunction());
+  Nan::Set(
+      target, Nan::New("getMediumFriendAvatar").ToLocalChecked(),
+      Nan::New<v8::FunctionTemplate>(GetMediumFriendAvatar)->GetFunction());
+  Nan::Set(
+      target, Nan::New("getLargeFriendAvatar").ToLocalChecked(),
+      Nan::New<v8::FunctionTemplate>(GetLargeFriendAvatar)->GetFunction());
   Nan::Set(
       target, Nan::New("requestUserInformation").ToLocalChecked(),
       Nan::New<v8::FunctionTemplate>(RequestUserInformation)->GetFunction());

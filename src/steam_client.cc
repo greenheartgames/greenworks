@@ -37,7 +37,8 @@ SteamClient::SteamClient() :
     steam_server_connect_failure_(this,
                                   &SteamClient::OnSteamServerConnectFailure),
     steam_shutdown_(this, &SteamClient::OnSteamShutdown),
-    steam_persona_state_change_(this, &SteamClient::OnPeronaStateChange) {
+    steam_persona_state_change_(this, &SteamClient::OnPeronaStateChange),
+    avatar_image_loaded_(this, &SteamClient::OnAvatarImageLoaded) {
 }
 
 SteamClient::~SteamClient() {
@@ -96,6 +97,14 @@ void SteamClient::OnPeronaStateChange(PersonaStateChange_t* callback) {
   for (size_t i = 0; i < observer_list_.size(); ++i) {
     observer_list_[i]->OnPersonaStateChange(callback->m_ulSteamID,
                                             callback->m_nChangeFlags);
+  }
+}
+
+void SteamClient::OnAvatarImageLoaded(AvatarImageLoaded_t* callback) {
+  for (size_t i = 0; i < observer_list_.size(); ++i) {
+    observer_list_[i]->OnAvatarImageLoaded(
+        callback->m_steamID.ConvertToUint64(), callback->m_iImage,
+        callback->m_iTall, callback->m_iWide);
   }
 }
 
