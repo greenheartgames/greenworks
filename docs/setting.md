@@ -103,3 +103,15 @@ Open a specified url in steam game overlay.
 * `appId` Integer: The APP ID of your game
 
 Returns a `Boolean` indicates whether the user has purchased that app.
+
+### greenworks.getImageSize(handle)
+
+* `handle` Integer: The image handle
+
+Returns an `object` that contains image’s width and height values.
+
+### greenworks.getImageRGBA(handle)
+
+* `handle` Integer: The image handle
+
+Returns a `Buffer` that contains image data in RGBA format.

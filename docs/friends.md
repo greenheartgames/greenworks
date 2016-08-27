@@ -209,12 +209,12 @@ Returns an `Integer` represents the number of friends.
 Returns an array of [`SteamID`](friends.md#steamid) objects, each `SteamID`
 represents a friend.
 
-### greeenworks.requestUserInformation(raw_steam_id, require_name_only)
+### greenworks.requestUserInformation(raw_steam_id, require_name_only)
 
 * `raw_steam_id` String: a 64-bits steam ID (`SteamID.getRawSteamID()`).
 * `require_name_only` Boolean: whether get name only.
 
-Requests information about a user (persona name & avatar).  Returns true, it
+Requests information about a user (persona name & avatar). Returns true, it
 means that data is being requested, and a `persona-state-changed` event will be
 emitted when it's retrieved; if returns false, it means that we already have all
 the details about that user, and functions can be called immediately.
@@ -222,3 +222,25 @@ the details about that user, and functions can be called immediately.
 If `require_name_only` is true, then the avatar of a user isn't downloaded
 (it's a lot slower to download avatars and churns the local cache, so if you
 don't need avatars, don't request them).
+
+### greenworks.getSmallFriendAvatar(raw_steam_id)
+
+* `raw_steam_id` String: a 64-bits steam ID (`SteamID.getRawSteamID()`).
+
+Gets the small (32x32) avatar. Returns an integer handle which is used in
+`getImageRGBA()`.
+
+### greenworks.getMediumFriendAvatar(raw_steam_id)
+
+* `raw_steam_id` String: a 64-bits steam ID (`SteamID.getRawSteamID()`).
+
+Gets the medium (64*64) avatar. Returns an integer handle which is used in
+`getImageRGBA()`.
+
+### greenworks.getLargeFriendAvatar(raw_steam_id)
+
+* `raw_steam_id` String: a 64-bits steam ID (`SteamID.getRawSteamID()`).
+
+Gets the large (128*128) avatar. Returns an integer handle which is used in
+`getImageRGBA()`; returns 0 if none set; returns -1 if this image has yet to be
+loaded, in this case you should wait for `avatar-image-loaded` event.
