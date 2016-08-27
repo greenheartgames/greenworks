@@ -115,3 +115,30 @@ Returns an `object` that contains image’s width and height values.
 * `handle` Integer: The image handle
 
 Returns a `Buffer` that contains image data in RGBA format.
+
+An example of saving image to `png` format:
+
+```js
+var greeenworks = require('./greenworks');
+// Relies on 'jimp' module. Install it via 'npm install jimp'.
+var Jimp = require('jimp');
+
+var friends = greenworks.getFriends(greenworks.FriendFlags.Immediate);
+if (friends.length > 0) {
+  var handle = greenworks.getSmallFriendAvatar(friends[0].getRawSteamID());
+  var image_buffer = greenworks.getImageRGBA(handle);
+  var size = greenworks.getImageSize(handle);
+  console.log(size);
+  var image = new Jimp(size.height, size.width, function (err, image) {
+    for (var i = 0; i < size.height; ++i) {
+      for (var j = 0; j < size.width; ++j) {
+        var idx = 4 * (i * size.height + j);
+        var hex = Jimp.rgbaToInt(image_buffer[idx], image_buffer[idx+1],
+            image_buffer[idx+2], image_buffer[idx+3]);
+        image.setPixelColor(hex, j, i);
+      }
+    }
+  });
+  image.write("/tmp/test.png");
+}
+```
