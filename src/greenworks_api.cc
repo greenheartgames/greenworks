@@ -268,6 +268,20 @@ NAN_METHOD(GetSmallFriendAvatar) {
       SteamFriends()->GetSmallFriendAvatar(steam_id));
 }
 
+NAN_METHOD(GetMediumFriendAvatar) {
+  Nan::HandleScope scope;
+  if (info.Length() < 1 || !info[0]->IsString()) {
+    THROW_BAD_ARGS("Bad arguments");
+  }
+  std::string steam_id_str(*(v8::String::Utf8Value(info[0])));
+  CSteamID steam_id(utils::strToUint64(steam_id_str));
+  if (!steam_id.IsValid()) {
+    THROW_BAD_ARGS("Steam ID is invalid");
+  }
+  info.GetReturnValue().Set(
+      SteamFriends()->GetMediumFriendAvatar(steam_id));
+}
+
 NAN_METHOD(GetImageSize) {
   Nan::HandleScope scope;
   if (info.Length() < 1 && !info[0]->IsInt32()) {
@@ -926,9 +940,11 @@ NAN_MODULE_INIT(init) {
   Nan::Set(target,
            Nan::New("getFriends").ToLocalChecked(),
            Nan::New<v8::FunctionTemplate>(GetFriends)->GetFunction());
-  Nan::Set(target,
-           Nan::New("getSmallFriendAvatar").ToLocalChecked(),
+  Nan::Set(target, Nan::New("getSmallFriendAvatar").ToLocalChecked(),
            Nan::New<v8::FunctionTemplate>(GetSmallFriendAvatar)->GetFunction());
+  Nan::Set(
+      target, Nan::New("getMediumFriendAvatar").ToLocalChecked(),
+      Nan::New<v8::FunctionTemplate>(GetMediumFriendAvatar)->GetFunction());
   Nan::Set(
       target, Nan::New("requestUserInformation").ToLocalChecked(),
       Nan::New<v8::FunctionTemplate>(RequestUserInformation)->GetFunction());
