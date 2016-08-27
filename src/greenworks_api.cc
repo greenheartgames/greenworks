@@ -45,6 +45,10 @@ class SteamEvent : public greenworks::SteamClient::Observer {
   virtual void OnSteamShutdown();
   virtual void OnPersonaStateChange(uint64 raw_steam_id,
                                     int persona_change_flag);
+  virtual void OnAvatarImageLoaded(uint64 raw_steam_id,
+                                   int image_handle,
+                                   int height,
+                                   int width);
 };
 
 void SteamEvent::OnGameOverlayActivated(bool is_active) {
@@ -97,6 +101,22 @@ void SteamEvent::OnPersonaStateChange(uint64 raw_steam_id,
   };
   Nan::MakeCallback(
       Nan::New(g_persistent_steam_events), "on", 3, argv);
+}
+
+void SteamEvent::OnAvatarImageLoaded(uint64 raw_steam_id,
+                                     int image_handle,
+                                     int height,
+                                     int width) {
+  Nan::HandleScope scope;
+  v8::Local<v8::Value> argv[] = {
+      Nan::New("avatar-image-loaded").ToLocalChecked(),
+      greenworks::SteamID::Create(raw_steam_id),
+      Nan::New(image_handle),
+      Nan::New(height),
+      Nan::New(width),
+  };
+  Nan::MakeCallback(
+      Nan::New(g_persistent_steam_events), "on", 5, argv);
 }
 
 v8::Local<v8::Object> GetSteamUserCountType(int type_id) {
@@ -280,6 +300,20 @@ NAN_METHOD(GetMediumFriendAvatar) {
   }
   info.GetReturnValue().Set(
       SteamFriends()->GetMediumFriendAvatar(steam_id));
+}
+
+NAN_METHOD(GetLargeFriendAvatar) {
+  Nan::HandleScope scope;
+  if (info.Length() < 1 || !info[0]->IsString()) {
+    THROW_BAD_ARGS("Bad arguments");
+  }
+  std::string steam_id_str(*(v8::String::Utf8Value(info[0])));
+  CSteamID steam_id(utils::strToUint64(steam_id_str));
+  if (!steam_id.IsValid()) {
+    THROW_BAD_ARGS("Steam ID is invalid");
+  }
+  info.GetReturnValue().Set(
+      SteamFriends()->GetLargeFriendAvatar(steam_id));
 }
 
 NAN_METHOD(GetImageSize) {
@@ -945,6 +979,9 @@ NAN_MODULE_INIT(init) {
   Nan::Set(
       target, Nan::New("getMediumFriendAvatar").ToLocalChecked(),
       Nan::New<v8::FunctionTemplate>(GetMediumFriendAvatar)->GetFunction());
+  Nan::Set(
+      target, Nan::New("getLargeFriendAvatar").ToLocalChecked(),
+      Nan::New<v8::FunctionTemplate>(GetLargeFriendAvatar)->GetFunction());
   Nan::Set(
       target, Nan::New("requestUserInformation").ToLocalChecked(),
       Nan::New<v8::FunctionTemplate>(RequestUserInformation)->GetFunction());

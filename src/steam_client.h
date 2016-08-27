@@ -23,7 +23,10 @@ class SteamClient {
     virtual void OnSteamShutdown() = 0;
     virtual void OnPersonaStateChange(uint64 raw_steam_id,
                                       int persona_change_flag) = 0;
-
+    virtual void OnAvatarImageLoaded(uint64 raw_steam_id,
+                                     int image_handle,
+                                     int height,
+                                     int width) = 0;
     virtual ~Observer() {}
   };
 
@@ -55,6 +58,10 @@ class SteamClient {
                  OnPeronaStateChange,
                  PersonaStateChange_t,
                  steam_persona_state_change_);
+  STEAM_CALLBACK(SteamClient,
+                 OnAvatarImageLoaded,
+                 AvatarImageLoaded_t,
+                 avatar_image_loaded_);
 };
 
 }  // namespace greenworks
