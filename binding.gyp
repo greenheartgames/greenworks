@@ -73,6 +73,7 @@
         'src/api/steam_api_cloud.cc',
         'src/api/steam_api_friends.cc',
         'src/api/steam_api_registry.h',
+        'src/api/steam_api_workshop.cc',
         'src/greenworks_api.cc',
         'src/greenworks_async_workers.cc',
         'src/greenworks_async_workers.h',
