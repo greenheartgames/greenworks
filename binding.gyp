@@ -68,6 +68,7 @@
     {
       'target_name': '<(project_name)',
       'sources': [
+        'src/api/steam_api_achievement.cc',
         'src/api/steam_api_auth.cc',
         'src/api/steam_api_cloud.cc',
         'src/api/steam_api_friends.cc',
