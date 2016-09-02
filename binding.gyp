@@ -68,6 +68,7 @@
     {
       'target_name': '<(project_name)',
       'sources': [
+        'src/api/steam_api_registry.h',
         'src/greenworks_api.cc',
         'src/greenworks_async_workers.cc',
         'src/greenworks_async_workers.h',
