@@ -68,6 +68,8 @@
     {
       'target_name': '<(project_name)',
       'sources': [
+        'src/api/steam_api_auth.cc',
+        'src/api/steam_api_friends.cc',
         'src/api/steam_api_registry.h',
         'src/greenworks_api.cc',
         'src/greenworks_async_workers.cc',
@@ -92,6 +94,7 @@
       ],
       'include_dirs': [
         'deps',
+        'src',
         '<(steamworks_sdk_dir)/public',
         '<!(node -e "require(\'nan\')")'
       ],
