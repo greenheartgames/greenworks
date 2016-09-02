@@ -13,6 +13,10 @@
        return;                   \
     } while (0);
 
+#define SET_TYPE(obj, type_name, type) \
+    obj->Set(Nan::New(type_name).ToLocalChecked(), \
+             Nan::New(type))
+
 namespace greenworks {
 namespace api {
 

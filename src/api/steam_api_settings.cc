@@ -11,6 +11,7 @@
 
 #include "greenworks_async_workers.h"
 #include "greenworks_utils.h"
+#include "greenworks_version.h"
 #include "steam_api_registry.h"
 #include "steam_client.h"
 #include "steam_event.h"
@@ -259,6 +260,9 @@ NAN_METHOD(GetImageRGBA) {
 }
 
 void RegisterAPIs(v8::Handle<v8::Object> exports) {
+  Nan::Set(exports,
+           Nan::New("_version").ToLocalChecked(),
+           Nan::New(GREENWORKS_VERSION).ToLocalChecked());
   Nan::Set(
       exports, Nan::New("restartAppIfNecessary").ToLocalChecked(),
       Nan::New<v8::FunctionTemplate>(RestartAppIfNecessary)->GetFunction());
