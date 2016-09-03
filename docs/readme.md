@@ -14,6 +14,7 @@ if (greenworks.initAPI()) {
 
 ## API References
 
+* [Achievement](achievement.md)
 * [Authentication](authentication.md)
 * [Cloud](cloud.md)
 * [Events](events.md)

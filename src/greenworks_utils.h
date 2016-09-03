@@ -7,27 +7,9 @@
 
 #include <string>
 
-#include "node.h"
 #include "steam/steamtypes.h"
-#include "v8.h"
 
 namespace utils {
-
-void InitUgcQueryTypes(v8::Handle<v8::Object> exports);
-
-void InitUgcMatchingTypes(v8::Handle<v8::Object> exports);
-
-void InitUserUgcListSortOrder(v8::Handle<v8::Object> exports);
-
-void InitUserUgcList(v8::Handle<v8::Object> exports);
-
-void InitFriendFlags(v8::Handle<v8::Object> exports);
-
-void InitFriendRelationship(v8::Handle<v8::Object> exports);
-
-void InitFriendPersonaChange(v8::Handle<v8::Object> exports);
-
-void InitAccountType(v8::Handle<v8::Object> exports);
 
 void sleep(int milliseconds);
 
