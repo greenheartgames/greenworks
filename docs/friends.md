@@ -7,10 +7,28 @@ information about users.
 var greenworks = require('./greenworks');
 
 if (greenworks.initAPI()) {
-  greenworks.on('persona-stage-change', function(steam_id, persona_change_flag) {
+  greenworks.on('persona-stage-change',
+                function(steam_id, persona_change_flag) {
     if (persona_change_flag == greenworks.PersonaChange.Name)
       console.log("Change to new name: " + steam_id.getPersonaName());
   });
+
+  greenworks.on('game-connected-friend-chat-message',
+                function(steam_id, message_id) {
+    var info = greenworks.getFriendMessage(steam_id.getRawSteamID(), message_id,
+                                           2048);
+    if (info.chatEntryType == greenworks.ChatEntryType.ChatMsg) {
+      var message = info.message;
+      console.log("Receive a message from " + steam_id.getPersonaName() + ": " +
+                  message);
+      greenworks.replyToFriendMessage(steam_id.getRawSteamID(),
+                                      "Hello, I received your message.");
+    }
+  });
+
+  // Listen to messages from friends.
+  greenworks.setListenForFriendsMessage(true);
+
   // Get the number of regular friends.
   console.log(greenworks.getFriendCount(greenworks.FriendFlags.Immediate));
   var friends = greenworks.getFriends(greenworks.FriendFlags.Immediate);
@@ -94,6 +112,24 @@ Represents Steam SDK `EAccountType` (Steam account types).
 * `Chat`
 * `ConsoleUser`
 * `AnonymousUser`
+
+### greenworks.ChatEntryType
+
+Represents Steam SDK `EChatEntryType` (previously was only friend-to-friend
+message types).
+
+* `Invalid`
+* `ChatMsg`
+* `Typing`
+* `InviteGame`
+* `Emote`
+* `LeftConversation`
+* `Entered`
+* `WasKicked`
+* `WasBanned`
+* `Disconnected`
+* `HistoricalChat`
+* `LinkBlocked`
 
 ### SteamID
 
@@ -244,3 +280,26 @@ Gets the medium (64*64) avatar. Returns an integer handle which is used in
 Gets the large (128*128) avatar. Returns an integer handle which is used in
 `getImageRGBA()`; returns 0 if none set; returns -1 if this image has yet to be
 loaded, in this case you should wait for `avatar-image-loaded` event.
+
+### greenworks.setListenForFriendsMessage(intecept_enabled)
+
+* `intercept_enabled` Boolean
+
+Listen for friends message event (`game-connected-friend-chat-message`).
+Return a `Boolean` indicates whether the listener is set successfully.
+
+### greenworks.replyToFriendMessage(raw_steam_id, message)
+
+* `raw_steam_id` String: a 64-bits steam ID.
+* `message` String: a message being sent to a friend.
+
+Send a message to a friend. Returns a `Boolean` indicates whether the message
+is sent successfully.
+
+### greenworks.getFriendMessage(raw_steam_id, message_id, maximum_message_size)
+
+* `raw_steam_id` String: a 64-bits steam ID.
+* `message_id` Integer
+* `maximum_message_size` Integer
+
+Returns a `String` represents a message from a friend.

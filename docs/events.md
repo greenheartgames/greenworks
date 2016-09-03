@@ -57,3 +57,11 @@ Emitted when a friends' status changes (Use with
 
 Emitted when a large avatar is loaded in from a previous
 `getLargeFriendAvatar()` if the image wasn't already available.
+
+### Event: 'game-connected-friend-chat-message'
+
+Returns:
+* `steam_id` String: a 64-bits steam ID.
+* `message_id` Integer
+
+Emitted when a chat message has been received from a user.
