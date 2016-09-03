@@ -103,6 +103,28 @@ void InitAccountType(v8::Handle<v8::Object> exports) {
            account_type);
 }
 
+void InitChatEntryType(v8::Handle<v8::Object> exports) {
+  v8::Local<v8::Object> chat_entry_type = Nan::New<v8::Object>();
+  SET_TYPE(chat_entry_type, "Invalid", k_EChatEntryTypeInvalid);
+  SET_TYPE(chat_entry_type, "ChatMsg", k_EChatEntryTypeChatMsg);
+  SET_TYPE(chat_entry_type, "Typing", k_EChatEntryTypeTyping);
+  SET_TYPE(chat_entry_type, "InviteGame", k_EChatEntryTypeInviteGame);
+  SET_TYPE(chat_entry_type, "Emote", k_EChatEntryTypeEmote);
+  SET_TYPE(chat_entry_type, "LeftConversation",
+           k_EChatEntryTypeLeftConversation);
+  SET_TYPE(chat_entry_type, "Entered", k_EChatEntryTypeEntered);
+  SET_TYPE(chat_entry_type, "WasKicked", k_EChatEntryTypeWasKicked);
+  SET_TYPE(chat_entry_type, "WasBanned", k_EChatEntryTypeWasBanned);
+  SET_TYPE(chat_entry_type, "Disconnected", k_EChatEntryTypeDisconnected);
+  SET_TYPE(chat_entry_type, "HistoricalChat", k_EChatEntryTypeHistoricalChat);
+  SET_TYPE(chat_entry_type, "LinkBlocked", k_EChatEntryTypeLinkBlocked);
+  Nan::Persistent<v8::Object> constructor;
+  constructor.Reset(chat_entry_type);
+  Nan::Set(exports,
+           Nan::New("ChatEntryType").ToLocalChecked(),
+           chat_entry_type);
+}
+
 NAN_METHOD(GetFriendCount) {
   Nan::HandleScope scope;
   if (info.Length() < 1 || !info[0]->IsInt32()) {
@@ -246,6 +268,7 @@ void RegisterAPIs(v8::Handle<v8::Object> exports) {
   InitFriendRelationship(exports);
   InitFriendPersonaChange(exports);
   InitAccountType(exports);
+  InitChatEntryType(exports);
 
   Nan::Set(exports,
            Nan::New("getFriendCount").ToLocalChecked(),
