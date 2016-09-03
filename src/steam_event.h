@@ -28,6 +28,9 @@ class SteamEvent : public greenworks::SteamClient::Observer {
                                    int image_handle,
                                    int height,
                                    int width);
+  virtual void OnGameConnectedFriendChatMessage(uint64 raw_steam_id,
+                                                int message_id);
+
  private:
   const Nan::Persistent<v8::Object>& persistent_steam_events_;
 };
