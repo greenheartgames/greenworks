@@ -2,6 +2,8 @@
 // Use of this source code is governed by the MIT license that can be
 // found in the LICENSE file.
 
+#include <memory>
+
 #include "nan.h"
 #include "steam/steam_api.h"
 #include "v8.h"
@@ -184,6 +186,61 @@ NAN_METHOD(RequestUserInformation) {
   SteamFriends()->RequestUserInformation(steam_id, require_name_only);
 }
 
+NAN_METHOD(SetListenForFriendsMessages) {
+  Nan::HandleScope scope;
+  if (info.Length() < 1 || !info[0]->IsBoolean()) {
+    THROW_BAD_ARGS("Bad arguments");
+  }
+  bool intercept_enabled = info[0]->BooleanValue();
+  info.GetReturnValue().Set(
+      SteamFriends()->SetListenForFriendsMessages(intercept_enabled));
+}
+
+NAN_METHOD(ReplyToFriendMessage) {
+  Nan::HandleScope scope;
+  if (info.Length() < 2 || !info[0]->IsString() || !info[1]->IsString()) {
+    THROW_BAD_ARGS("Bad arguments");
+  }
+  std::string steam_id_str(*(v8::String::Utf8Value(info[0])));
+  CSteamID steam_id(utils::strToUint64(steam_id_str));
+  if (!steam_id.IsValid()) {
+    THROW_BAD_ARGS("Steam ID is invalid");
+  }
+  std::string message_being_sent(*(v8::String::Utf8Value(info[1])));
+  info.GetReturnValue().Set(SteamFriends()->ReplyToFriendMessage(
+      steam_id,
+      message_being_sent.c_str()));
+}
+
+NAN_METHOD(GetFriendMessage) {
+  Nan::HandleScope scope;
+  if (info.Length() < 3 || !info[0]->IsString() || !info[1]->IsInt32() ||
+      !info[2]->IsInt32()) {
+    THROW_BAD_ARGS("Bad arguments");
+  }
+  std::string steam_id_str(*(v8::String::Utf8Value(info[0])));
+  CSteamID steam_id(utils::strToUint64(steam_id_str));
+  if (!steam_id.IsValid()) {
+    THROW_BAD_ARGS("Steam ID is invalid");
+  }
+  int message_id = info[1]->Int32Value();
+  int maximam_size = info[2]->Int32Value();
+
+  EChatEntryType chat_type;
+  std::unique_ptr<char []>message(new char[maximam_size]);
+
+  int message_size = SteamFriends()->GetFriendMessage(
+      steam_id, message_id, message.get(),
+      maximam_size, &chat_type);
+
+  v8::Local<v8::Object> result = Nan::New<v8::Object>();
+  result->Set(Nan::New("message").ToLocalChecked(),
+              Nan::New(message.get(), message_size).ToLocalChecked());
+  result->Set(Nan::New("chatEntryType").ToLocalChecked(),
+              Nan::New(chat_type));
+  info.GetReturnValue().Set(result);
+}
+
 void RegisterAPIs(v8::Handle<v8::Object> exports) {
   InitFriendFlags(exports);
   InitFriendRelationship(exports);
@@ -207,6 +264,15 @@ void RegisterAPIs(v8::Handle<v8::Object> exports) {
   Nan::Set(
       exports, Nan::New("requestUserInformation").ToLocalChecked(),
       Nan::New<v8::FunctionTemplate>(RequestUserInformation)->GetFunction());
+  Nan::Set(exports, Nan::New("setListenForFriendsMessage").ToLocalChecked(),
+           Nan::New<v8::FunctionTemplate>(SetListenForFriendsMessages)
+               ->GetFunction());
+  Nan::Set(exports, Nan::New("replyToFriendMessage").ToLocalChecked(),
+           Nan::New<v8::FunctionTemplate>(ReplyToFriendMessage)
+               ->GetFunction());
+  Nan::Set(exports, Nan::New("getFriendMessage").ToLocalChecked(),
+           Nan::New<v8::FunctionTemplate>(GetFriendMessage)
+               ->GetFunction());
 }
 
 SteamAPIRegistry::Add X(RegisterAPIs);

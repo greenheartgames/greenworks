@@ -27,6 +27,8 @@ class SteamClient {
                                      int image_handle,
                                      int height,
                                      int width) = 0;
+    virtual void OnGameConnectedFriendChatMessage(uint64 raw_steam_id,
+                                                  int message_id);
     virtual ~Observer() {}
   };
 
@@ -62,6 +64,10 @@ class SteamClient {
                  OnAvatarImageLoaded,
                  AvatarImageLoaded_t,
                  avatar_image_loaded_);
+  STEAM_CALLBACK(SteamClient,
+                 OnGameConnectedFriendChatMessage,
+                 GameConnectedFriendChatMsg_t,
+                 game_connected_friend_chat_msg_);
 };
 
 }  // namespace greenworks

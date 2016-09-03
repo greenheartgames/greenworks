@@ -78,4 +78,16 @@ void SteamEvent::OnAvatarImageLoaded(uint64 raw_steam_id,
       Nan::New(persistent_steam_events_), "on", 5, argv);
 }
 
+void SteamEvent::OnGameConnectedFriendChatMessage(uint64 raw_steam_id,
+                                                  int message_id) {
+  Nan::HandleScope scope;
+  v8::Local<v8::Value> argv[] = {
+      Nan::New("game-connected-friend-chat-message").ToLocalChecked(),
+      greenworks::SteamID::Create(raw_steam_id),
+      Nan::New(message_id),
+  };
+  Nan::MakeCallback(
+      Nan::New(persistent_steam_events_), "on", 3, argv);
+}
+
 }  // namespace greenworks

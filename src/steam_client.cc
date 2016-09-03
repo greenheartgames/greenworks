@@ -30,16 +30,19 @@ void RunSteamAPICallback(uv_timer_t* handle) {
 
 }  // namespace
 
-SteamClient::SteamClient() :
-    game_overlay_activated_(this, &SteamClient::OnGameOverlayActivated),
-    steam_servers_connected_(this, &SteamClient::OnSteamServersConnected),
-    steam_servers_disconnected_(this, &SteamClient::OnSteamServersDisconnected),
-    steam_server_connect_failure_(this,
-                                  &SteamClient::OnSteamServerConnectFailure),
-    steam_shutdown_(this, &SteamClient::OnSteamShutdown),
-    steam_persona_state_change_(this, &SteamClient::OnPeronaStateChange),
-    avatar_image_loaded_(this, &SteamClient::OnAvatarImageLoaded) {
-}
+SteamClient::SteamClient()
+    : game_overlay_activated_(this, &SteamClient::OnGameOverlayActivated),
+      steam_servers_connected_(this, &SteamClient::OnSteamServersConnected),
+      steam_servers_disconnected_(this,
+                                  &SteamClient::OnSteamServersDisconnected),
+      steam_server_connect_failure_(this,
+                                    &SteamClient::OnSteamServerConnectFailure),
+      steam_shutdown_(this, &SteamClient::OnSteamShutdown),
+      steam_persona_state_change_(this, &SteamClient::OnPeronaStateChange),
+      avatar_image_loaded_(this, &SteamClient::OnAvatarImageLoaded),
+      game_connected_friend_chat_msg_(
+          this,
+          &SteamClient::OnGameConnectedFriendChatMessage) {}
 
 SteamClient::~SteamClient() {
   for (size_t i = 0; i < observer_list_.size(); ++i) {
@@ -105,6 +108,14 @@ void SteamClient::OnAvatarImageLoaded(AvatarImageLoaded_t* callback) {
     observer_list_[i]->OnAvatarImageLoaded(
         callback->m_steamID.ConvertToUint64(), callback->m_iImage,
         callback->m_iTall, callback->m_iWide);
+  }
+}
+
+void SteamClient::OnGameConnectedFriendChatMessage(
+    GameConnectedFriendChatMsg_t* callback) {
+  for (size_t i = 0; i < observer_list_.size(); ++i) {
+    observer_list_[i]->OnGameConnectedFriendChatMessage(
+        callback->m_steamIDUser.ConvertToUint64(), callback->m_iMessageID);
   }
 }
 
