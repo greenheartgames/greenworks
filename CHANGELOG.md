@@ -1,3 +1,20 @@
+## 2016.9.16 v0.7.0 stable
+
+* Greenworks complied for NW.js v0.17.3 with Steamworks SDK 1.37
+* Greenworks complied for Electron v1.4.0 with Steamworks SDK 1.37
+* Add getFriendAvatar APIs, #89:
+   * `avatar-image-loaded` event.
+   * `greenworks.getSmallFriendAvatar(raw_steam_id)`
+   * `greenworks.getMediumFriendAvatar(raw_steam_id)`
+   * `greenworks.getLargeFriendAvatar(raw_steam_id)`
+   * `greenworks.getImageSize(handle)`
+   * `greenworks.getImageRGBA(handle)`
+* Add P2P chat APIs, #91:
+   * `game-connected-friend-chat-message` event
+   * `greenworks.setListenForFriendsMessage(intecept_enabled)`
+   * `greenworks.replyToFriendMessage(raw_steam_id, message)`
+   * `greenworks.getFriendMessage(raw_steam_id, message_id, maximum_message_size)`
+
 ## 2016.8.15 v0.6.0 stable
 
 * Greenworks complied for NW.js v0.16.1 with Steamworks SDK 1.37

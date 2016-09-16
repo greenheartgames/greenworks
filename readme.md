@@ -1,4 +1,4 @@
-## New Release 0.6
+## New Release 0.7
 
 The newest release adds more Steam friends functionality, and provides
 prebuilt binaries for Electron. You can find the full list of added features on
