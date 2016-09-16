@@ -28,7 +28,7 @@ class SteamClient {
                                      int height,
                                      int width) = 0;
     virtual void OnGameConnectedFriendChatMessage(uint64 raw_steam_id,
-                                                  int message_id);
+                                                  int message_id) = 0;
     virtual ~Observer() {}
   };
 
