@@ -4,15 +4,15 @@
 
 #include "greenworks_utils.h"
 
-#include <iostream>
 #include <fstream>
+#include <iostream>
 #include <sstream>
+#include <sys/stat.h>
 
 #if defined(_WIN32)
 #include <sys/utime.h>
 #include <windows.h>
 #else
-#include <sys/stat.h>
 #include <unistd.h>
 #include <utime.h>
 #endif
