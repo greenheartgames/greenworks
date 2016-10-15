@@ -135,6 +135,19 @@ NAN_METHOD(getTicketSteamId) {
   info.GetReturnValue().Set(greenworks::SteamID::Create(steam_id));
 }
 
+NAN_METHOD(getTicketAppId) {
+  Nan::HandleScope scope;
+  if (info.Length() < 1 || !node::Buffer::HasInstance(info[0])) {
+    THROW_BAD_ARGS("Bad arguments");
+  }
+  char* decrypted_ticket_buf = node::Buffer::Data(info[0]);
+  size_t decrypted_ticket_buf_size = node::Buffer::Length(info[0]);
+  uint32 app_id = SteamEncryptedAppTicket_GetTicketAppID(
+      reinterpret_cast<uint8*>(decrypted_ticket_buf),
+      decrypted_ticket_buf_size);
+  info.GetReturnValue().Set(app_id);
+}
+
 void RegisterAPIs(v8::Handle<v8::Object> target) {
   Nan::Set(target,
            Nan::New("getAuthSessionTicket").ToLocalChecked(),
@@ -159,6 +172,10 @@ void RegisterAPIs(v8::Handle<v8::Object> target) {
            Nan::New("getTicketSteamId").ToLocalChecked(),
            Nan::New<v8::FunctionTemplate>(
                getTicketSteamId)->GetFunction());
+  Nan::Set(target,
+           Nan::New("getTicketAppId").ToLocalChecked(),
+           Nan::New<v8::FunctionTemplate>(
+               getTicketAppId)->GetFunction());
   Nan::Set(target,
            Nan::New("cancelAuthTicket").ToLocalChecked(),
            Nan::New<v8::FunctionTemplate>(CancelAuthTicket)->GetFunction());
