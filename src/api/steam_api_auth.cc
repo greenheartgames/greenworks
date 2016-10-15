@@ -9,6 +9,7 @@
 
 #include "greenworks_async_workers.h"
 #include "steam_api_registry.h"
+#include "steam_id.h"
 
 namespace greenworks {
 namespace api {
@@ -120,6 +121,20 @@ NAN_METHOD(getTicketIssueTime) {
   info.GetReturnValue().Set(time);
 }
 
+NAN_METHOD(getTicketSteamId) {
+  Nan::HandleScope scope;
+  if (info.Length() < 1 || !node::Buffer::HasInstance(info[0])) {
+    THROW_BAD_ARGS("Bad arguments");
+  }
+  char* decrypted_ticket_buf = node::Buffer::Data(info[0]);
+  size_t decrypted_ticket_buf_size = node::Buffer::Length(info[0]);
+  CSteamID steam_id;
+  SteamEncryptedAppTicket_GetTicketSteamID(
+      reinterpret_cast<uint8*>(decrypted_ticket_buf), decrypted_ticket_buf_size,
+      &steam_id);
+  info.GetReturnValue().Set(greenworks::SteamID::Create(steam_id));
+}
+
 void RegisterAPIs(v8::Handle<v8::Object> target) {
   Nan::Set(target,
            Nan::New("getAuthSessionTicket").ToLocalChecked(),
@@ -140,6 +155,10 @@ void RegisterAPIs(v8::Handle<v8::Object> target) {
            Nan::New("getTicketIssueTime").ToLocalChecked(),
            Nan::New<v8::FunctionTemplate>(
                getTicketIssueTime)->GetFunction());
+  Nan::Set(target,
+           Nan::New("getTicketSteamId").ToLocalChecked(),
+           Nan::New<v8::FunctionTemplate>(
+               getTicketSteamId)->GetFunction());
   Nan::Set(target,
            Nan::New("cancelAuthTicket").ToLocalChecked(),
            Nan::New<v8::FunctionTemplate>(CancelAuthTicket)->GetFunction());
