@@ -4,6 +4,7 @@
 
 #include "nan.h"
 #include "steam/steam_api.h"
+#include "steam/steamencryptedappticket.h"
 #include "v8.h"
 
 #include "greenworks_async_workers.h"
@@ -57,6 +58,39 @@ NAN_METHOD(GetEncryptedAppTicket) {
   info.GetReturnValue().Set(Nan::Undefined());
 }
 
+NAN_METHOD(DecryptAppTicket) {
+  Nan::HandleScope scope;
+  if (info.Length() < 2 || !node::Buffer::HasInstance(info[0]) ||
+      !node::Buffer::HasInstance(info[1])) {
+    THROW_BAD_ARGS("Bad arguments");
+  }
+  char* encrypted_ticket_buf = node::Buffer::Data(info[0]);
+  size_t encrypted_ticket_buf_size = node::Buffer::Length(info[0]);
+  char* key_buf = node::Buffer::Data(info[1]);
+  if (node::Buffer::Length(info[1]) !=
+      k_nSteamEncryptedAppTicketSymmetricKeyLen) {
+    THROW_BAD_ARGS("The key length is not matched");
+  }
+  uint8 key[k_nSteamEncryptedAppTicketSymmetricKeyLen];
+  memcpy(key, key_buf, k_nSteamEncryptedAppTicketSymmetricKeyLen);
+
+  uint8 decrypted_ticket[1024];
+  uint32 decrypted_ticket_size = 1024;
+  bool is_success = SteamEncryptedAppTicket_BDecryptTicket(
+      reinterpret_cast<const uint8*>(encrypted_ticket_buf),
+      encrypted_ticket_buf_size, decrypted_ticket, &decrypted_ticket_size, key,
+      k_nSteamEncryptedAppTicketSymmetricKeyLen);
+
+  if (!is_success) {
+    info.GetReturnValue().Set(Nan::Undefined());
+    return;
+  }
+  info.GetReturnValue().Set(
+      Nan::CopyBuffer(reinterpret_cast<const char *>(decrypted_ticket),
+                      decrypted_ticket_size)
+          .ToLocalChecked());
+}
+
 void RegisterAPIs(v8::Handle<v8::Object> target) {
   Nan::Set(target,
            Nan::New("getAuthSessionTicket").ToLocalChecked(),
@@ -65,6 +99,10 @@ void RegisterAPIs(v8::Handle<v8::Object> target) {
            Nan::New("getEncryptedAppTicket").ToLocalChecked(),
            Nan::New<v8::FunctionTemplate>(
                GetEncryptedAppTicket)->GetFunction());
+  Nan::Set(target,
+           Nan::New("decryptAppTicket").ToLocalChecked(),
+           Nan::New<v8::FunctionTemplate>(
+               DecryptAppTicket)->GetFunction());
   Nan::Set(target,
            Nan::New("cancelAuthTicket").ToLocalChecked(),
            Nan::New<v8::FunctionTemplate>(CancelAuthTicket)->GetFunction());
