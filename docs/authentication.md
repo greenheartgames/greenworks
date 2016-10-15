@@ -3,11 +3,15 @@
 ### greenworks.getAuthSessionTicket(success_callback, [error_callback])
 
 * `success_callback` Function(ticket)
-  * `ticket` Object: Contains the hex encoded session `ticket` value as well as
-    the `handle` integer value.
+  * `ticket` Object:
+    * `ticket` Buffer:  The `ticket` value.
+    * `handle` Integer: The `handle` value returned from the ticket.
+  The handle is needed to inva
 * `error_callback` Function(err)
 
-The hex encoded `ticket` value can be used directly for the Web API
+Retrieve ticket to be sent to the entity who wishes to authenticate you.
+
+The `ticket` buffer can be used like `ticket.toString('hex')` for the Web API
 `ISteamUserAuth/AuthenticateUserTicket` to securely obtain an authenticated
 Steam ID from your game server. The `handle` is needed to invalidate the ticket
 after if it has not been used.
@@ -23,7 +27,7 @@ Invalidates a requested session ticket.
 * `user_data` String: Arbitrary data that will be encrypted into the ticket.
   This will be utf-8 encoded when stored in the ticket.
 * `success_callback` Function(ticket)
-  * `ticket` String: Contains the hex encoded encrypted ticket.
+  * `ticket` Buffer: The encrypted ticket.
 * `error_callback` Function(err)
 
 Encrypted tickets can be used to obtain authenticated Steam IDs from clients

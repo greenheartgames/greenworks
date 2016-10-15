@@ -25,17 +25,6 @@ struct FilesContentContainer {
   }
 };
 
-std::string bytesToHexString(const unsigned char* bytes, size_t length) {
-  /* encode bytes to a string where each byte is '0' padded hex digits pairs
-     of all upper-case letters */
-  std::ostringstream hex_str;
-  for (unsigned int i = 0; i < length; ++i) {
-    hex_str << std::setfill('0') << std::setw(2) << std::uppercase << std::hex
-        << int(bytes[i]);
-  }
-  return hex_str.str();
-}
-
 };  // namespace
 
 namespace greenworks {
@@ -292,19 +281,18 @@ void GetAuthSessionTicketWorker::Execute() {
 
 void GetAuthSessionTicketWorker::OnGetAuthSessionCompleted(
     GetAuthSessionTicketResponse_t *inCallback) {
-  if (inCallback->m_eResult == k_EResultOK) {
-    ticket_ = bytesToHexString(ticket_buf_, ticket_buf_size_);
-  } else {
+  if (inCallback->m_eResult != k_EResultOK)
     SetErrorMessage("Error on getting auth session ticket.");
-  }
   is_completed_ = true;
 }
 
 void GetAuthSessionTicketWorker::HandleOKCallback() {
   Nan::HandleScope scope;
   v8::Local<v8::Object> ticket = Nan::New<v8::Object>();
-  ticket->Set(Nan::New("ticket").ToLocalChecked(),
-              Nan::New(ticket_).ToLocalChecked());
+  ticket->Set(
+      Nan::New("ticket").ToLocalChecked(),
+      Nan::CopyBuffer(reinterpret_cast<char*>(ticket_buf_), ticket_buf_size_)
+          .ToLocalChecked());
   ticket->Set(Nan::New("handle").ToLocalChecked(), Nan::New(handle_));
   v8::Local<v8::Value> argv[] = { ticket };
   callback->Call(1, argv);
@@ -332,7 +320,6 @@ void RequestEncryptedAppTicketWorker::OnRequestEncryptedAppTicketCompleted(
   if (!io_failure && inCallback->m_eResult == k_EResultOK) {
     SteamUser()->GetEncryptedAppTicket(ticket_buf_, sizeof(ticket_buf_),
         &ticket_buf_size_);
-    ticket_ = bytesToHexString(ticket_buf_, ticket_buf_size_);
   } else {
     SetErrorMessage("Error on getting encrypted app ticket.");
   }
@@ -341,7 +328,9 @@ void RequestEncryptedAppTicketWorker::OnRequestEncryptedAppTicketCompleted(
 
 void RequestEncryptedAppTicketWorker::HandleOKCallback() {
   Nan::HandleScope scope;
-  v8::Local<v8::Value> argv[] = { Nan::New(ticket_).ToLocalChecked() };
+  v8::Local<v8::Value> argv[] = {
+      Nan::CopyBuffer(reinterpret_cast<char *>(ticket_buf_), ticket_buf_size_)
+          .ToLocalChecked() };
   callback->Call(1, argv);
 }
 
