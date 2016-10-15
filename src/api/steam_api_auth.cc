@@ -91,6 +91,22 @@ NAN_METHOD(DecryptAppTicket) {
           .ToLocalChecked());
 }
 
+NAN_METHOD(IsTicketForApp) {
+  Nan::HandleScope scope;
+  if (info.Length() < 2 || !node::Buffer::HasInstance(info[0]) ||
+      info[1]->IsUint32()) {
+    THROW_BAD_ARGS("Bad arguments");
+  }
+
+  char* decrypted_ticket_buf = node::Buffer::Data(info[0]);
+  size_t decrypted_ticket_buf_size = node::Buffer::Length(info[0]);
+  uint32 app_id = info[1]->Uint32Value();
+  bool result = SteamEncryptedAppTicket_BIsTicketForApp(
+      reinterpret_cast<uint8*>(decrypted_ticket_buf), decrypted_ticket_buf_size,
+      app_id);
+  info.GetReturnValue().Set(result);
+}
+
 void RegisterAPIs(v8::Handle<v8::Object> target) {
   Nan::Set(target,
            Nan::New("getAuthSessionTicket").ToLocalChecked(),
@@ -103,6 +119,10 @@ void RegisterAPIs(v8::Handle<v8::Object> target) {
            Nan::New("decryptAppTicket").ToLocalChecked(),
            Nan::New<v8::FunctionTemplate>(
                DecryptAppTicket)->GetFunction());
+  Nan::Set(target,
+           Nan::New("isTicketForApp").ToLocalChecked(),
+           Nan::New<v8::FunctionTemplate>(
+               IsTicketForApp)->GetFunction());
   Nan::Set(target,
            Nan::New("cancelAuthTicket").ToLocalChecked(),
            Nan::New<v8::FunctionTemplate>(CancelAuthTicket)->GetFunction());
