@@ -95,7 +95,7 @@ NAN_METHOD(DecryptAppTicket) {
 NAN_METHOD(IsTicketForApp) {
   Nan::HandleScope scope;
   if (info.Length() < 2 || !node::Buffer::HasInstance(info[0]) ||
-      info[1]->IsUint32()) {
+      !info[1]->IsUint32()) {
     THROW_BAD_ARGS("Bad arguments");
   }
 
