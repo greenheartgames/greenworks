@@ -150,6 +150,9 @@ NAN_METHOD(getTicketAppId) {
 
 void RegisterAPIs(v8::Handle<v8::Object> target) {
   Nan::Set(target,
+           Nan::New("EncryptedAppTicketSymmetricKeyLength").ToLocalChecked(),
+           Nan::New(k_nSteamEncryptedAppTicketSymmetricKeyLen));
+  Nan::Set(target,
            Nan::New("getAuthSessionTicket").ToLocalChecked(),
            Nan::New<v8::FunctionTemplate>(GetAuthSessionTicket)->GetFunction());
   Nan::Set(target,
