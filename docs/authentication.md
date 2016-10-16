@@ -6,7 +6,6 @@
   * `ticket` Object:
     * `ticket` Buffer:  The `ticket` value.
     * `handle` Integer: The `handle` value returned from the ticket.
-  The handle is needed to inva
 * `error_callback` Function(err)
 
 Retrieve ticket to be sent to the entity who wishes to authenticate you.
@@ -26,8 +25,8 @@ Invalidates a requested session ticket.
 
 * `user_data` String: Arbitrary data that will be encrypted into the ticket.
   This will be utf-8 encoded when stored in the ticket.
-* `success_callback` Function(ticket)
-  * `ticket` Buffer: The encrypted ticket.
+* `success_callback` Function(encrypted_ticket)
+  * `encrypted_ticket` Buffer: The encrypted ticket.
 * `error_callback` Function(err)
 
 Encrypted tickets can be used to obtain authenticated Steam IDs from clients
@@ -35,3 +34,37 @@ without requiring network requests to Steam's API servers. These tickets can be
 decrypted using your Encrypted App Ticket Key. Once decrypted, the user's
 Steam ID, App ID, and VAC ban status can be read from the ticket using the
 Steamworks Encrypted App Ticket library provided in the SDK.
+
+### greenworks.decryptAppTicket(encrypted_ticket, decryption_key)
+
+* `encrypted_ticket` Buffer: The encrypted ticket.
+* `decryption_key` Buffer: The secret key for decryption.
+
+Decrypt the encrypted app ticket with your decryption key. Returns a `Buffer`
+represents the decrypted ticket if succeeds; otherwise returns a `Null`.
+
+### greenworks.isTicketForApp(decrypted_ticket, app_id)
+
+* `decrypted_ticket` Buffer: The decrypted ticket.
+* `app_id` Integer: The id for the app.
+
+Returns a `Boolean` indicates whether the decrypted ticket is for the app.
+
+### greenworks.getTicketIssueTime(decrypted_ticket)
+
+* `decrypted_ticket` Buffer: The decrypted ticket.
+
+Returns an `Integer` represents the ticket issue time.
+
+### greenworks.getTicketSteamId(decrypted_ticket)
+
+* `decrypted_ticket` Buffer: The decrypted ticket.
+
+Returns an [`SteamID`](friends.md#steamid) object represents the steam id of the
+ticket.
+
+### greenworks.getTicketAppId(decrypted_ticket)
+
+* `decrypted_ticket` Buffer: The decrypted ticket.
+
+Returns an `Integer` represents app id of the ticket.
