@@ -1,3 +1,29 @@
+# Authentication
+
+Authentication APIs provide utilities to authenticate a Steam user's identity
+and verify ownership of an application.
+
+```javascript
+var greenworks = require('./greenworks');
+
+greenworks.init();
+
+greenworks.getEncryptedAppTicket('test_content', function(ticket) {
+  console.log("ticket: " + ticket.toString('hex'));
+  // Specify the secret key.
+  var key = new Buffer(32);
+  assert(key.length == greenworks.EncryptedAppTicketSymmetricKeyLength)
+  var decrypted_app_ticket = greenworks.decryptAppTicket(ticket, key);
+  if (decrypted_app_ticket) {
+    console.log(greenworks.isTicketForApp(decrypted_app_ticket,
+                greenworks.getAppId()));
+    console.log(greenworks.getTicketAppId(decrypted_app_ticket));
+    console.log(greenworks.getTicketSteamId(decrypted_app_ticket));
+    console.log(greenworks.getTicketIssueTime(decrypted_app_ticket));
+  }
+}, function(err) { throw err; });
+```
+
 ## Methods
 
 ### greenworks.getAuthSessionTicket(success_callback, [error_callback])
@@ -38,7 +64,8 @@ Steamworks Encrypted App Ticket library provided in the SDK.
 ### greenworks.decryptAppTicket(encrypted_ticket, decryption_key)
 
 * `encrypted_ticket` Buffer: The encrypted ticket.
-* `decryption_key` Buffer: The secret key for decryption.
+* `decryption_key` Buffer: The secret key for decryption. The length of the key
+  should be `greenworks.EncryptedAppTicketSymmetricKeyLength`.
 
 Decrypt the encrypted app ticket with your decryption key. Returns a `Buffer`
 represents the decrypted ticket if succeeds; otherwise returns a `Null`.
