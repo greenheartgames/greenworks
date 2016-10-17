@@ -58,6 +58,11 @@ developing. If you launch the game from Steam, Steam will automatically know the
 APP ID of your game.)
 4. Create your NW.js app code under `<greenworks_path>/` directory.
 
+Optional: If you use [Authentication APIs](docs/authentication.md), you also
+need to copy `sdkencryptedappticket.dll`/`libsdkencryptedappticket.dylib`/
+`libsdkencryptedappticket.so` from Steamworks SDK (`<steam_sdk-path>/public/steam/lib/`)
+to `<greenworks_path>/lib`.
+
 **A hello-world sample**
 
 Create `index.html`:

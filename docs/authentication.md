@@ -3,6 +3,11 @@
 Authentication APIs provide utilities to authenticate a Steam user's identity
 and verify ownership of an application.
 
+**Note:** Authentication APIs are required an extra dynamic library. Please copy
+`sdkencryptedappticket.dll`/`libsdkencryptedappticket.dylib`/`libsdkencryptedappticket.so`
+from Steamworks SDK (`<steam_sdk-path>/public/steam/lib/`) to your application
+directory `<greenworks>/lib`.
+
 ```javascript
 var greenworks = require('./greenworks');
 
