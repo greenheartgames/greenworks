@@ -174,10 +174,9 @@ class GetAuthSessionTicketWorker : public SteamCallbackAsyncWorker {
   virtual void HandleOKCallback();
 
  private:
-  std::string ticket_;
   HAuthTicket handle_;
   unsigned int ticket_buf_size_;
-  unsigned char ticket_buf_[2048];
+  uint8 ticket_buf_[2048];
 };
 
 class RequestEncryptedAppTicketWorker : public SteamCallbackAsyncWorker {
@@ -192,9 +191,8 @@ class RequestEncryptedAppTicketWorker : public SteamCallbackAsyncWorker {
 
  private:
   std::string user_data_;
-  std::string ticket_;
   unsigned int ticket_buf_size_;
-  unsigned char ticket_buf_[4096];
+  uint8 ticket_buf_[4096];
   CCallResult< RequestEncryptedAppTicketWorker, EncryptedAppTicketResponse_t >
       call_result_;
 };

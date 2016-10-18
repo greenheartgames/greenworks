@@ -141,6 +141,12 @@ NAN_METHOD(GetSteamId) {
   info.GetReturnValue().Set(result);
 }
 
+NAN_METHOD(GetAppId) {
+  Nan::HandleScope scope;
+  info.GetReturnValue().Set(
+      Nan::New(SteamUtils()->GetAppID()));
+}
+
 NAN_METHOD(GetCurrentGameLanguage) {
   Nan::HandleScope scope;
   info.GetReturnValue().Set(
@@ -272,6 +278,9 @@ void RegisterAPIs(v8::Handle<v8::Object> exports) {
   Nan::Set(exports,
            Nan::New("getSteamId").ToLocalChecked(),
            Nan::New<v8::FunctionTemplate>(GetSteamId)->GetFunction());
+  Nan::Set(exports,
+           Nan::New("getAppId").ToLocalChecked(),
+           Nan::New<v8::FunctionTemplate>(GetAppId)->GetFunction());
   Nan::Set(exports,
            Nan::New("getCurrentGameLanguage").ToLocalChecked(),
            Nan::New<v8::FunctionTemplate>(

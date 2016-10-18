@@ -26,6 +26,10 @@ app, and then cause your app to quit.
 There's not a moment to lose after you call `restartAppIfNecessary()`, but if
 it returns `true`, your app is being restarted.
 
+### greenworks.getAppId()
+
+Returns an `Integer` represents the app id of the current process.
+
 ### greenworks.getSteamId()
 
 Returns an [`SteamID`](friends.md#steamid) object represents the current Steam

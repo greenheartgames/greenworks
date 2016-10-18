@@ -12,16 +12,22 @@
           'variables': {
             'project_name': 'greenworks-win32',
             'redist_bin_dir': '',
+            'public_lib_dir': 'win32',
             'lib_steam': 'steam_api.lib',
+            'lib_encryptedappticket': 'sdkencryptedappticket.lib',
             'lib_dll_steam': 'steam_api.dll',
+            'lib_dll_encryptedappticket': 'sdkencryptedappticket.dll',
           },
         }],
         ['target_arch=="x64"', {
           'variables': {
             'project_name': 'greenworks-win64',
             'redist_bin_dir': 'win64',
+            'public_lib_dir': 'win64',
             'lib_steam': 'steam_api64.lib',
+            'lib_encryptedappticket': 'sdkencryptedappticket64.lib',
             'lib_dll_steam': 'steam_api64.dll',
+            'lib_dll_encryptedappticket': 'sdkencryptedappticket64.dll',
           },
         }],
       ],
@@ -41,7 +47,9 @@
       ],
       'variables': {
         'redist_bin_dir': 'osx32',
-        'lib_steam': 'libsteam_api.dylib'
+        'public_lib_dir': 'osx32',
+        'lib_steam': 'libsteam_api.dylib',
+        'lib_encryptedappticket': 'libsdkencryptedappticket.dylib',
       },
     }],
     ['OS=="linux"', {
@@ -50,14 +58,18 @@
           'variables': {
             'project_name': 'greenworks-linux32',
             'redist_bin_dir': 'linux32',
-            'lib_steam': 'libsteam_api.so'
+            'public_lib_dir': 'linux32',
+            'lib_steam': 'libsteam_api.so',
+            'lib_encryptedappticket': 'libsdkencryptedappticket.so',
           }
         }],
         ['target_arch=="x64"', {
           'variables': {
             'project_name': 'greenworks-linux64',
             'redist_bin_dir': 'linux64',
-            'lib_steam': 'libsteam_api.so'
+            'public_lib_dir': 'linux64',
+            'lib_steam': 'libsteam_api.so',
+            'lib_encryptedappticket': 'libsdkencryptedappticket.so',
           }
         }],
       ],
@@ -106,7 +118,8 @@
       'dependencies': [ 'deps/zlib/zlib.gyp:minizip' ],
       'link_settings': {
         'libraries': [
-          '<(source_root_dir)/<(steamworks_sdk_dir)/redistributable_bin/<(redist_bin_dir)/<(lib_steam)'
+          '<(source_root_dir)/<(steamworks_sdk_dir)/redistributable_bin/<(redist_bin_dir)/<(lib_steam)',
+          '<(source_root_dir)/<(steamworks_sdk_dir)/public/steam/lib/<(public_lib_dir)/<(lib_encryptedappticket)',
         ]
       },
       'cflags': [ '-std=c++11' ],
@@ -170,15 +183,18 @@
             'conditions': [
               ['OS=="win"', {
                 'lib_steam_path': '<(source_root_dir)/<(steamworks_sdk_dir)/redistributable_bin/<(redist_bin_dir)/<(lib_dll_steam)',
+                'lib_encryptedappticket_path': '<(source_root_dir)/<(steamworks_sdk_dir)/public/steam/lib/<(public_lib_dir)/<(lib_dll_encryptedappticket)',
               }],
               ['OS=="mac" or OS=="linux"', {
                 'lib_steam_path': '<(source_root_dir)/<(steamworks_sdk_dir)/redistributable_bin/<(redist_bin_dir)/<(lib_steam)',
+                'lib_encryptedappticket_path': '<(source_root_dir)/<(steamworks_sdk_dir)/public/steam/lib/<(public_lib_dir)/<(lib_encryptedappticket)',
               }],
             ]
           },
           'inputs': [
             '<(lib_steam_path)',
-            '<(PRODUCT_DIR)/<(project_name).node'
+            '<(lib_encryptedappticket_path)',
+            '<(PRODUCT_DIR)/<(project_name).node',
           ],
           'outputs': [
             '<(target_dir)',
