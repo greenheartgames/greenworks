@@ -53,14 +53,16 @@
       },
     }],
     ['OS=="linux"', {
+      'variables': {
+        'lib_steam': 'libsteam_api.so',
+        'lib_encryptedappticket': 'libsdkencryptedappticket.so',
+      },
       'conditions': [
         ['target_arch=="ia32"', {
           'variables': {
             'project_name': 'greenworks-linux32',
             'redist_bin_dir': 'linux32',
             'public_lib_dir': 'linux32',
-            'lib_steam': 'libsteam_api.so',
-            'lib_encryptedappticket': 'libsdkencryptedappticket.so',
           }
         }],
         ['target_arch=="x64"', {
@@ -68,8 +70,6 @@
             'project_name': 'greenworks-linux64',
             'redist_bin_dir': 'linux64',
             'public_lib_dir': 'linux64',
-            'lib_steam': 'libsteam_api.so',
-            'lib_encryptedappticket': 'libsdkencryptedappticket.so',
           }
         }],
       ],
@@ -117,10 +117,18 @@
       ],
       'dependencies': [ 'deps/zlib/zlib.gyp:minizip' ],
       'link_settings': {
-        'libraries': [
-          '<(source_root_dir)/<(steamworks_sdk_dir)/redistributable_bin/<(redist_bin_dir)/<(lib_steam)',
-          '<(source_root_dir)/<(steamworks_sdk_dir)/public/steam/lib/<(public_lib_dir)/<(lib_encryptedappticket)',
-        ]
+        'library_dirs': [
+          '<(source_root_dir)/<(steamworks_sdk_dir)/redistributable_bin/<(redist_bin_dir)/',
+          '<(source_root_dir)/<(steamworks_sdk_dir)/public/steam/lib/<(public_lib_dir)/',
+        ],
+        'conditions': [
+          ['OS=="linux" or OS=="mac"', {
+            'libraries': ['-lsteam_api', '-lsdkencryptedappticket'],
+          }],
+          ['OS=="win"', {
+            'libraries': ['-l<(lib_steam)', '-l<(lib_encryptedappticket)'],
+          }],
+        ],
       },
       'cflags': [ '-std=c++11' ],
       'conditions': [
