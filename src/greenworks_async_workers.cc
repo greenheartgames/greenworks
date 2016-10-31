@@ -126,8 +126,8 @@ void CloudQuotaGetWorker::Execute() {
 
 void CloudQuotaGetWorker::HandleOKCallback() {
   Nan::HandleScope scope;
-  v8::Local<v8::Value> argv[] = { Nan::New<v8::Integer>(total_bytes_),
-                                  Nan::New<v8::Integer>(available_bytes_) };
+  v8::Local<v8::Value> argv[] = { Nan::New(utils::uint64ToString(total_bytes_)).ToLocalChecked(),
+                                  Nan::New(utils::uint64ToString(available_bytes_)).ToLocalChecked() };
   callback->Call(2, argv);
 }
 
