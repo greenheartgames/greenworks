@@ -46,5 +46,5 @@ app won't sync anything to the user's cloud if he disabled it at top level
 
 * `success_callback` Function(total_bytes, available_bytes)
   * `total_bytes` uint64 String: total bytes of quota
-  * `available_bytes` uint64 string: available bytes of quota
+  * `available_bytes` uint64 String: available bytes of quota
 * `error_callback` Function(err)
