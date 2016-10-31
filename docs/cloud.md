@@ -45,6 +45,6 @@ app won't sync anything to the user's cloud if he disabled it at top level
 ### greenworks.getCloudQuota(success_callback, [error_callback])
 
 * `success_callback` Function(total_bytes, available_bytes)
-  * `total_bytes` Integer: total bytes of quota
-  * `available_bytes` Integer: available bytes of quota
+  * `total_bytes` uint64 String: total bytes of quota
+  * `available_bytes` uint64 string: available bytes of quota
 * `error_callback` Function(err)
