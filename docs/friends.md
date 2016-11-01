@@ -72,7 +72,6 @@ Represents Steam SDK `EFriendRelationship` (set of relationships to other users)
 * `RequestInitiator`
 * `Ignored`
 * `IgnoredFriend`
-* `Suggested`
 
 ### greenworks.PersonaChange
 
