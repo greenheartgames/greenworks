@@ -51,6 +51,7 @@ void InitFriendRelationship(v8::Handle<v8::Object> exports) {
            k_EFriendRelationshipRequestInitiator);
   SET_TYPE(relationship, "Ignored", k_EFriendRelationshipIgnored);
   SET_TYPE(relationship, "IgnoredFriend", k_EFriendRelationshipIgnoredFriend);
+  SET_TYPE(relationship, "Suggested", k_EFriendRelationshipSuggested_DEPRECATED);
   Nan::Persistent<v8::Object> constructor;
   constructor.Reset(relationship);
   Nan::Set(exports,
