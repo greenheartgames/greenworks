@@ -263,7 +263,7 @@ don't need avatars, don't request them).
 * `raw_steam_id` String: a 64-bits steam ID (`SteamID.getRawSteamID()`).
 
 Gets the small (32x32) avatar. Returns an integer handle which is used in
-`getImageRGBA()`.
+`getImageRGBA()`; returns 0 if none set.
 
 ### greenworks.getMediumFriendAvatar(raw_steam_id)
 
