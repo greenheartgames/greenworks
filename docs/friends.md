@@ -270,7 +270,7 @@ Gets the small (32x32) avatar. Returns an integer handle which is used in
 * `raw_steam_id` String: a 64-bits steam ID (`SteamID.getRawSteamID()`).
 
 Gets the medium (64*64) avatar. Returns an integer handle which is used in
-`getImageRGBA()`.
+`getImageRGBA()`; returns 0 if none set.
 
 ### greenworks.getLargeFriendAvatar(raw_steam_id)
 
