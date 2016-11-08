@@ -223,9 +223,7 @@ npm install --save-dev electron-rebuild
 node_modules/.bin/electron-rebuild
 
 # create a steam_appid.txt file with your Steam App ID
-# replace 123456 by your Steam APP ID 
-# or the steampworks example APP ID
-echo 123456 > steam_appid.txt
+echo <your_app_steam_id> > steam_appid.txt
 
 node_modules/.bin/electron node_modules/greenworks/samples/electron/start.js
 ```
