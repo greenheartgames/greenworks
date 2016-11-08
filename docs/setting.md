@@ -4,8 +4,9 @@
 
 Returns a `Boolean` whether Steam APIs were successfully initialized or not.
 
-Note: When testing this, you need to launch and log in the Steam Client, and
-put `steam_appid.txt` under your app directory.
+Note: When testing this, you need to launch and log in the Steam Client,
+and create a steam_appid.txt file with your Steam APP ID
+(or the steamworks example APP ID) under your app directory.
 
 ### greenworks.init()
 
@@ -99,8 +100,16 @@ var Jimp = require('jimp');
 var friends = greenworks.getFriends(greenworks.FriendFlags.Immediate);
 if (friends.length > 0) {
   var handle = greenworks.getSmallFriendAvatar(friends[0].getRawSteamID());
+  if (!handle) {
+    console.log("The user don't set small avartar");
+    return;
+  }
   var image_buffer = greenworks.getImageRGBA(handle);
   var size = greenworks.getImageSize(handle);
+  if (!size.height || !size.width) {
+    console.log("Image corrupted. Please try again");
+    return;
+  }
   console.log(size);
   var image = new Jimp(size.height, size.width, function (err, image) {
     for (var i = 0; i < size.height; ++i) {

@@ -52,8 +52,8 @@ unzip them.
 Steamworks SDK (`<steam_sdk_path>/redistributable_bin/`) to
 `<greenworks_path>/lib`. Please make sure the architecture (32 bits or 64 bits)
 of the steam dynamic library is the same as NW.js's.
-3. Create a `steam_appid.txt` file with your Steam APP ID under
-`<greenworks_path>/` directory. (You only need the `steam_appid.txt` file for
+3. Create a `steam_appid.txt` file with your Steam APP ID (or the steamwoks example APP ID)
+under `<greenworks_path>/` directory. (You only need the `steam_appid.txt` file for
 developing. If you launch the game from Steam, Steam will automatically know the
 APP ID of your game.)
 4. Create your NW.js app code under `<greenworks_path>/` directory.
@@ -115,8 +115,8 @@ Before using greenworks, you need to:
 
 1. Copy `steam_api.dll`/`libsteam_api.dylib`/`libsteam_api.so` library from the
 Steamworks SDK(`<steam_sdk_path>/redistributable_bin/`) to `<app-dir>/lib/`.
-2. Create a `steam_appid.txt` file with your Steam APP ID under `<app-dir>`
-directory.
+2. Create a `steam_appid.txt` file with your Steam APP ID 
+(or the steamwoks example APP ID) under `<greenworks_path>/` directory.
 
 ## Building Instructions
 
@@ -223,7 +223,7 @@ npm install --save-dev electron-rebuild
 node_modules/.bin/electron-rebuild
 
 # create a steam_appid.txt file with your Steam App ID
-echo 123456 > steam_appid.txt
+echo <your_app_steam_id> > steam_appid.txt
 
 node_modules/.bin/electron node_modules/greenworks/samples/electron/start.js
 ```
@@ -256,7 +256,8 @@ Greenworks uses [Mocha](http://visionmedia.github.io/mocha/) framework to test
 the steamworks APIs.
 
 Since Greenworks is interacting with Steamworks, you need to create a
-`steam_appid.txt` file with a valid Steam Game Application ID in the
+`steam_appid.txt` file with a valid Steam Game Application ID 
+(your own APP ID or Steamworks example APP ID) in the
 `<greenworks_src_dir>/test` directory, in order to run the tests.
 
 ```shell
