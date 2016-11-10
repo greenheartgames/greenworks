@@ -29,8 +29,8 @@ NAN_METHOD(InitAPI) {
   bool success = SteamAPI_Init();
 
   if (success) {
-    ISteamUserStats* stream_user_stats = SteamUserStats();
-    stream_user_stats->RequestCurrentStats();
+    ISteamUserStats* steam_user_stats = SteamUserStats();
+    steam_user_stats->RequestCurrentStats();
   }
 
   greenworks::SteamClient::GetInstance()->AddObserver(
