@@ -144,14 +144,12 @@ void ActivateAchievementWorker::Execute() {
 
   if (!steam_user_stats->SetAchievement(achievement_.c_str())) {
     SetErrorMessage("Achievement name is not valid.");
-  } else if (!steam_user_stats->StoreStats()) {
-    SetErrorMessage("Error on storing user achievement");
+    return;
   }
-}
-  
-void ActivateAchievementWorker::HandleOKCallback() {
-  Nan::HandleScope scope;
-  callback->Call(0, NULL);
+  if (!steam_user_stats->StoreStats()) {
+    SetErrorMessage("Error on storing user achievement");
+    return;
+  }
 }
 
 GetAchievementWorker::GetAchievementWorker(
@@ -192,14 +190,12 @@ void ClearAchievementWorker::Execute() {
   success_ = steam_user_stats->ClearAchievement(achievement_.c_str());
   if (!success_) {
     SetErrorMessage("Achievement name is not valid.");
-  } else if (!steam_user_stats->StoreStats()) {
-    SetErrorMessage("Fails on uploading user stats to server.");
+    return;
   }
-}
-
-void ClearAchievementWorker::HandleOKCallback() {
-  Nan::HandleScope scope;
-  callback->Call(0, NULL);
+  if (!steam_user_stats->StoreStats()) {
+    SetErrorMessage("Fails on uploading user stats to server.");
+    return;
+  }
 }
 
 GetNumberOfPlayersWorker::GetNumberOfPlayersWorker(
