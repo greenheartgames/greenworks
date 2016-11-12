@@ -104,7 +104,6 @@ class ClearAchievementWorker : public SteamAsyncWorker {
 
   // Override NanAsyncWorker methods.
   virtual void Execute();
-  virtual void HandleOKCallback();
 
  private:
   std::string achievement_;
