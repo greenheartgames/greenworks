@@ -33,9 +33,9 @@ NAN_METHOD(SaveTextToFile) {
     error_callback = new Nan::Callback(info[3].As<v8::Function>());
 
   Nan::AsyncQueueWorker(new greenworks::FileContentSaveWorker(success_callback,
-                                                            error_callback,
-                                                            file_name,
-                                                            content));
+                                                              error_callback,
+                                                              file_name,
+                                                              content));
   info.GetReturnValue().Set(Nan::Undefined());
 }
 
@@ -55,8 +55,8 @@ NAN_METHOD(DeleteFile) {
     error_callback = new Nan::Callback(info[2].As<v8::Function>());
 
   Nan::AsyncQueueWorker(new greenworks::FileDeleteWorker(success_callback,
-                                                     error_callback,
-                                                     file_name));
+                                                         error_callback,
+                                                         file_name));
   info.GetReturnValue().Set(Nan::Undefined());
 }
 
@@ -83,8 +83,8 @@ NAN_METHOD(SaveFilesToCloud) {
   if (info.Length() > 2 && info[2]->IsFunction())
     error_callback = new Nan::Callback(info[2].As<v8::Function>());
   Nan::AsyncQueueWorker(new greenworks::FilesSaveWorker(success_callback,
-                                                      error_callback,
-                                                      files_path));
+                                                        error_callback,
+                                                        files_path));
   info.GetReturnValue().Set(Nan::Undefined());
 }
 
@@ -104,8 +104,8 @@ NAN_METHOD(ReadTextFromFile) {
     error_callback = new Nan::Callback(info[2].As<v8::Function>());
 
   Nan::AsyncQueueWorker(new greenworks::FileReadWorker(success_callback,
-                                                     error_callback,
-                                                     file_name));
+                                                       error_callback,
+                                                       file_name));
   info.GetReturnValue().Set(Nan::Undefined());
 }
 
@@ -148,7 +148,7 @@ NAN_METHOD(GetCloudQuota) {
     error_callback = new Nan::Callback(info[1].As<v8::Function>());
 
   Nan::AsyncQueueWorker(new greenworks::CloudQuotaGetWorker(success_callback,
-                                                          error_callback));
+                                                            error_callback));
   info.GetReturnValue().Set(Nan::Undefined());
 }
 
