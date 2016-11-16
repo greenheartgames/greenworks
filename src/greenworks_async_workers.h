@@ -55,6 +55,18 @@ class FileReadWorker : public SteamAsyncWorker {
   std::string content_;
 };
 
+class FileDeleteWorker : public SteamAsyncWorker {
+ public:
+  FileDeleteWorker(Nan::Callback* success_callback, Nan::Callback* error_callback,
+      std::string file_name);
+
+  // Override NanAsyncWorker methods.
+  virtual void Execute();
+
+ private:
+  std::string file_name_;
+};
+
 class CloudQuotaGetWorker : public SteamAsyncWorker {
  public:
   CloudQuotaGetWorker(Nan::Callback* success_callback,

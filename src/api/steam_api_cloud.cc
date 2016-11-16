@@ -39,6 +39,27 @@ NAN_METHOD(SaveTextToFile) {
   info.GetReturnValue().Set(Nan::Undefined());
 }
 
+NAN_METHOD(DeleteFile) {
+  Nan::HandleScope scope;
+
+  if (info.Length() < 2 || !info[0]->IsString() || !info[1]->IsFunction()) {
+    THROW_BAD_ARGS("Bad arguments");
+  }
+
+  std::string file_name(*(v8::String::Utf8Value(info[0])));
+  Nan::Callback* success_callback =
+      new Nan::Callback(info[1].As<v8::Function>());
+  Nan::Callback* error_callback = NULL;
+
+  if (info.Length() > 2 && info[2]->IsFunction())
+    error_callback = new Nan::Callback(info[2].As<v8::Function>());
+
+  Nan::AsyncQueueWorker(new greenworks::FileDeleteWorker(success_callback,
+                                                     error_callback,
+                                                     file_name));
+  info.GetReturnValue().Set(Nan::Undefined());
+}
+
 NAN_METHOD(SaveFilesToCloud) {
   Nan::HandleScope scope;
   if (info.Length() < 2 || !info[0]->IsArray() || !info[1]->IsFunction()) {
@@ -135,6 +156,9 @@ void RegisterAPIs(v8::Handle<v8::Object> target) {
   Nan::Set(target,
            Nan::New("saveTextToFile").ToLocalChecked(),
            Nan::New<v8::FunctionTemplate>(SaveTextToFile)->GetFunction());
+  Nan::Set(target,
+           Nan::New("deleteFile").ToLocalChecked(),
+           Nan::New<v8::FunctionTemplate>(DeleteFile)->GetFunction());
   Nan::Set(target,
            Nan::New("readTextFromFile").ToLocalChecked(),
            Nan::New<v8::FunctionTemplate>(ReadTextFromFile)->GetFunction());
