@@ -14,6 +14,12 @@
   * `file_content` String: represents the content of `file_name` file.
 * `error_callback` Function(err)
 
+### greenworks.deleteFile(file_name, success_callback, [error_callback])
+
+* `file_name` String
+* `success_callback` Function()
+* `error_callback` Function(err)
+
 ### greenworks.saveFilesToCloud(files_path, success_callback, [error_callback])
 
 * `files_path` Array of String: The files' path on local machine.

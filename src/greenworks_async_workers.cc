@@ -73,6 +73,26 @@ void FilesSaveWorker::Execute() {
   }
 }
 
+FileDeleteWorker::FileDeleteWorker(Nan::Callback* success_callback,
+    Nan::Callback* error_callback, std::string file_name):
+        SteamAsyncWorker(success_callback, error_callback),
+        file_name_(file_name) {
+}
+
+void FileDeleteWorker::Execute() {
+  ISteamRemoteStorage* steam_remote_storage = SteamRemoteStorage();
+
+  if (!steam_remote_storage->FileExists(file_name_.c_str())) {
+    SetErrorMessage("File doesn't exist.");
+    return;
+  }
+
+  if (!steam_remote_storage->FileDelete(file_name_.c_str())) {
+    SetErrorMessage("Error on deleting file.");
+    return;
+  }
+}
+
 FileReadWorker::FileReadWorker(Nan::Callback* success_callback,
     Nan::Callback* error_callback, std::string file_name):
         SteamAsyncWorker(success_callback, error_callback),
