@@ -7,7 +7,7 @@ information about users.
 var greenworks = require('./greenworks');
 
 if (greenworks.initAPI()) {
-  greenworks.on('persona-stage-change',
+  greenworks.on('persona-state-change',
                 function(steam_id, persona_change_flag) {
     if (persona_change_flag == greenworks.PersonaChange.Name)
       console.log("Change to new name: " + steam_id.getPersonaName());
