@@ -352,7 +352,7 @@ void DownloadItemWorker::OnDownloadCompleted(
     if (!utils::WriteFile(target_path, content, file_size_in_bytes)) {
       SetErrorMessage("Error on saving file on local machine.");
     }
-    delete content;
+    delete[] content;
   } else {
     SetErrorMessage("Error on downloading file.");
   }
@@ -436,7 +436,7 @@ void SynchronizeItemsWorker::OnDownloadCompleted(
         content, file_size_in_bytes, 0, k_EUGCRead_Close);
     bool is_save_success = utils::WriteFile(target_path,
         content, file_size_in_bytes);
-    delete content;
+    delete[] content;
 
     if (!is_save_success) {
       SetErrorMessage("Error on saving file on local machine.");

@@ -20,7 +20,7 @@ struct FilesContentContainer {
   std::vector<char*> files_content;
   ~FilesContentContainer() {
     for (size_t i = 0; i < files_content.size(); ++i) {
-      delete files_content[i];
+      delete[] files_content[i];
     }
   }
 };
@@ -120,7 +120,7 @@ void FileReadWorker::Execute() {
     content_ = std::string(content);
   }
 
-  delete content;
+  delete[] content;
 }
 
 void FileReadWorker::HandleOKCallback() {
