@@ -25,8 +25,8 @@ Gets whether the `achievement` is achieved.
 
 ### greenworks.getAchievementNames()
 
-Returns a `Array` represents all the achievements in the game.
+Returns an `Array` represents all the achievements in the game.
 
 ### greenworks.getNumberOfAchievements()
 
-Returns a `Integer` represents the number of all achievements in the game.
+Returns an `Integer` represents the number of all achievements in the game.
