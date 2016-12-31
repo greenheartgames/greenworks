@@ -51,7 +51,7 @@ unzip them.
 Please make sure the architecture (32 bits or 64 bits) of the steam dynamic
 library is the same as NW.js's.
 3. Copy `sdkencryptedappticket.dll`/`libsdkencryptedappticket.dylib`/
-`libsdkencryptedappticket.so`(frome `<steam_sdk-path>/public/steam/lib/`) to
+`libsdkencryptedappticket.so`(from `<steam_sdk-path>/public/steam/lib/`) to
 `<greenworks_path>/lib`.
 4. Create a `steam_appid.txt` file with your Steam APP ID (or the steamworks
 example APP ID) under `<greenworks_path>/` directory (You only need the file for
