@@ -46,12 +46,12 @@ API references are located in [docs](docs) directory.
 1. Download the release binaries from
 [releases](https://github.com/greenheartgames/greenworks/releases) page and
 unzip them.
-2. Copy `steam_api.dll`/`libsteam_api.dylib`/`libsteam_api.so`
-(from `<steam_sdk_path>/redistributable_bin/`) to `<greenworks_path>/lib`.
+2. Copy `steam_api.dll`/`libsteam_api.dylib`/`libsteam_api.so` (from
+`<steam_sdk_path>/redistributable_bin/`) to `<greenworks_path>/lib`.
 Please make sure the architecture (32 bits or 64 bits) of the steam dynamic
 library is the same as NW.js's.
 3. Copy `sdkencryptedappticket.dll`/`libsdkencryptedappticket.dylib`/
-`libsdkencryptedappticket.so`(from `<steam_sdk-path>/public/steam/lib/`) to
+`libsdkencryptedappticket.so` (from `<steam_sdk-path>/public/steam/lib/`) to
 `<greenworks_path>/lib`.
 4. Create a `steam_appid.txt` file with your Steam APP ID (or the steamworks
 example APP ID) under `<greenworks_path>/` directory (You only need the file for

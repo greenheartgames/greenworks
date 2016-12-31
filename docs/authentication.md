@@ -18,7 +18,7 @@ greenworks.getEncryptedAppTicket('test_content', function(ticket) {
   // Specify the secret key.
   var key = new Buffer(32);
   // TODO: you must initialize Buffer key with the secret key of your game here,
-  // e.g. key = buffer = new Buffer([0x0a, ..., 0x0b]).
+  // e.g. key = new Buffer([0x0a, ..., 0x0b]).
   assert(key.length == greenworks.EncryptedAppTicketSymmetricKeyLength)
   var decrypted_app_ticket = greenworks.decryptAppTicket(ticket, key);
   if (decrypted_app_ticket) {
