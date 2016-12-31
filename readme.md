@@ -1,8 +1,8 @@
-## New Release 0.7
+## New Release 0.8
 
-The newest release adds more Steam friends functionality, and provides
-prebuilt binaries for Electron. You can find the full list of added features on
-the [releases page](https://github.com/greenheartgames/greenworks/releases).
+The newest release adds Steam ticket decryption functionality. You can find the
+full list of added features on the
+[releases page](https://github.com/greenheartgames/greenworks/releases).
 
 If you find the release useful, please consider donating.
 
@@ -25,8 +25,8 @@ support different node versions.
 
 Currently greenworks supports:
 
-* node v0.8, v0.10, v0.12, v4, v5, and v6
-* NW.js (formerly node-webkit) v0.8, v0.11, v0.12, v0.13, v0.14, v0.15, v0.16, and v0.17
+* node v0.8, v0.10, v0.12, v4, v5, v6 and v7
+* NW.js (formerly node-webkit) v0.8, v0.11, v0.12, v0.13, v0.14, v0.15, v0.16, v0.17, v0.18, and v0.19
 * Electron (formerly atom-shell) v1.0.0 or above
 
 ## Download

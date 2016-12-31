@@ -1,3 +1,24 @@
+## 2016.12.31 v0.8.0 stable
+
+* Greenworks complied for NW.js v0.18.8 & v0.19.4 with Steamworks SDK 1.38a
+* Greenworks now requires `libsdkencryptedappticket` library. Plese copy it to
+  the directory of your game.
+* Update to Steamworks SDK 1.38a, thanks to @MadSpyxFR, some changes from
+  Steamworks SDK:
+  * SteamFriends `suggest` relationship type now is deprecated
+  * `greenworks.getCloudQuota` returns a `String` representing 64 bits integer
+* Add `greenworks.deleteFile` API, thanks to @dfabulich
+* Add `greenworks.getAppId` API
+* Add APIs for ticket decryption:
+  * The ticket in `greenworks.getAuthSessionTicket` and
+    `greenworks.getEncryptedAppTicket` callback is a `Buffer` type
+  * `greenworks.decryptAppTicket`
+  * `greenworks.isTicketForApp`
+  * `greenworks.getTicketIssueTime`
+  * `greenworks.getTicketSteamId`
+  * `greenworks.getTicketAppId`
+* Fix: potential issues causing by mismatched new/delete usage
+
 ## 2016.9.16 v0.7.0 stable
 
 * Greenworks complied for NW.js v0.17.3 with Steamworks SDK 1.37
