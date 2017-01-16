@@ -56,7 +56,6 @@ checking a the relationship between users.
 * `RequestingInfo`
 * `Ignored`
 * `IgnoredFriend`
-* `Suggested`
 * `ChatMember`
 * `All`
 
