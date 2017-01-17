@@ -30,7 +30,8 @@ void InitFriendFlags(v8::Handle<v8::Object> exports) {
   SET_TYPE(friend_flags, "RequestingInfo", k_EFriendFlagRequestingInfo);
   SET_TYPE(friend_flags, "Ignored", k_EFriendFlagIgnored);
   SET_TYPE(friend_flags, "IgnoredFriend", k_EFriendFlagIgnoredFriend);
- // SET_TYPE(friend_flags, "Suggested", k_EFriendFlagSuggested);
+  // k_EFriendFlagSuggested has been removed since steamworks sdk 1.39.
+  // SET_TYPE(friend_flags, "Suggested", k_EFriendFlagSuggested);
   SET_TYPE(friend_flags, "ChatMember", k_EFriendFlagChatMember);
   SET_TYPE(friend_flags, "All", k_EFriendFlagAll);
   Nan::Persistent<v8::Object> constructor;
