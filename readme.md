@@ -51,7 +51,7 @@ Before using Greenworks, you need to:
 `libsdkencryptedappticket.so` (from `<steam_sdk-path>/public/steam/lib/`) to
 `<greenworks_path>/lib`.
 3. Create a `steam_appid.txt` file with your Steam AppID
-(or the steamwoks example AppID) under `<greenworks_path>/` directory.
+(or the Steamwoks example AppID of 480) in the `<greenworks_path>/` directory.
 
 ## General Greenworks "Gotchas"
 
