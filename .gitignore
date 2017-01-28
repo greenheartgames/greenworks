@@ -11,3 +11,4 @@ steam_appid.txt
 *.dylib
 *.node
 .DS_Store
+npm-debug.log
