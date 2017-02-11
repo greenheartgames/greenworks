@@ -17,6 +17,7 @@ if (greenworks.initAPI()) {
 * [Achievement](achievement.md)
 * [Authentication](authentication.md)
 * [Cloud](cloud.md)
+* [DLC](dlc.md)
 * [Events](events.md)
 * [Friends](friends.md)
 * [Setting](setting.md)

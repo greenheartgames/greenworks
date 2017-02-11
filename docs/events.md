@@ -65,3 +65,10 @@ Returns:
 * `message_id` Integer
 
 Emitted when a chat message has been received from a user.
+
+### Event: 'dlc-installed'
+
+Returns:
+* `dlc_app_id` Integer: The APPID of a DLC.
+
+Emitted after the user gains ownership of DLC & that DLC is installed.
