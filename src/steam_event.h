@@ -30,6 +30,7 @@ class SteamEvent : public greenworks::SteamClient::Observer {
                                    int width);
   virtual void OnGameConnectedFriendChatMessage(uint64 raw_steam_id,
                                                 int message_id);
+  virtual void OnDLCInstalled(AppId_t dlc_app_id);
 
  private:
   const Nan::Persistent<v8::Object>& persistent_steam_events_;

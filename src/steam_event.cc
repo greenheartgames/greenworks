@@ -90,4 +90,14 @@ void SteamEvent::OnGameConnectedFriendChatMessage(uint64 raw_steam_id,
       Nan::New(persistent_steam_events_), "on", 3, argv);
 }
 
+void SteamEvent::OnDLCInstalled(AppId_t dlc_app_id) {
+  Nan::HandleScope scope;
+  v8::Local<v8::Value> argv[] = {
+      Nan::New("dlc-installed").ToLocalChecked(),
+      Nan::New(dlc_app_id),
+  };
+  Nan::MakeCallback(
+      Nan::New(persistent_steam_events_), "on", 2, argv);
+}
+
 }  // namespace greenworks

@@ -42,7 +42,8 @@ SteamClient::SteamClient()
       avatar_image_loaded_(this, &SteamClient::OnAvatarImageLoaded),
       game_connected_friend_chat_msg_(
           this,
-          &SteamClient::OnGameConnectedFriendChatMessage) {}
+          &SteamClient::OnGameConnectedFriendChatMessage),
+      dlc_installed_(this, &SteamClient::OnDLCInstalled) {}
 
 SteamClient::~SteamClient() {
   for (size_t i = 0; i < observer_list_.size(); ++i) {
@@ -116,6 +117,13 @@ void SteamClient::OnGameConnectedFriendChatMessage(
   for (size_t i = 0; i < observer_list_.size(); ++i) {
     observer_list_[i]->OnGameConnectedFriendChatMessage(
         callback->m_steamIDUser.ConvertToUint64(), callback->m_iMessageID);
+  }
+}
+
+void SteamClient::OnDLCInstalled(DlcInstalled_t *callback) {
+  for (size_t i = 0; i < observer_list_.size(); ++i) {
+    observer_list_[i]->OnDLCInstalled(
+        callback->m_nAppID);
   }
 }
 
