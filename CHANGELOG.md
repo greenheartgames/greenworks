@@ -1,3 +1,14 @@
+## 2017.3.3 v0.9.0 stable
+
+* Greenworks complied for NW.js v0.20.3 & Electron 1.6.1 with Steamworks SDK 1.39
+* Update to Steamworks SDK 1.39, thanks to @MadSpyxFR:
+   * `greenworks.FriendFlags.Suggested` has been removed
+* Add DLC APIs, #122:
+   * `greenworks.getDLCCount()`
+   * `greenworks.isDLCInstalled(dlc_app_id)`
+   * `greenworks.installDLC(dlc_app_id)`
+   * `greenworks.uninstallDLC(dlc_app_id)`
+
 ## 2016.12.31 v0.8.0 stable
 
 * Greenworks complied for NW.js v0.18.8 & v0.19.4 with Steamworks SDK 1.38a
