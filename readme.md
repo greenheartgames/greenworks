@@ -1,6 +1,6 @@
-## December 31, 2016 - New Release v0.8.0
+## March 3, 2017 - New Release v0.9.0
 
-The newest release adds Steam ticket decryption functionality. You can find the
+The newest release adds Steam DLC functionality. You can find the
 full list of added features on the
 [releases page](https://github.com/greenheartgames/greenworks/releases).
 
@@ -26,7 +26,7 @@ support different node versions.
 Currently Greenworks supports:
 
 * node v0.8, v0.10, v0.12, v4, v5, v6 and v7
-* NW.js (formerly node-webkit) v0.8, v0.11, v0.12, v0.13, v0.14, v0.15, v0.16, v0.17, v0.18, and v0.19
+* NW.js (formerly node-webkit) v0.8, v0.11 or above
 * Electron (formerly atom-shell) v1.0.0 or above
 
 ## Download
@@ -130,15 +130,6 @@ The NW.js v0.11.2 hello-world demo directory on Mac OS X like:
 |-- package.json
 `-- steam_appid.txt
 ```
-
-## Using the Greenworks Prebuilt Binaries in Electron (Quick Start)
-
-Currently, there are no prebuilt binaries for Electron for the latest version of
-Greenworks. Binaries will be created when the Chrome 54 upgrade of Electron is
-completed, which should be sometime around Feburary 2017.
-
-Not to worry; if you are using Electron, you can just build Greenworks yourself
-from source (see below).
 
 ## Building Instructions
 
