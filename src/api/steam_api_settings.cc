@@ -159,7 +159,7 @@ NAN_METHOD(GetCurrentUILanguage) {
       Nan::New(SteamUtils()->GetSteamUILanguage()).ToLocalChecked());
 }
 
-// TODO: Implement get game install directory.
+// TODO(hokein): Implement get game install directory.
 NAN_METHOD(GetCurrentGameInstallDir) {
   Nan::HandleScope scope;
   info.GetReturnValue().Set(Nan::New("NOT IMPLEMENTED").ToLocalChecked());

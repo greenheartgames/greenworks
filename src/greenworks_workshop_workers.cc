@@ -85,7 +85,7 @@ inline std::string GetAbsoluteFilePath(const std::string& file_path,
   return download_dir + "/" + file_name;
 }
 
-}
+}  // namespace
 
 namespace greenworks {
 

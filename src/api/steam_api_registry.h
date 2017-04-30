@@ -2,6 +2,9 @@
 // Use of this source code is governed by the MIT license that can be
 // found in the LICENSE file.
 
+#ifndef SRC_API_STEAM_API_REGISTRY_H_
+#define SRC_API_STEAM_API_REGISTRY_H_
+
 #include <functional>
 #include <vector>
 
@@ -37,7 +40,7 @@ class SteamAPIRegistry {
 
   class Add {
    public:
-    Add(const SteamAPIRegistry::RegistryFactory& registry_factory) {
+    explicit Add(const SteamAPIRegistry::RegistryFactory& registry_factory) {
       SteamAPIRegistry::GetInstance()->AddRegistryFactory(registry_factory);
     }
   };
@@ -51,3 +54,5 @@ class SteamAPIRegistry {
 
 }  // namespace api
 }  // namespace greenworks
+
+#endif  // SRC_API_STEAM_API_REGISTRY_H_

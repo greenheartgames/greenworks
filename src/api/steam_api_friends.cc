@@ -52,7 +52,8 @@ void InitFriendRelationship(v8::Handle<v8::Object> exports) {
            k_EFriendRelationshipRequestInitiator);
   SET_TYPE(relationship, "Ignored", k_EFriendRelationshipIgnored);
   SET_TYPE(relationship, "IgnoredFriend", k_EFriendRelationshipIgnoredFriend);
-  SET_TYPE(relationship, "Suggested", k_EFriendRelationshipSuggested_DEPRECATED);
+  SET_TYPE(relationship, "Suggested",
+           k_EFriendRelationshipSuggested_DEPRECATED);
   Nan::Persistent<v8::Object> constructor;
   constructor.Reset(relationship);
   Nan::Set(exports,
@@ -250,7 +251,7 @@ NAN_METHOD(GetFriendMessage) {
   int maximam_size = info[2]->Int32Value();
 
   EChatEntryType chat_type;
-  std::unique_ptr<char []>message(new char[maximam_size]);
+  std::unique_ptr<char[]>message(new char[maximam_size]);
 
   int message_size = SteamFriends()->GetFriendMessage(
       steam_id, message_id, message.get(),

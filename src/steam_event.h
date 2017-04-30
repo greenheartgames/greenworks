@@ -13,7 +13,8 @@ namespace greenworks {
 
 class SteamEvent : public greenworks::SteamClient::Observer {
  public:
-  SteamEvent(const Nan::Persistent<v8::Object>& persistent_steam_events)
+  explicit SteamEvent(
+      const Nan::Persistent<v8::Object>& persistent_steam_events)
       : persistent_steam_events_(persistent_steam_events) {}
 
   // Override SteamClient::Observer methods.
