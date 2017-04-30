@@ -27,15 +27,15 @@ void sleep(int milliseconds) {
 #endif
 }
 
-bool ReadFile(const char* path, char* &content, int& length) {
+bool ReadFile(const char* path, char** content, int* length) {
   std::ifstream fin(path, std::ios::in|std::ios::binary|std::ios::ate);
   if (!fin.is_open()) {
     return false;
   }
-  length = static_cast<int>(fin.tellg());
-  content = new char[length];
+  *length = static_cast<int>(fin.tellg());
+  *content = new char[*length];
   fin.seekg(0, std::ios::beg);
-  fin.read(content, length);
+  fin.read(*content, *length);
   return true;
 }
 

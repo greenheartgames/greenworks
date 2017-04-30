@@ -54,7 +54,7 @@ void FilesSaveWorker::Execute() {
   for (size_t i = 0; i < files_path_.size(); ++i) {
     char* content = NULL;
     int length = 0;
-    if (!utils::ReadFile(files_path_[i].c_str(), content, length))
+    if (!utils::ReadFile(files_path_[i].c_str(), &content, &length))
       break;
     container.files_content.push_back(content);
     files_content_length.push_back(length);
@@ -146,11 +146,11 @@ void CloudQuotaGetWorker::Execute() {
 
 void CloudQuotaGetWorker::HandleOKCallback() {
   Nan::HandleScope scope;
-  v8::Local<v8::Value> argv[] = { Nan::New(utils::uint64ToString(total_bytes_)).ToLocalChecked(),
-                                  Nan::New(utils::uint64ToString(available_bytes_)).ToLocalChecked() };
+  v8::Local<v8::Value> argv[] = {
+      Nan::New(utils::uint64ToString(total_bytes_)).ToLocalChecked(),
+      Nan::New(utils::uint64ToString(available_bytes_)).ToLocalChecked()};
   callback->Call(2, argv);
 }
-
 
 ActivateAchievementWorker::ActivateAchievementWorker(
     Nan::Callback* success_callback, Nan::Callback* error_callback,

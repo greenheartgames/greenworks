@@ -13,7 +13,7 @@ namespace utils {
 
 void sleep(int milliseconds);
 
-bool ReadFile(const char* path, char* &content, int& length);
+bool ReadFile(const char* path, char** content, int* length);
 
 bool WriteFile(const std::string& target_path, char* content, int length);
 

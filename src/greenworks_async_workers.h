@@ -2,8 +2,8 @@
 // Use of this source code is governed by the MIT license that can be
 // found in the LICENSE file.
 
-#ifndef SRC_GREENWORK_ASYNC_WORKERS_H_
-#define SRC_GREENWORK_ASYNC_WORKERS_H_
+#ifndef SRC_GREENWORKS_ASYNC_WORKERS_H_
+#define SRC_GREENWORKS_ASYNC_WORKERS_H_
 
 #include <string>
 #include <vector>
@@ -19,7 +19,9 @@ namespace greenworks {
 class FileContentSaveWorker : public SteamAsyncWorker {
  public:
   FileContentSaveWorker(Nan::Callback* success_callback,
-      Nan::Callback* error_callback, std::string file_name, std::string content);
+                        Nan::Callback* error_callback,
+                        std::string file_name,
+                        std::string content);
 
   // Override NanAsyncWorker methods.
   virtual void Execute();
@@ -31,8 +33,9 @@ class FileContentSaveWorker : public SteamAsyncWorker {
 
 class FilesSaveWorker : public SteamAsyncWorker {
  public:
-  FilesSaveWorker(Nan::Callback* success_callback, Nan::Callback* error_callback,
-      const std::vector<std::string>& files_path);
+  FilesSaveWorker(Nan::Callback* success_callback,
+                  Nan::Callback* error_callback,
+                  const std::vector<std::string>& files_path);
 
   // Override NanAsyncWorker methods.
   virtual void Execute();
@@ -57,8 +60,9 @@ class FileReadWorker : public SteamAsyncWorker {
 
 class FileDeleteWorker : public SteamAsyncWorker {
  public:
-  FileDeleteWorker(Nan::Callback* success_callback, Nan::Callback* error_callback,
-      std::string file_name);
+  FileDeleteWorker(Nan::Callback* success_callback,
+                   Nan::Callback* error_callback,
+                   std::string file_name);
 
   // Override NanAsyncWorker methods.
   virtual void Execute();

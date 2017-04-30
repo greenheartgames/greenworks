@@ -2,8 +2,8 @@
 // Use of this source code is governed by the MIT license that can be
 // found in the LICENSE file.
 
-#ifndef SRC_GREENWORK_WORKSHOP_WORKERS_H_
-#define SRC_GREENWORK_WORKSHOP_WORKERS_H_
+#ifndef SRC_GREENWORKS_WORKSHOP_WORKERS_H_
+#define SRC_GREENWORKS_WORKSHOP_WORKERS_H_
 
 #include "steam_async_worker.h"
 
@@ -201,4 +201,4 @@ class UnsubscribePublishedFileWorker : public SteamCallbackAsyncWorker {
 
 }  // namespace greenworks
 
-#endif  // SRC_GREENWORK_WORKSHOP_WORKERS_H_
+#endif  // SRC_GREENWORKS_WORKSHOP_WORKERS_H_

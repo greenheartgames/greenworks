@@ -12,7 +12,8 @@ namespace greenworks {
 // Extend Nan::AsyncWorker with custom error callback supports.
 class SteamAsyncWorker : public Nan::AsyncWorker {
  public:
-  SteamAsyncWorker(Nan::Callback* success_callback, Nan::Callback* error_callback);
+  SteamAsyncWorker(Nan::Callback* success_callback,
+                   Nan::Callback* error_callback);
 
   ~SteamAsyncWorker();
 
