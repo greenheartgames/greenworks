@@ -6,6 +6,9 @@
     "type": "MIT",
     "url": "https://github.com/greenheartgames/greenworks/blob/master/LICENSE"
   }],
+  "scripts": {
+    "cpplint": "python ./deps/cpplint/cpplint.py --extensions=h,cc src/* src/api/*"
+  },
   "dependencies": {
     "nan": "^2.3.3"
   },
