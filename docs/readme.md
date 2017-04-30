@@ -21,6 +21,7 @@ if (greenworks.initAPI()) {
 * [Events](events.md)
 * [Friends](friends.md)
 * [Setting](setting.md)
+* [Stats](stats.md)
 * [Utils](utils.md)
 * [Workshop](workshop.md)
 
