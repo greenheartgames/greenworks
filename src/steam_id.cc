@@ -145,7 +145,7 @@ NAN_METHOD(SteamID::GetPersonaName) {
 NAN_METHOD(SteamID::GetNickname) {
   SteamID* obj = ObjectWrap::Unwrap<SteamID>(info.Holder());
   const char* nick_name = SteamFriends()->GetPlayerNickname(obj->steam_id_);
-  if (!nick_name) {
+  if (nick_name != NULL) {
     info.GetReturnValue().Set(Nan::New(nick_name).ToLocalChecked());
     return;
   }
