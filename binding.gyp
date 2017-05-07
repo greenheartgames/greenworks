@@ -1,7 +1,7 @@
 {
   'variables': {
     'source_root_dir': '<!(python tools/source_root_dir.py)',
-    'steamworks_sdk_dir': 'deps/steamworks_sdk',
+    'steamworks_sdk_dir': '../../../sdk',
     'target_dir': 'lib'
   },
 
