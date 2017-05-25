@@ -280,8 +280,12 @@ QueryAllUGCWorker::QueryAllUGCWorker(Nan::Callback* success_callback,
 
 void QueryAllUGCWorker::Execute() {
   uint32 app_id = SteamUtils()->GetAppID();
+  uint32 invalid_app_id = 0;
+  // Set "creator_app_id" parameter to an invalid id to make Steam API return
+  // all ugc items, otherwise the API won't get any results in some cases.
   UGCQueryHandle_t ugc_handle = SteamUGC()->CreateQueryAllUGCRequest(
-      ugc_query_type_, ugc_matching_type_, app_id, app_id, 1);
+      ugc_query_type_, ugc_matching_type_, /*creator_app_id=*/invalid_app_id,
+      /*consumer_app_id=*/app_id, 1);
   SteamAPICall_t ugc_query_result = SteamUGC()->SendQueryUGCRequest(ugc_handle);
   ugc_query_call_result_.Set(ugc_query_result, this,
       &QueryAllUGCWorker::OnUGCQueryCompleted);
