@@ -131,12 +131,14 @@ void FileShareWorker::HandleOKCallback() {
 PublishWorkshopFileWorker::PublishWorkshopFileWorker(
     Nan::Callback* success_callback, Nan::Callback* error_callback,
     const std::string& file_path, const std::string& image_path,
-    const std::string& title, const std::string& description):
+    const std::string& title, const std::string& description,
+    int appid):
         SteamCallbackAsyncWorker(success_callback, error_callback),
         file_path_(file_path),
         image_path_(image_path),
         title_(title),
-        description_(description) {
+        description_(description),
+        appid_(appid){
 }
 
 void PublishWorkshopFileWorker::Execute() {
@@ -147,7 +149,7 @@ void PublishWorkshopFileWorker::Execute() {
   SteamAPICall_t publish_result = SteamRemoteStorage()->PublishWorkshopFile(
       file_name.c_str(),
       image_name.empty()? NULL:image_name.c_str(),
-      SteamUtils()->GetAppID(),
+      appid_,
       title_.c_str(),
       description_.empty()? NULL:description_.c_str(),
       k_ERemoteStoragePublishedFileVisibilityPublic,
