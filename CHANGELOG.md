@@ -1,3 +1,14 @@
+## 2017.5.28 v0.10.0 stable
+
+* Greenworks complied for NW.js v0.22.3 & Electron 1.7.2 Beta with Steamworks SDK 1.40
+* Add APIs for setting user stats:
+  * `greenworks.getStatInt(name)`
+  * `greenworks.getStatFloat(name)`
+  * `greenworks.setStat(name, value)`
+  * `greenworks.storeStats(success_callback, [error_callback])`
+* Fix a potential crash of `getNickname()`
+* Fix `ugcGetItems` returns an empty array in some scenarios
+
 ## 2017.3.3 v0.9.0 stable
 
 * Greenworks complied for NW.js v0.20.3 & Electron 1.6.1 with Steamworks SDK 1.39
