@@ -1,6 +1,6 @@
-## March 3, 2017 - New Release v0.9.0
+## May 28, 2017 - New Release v0.10.0
 
-The newest release adds Steam DLC functionality. You can find the
+The newest release adds Steam Stats functionality. You can find the
 full list of added features on the
 [releases page](https://github.com/greenheartgames/greenworks/releases).
 
