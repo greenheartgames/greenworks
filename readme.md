@@ -150,7 +150,7 @@ To get the Steamworks SDK:
 ### Nodejs Addon Building Steps
 
 ```shell
-# Change to the Dreenworks source directory
+# Change to the Greenworks source directory
 cd greenworks
 # Install the dependencies
 npm install
