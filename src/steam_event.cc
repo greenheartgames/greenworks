@@ -100,4 +100,17 @@ void SteamEvent::OnDLCInstalled(AppId_t dlc_app_id) {
       Nan::New(persistent_steam_events_), "on", 2, argv);
 }
 
+void SteamEvent::OnMicroTxnAuthorizationResponse(uint32 AppID,
+                                                 uint64 OrderID,
+                                                 bool Autorized) {
+  Nan::HandleScope scope;
+  v8::Local<v8::Value> argv[] = {
+      Nan::New("micro-txn-authorization-response").ToLocalChecked(),
+      Nan::New(AppID),
+      Nan::New(utils::uint64ToString(OrderID)).ToLocalChecked(),
+      Nan::New(Autorized),
+  };
+  Nan::MakeCallback(
+      Nan::New(persistent_steam_events_), "on", 4, argv);
+}
 }  // namespace greenworks
