@@ -44,7 +44,9 @@ SteamClient::SteamClient()
           this,
           &SteamClient::OnGameConnectedFriendChatMessage),
       dlc_installed_(this, &SteamClient::OnDLCInstalled),
-      MicroTxnAuthorizationResponse_(this, &SteamClient::OnMicroTxnAuthorizationResponse) {}
+      MicroTxnAuthorizationResponse_(
+          this,
+          &SteamClient::OnMicroTxnAuthorizationResponse) {}
 
 SteamClient::~SteamClient() {
   for (size_t i = 0; i < observer_list_.size(); ++i) {
@@ -127,12 +129,12 @@ void SteamClient::OnDLCInstalled(DlcInstalled_t *callback) {
         callback->m_nAppID);
   }
 }
-  
+
 void SteamClient::OnMicroTxnAuthorizationResponse(
                           MicroTxnAuthorizationResponse_t *callback) {
   for (size_t i = 0; i < observer_list_.size(); ++i) {
     observer_list_[i]->OnMicroTxnAuthorizationResponse(
-        callback->m_unAppID, callback->m_ulOrderID, 
+        callback->m_unAppID, callback->m_ulOrderID,
         callback->m_bAuthorized);
   }
 }

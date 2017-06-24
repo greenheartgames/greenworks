@@ -74,7 +74,10 @@ class SteamClient {
                  GameConnectedFriendChatMsg_t,
                  game_connected_friend_chat_msg_);
   STEAM_CALLBACK(SteamClient, OnDLCInstalled, DlcInstalled_t, dlc_installed_);
-  STEAM_CALLBACK(SteamClient, OnMicroTxnAuthorizationResponse, MicroTxnAuthorizationResponse_t, MicroTxnAuthorizationResponse_);
+  STEAM_CALLBACK(SteamClient,
+                 OnMicroTxnAuthorizationResponse,
+                 MicroTxnAuthorizationResponse_t,
+                 MicroTxnAuthorizationResponse_);
 };
 
 }  // namespace greenworks
