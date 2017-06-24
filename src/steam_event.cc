@@ -8,6 +8,8 @@
 #include "steam_id.h"
 #include "v8.h"
 
+#include "greenworks_utils.h"
+
 namespace greenworks {
 
 void SteamEvent::OnGameOverlayActivated(bool is_active) {
