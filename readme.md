@@ -135,7 +135,7 @@ The NW.js v0.11.2 hello-world demo directory on Mac OS X like:
 
 ### General Prerequisties
 
-* Steamworks SDK 1.38a
+* Steamworks SDK 1.40
 * nodejs
 * node-gyp (or nw-gyp if you use NW.js)
 
