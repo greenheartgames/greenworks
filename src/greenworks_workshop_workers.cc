@@ -131,17 +131,32 @@ void FileShareWorker::HandleOKCallback() {
 PublishWorkshopFileWorker::PublishWorkshopFileWorker(
     Nan::Callback* success_callback, Nan::Callback* error_callback,
     const std::string& file_path, const std::string& image_path,
-    const std::string& title, const std::string& description):
+    const std::string& title, const std::string& description,
+    const std::vector<std::string>& tags):
         SteamCallbackAsyncWorker(success_callback, error_callback),
         file_path_(file_path),
         image_path_(image_path),
         title_(title),
-        description_(description) {
+        description_(description),
+        tags_(tags) {
 }
 
 void PublishWorkshopFileWorker::Execute() {
   SteamParamStringArray_t tags;
-  tags.m_nNumStrings = 0;
+  if(tags_.empty()) {
+    tags.m_nNumStrings = 0;
+    tags.m_ppStrings = nullptr;
+  }
+  else {
+    size_t arrayLength = tags_.size();
+    const char** tagstrings = new const char*[arrayLength];
+    for(uint32 i = 0; i < arrayLength; ++i){
+      tagstrings[i] = tags_[i].c_str();
+    }
+    tags.m_nNumStrings = static_cast<int>(arrayLength);
+    tags.m_ppStrings = tagstrings;
+  }
+
   std::string file_name = utils::GetFileNameFromPath(file_path_);
   std::string image_name = utils::GetFileNameFromPath(image_path_);
   SteamAPICall_t publish_result = SteamRemoteStorage()->PublishWorkshopFile(
@@ -185,13 +200,14 @@ UpdatePublishedWorkshopFileWorker::UpdatePublishedWorkshopFileWorker(
     Nan::Callback* success_callback, Nan::Callback* error_callback,
     PublishedFileId_t published_file_id, const std::string& file_path,
     const std::string& image_path, const std::string& title,
-    const std::string& description):
+    const std::string& description, const std::vector<std::string>& tags):
         SteamCallbackAsyncWorker(success_callback, error_callback),
         published_file_id_(published_file_id),
         file_path_(file_path),
         image_path_(image_path),
         title_(title),
-        description_(description) {
+        description_(description),
+        tags_(tags) {
 }
 
 void UpdatePublishedWorkshopFileWorker::Execute() {
@@ -213,6 +229,27 @@ void UpdatePublishedWorkshopFileWorker::Execute() {
   if (!description_.empty())
     SteamRemoteStorage()->UpdatePublishedFileDescription(update_handle,
         description_.c_str());
+  if (!tags_.empty()){
+    SteamParamStringArray_t tags;
+    size_t arrayLength = tags_.size();
+
+    if(arrayLength == 1 && tags_[0].empty()) {
+      tags.m_nNumStrings = 0;
+      tags.m_ppStrings = nullptr;
+    }
+    else {
+      const char** tagstrings = new const char*[arrayLength];
+      for(uint32 i = 0; i < arrayLength; ++i) {
+          tagstrings[i] = tags_[i].c_str();
+      }
+      tags.m_nNumStrings = static_cast<int>(arrayLength);
+      tags.m_ppStrings = tagstrings;
+    }
+
+    SteamRemoteStorage()->UpdatePublishedFileTags(update_handle,
+        &tags);
+  }
+
   SteamAPICall_t commit_update_result =
       SteamRemoteStorage()->CommitPublishedFileUpdate(update_handle);
   update_published_file_call_result_.Set(commit_update_result, this,

@@ -38,7 +38,8 @@ class PublishWorkshopFileWorker : public SteamCallbackAsyncWorker {
                             const std::string& file_path,
                             const std::string& image_path,
                             const std::string& title,
-                            const std::string& description);
+                            const std::string& description,
+                            const std::vector<std::string>& tags);
   void OnFilePublishCompleted(RemoteStoragePublishFileResult_t* result,
                               bool io_failure);
 
@@ -51,6 +52,7 @@ class PublishWorkshopFileWorker : public SteamCallbackAsyncWorker {
   std::string image_path_;
   std::string title_;
   std::string description_;
+  std::vector<std::string> tags_;
 
   PublishedFileId_t publish_file_id_;
   CCallResult<PublishWorkshopFileWorker,
@@ -65,7 +67,8 @@ class UpdatePublishedWorkshopFileWorker : public SteamCallbackAsyncWorker {
                                     const std::string& file_path,
                                     const std::string& image_path,
                                     const std::string& title,
-                                    const std::string& description);
+                                    const std::string& description,
+                                    const std::vector<std::string>& tags);
   void OnCommitPublishedFileUpdateCompleted(
       RemoteStorageUpdatePublishedFileResult_t* result, bool io_failure);
 
@@ -78,6 +81,7 @@ class UpdatePublishedWorkshopFileWorker : public SteamCallbackAsyncWorker {
   std::string image_path_;
   std::string title_;
   std::string description_;
+  std::vector<std::string> tags_;
 
   CCallResult<UpdatePublishedWorkshopFileWorker,
       RemoteStorageUpdatePublishedFileResult_t>
