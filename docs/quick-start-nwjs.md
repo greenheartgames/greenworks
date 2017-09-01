@@ -8,7 +8,7 @@ unzip it to `<steam_sdk_path>`. Make sure the version of Steamworks SDK is the
 supported version of Greenworks prebuilt binaries.
 3. Copy `steam_api.dll`/`libsteam_api.dylib`/`libsteam_api.so` (based on your
 OS, e.g. `dll` for windows) from
-`<steam_sdk_path>/redistributable_bin/[win32|win64|linux32|linux64|osx32]` to
+`<steam_sdk_path>/redistributable_bin/[win64|linux32|linux64|osx32]` to
 `<greenworks_path>/lib/`.
 4. Copy `sdkencryptedappticket.dll`/`libsdkencryptedappticket.dylib`/
 `libsdkencryptedappticket.so` (based on your OS) from
@@ -22,9 +22,9 @@ Note:
 
 * When copying the Steam SDK binaries in step #3 and #4 above, please make sure
 the architecture of the steam dynamic library matches your OS and NW.js. For
-example, if you are using 64-bits NW.js on Windows, copy
-`<steam_sdk_path>/redistributable_bin/win64/steam_api.dll` and
-`<steam_sdk_path>/public/steam/lib/win64/sdkencryptedappticket.dll`.
+example, if you are using 64-bits NW.js on 64-bits Windows, copy
+`<steam_sdk_path>/redistributable_bin/win64/steam_api64.dll` and
+`<steam_sdk_path>/public/steam/lib/win64/sdkencryptedappticket64.dll`.
 
 * For steap #5, you only need the `steam_appid.txt` for development. If you
 launch the game from Steam, Steam will automatically know the AppID of your
