@@ -10,7 +10,7 @@
     "cpplint": "python ./deps/cpplint/cpplint.py --extensions=h,cc src/* src/api/*"
   },
   "dependencies": {
-    "nan": "^2.3.3"
+    "nan": "^2.7.0"
   },
   "devDependencies": {
     "mocha": "1.21.4"
