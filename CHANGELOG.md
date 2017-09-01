@@ -1,3 +1,8 @@
+## 2017.09.01 v0.11.0 stable
+
+* Greenworks complied for NW.js v0.22.3 & Electron v1.8.0 Beta with Steamworks SDK 1.41
+* Add `micro-txn-authorization-response event`, thanks to @MadSpyxFR
+
 ## 2017.5.28 v0.10.0 stable
 
 * Greenworks complied for NW.js v0.22.3 & Electron 1.7.2 Beta with Steamworks SDK 1.40
