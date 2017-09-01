@@ -25,5 +25,5 @@ node-gyp configure
 node-gyp rebuild
 ```
 
-Once building is done, you can find `greenworks-(linux/win/osx).node` binary (
-depending on your OS) under `build/Release`.
+Once building is done, you can find `greenworks-(linux/win/osx).node` binary
+(depending on your OS) under `build/Release`.
