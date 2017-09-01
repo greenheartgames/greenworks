@@ -1,5 +1,28 @@
 # Greenworks Documents
 
+## FAQ
+
+There are questions/issues being asked quite often. Check following pages before
+creating an issue.
+  * [Troubleshooting](troubleshooting.md)
+  * [Gotchas](gotchas.md)
+
+## Guides
+
+* [Quick Start (NW.js)](quick-start-nwjs.md)
+
+## Build Instructions
+
+* [Build Instructions (NW.js)](build-instructions-nwjs.md)
+* [Build Instructions (Electron)](build-instructions-electron.md)
+* [Build Instructions (Node.js)](build-instructions-nodejs.md)
+
+## Test
+
+* [Mocha Test](mocha-test.md)
+
+## APIs
+
 The `greenworks` module gives you ability to access Steam APIs:
 
 ```js
@@ -24,7 +47,3 @@ if (greenworks.initAPI()) {
 * [Stats](stats.md)
 * [Utils](utils.md)
 * [Workshop](workshop.md)
-
-## Troubleshooting
-
-* [Troubleshooting](troubleshooting.md)
