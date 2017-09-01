@@ -11,3 +11,6 @@ is initialized, Steam will prevent the user from opening that game, saying that
 `process.activateUvLoop()` before initializing Greenworks, or else the eventloop
 of Greenworks won't get run. For more information, see
 [issue #61](https://github.com/greenheartgames/greenworks/issues/61).
+* Greenworks is a native node addon. It is only being able to compile the binary
+for your environment OS, which means if you want to build your own Greenworks
+for 3 platforms (Windows, Mac, Linux), you need to setup 3 different platforms.

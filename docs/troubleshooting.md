@@ -95,3 +95,9 @@ From the Steam
 
 You need to launch the game via Steam Client Application to enable the game
 overlay feature.
+
+## Unable to get `node-gyp` on Windows.
+
+On Windows, `node-gyp` requires additional tools (e.g. Visual C++ Build Tools)
+and configurations. Please follow the
+[`node-gyp` instructions](https://github.com/nodejs/node-gyp#on-window).
