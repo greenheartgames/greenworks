@@ -1,7 +1,6 @@
-## May 28, 2017 - New Release v0.10.0
+## Sep 01, 2017 - New Release v0.11.0
 
-The newest release adds Steam Stats functionality. You can find the
-full list of added features on the
+You can find the full list of added features on the
 [releases page](https://github.com/greenheartgames/greenworks/releases).
 
 If you find the release useful, please consider donating.
@@ -25,7 +24,7 @@ support different node versions.
 
 Currently Greenworks supports:
 
-* node v0.8, v0.10, v0.12, v4, v5, v6 and v7
+* node v0.8, v0.10, v0.12, v4, v5, v6, v7 and v8
 * NW.js (formerly node-webkit) v0.8, v0.11 or above
 * Electron (formerly atom-shell) v1.0.0 or above
 
