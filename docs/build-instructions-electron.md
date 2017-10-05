@@ -122,8 +122,8 @@ cp node_modules/greenworks/samples/electron/main.js renderer.js
 Or, if you are on Windows:
 
 ```
-mv renderer.js renderer.original.js
-cp node_modules\greenworks\samples\electron\main.js renderer.js
+move renderer.js renderer.original.js
+copy node_modules\greenworks\samples\electron\main.js renderer.js
 ```
 
 11) Test it:
