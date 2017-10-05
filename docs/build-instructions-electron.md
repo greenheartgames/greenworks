@@ -1,19 +1,15 @@
 # Build Instructions for Electron
 
-## Prerequisties
+You can choose to build Greenworks with either `node-gyp` or `electron-rebuild`. If you are unsure, use `electron-rebuild`.
 
-* Steamworks SDK 1.41
-* nodejs
-* node-gyp
+## Building with node-gyp
 
-Please follow the [instructions](get-steamworks-sdk.md) on getting Steamworks SDK.
-
-## Build with node-gyp
+First, follow these [instructions](get-steamworks-sdk.md) on getting the Steamworks SDK.
 
 Electron's guide to
 [using native Node modules](http://electron.atom.io/docs/tutorial/using-native-node-modules/)
-explains that you can also use `node-gyp` directly with custom settings to build
-a native module for a given Electron version.
+explains that you can use `node-gyp` directly with custom settings to build a
+native module for a given Electron version.
 
 ```shell
 cd <greenworks_src_dir>
@@ -32,13 +28,13 @@ After the `node-gyp` command is finished, you can find the
 `greenworks-(linux/win/osx).node` binary (depending on your OS) in
 `build/Release`.
 
-## Build with `electron-rebuild`
+## Building with electron-rebuild
 
 Greenworks builds a native addon for Node. Addons are very sensitive to which
 version of Node you use. For this reason, Electron provides an
 [`electron-rebuild`](https://github.com/electron/electron-rebuild)
 tool for rebuilding all of the addons in a `node_modules` folder. This means
-that building/installing Greenworks is a multi-step process.
+that building and installing Greenworks is a multi-step process.
 
 1) For demonstration purposes, we will be using the
 [Electron Quick Start](https://github.com/electron/electron-quick-start)
@@ -69,10 +65,9 @@ does not have Steamworks SDK yet:
 npm install --save --ignore-scripts git+https://github.com/greenheartgames/greenworks.git
 ```
 
-5) Provide the Steamworks SDK dependency to Greenworks by following the steps
-from the "General Prerequisties" section earlier on the page (
-You need to create and populate the `node_modules/greenworks/deps/steamworks_sdk`
-folder.).
+5) Provide the Steamworks SDK dependency to Greenworks by following
+[these steps](get-steamworks-sdk.md). (Essentially, You need to create and
+populate the `node_modules/greenworks/deps/steamworks_sdk` folder.)
 
 6) Now, installing Greenworks should succeed:
 
@@ -90,6 +85,12 @@ npm install --save-dev electron-rebuild
 
 ```shell
 node_modules/.bin/electron-rebuild
+```
+
+Or, if you are on Windows:
+
+```
+node_modules\.bin\electron-rebuild
 ```
 
 9) Finally, create a `steam_appid.txt` in the root of the application with the
@@ -115,11 +116,30 @@ initialized, Steam will prevent the user from opening that game, saying that
 
 ```shell
 mv renderer.js renderer.original.js
-cp node_modules/greenworks/sample/electron/main.js renderer.js
+cp node_modules/greenworks/samples/electron/main.js renderer.js
+```
+
+Or, if you are on Windows:
+
+```
+mv renderer.js renderer.original.js
+cp node_modules\greenworks\samples\electron\main.js renderer.js
 ```
 
 11) Test it:
 
 ```shell
 npm start
+```
+
+## A Note on electron-builder
+
+[electron-builder](https://github.com/electron-userland/electron-builder) is the most common solution to build and package Electron applications, so you might be using it. If you are, then you will want to make sure that the Greenworks dependencies don't get included or compiled in the actual end-user release. You can do this by having the following in your `package.json` file:
+
+```
+"build": {
+  "files": [
+    "!node_modules/greenworks/deps/**/*"
+  ]
+},
 ```
