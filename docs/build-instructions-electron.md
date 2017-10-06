@@ -131,15 +131,3 @@ copy node_modules\greenworks\samples\electron\main.js renderer.js
 ```shell
 npm start
 ```
-
-## A Note on electron-builder
-
-[electron-builder](https://github.com/electron-userland/electron-builder) is the most common solution to build and package Electron applications, so you might be using it. If you are, then you will want to make sure that the Greenworks dependencies don't get included or compiled in the actual end-user release. You can do this by having the following in your `package.json` file:
-
-```
-"build": {
-  "files": [
-    "!node_modules/greenworks/deps/**/*"
-  ]
-},
-```

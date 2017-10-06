@@ -16,7 +16,7 @@ is initialized, Steam will prevent the user from opening that game, saying that
 for your OS. This means that if you want to build Greenworks for all 3 platforms
 (Windows, Mac, Linux), you need to setup 3 different platforms.
 
-## Using Greenworks with Electron
+## Using Greenworks with electron-builder
 
 * If you are using Electron, that then you might be using
 [electron-builder](https://github.com/electron-userland/electron-builder),
