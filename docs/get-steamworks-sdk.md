@@ -1,15 +1,18 @@
-# Get Steamworks SDK
+# The Steamworks SDK
 
-Steamworks SDK is required when building Greenworks and using Greenworks.
-Greenworks doesn't provide Steamworks SDK because it is not legal to package the
-Steamworks SDK. Game developers have to accept Valve's terms and download it
-from official site.
+* The Steamworks SDK is required when building Greenworks and using Greenworks.
+We can't just include this within the repository because it is not legal to do
+so; game developers have to accept Valve's terms and download it from the
+official site.
+* Greenworks is designed to function with v1.41 of the SDK, which is the latest
+version of the time of this writing. However, every so often, Steam releases a
+new version of the SDK, so make sure you download the appropriate version.
 
-## Steamworks SDK in Greenworks Building:
+## Give It to Greenworks
 
-1. [Download it from Steam](https://partner.steamgames.com/downloads/list) (
-You will need to login with your Steam account first in order to access the
-downloads list).
+1. [Download the SDK from the official Steamworks website](https://partner.steamgames.com/downloads/list).
+(You will need to login with your Steam account first in order to access the
+downloads list.)
 2. Extract the contents of the zip file.
 3. The extracted contents will contain one subdirectory, `sdk`. Rename it to
 `steamworks_sdk`.
