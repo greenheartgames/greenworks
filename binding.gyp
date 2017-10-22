@@ -1,7 +1,6 @@
 {
   'variables': {
-    'source_root_dir': '<!(python tools/source_root_dir.py)',
-    'steamworks_sdk_dir': 'deps/steamworks_sdk',
+    'steamworks_sdk_dir': '<!(node tools/steamworks_sdk_dir.js)',
     'target_dir': 'lib'
   },
 
@@ -120,8 +119,8 @@
       'dependencies': [ 'deps/zlib/zlib.gyp:minizip' ],
       'link_settings': {
         'library_dirs': [
-          '<(source_root_dir)/<(steamworks_sdk_dir)/redistributable_bin/<(redist_bin_dir)/',
-          '<(source_root_dir)/<(steamworks_sdk_dir)/public/steam/lib/<(public_lib_dir)/',
+          '<(steamworks_sdk_dir)/redistributable_bin/<(redist_bin_dir)/',
+          '<(steamworks_sdk_dir)/public/steam/lib/<(public_lib_dir)/',
         ],
         'conditions': [
           ['OS=="linux" or OS=="mac"', {
@@ -192,12 +191,12 @@
           'variables': {
             'conditions': [
               ['OS=="win"', {
-                'lib_steam_path': '<(source_root_dir)/<(steamworks_sdk_dir)/redistributable_bin/<(redist_bin_dir)/<(lib_dll_steam)',
-                'lib_encryptedappticket_path': '<(source_root_dir)/<(steamworks_sdk_dir)/public/steam/lib/<(public_lib_dir)/<(lib_dll_encryptedappticket)',
+                'lib_steam_path': '<(steamworks_sdk_dir)/redistributable_bin/<(redist_bin_dir)/<(lib_dll_steam)',
+                'lib_encryptedappticket_path': '<(steamworks_sdk_dir)/public/steam/lib/<(public_lib_dir)/<(lib_dll_encryptedappticket)',
               }],
               ['OS=="mac" or OS=="linux"', {
-                'lib_steam_path': '<(source_root_dir)/<(steamworks_sdk_dir)/redistributable_bin/<(redist_bin_dir)/<(lib_steam)',
-                'lib_encryptedappticket_path': '<(source_root_dir)/<(steamworks_sdk_dir)/public/steam/lib/<(public_lib_dir)/<(lib_encryptedappticket)',
+                'lib_steam_path': '<(steamworks_sdk_dir)/redistributable_bin/<(redist_bin_dir)/<(lib_steam)',
+                'lib_encryptedappticket_path': '<(steamworks_sdk_dir)/public/steam/lib/<(public_lib_dir)/<(lib_encryptedappticket)',
               }],
             ]
           },
