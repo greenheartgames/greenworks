@@ -17,5 +17,5 @@ downloads list.)
 3. The extracted contents will contain one subdirectory, `sdk`. Rename it to
 `steamworks_sdk`.
 4. Copy the renamed directory `steamworks_sdk` to `<greenworks_src_dir>/deps/`.
-Alternatively, you can also set a `STEAMWORKS_SDK_PATH` environment variable which points to the `steamworks_sdk` directory.
-
+Alternatively, you can also set a `STEAMWORKS_SDK_PATH` environment variable
+which points to the `steamworks_sdk` directory.
