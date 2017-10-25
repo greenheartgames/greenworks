@@ -26,7 +26,7 @@ example, if you are using 64-bits NW.js on 64-bits Windows, copy
 `<steam_sdk_path>/redistributable_bin/win64/steam_api64.dll` and
 `<steam_sdk_path>/public/steam/lib/win64/sdkencryptedappticket64.dll`.
 
-* For steap #5, you only need the `steam_appid.txt` for development. If you
+* For step #5, you only need the `steam_appid.txt` for development. If you
 launch the game from Steam, Steam will automatically know the AppID of your
 game).
 
