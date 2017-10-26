@@ -28,7 +28,7 @@ cd <greenworks_src_dir>
 # generate the building files
 nw-gyp configure --target=<0.10.5 or other nw version> --arch=<x64 or ia32>
 
-# If you have an error stating requiure('nan') fails then do a local.
+# If you have an error stating that require('nan') fails, then do a local.
 npm install nan
 
 # build Greenworks
