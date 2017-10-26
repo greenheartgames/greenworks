@@ -43,4 +43,4 @@ sudo apt-get install g++-multilib
 After building finished, you can find the `greenworks-(linux/win/osx).node`
 binary (depending on your OS) in `build/Release`.
 
-A hello-world NW.js application is provided at [samples/nw.js](samples/nw.js).
+A hello-world NW.js application is provided at [samples/nw.js](../samples/nw.js).
