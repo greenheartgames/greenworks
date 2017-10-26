@@ -28,7 +28,7 @@ cd <greenworks_src_dir>
 # generate the building files
 nw-gyp configure --target=<0.10.5 or other nw version> --arch=<x64 or ia32>
 
-# If you have an error stating requiure('nan') fails then do a local.
+# If you have an error stating that require('nan') fails, then do a local.
 npm install nan
 
 # build Greenworks
@@ -43,4 +43,4 @@ sudo apt-get install g++-multilib
 After building finished, you can find the `greenworks-(linux/win/osx).node`
 binary (depending on your OS) in `build/Release`.
 
-A hello-world NW.js application is provided at [samples/nw.js](samples/nw.js).
+A hello-world NW.js application is provided at [samples/nw.js](../samples/nw.js).
