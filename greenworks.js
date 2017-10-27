@@ -97,7 +97,7 @@ greenworks.Utils.move = function(source_dir, target_dir, success_callback,
 }
 
 greenworks.init = function() {
-  if (this.initAPI()) return;
+  if (this.initAPI()) return true;
   if (!this.isSteamRunning())
     throw new Error("Steam initialization failed. Steam is not running.");
   var appId;

@@ -6,7 +6,7 @@
 var greenworks = require('greenworks');
 
 // Required to do initialized stuff before using greenworks' APIs.
-greenworks.initAPI();
+greenworks.init();
 
 function log(msg) {
   console.log(msg);
