@@ -11,7 +11,7 @@ and create a steam_appid.txt file with your Steam APP ID
 ### greenworks.init()
 
 Returns a `Boolean` whether Steam APIs were successfully initialized or not.
-The same as `greenworks.init()`, but this API shows better error messages.
+The same as `greenworks.initAPI()`, but this API shows better error messages.
 
 ### greenworks.isSteamRunning()
 
