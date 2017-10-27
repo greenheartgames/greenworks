@@ -28,11 +28,8 @@ The `greenworks` module gives you ability to access Steam APIs:
 ```js
 var greenworks = require('./greenworks');
 
-if (greenworks.init()) {
+if (greenworks.init())
   console.log('Steam API has been initalized.');
-} else {
-  console.log('Error on initializing Steam API.');
-}
 ```
 
 ## API References
