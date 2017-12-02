@@ -10,7 +10,7 @@ in [Game Dev Tycoon](http://www.greenheartgames.com/app/game-dev-tycoon/).
 Since then, it has been open-sourced and is
 [used in many other projects](https://github.com/greenheartgames/greenworks/wiki/Apps-games-using-greenworks).
 * Currently Greenworks supports:
-  * node v0.8, v0.10, v0.12, v4, v5, v6, v7, and v8
+  * node v0.8, v0.10, v0.12, v4, v5, v6, v7, v8 and v9
   * NW.js v0.8, v0.11+
   * Electron v1.0.0+
 * Greenworks is built using [Native Abstractions for Node.js](https://github.com/nodejs/nan) to

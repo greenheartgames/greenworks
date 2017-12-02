@@ -1,3 +1,7 @@
+## 2017.12.02 v0.12.0 stable
+
+* Greenworks complied for NW.js v0.24.4, v0.25.4 & v0.26.6 with Steamworks SDK 1.41
+
 ## 2017.09.01 v0.11.0 stable
 
 * Greenworks complied for NW.js v0.22.3 & Electron v1.8.0 Beta with Steamworks SDK 1.41
