@@ -127,8 +127,8 @@ NAN_METHOD(FileShare) {
 NAN_METHOD(PublishWorkshopFile) {
   Nan::HandleScope scope;
 
-  if (info.Length() < 5 || !info[0]->IsString() || !info[1]->IsString() ||
-      !info[2]->IsString() || !info[3]->IsString() || !info[4]->IsFunction()) {
+  if (info.Length() < 6 || !info[0]->IsString() || !info[1]->IsString() ||
+      !info[2]->IsString() || !info[3]->IsString() || !info[4]->IsArray() || !info[5]->IsFunction()) {
     THROW_BAD_ARGS("Bad arguments");
   }
   std::string file_name(*(v8::String::Utf8Value(info[0])));
@@ -136,16 +136,27 @@ NAN_METHOD(PublishWorkshopFile) {
   std::string title(*(v8::String::Utf8Value(info[2])));
   std::string description(*(v8::String::Utf8Value(info[3])));
 
+  v8::Local<v8::Array> tagList = info[4].As<v8::Array>();
+  std::vector<std::string> tags;
+  for (uint32_t i = 0; i < tagList->Length(); ++i) {
+    if (!tagList->Get(i)->IsString())
+      THROW_BAD_ARGS("Bad arguments");
+    v8::String::Utf8Value string_array(tagList->Get(i));
+	// Ignore empty tags.
+    if (string_array.length() > 0)
+      tags.push_back(*string_array);
+  }
+
   Nan::Callback* success_callback =
-      new Nan::Callback(info[4].As<v8::Function>());
+      new Nan::Callback(info[5].As<v8::Function>());
   Nan::Callback* error_callback = NULL;
 
-  if (info.Length() > 5 && info[5]->IsFunction())
-    error_callback = new Nan::Callback(info[5].As<v8::Function>());
+  if (info.Length() > 6 && info[6]->IsFunction())
+    error_callback = new Nan::Callback(info[6].As<v8::Function>());
 
   Nan::AsyncQueueWorker(new greenworks::PublishWorkshopFileWorker(
       success_callback, error_callback, file_name, image_name, title,
-      description));
+      description, tags));
   info.GetReturnValue().Set(Nan::Undefined());
 }
 
@@ -154,7 +165,7 @@ NAN_METHOD(UpdatePublishedWorkshopFile) {
 
   if (info.Length() < 6 || !info[0]->IsString() || !info[1]->IsString() ||
       !info[2]->IsString() || !info[3]->IsString() || !info[4]->IsString() ||
-      !info[5]->IsFunction()) {
+      !info[5]->IsArray() || !info[6]->IsFunction()) {
     THROW_BAD_ARGS("Bad arguments");
   }
 
@@ -165,16 +176,27 @@ NAN_METHOD(UpdatePublishedWorkshopFile) {
   std::string title(*(v8::String::Utf8Value(info[3])));
   std::string description(*(v8::String::Utf8Value(info[4])));
 
+  v8::Local<v8::Array> tagList = info[5].As<v8::Array>();
+  std::vector<std::string> tags;
+  for (uint32_t i = 0; i < tagList->Length(); ++i) {
+    if (!tagList->Get(i)->IsString())
+      THROW_BAD_ARGS("Bad arguments");
+    v8::String::Utf8Value string_array(tagList->Get(i));
+	// If only one empty tag is passed existing tags will be cleared, otherwise ignore empty tags.
+    if (string_array.length() > 0 || tagList->Length() == 1)
+      tags.push_back(*string_array);
+  }
+
   Nan::Callback* success_callback =
-      new Nan::Callback(info[5].As<v8::Function>());
+      new Nan::Callback(info[6].As<v8::Function>());
   Nan::Callback* error_callback = NULL;
 
-  if (info.Length() > 6 && info[6]->IsFunction())
-    error_callback = new Nan::Callback(info[6].As<v8::Function>());
+  if (info.Length() > 7 && info[7]->IsFunction())
+    error_callback = new Nan::Callback(info[7].As<v8::Function>());
 
   Nan::AsyncQueueWorker(new greenworks::UpdatePublishedWorkshopFileWorker(
       success_callback, error_callback, published_file_id, file_name,
-      image_name, title, description));
+      image_name, title, description, tags));
   info.GetReturnValue().Set(Nan::Undefined());
 }
 

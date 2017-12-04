@@ -46,12 +46,12 @@ function file_share_process(file_name, image_name, next_process_func,
 // 1. Save file and image to Steam Cloud.
 // 2. Share the file and image.
 // 3. publish the file to workshop.
-greenworks.ugcPublish = function(file_name, title, description, image_name,
+greenworks.ugcPublish = function(file_name, title, description, image_name, tags,
     success_callback, error_callback, progress_callback) {
   var publish_file_process = function() {
     if (progress_callback)
       progress_callback("Completed on sharing files.");
-    greenworks.publishWorkshopFile(file_name, image_name, title, description,
+    greenworks.publishWorkshopFile(file_name, image_name, title, description, tags,
         function(publish_file_id) { success_callback(publish_file_id); },
         function(err) { error_process(err, error_callback); });
   };
@@ -66,13 +66,13 @@ greenworks.ugcPublish = function(file_name, title, description, image_name,
 // 2. Share file and images.
 // 3. Update published file.
 greenworks.ugcPublishUpdate = function(published_file_id, file_name, title,
-    description, image_name, success_callback, error_callback,
+    description, image_name, tags, success_callback, error_callback,
     progress_callback) {
   var update_published_file_process = function() {
     if (progress_callback)
       progress_callback("Completed on sharing files.");
     greenworks.updatePublishedWorkshopFile(published_file_id,
-        file_name, image_name, title, description,
+        file_name, image_name, title, description, tags,
         function() { success_callback(); },
         function(err) { error_process(err, error_callback); });
   };
