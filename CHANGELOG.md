@@ -1,3 +1,12 @@
+## 2018.01.28 v0.12.1 stable
+
+* Updated `ugcGetItems` & `ugcGetUserItems` APIs to query specific pages:
+
+  * `greenworks.ugcGetItems(ugc_matching_type, ugc_query_type, unPage, success_callback, [error_callback])`
+
+  * `greenworks.ugcGetUserItems(ugc_matching_type, ugc_list_sort_order, ugc_list, unPage, success_callback, [error_callback])`
+
+
 ## 2017.12.02 v0.12.0 stable
 
 * Greenworks complied for NW.js v0.24.4, v0.25.4 & v0.26.6 with Steamworks SDK 1.41
