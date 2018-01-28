@@ -273,9 +273,10 @@ void QueryUGCWorker::OnUGCQueryCompleted(SteamUGCQueryCompleted_t* result,
 
 QueryAllUGCWorker::QueryAllUGCWorker(Nan::Callback* success_callback,
     Nan::Callback* error_callback, EUGCMatchingUGCType ugc_matching_type,
-    EUGCQuery ugc_query_type)
+    EUGCQuery ugc_query_type, uint32 unPage)
         :QueryUGCWorker(success_callback, error_callback, ugc_matching_type),
-         ugc_query_type_(ugc_query_type) {
+         ugc_query_type_(ugc_query_type),
+         unPage_(unPage) {
 }
 
 void QueryAllUGCWorker::Execute() {
@@ -285,7 +286,7 @@ void QueryAllUGCWorker::Execute() {
   // all ugc items, otherwise the API won't get any results in some cases.
   UGCQueryHandle_t ugc_handle = SteamUGC()->CreateQueryAllUGCRequest(
       ugc_query_type_, ugc_matching_type_, /*creator_app_id=*/invalid_app_id,
-      /*consumer_app_id=*/app_id, 1);
+      /*consumer_app_id=*/app_id, unPage_);
   SteamAPICall_t ugc_query_result = SteamUGC()->SendQueryUGCRequest(ugc_handle);
   ugc_query_call_result_.Set(ugc_query_result, this,
       &QueryAllUGCWorker::OnUGCQueryCompleted);
@@ -296,10 +297,12 @@ void QueryAllUGCWorker::Execute() {
 
 QueryUserUGCWorker::QueryUserUGCWorker(Nan::Callback* success_callback,
     Nan::Callback* error_callback, EUGCMatchingUGCType ugc_matching_type,
-    EUserUGCList ugc_list, EUserUGCListSortOrder ugc_list_sort_order)
+    EUserUGCList ugc_list, EUserUGCListSortOrder ugc_list_sort_order,
+    uint32 unPage)
         :QueryUGCWorker(success_callback, error_callback, ugc_matching_type),
          ugc_list_(ugc_list),
-         ugc_list_sort_order_(ugc_list_sort_order) {
+         ugc_list_sort_order_(ugc_list_sort_order),
+         unPage_(unPage) {
 }
 
 void QueryUserUGCWorker::Execute() {
@@ -312,7 +315,7 @@ void QueryUserUGCWorker::Execute() {
       ugc_list_sort_order_,
       app_id,
       app_id,
-      1);
+      unPage_);
   SteamAPICall_t ugc_query_result = SteamUGC()->SendQueryUGCRequest(ugc_handle);
   ugc_query_call_result_.Set(ugc_query_result, this,
       &QueryUserUGCWorker::OnUGCQueryCompleted);
