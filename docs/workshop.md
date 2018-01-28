@@ -163,19 +163,21 @@ Publishes user generated content(ugc) to Steam workshop.
 
 Updates published ugc.
 
-### greenworks.ugcGetItems(ugc_matching_type, ugc_query_type, success_callback, [error_callback])
+### greenworks.ugcGetItems(ugc_matching_type, ugc_query_type, unPage, success_callback, [error_callback])
 
 * `ugc_matching_type` greenworks.UGCMatchingType
 * `ugc_query_type` greenworks.UGCQueryType
+* `unPage` Integer: The page number of the results to receive
 * `success_callback` Function(items)
   * `items` Array of `SteamUGCDetails` Object
 * `error_callback` Function(err)
 
-### greenworks.ugcGetUserItems(ugc_matching_type, ugc_list_sort_order, ugc_list, success_callback, [error_callback])
+### greenworks.ugcGetUserItems(ugc_matching_type, ugc_list_sort_order, ugc_list, unPage, success_callback, [error_callback])
 
 * `ugc_matching_type` greenworks.UGCMatchingType
 * `ugc_list_sort_order` greenworks.UserUGCListSortOrder
 * `ugc_list` greenworks.UserUGCList
+* `unPage` Integer: The page number of the results to receive
 * `success_callback` Function(items)
   * `items` Array of `SteamUGCDetails` Object
 * `error_callback` Function(err)
