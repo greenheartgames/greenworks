@@ -181,7 +181,7 @@ NAN_METHOD(UpdatePublishedWorkshopFile) {
 NAN_METHOD(UGCGetItems) {
   Nan::HandleScope scope;
   if (info.Length() < 4 || !info[0]->IsInt32() || !info[1]->IsInt32() ||
-    !info[2]->IsInt32() || !info[3]->IsFunction()) {
+    !info[2]->IsUint32() || !info[3]->IsFunction()) {
     THROW_BAD_ARGS("Bad arguments");
   }
 
@@ -189,7 +189,7 @@ NAN_METHOD(UGCGetItems) {
       info[0]->Int32Value());
   EUGCQuery ugc_query_type = static_cast<EUGCQuery>(info[1]->Int32Value());
 
-  uint32 unPage = info[2]->Int32Value();
+  uint32 unPage = info[2]->Uint32Value();
   if(unPage < 1) {
     THROW_BAD_ARGS("unPage must be atleast 1!");
   }
@@ -210,7 +210,7 @@ NAN_METHOD(UGCGetItems) {
 NAN_METHOD(UGCGetUserItems) {
   Nan::HandleScope scope;
   if (info.Length() < 5 || !info[0]->IsInt32() || !info[1]->IsInt32() ||
-      !info[2]->IsInt32() || !info[3]->IsInt32() || !info[4]->IsFunction()) {
+      !info[2]->IsInt32() || !info[3]->IsUint32() || !info[4]->IsFunction()) {
     THROW_BAD_ARGS("Bad arguments");
   }
 
@@ -220,7 +220,7 @@ NAN_METHOD(UGCGetUserItems) {
       info[1]->Int32Value());
   EUserUGCList ugc_list = static_cast<EUserUGCList>(info[2]->Int32Value());
   
-  uint32 unPage = info[3]->Int32Value();
+  uint32 unPage = info[3]->Uint32Value();
   if(unPage < 1) {
     THROW_BAD_ARGS("unPage must be atleast 1!");
   }
