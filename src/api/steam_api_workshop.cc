@@ -202,7 +202,7 @@ NAN_METHOD(UGCGetItems) {
     if(unPage < 1)
       THROW_BAD_ARGS("unPage must be atleast 1!");
 
-    if(info.Length() < 4)
+    if(info.Length() < 4 || !info[3]->IsFunction())
       THROW_BAD_ARGS("No success_callback");
 
     success_callback =
@@ -249,7 +249,7 @@ NAN_METHOD(UGCGetUserItems) {
     if(unPage < 1)
       THROW_BAD_ARGS("unPage must be atleast 1!");
 
-    if(info.Length() < 5)
+    if(info.Length() < 5 || !info[4]->IsFunction())
       THROW_BAD_ARGS("No success_callback");
 
     success_callback =
