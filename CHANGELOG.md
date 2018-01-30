@@ -2,9 +2,9 @@
 
 * Updated `ugcGetItems` & `ugcGetUserItems` APIs to query specific pages:
 
-  * `greenworks.ugcGetItems(ugc_matching_type, ugc_query_type, unPage, success_callback, [error_callback])`
+  * `greenworks.ugcGetItems(ugc_matching_type, ugc_query_type, [unPage], success_callback, [error_callback])`
 
-  * `greenworks.ugcGetUserItems(ugc_matching_type, ugc_list_sort_order, ugc_list, unPage, success_callback, [error_callback])`
+  * `greenworks.ugcGetUserItems(ugc_matching_type, ugc_list_sort_order, ugc_list, [unPage], success_callback, [error_callback])`
 
 
 ## 2017.12.02 v0.12.0 stable
