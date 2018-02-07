@@ -191,7 +191,7 @@ nw-gyp configure --target=<0.10.5 or other nw version> --arch=<x64 or ia32>
 sudo npm install nan
 
 # build Greenworks
-nw-gyp build
+nw-gyp build --target=<0.10.5 or other nw version>
 
 # You will have error if you forget to install the additional tools as stated above, you may also
 # experience an issue building ia32 on linux 64, try installing g++-multilib
