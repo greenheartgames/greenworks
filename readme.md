@@ -37,9 +37,3 @@ If you use Greenworks, please let us know at
 [@GreenheartGames](https://twitter.com/GreenheartGames)
 and feel free to add your product to our
 [product list](https://github.com/greenheartgames/greenworks/wiki/Apps-games-using-greenworks).
-
-## Donate
-
-Please consider donating to the project:
-
-<a href='https://pledgie.com/campaigns/27218'><img alt='Click here to lend your support to: Greenworks v0.3+ and make a donation at pledgie.com !' src='https://pledgie.com/campaigns/27218.png?skin_name=chrome' border='0' ></a>
