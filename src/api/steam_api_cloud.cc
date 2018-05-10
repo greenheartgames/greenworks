@@ -158,12 +158,13 @@ NAN_METHOD(GetFileCount) {
 }
 
 NAN_METHOD(GetFileNameAndSize) {
+  Nan::HandleScope scope;
   v8::Local<v8::Object> result = Nan::New<v8::Object>();
   if (info.Length() < 1 || !info[0]->IsInt32()) {
     THROW_BAD_ARGS("Bad arguments");
   }
   int32 index = info[0].As<v8::Number>()->Int32Value();
-  int32 file_size;
+  int32 file_size = 0;
   const char* file_name =
       SteamRemoteStorage()->GetFileNameAndSize(index, &file_size);
   result->Set(Nan::New("name").ToLocalChecked(),
