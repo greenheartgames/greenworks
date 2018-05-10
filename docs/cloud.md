@@ -54,3 +54,16 @@ app won't sync anything to the user's cloud if he disabled it at top level
   * `total_bytes` uint64 String: total bytes of quota
   * `available_bytes` uint64 String: available bytes of quota
 * `error_callback` Function(err)
+
+### greenworks.getFileCount()
+
+Gets the number of files on the cloud.
+
+### greenworks.getFileNameAndSize(index)
+
+* `index` Integer: the index of the file
+
+Returns an `Object`:
+
+* `name` String: The file name
+* `size` Integer: The file size
