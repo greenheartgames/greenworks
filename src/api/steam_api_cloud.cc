@@ -152,6 +152,27 @@ NAN_METHOD(GetCloudQuota) {
   info.GetReturnValue().Set(Nan::Undefined());
 }
 
+NAN_METHOD(GetFileCount) {
+  Nan::HandleScope scope;
+  info.GetReturnValue().Set(SteamRemoteStorage()->GetFileCount());
+}
+
+NAN_METHOD(GetFileNameAndSize) {
+  v8::Local<v8::Object> result = Nan::New<v8::Object>();
+  if (info.Length() < 1 || !info[0]->IsInt32()) {
+    THROW_BAD_ARGS("Bad arguments");
+  }
+  int32 index = info[0].As<v8::Number>()->Int32Value();
+  int32 file_size;
+  const char* file_name =
+      SteamRemoteStorage()->GetFileNameAndSize(index, &file_size);
+  result->Set(Nan::New("name").ToLocalChecked(),
+              Nan::New(file_name).ToLocalChecked());
+  result->Set(Nan::New("size").ToLocalChecked(),
+              Nan::New(file_size));
+  info.GetReturnValue().Set(result);
+}
+
 void RegisterAPIs(v8::Handle<v8::Object> target) {
   Nan::Set(target,
            Nan::New("saveTextToFile").ToLocalChecked(),
@@ -178,6 +199,12 @@ void RegisterAPIs(v8::Handle<v8::Object> target) {
   Nan::Set(target,
            Nan::New("getCloudQuota").ToLocalChecked(),
            Nan::New<v8::FunctionTemplate>(GetCloudQuota)->GetFunction());
+  Nan::Set(target,
+           Nan::New("getFileCount").ToLocalChecked(),
+           Nan::New<v8::FunctionTemplate>(GetFileCount)->GetFunction());
+  Nan::Set(target,
+           Nan::New("getFileNameAndSize").ToLocalChecked(),
+           Nan::New<v8::FunctionTemplate>(GetFileNameAndSize)->GetFunction());
 }
 
 SteamAPIRegistry::Add X(RegisterAPIs);
