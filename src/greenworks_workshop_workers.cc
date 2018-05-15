@@ -130,8 +130,9 @@ void FileShareWorker::HandleOKCallback() {
 
 PublishWorkshopFileWorker::PublishWorkshopFileWorker(
     Nan::Callback* success_callback, Nan::Callback* error_callback,
-    const Properties& properties)
+    uint32 app_id, const WorkshopFileProperties& properties)
     : SteamCallbackAsyncWorker(success_callback, error_callback),
+      app_id_(app_id),
       properties_(properties) {}
 
 void PublishWorkshopFileWorker::Execute() {
@@ -144,7 +145,7 @@ void PublishWorkshopFileWorker::Execute() {
   SteamAPICall_t publish_result = SteamRemoteStorage()->PublishWorkshopFile(
       file_name.c_str(),
       image_name.empty()? NULL:image_name.c_str(),
-      properties_.app_id,
+      app_id_,
       properties_.title.c_str(),
       properties_.description.empty()? NULL:properties_.description.c_str(),
       k_ERemoteStoragePublishedFileVisibilityPublic,
@@ -180,36 +181,31 @@ void PublishWorkshopFileWorker::HandleOKCallback() {
 
 UpdatePublishedWorkshopFileWorker::UpdatePublishedWorkshopFileWorker(
     Nan::Callback* success_callback, Nan::Callback* error_callback,
-    PublishedFileId_t published_file_id, const std::string& file_path,
-    const std::string& image_path, const std::string& title,
-    const std::string& description):
-        SteamCallbackAsyncWorker(success_callback, error_callback),
-        published_file_id_(published_file_id),
-        file_path_(file_path),
-        image_path_(image_path),
-        title_(title),
-        description_(description) {
-}
+    PublishedFileId_t published_file_id,
+    const WorkshopFileProperties& properties)
+    : SteamCallbackAsyncWorker(success_callback, error_callback),
+      published_file_id_(published_file_id),
+      properties_(properties) {}
 
 void UpdatePublishedWorkshopFileWorker::Execute() {
   PublishedFileUpdateHandle_t update_handle =
       SteamRemoteStorage()->CreatePublishedFileUpdateRequest(
           published_file_id_);
 
-  const std::string file_name = utils::GetFileNameFromPath(file_path_);
-  const std::string image_name = utils::GetFileNameFromPath(image_path_);
+  const std::string file_name = utils::GetFileNameFromPath(properties_.file_path);
+  const std::string image_name = utils::GetFileNameFromPath(properties_.image_path);
   if (!file_name.empty())
     SteamRemoteStorage()->UpdatePublishedFileFile(update_handle,
         file_name.c_str());
   if (!image_name.empty())
     SteamRemoteStorage()->UpdatePublishedFilePreviewFile(update_handle,
         image_name.c_str());
-  if (!title_.empty())
+  if (!properties_.title.empty())
     SteamRemoteStorage()->UpdatePublishedFileTitle(update_handle,
-        title_.c_str());
-  if (!description_.empty())
+        properties_.title.c_str());
+  if (!properties_.description.empty())
     SteamRemoteStorage()->UpdatePublishedFileDescription(update_handle,
-        description_.c_str());
+        properties_.description.c_str());
   SteamAPICall_t commit_update_result =
       SteamRemoteStorage()->CommitPublishedFileUpdate(update_handle);
   update_published_file_call_result_.Set(commit_update_result, this,

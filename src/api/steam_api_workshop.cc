@@ -143,11 +143,10 @@ NAN_METHOD(PublishWorkshopFile) {
     THROW_BAD_ARGS(
         "The object parameter must have 'app_id' and 'tags' field.");
   }
-  greenworks::PublishWorkshopFileWorker::Properties properties;
+  greenworks::WorkshopFileProperties properties;
 
   v8::Local<v8::Array> tags_array = tags.As<v8::Array>();
-  if (tags_array->Length() >
-      greenworks::PublishWorkshopFileWorker::Properties::MAX_TAGS) {
+  if (tags_array->Length() > greenworks::WorkshopFileProperties::MAX_TAGS) {
     THROW_BAD_ARGS("The length of 'tags' must be less than 100.");
   }
   for (uint32_t i = 0; i < tags_array->Length(); ++i) {
@@ -165,14 +164,13 @@ NAN_METHOD(PublishWorkshopFile) {
   if (info.Length() > 6 && info[6]->IsFunction())
     error_callback = new Nan::Callback(info[6].As<v8::Function>());
 
-  properties.app_id = app_id->Int32Value();
   properties.file_path = (*(v8::String::Utf8Value(info[1])));
   properties.image_path = (*(v8::String::Utf8Value(info[2])));
   properties.title = (*(v8::String::Utf8Value(info[3])));
   properties.description = (*(v8::String::Utf8Value(info[4])));
 
   Nan::AsyncQueueWorker(new greenworks::PublishWorkshopFileWorker(
-      success_callback, error_callback, properties));
+      success_callback, error_callback, app_id->Int32Value(), properties));
   info.GetReturnValue().Set(Nan::Undefined());
 }
 
@@ -185,13 +183,6 @@ NAN_METHOD(UpdatePublishedWorkshopFile) {
     THROW_BAD_ARGS("Bad arguments");
   }
 
-  PublishedFileId_t published_file_id = utils::strToUint64(
-      *(v8::String::Utf8Value(info[0])));
-  std::string file_name(*(v8::String::Utf8Value(info[1])));
-  std::string image_name(*(v8::String::Utf8Value(info[2])));
-  std::string title(*(v8::String::Utf8Value(info[3])));
-  std::string description(*(v8::String::Utf8Value(info[4])));
-
   Nan::Callback* success_callback =
       new Nan::Callback(info[5].As<v8::Function>());
   Nan::Callback* error_callback = NULL;
@@ -199,9 +190,16 @@ NAN_METHOD(UpdatePublishedWorkshopFile) {
   if (info.Length() > 6 && info[6]->IsFunction())
     error_callback = new Nan::Callback(info[6].As<v8::Function>());
 
+  greenworks::WorkshopFileProperties properties;
+  PublishedFileId_t published_file_id = utils::strToUint64(
+      *(v8::String::Utf8Value(info[0])));
+  properties.file_path = (*(v8::String::Utf8Value(info[1])));
+  properties.image_path = (*(v8::String::Utf8Value(info[2])));
+  properties.title = (*(v8::String::Utf8Value(info[3])));
+  properties.description = (*(v8::String::Utf8Value(info[4])));
+
   Nan::AsyncQueueWorker(new greenworks::UpdatePublishedWorkshopFileWorker(
-      success_callback, error_callback, published_file_id, file_name,
-      image_name, title, description));
+      success_callback, error_callback, published_file_id, properties));
   info.GetReturnValue().Set(Nan::Undefined());
 }
 
