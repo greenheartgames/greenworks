@@ -125,7 +125,7 @@ NAN_METHOD(FileShare) {
 }
 
 NAN_METHOD(PublishWorkshopFile) {
-  Nan::HandleScope scope;
+ Nan::HandleScope scope;
 
   if (info.Length() < 5 || !info[0]->IsString() || !info[1]->IsString() ||
       !info[2]->IsString() || !info[3]->IsString() || !info[4]->IsFunction()) {
@@ -180,40 +180,25 @@ NAN_METHOD(UpdatePublishedWorkshopFile) {
 
 NAN_METHOD(UGCGetItems) {
   Nan::HandleScope scope;
-  if (info.Length() < 3 || !info[0]->IsInt32() || !info[1]->IsInt32() ||
-      !info[2]->IsFunction()) {
-    THROW_BAD_ARGS("Bad arguments");
-  }
-
-  EUGCMatchingUGCType ugc_matching_type = static_cast<EUGCMatchingUGCType>(
-      info[0]->Int32Value());
-  EUGCQuery ugc_query_type = static_cast<EUGCQuery>(info[1]->Int32Value());
-
-  Nan::Callback* success_callback =
-      new Nan::Callback(info[2].As<v8::Function>());
-  Nan::Callback* error_callback = NULL;
-
-  if (info.Length() > 3 && info[3]->IsFunction())
-    error_callback = new Nan::Callback(info[3].As<v8::Function>());
-
-  Nan::AsyncQueueWorker(new greenworks::QueryAllUGCWorker(
-      success_callback, error_callback, ugc_matching_type, ugc_query_type,
-      SteamUtils()->GetAppID(), /*page_num=*/1));
-  info.GetReturnValue().Set(Nan::Undefined());
-}
-
-NAN_METHOD(UGCGetUserItems) {
-  Nan::HandleScope scope;
-  if (info.Length() < 4 || !info[0]->IsInt32() || !info[1]->IsInt32() ||
+  if (info.Length() < 4 || !info[0]->IsObject() || !info[1]->IsInt32() ||
       !info[2]->IsInt32() || !info[3]->IsFunction()) {
     THROW_BAD_ARGS("Bad arguments");
   }
+  Nan::MaybeLocal<v8::Object> maybe_opt = Nan::To<v8::Object>(info[0]);
+  if (maybe_opt.IsEmpty()) {
+    THROW_BAD_ARGS("The 1st parameter must be an object.");
+  }
+  auto options = maybe_opt.ToLocalChecked();
+  auto app_id = options->Get(Nan::New("app_id").ToLocalChecked());
+  auto page_num = options->Get(Nan::New("page_num").ToLocalChecked());
+  if (!app_id->IsInt32() || !page_num->IsInt32()) {
+    THROW_BAD_ARGS(
+        "The object parameter must have 'app_id' and 'page_num' fields.");
+  }
 
   EUGCMatchingUGCType ugc_matching_type = static_cast<EUGCMatchingUGCType>(
-      info[0]->Int32Value());
-  EUserUGCListSortOrder ugc_list_order = static_cast<EUserUGCListSortOrder>(
       info[1]->Int32Value());
-  EUserUGCList ugc_list = static_cast<EUserUGCList>(info[2]->Int32Value());
+  EUGCQuery ugc_query_type = static_cast<EUGCQuery>(info[2]->Int32Value());
 
   Nan::Callback* success_callback =
       new Nan::Callback(info[3].As<v8::Function>());
@@ -222,9 +207,46 @@ NAN_METHOD(UGCGetUserItems) {
   if (info.Length() > 4 && info[4]->IsFunction())
     error_callback = new Nan::Callback(info[4].As<v8::Function>());
 
+  Nan::AsyncQueueWorker(new greenworks::QueryAllUGCWorker(
+      success_callback, error_callback, ugc_matching_type, ugc_query_type,
+      app_id->Int32Value(), page_num->Int32Value()));
+  info.GetReturnValue().Set(Nan::Undefined());
+}
+
+NAN_METHOD(UGCGetUserItems) {
+  Nan::HandleScope scope;
+  if (info.Length() < 5 || info[0]->IsObject() || !info[1]->IsInt32() ||
+      !info[2]->IsInt32() || !info[3]->IsInt32() || !info[4]->IsFunction()) {
+    THROW_BAD_ARGS("Bad arguments");
+  }
+  Nan::MaybeLocal<v8::Object> maybe_opt = Nan::To<v8::Object>(info[0]);
+  if (maybe_opt.IsEmpty()) {
+    THROW_BAD_ARGS("The 1st parameter must be an object.");
+  }
+  auto options = maybe_opt.ToLocalChecked();
+  auto app_id = options->Get(Nan::New("app_id").ToLocalChecked());
+  auto page_num = options->Get(Nan::New("page_num").ToLocalChecked());
+  if (!app_id->IsInt32() || !page_num->IsInt32()) {
+    THROW_BAD_ARGS(
+        "The object parameter must have 'app_id' and 'page_num' fields.");
+  }
+
+  EUGCMatchingUGCType ugc_matching_type = static_cast<EUGCMatchingUGCType>(
+      info[1]->Int32Value());
+  EUserUGCListSortOrder ugc_list_order = static_cast<EUserUGCListSortOrder>(
+      info[2]->Int32Value());
+  EUserUGCList ugc_list = static_cast<EUserUGCList>(info[3]->Int32Value());
+
+  Nan::Callback* success_callback =
+      new Nan::Callback(info[4].As<v8::Function>());
+  Nan::Callback* error_callback = NULL;
+
+  if (info.Length() > 5 && info[5]->IsFunction())
+    error_callback = new Nan::Callback(info[4].As<v8::Function>());
+
   Nan::AsyncQueueWorker(new greenworks::QueryUserUGCWorker(
       success_callback, error_callback, ugc_matching_type, ugc_list,
-      ugc_list_order, SteamUtils()->GetAppID(), /*page_num=*/1));
+      ugc_list_order, app_id->Int32Value(), page_num->Int32Value()));
   info.GetReturnValue().Set(Nan::Undefined());
 }
 
@@ -326,10 +348,10 @@ void RegisterAPIs(v8::Handle<v8::Object> exports) {
            Nan::New<v8::FunctionTemplate>(
                UpdatePublishedWorkshopFile)->GetFunction());
   Nan::Set(exports,
-           Nan::New("ugcGetItems").ToLocalChecked(),
+           Nan::New("_ugcGetItems").ToLocalChecked(),
            Nan::New<v8::FunctionTemplate>(UGCGetItems)->GetFunction());
   Nan::Set(exports,
-           Nan::New("ugcGetUserItems").ToLocalChecked(),
+           Nan::New("_ugcGetUserItems").ToLocalChecked(),
            Nan::New<v8::FunctionTemplate>(UGCGetUserItems)->GetFunction());
   Nan::Set(exports,
            Nan::New("ugcDownloadItem").ToLocalChecked(),

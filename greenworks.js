@@ -29,6 +29,35 @@ function error_process(err, error_callback) {
     error_callback(err);
 }
 
+greenworks.ugcGetItems = function(options, ugc_matching_type, ugc_query_type, success_callback, error_callback) {
+  if (typeof options !== 'object') {
+    error_callback = success_callback;
+    success_callback = ugc_query_type;
+    ugc_query_type = ugc_matching_type;
+    ugc_matching_type = options;
+    options = {
+      'app_id': greenworks.getAppId(),
+      'page_num': 1
+    }
+  }
+  greenworks._ugcGetItems(options, ugc_matching_type, ugc_query_type, success_callback, error_callback);
+}
+
+greenworks.ugcGetUserItems = function(options, ugc_matching_type, ugc_list_sort_order, ugc_list, success_callback, error_callback) {
+  if (typeof options !== 'object') {
+    error_callback = success_callback;
+    success_callback = ugc_list;
+    ugc_list = ugc_list_sort_order;
+    ugc_list_sort_order = ugc_matching_type;
+    ugc_matching_type = options;
+    options = {
+      'app_id': greenworks.getAppId(),
+      'page_num': 1
+    }
+  }
+  greenworks.ugcGetUserItems(options, ugc_matching_type, ugc_list_sort_order, ugc_list, success_callback, error_callback);
+}
+
 // An utility function for publish related APIs.
 // It processes remains steps after saving files to Steam Cloud.
 function file_share_process(file_name, image_name, next_process_func,
