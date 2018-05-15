@@ -127,23 +127,35 @@ NAN_METHOD(FileShare) {
 NAN_METHOD(PublishWorkshopFile) {
  Nan::HandleScope scope;
 
-  if (info.Length() < 5 || !info[0]->IsString() || !info[1]->IsString() ||
-      !info[2]->IsString() || !info[3]->IsString() || !info[4]->IsFunction()) {
-    THROW_BAD_ARGS("Bad arguments");
+ if (info.Length() < 6 || !info[0]->IsObject() || !info[1]->IsString() ||
+     !info[2]->IsString() || !info[3]->IsString() || !info[4]->IsString() ||
+     !info[5]->IsFunction()) {
+   THROW_BAD_ARGS("Bad arguments");
   }
+  Nan::MaybeLocal<v8::Object> maybe_opt = Nan::To<v8::Object>(info[0]);
+  if (maybe_opt.IsEmpty()) {
+    THROW_BAD_ARGS("The 1st parameter must be an object.");
+  }
+  auto options = maybe_opt.ToLocalChecked();
+  auto app_id = options->Get(Nan::New("app_id").ToLocalChecked());
+  if (!app_id->IsInt32()) {
+    THROW_BAD_ARGS(
+        "The object parameter must have 'app_id' field.");
+  }
+
   Nan::Callback* success_callback =
-      new Nan::Callback(info[4].As<v8::Function>());
+      new Nan::Callback(info[5].As<v8::Function>());
   Nan::Callback* error_callback = NULL;
 
-  if (info.Length() > 5 && info[5]->IsFunction())
-    error_callback = new Nan::Callback(info[5].As<v8::Function>());
+  if (info.Length() > 6 && info[6]->IsFunction())
+    error_callback = new Nan::Callback(info[6].As<v8::Function>());
 
   greenworks::PublishWorkshopFileWorker::Properties properties;
-  properties.app_id = SteamUtils()->GetAppID();
-  properties.file_path = (*(v8::String::Utf8Value(info[0])));
-  properties.image_path = (*(v8::String::Utf8Value(info[1])));
-  properties.title = (*(v8::String::Utf8Value(info[2])));
-  properties.description = (*(v8::String::Utf8Value(info[3])));
+  properties.app_id = app_id->Int32Value();
+  properties.file_path = (*(v8::String::Utf8Value(info[1])));
+  properties.image_path = (*(v8::String::Utf8Value(info[2])));
+  properties.title = (*(v8::String::Utf8Value(info[3])));
+  properties.description = (*(v8::String::Utf8Value(info[4])));
 
   Nan::AsyncQueueWorker(new greenworks::PublishWorkshopFileWorker(
       success_callback, error_callback, properties));
@@ -355,7 +367,7 @@ void RegisterAPIs(v8::Handle<v8::Object> exports) {
            Nan::New("fileShare").ToLocalChecked(),
            Nan::New<v8::FunctionTemplate>(FileShare)->GetFunction());
   Nan::Set(exports,
-           Nan::New("publishWorkshopFile").ToLocalChecked(),
+           Nan::New("_publishWorkshopFile").ToLocalChecked(),
            Nan::New<v8::FunctionTemplate>(PublishWorkshopFile)->GetFunction());
   Nan::Set(exports,
            Nan::New("updatePublishedWorkshopFile").ToLocalChecked(),

@@ -71,6 +71,21 @@ greenworks.ugcSynchronizeItems = function (options, sync_dir, success_callback, 
   greenworks._ugcSynchronizeItems(options, sync_dir, success_callback, error_callback);
 }
 
+greenworks.publishWorkshopFile = function(options, file_path, image_path, title, description, success_callback, error_callback) {
+  if (typeof options !== 'object') {
+    error_callback = success_callback;
+    success_callback = description;
+    description = title;
+    title = image_path;
+    image_path = file_path;
+    file_path = options;
+    options = {
+      'app_id': greenworks.getAppId()
+    }
+  }
+  greenworks._publishWorkshopFile(options, file_path, image_path, title, description, success_callback, error_callback);
+}
+
 // An utility function for publish related APIs.
 // It processes remains steps after saving files to Steam Cloud.
 function file_share_process(file_name, image_name, next_process_func,
