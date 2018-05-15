@@ -197,7 +197,8 @@ NAN_METHOD(UGCGetItems) {
     error_callback = new Nan::Callback(info[3].As<v8::Function>());
 
   Nan::AsyncQueueWorker(new greenworks::QueryAllUGCWorker(
-      success_callback, error_callback, ugc_matching_type, ugc_query_type));
+      success_callback, error_callback, ugc_matching_type, ugc_query_type,
+      SteamUtils()->GetAppID(), /*page_num=*/1));
   info.GetReturnValue().Set(Nan::Undefined());
 }
 
@@ -223,7 +224,7 @@ NAN_METHOD(UGCGetUserItems) {
 
   Nan::AsyncQueueWorker(new greenworks::QueryUserUGCWorker(
       success_callback, error_callback, ugc_matching_type, ugc_list,
-      ugc_list_order));
+      ugc_list_order, SteamUtils()->GetAppID(), /*page_num=*/1));
   info.GetReturnValue().Set(Nan::Undefined());
 }
 

@@ -236,11 +236,13 @@ void UpdatePublishedWorkshopFileWorker::OnCommitPublishedFileUpdateCompleted(
 }
 
 QueryUGCWorker::QueryUGCWorker(Nan::Callback* success_callback,
-    Nan::Callback* error_callback, EUGCMatchingUGCType ugc_matching_type)
-        :SteamCallbackAsyncWorker(success_callback, error_callback),
-         ugc_matching_type_(ugc_matching_type) {
-}
-
+                               Nan::Callback* error_callback,
+                               EUGCMatchingUGCType ugc_matching_type,
+                               uint32 app_id, uint32 page_num)
+    : SteamCallbackAsyncWorker(success_callback, error_callback),
+      ugc_matching_type_(ugc_matching_type),
+      app_id_(app_id),
+      page_num_(page_num) {}
 
 void QueryUGCWorker::HandleOKCallback() {
   Nan::HandleScope scope;
@@ -272,20 +274,22 @@ void QueryUGCWorker::OnUGCQueryCompleted(SteamUGCQueryCompleted_t* result,
 }
 
 QueryAllUGCWorker::QueryAllUGCWorker(Nan::Callback* success_callback,
-    Nan::Callback* error_callback, EUGCMatchingUGCType ugc_matching_type,
-    EUGCQuery ugc_query_type)
-        :QueryUGCWorker(success_callback, error_callback, ugc_matching_type),
-         ugc_query_type_(ugc_query_type) {
-}
+                                     Nan::Callback* error_callback,
+                                     EUGCMatchingUGCType ugc_matching_type,
+                                     EUGCQuery ugc_query_type, uint32 app_id,
+                                     uint32 page_num)
+    : QueryUGCWorker(success_callback, error_callback, ugc_matching_type,
+                     app_id, page_num),
+      ugc_query_type_(ugc_query_type) {}
 
 void QueryAllUGCWorker::Execute() {
-  uint32 app_id = SteamUtils()->GetAppID();
+  //uint32 app_id = SteamUtils()->GetAppID();
   uint32 invalid_app_id = 0;
   // Set "creator_app_id" parameter to an invalid id to make Steam API return
   // all ugc items, otherwise the API won't get any results in some cases.
   UGCQueryHandle_t ugc_handle = SteamUGC()->CreateQueryAllUGCRequest(
       ugc_query_type_, ugc_matching_type_, /*creator_app_id=*/invalid_app_id,
-      /*consumer_app_id=*/app_id, 1);
+      /*consumer_app_id=*/app_id_, page_num_);
   SteamAPICall_t ugc_query_result = SteamUGC()->SendQueryUGCRequest(ugc_handle);
   ugc_query_call_result_.Set(ugc_query_result, this,
       &QueryAllUGCWorker::OnUGCQueryCompleted);
@@ -294,25 +298,26 @@ void QueryAllUGCWorker::Execute() {
   WaitForCompleted();
 }
 
-QueryUserUGCWorker::QueryUserUGCWorker(Nan::Callback* success_callback,
-    Nan::Callback* error_callback, EUGCMatchingUGCType ugc_matching_type,
-    EUserUGCList ugc_list, EUserUGCListSortOrder ugc_list_sort_order)
-        :QueryUGCWorker(success_callback, error_callback, ugc_matching_type),
-         ugc_list_(ugc_list),
-         ugc_list_sort_order_(ugc_list_sort_order) {
-}
+QueryUserUGCWorker::QueryUserUGCWorker(
+    Nan::Callback* success_callback, Nan::Callback* error_callback,
+    EUGCMatchingUGCType ugc_matching_type, EUserUGCList ugc_list,
+    EUserUGCListSortOrder ugc_list_sort_order, uint32 app_id, uint32 page_num)
+    : QueryUGCWorker(success_callback, error_callback, ugc_matching_type,
+                     app_id, page_num),
+      ugc_list_(ugc_list),
+      ugc_list_sort_order_(ugc_list_sort_order) {}
 
 void QueryUserUGCWorker::Execute() {
-  uint32 app_id = SteamUtils()->GetAppID();
+  //uint32 app_id = SteamUtils()->GetAppID();
 
   UGCQueryHandle_t ugc_handle = SteamUGC()->CreateQueryUserUGCRequest(
       SteamUser()->GetSteamID().GetAccountID(),
       ugc_list_,
       ugc_matching_type_,
       ugc_list_sort_order_,
-      app_id,
-      app_id,
-      1);
+      app_id_,
+      app_id_,
+      page_num_);
   SteamAPICall_t ugc_query_result = SteamUGC()->SendQueryUGCRequest(ugc_handle);
   ugc_query_call_result_.Set(ugc_query_result, this,
       &QueryUserUGCWorker::OnUGCQueryCompleted);

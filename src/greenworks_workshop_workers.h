@@ -87,9 +87,9 @@ class UpdatePublishedWorkshopFileWorker : public SteamCallbackAsyncWorker {
 // A base worker class for querying (user/all) ugc.
 class QueryUGCWorker : public SteamCallbackAsyncWorker {
  public:
-  QueryUGCWorker(Nan::Callback* success_callback,
-                 Nan::Callback* error_callback,
-                 EUGCMatchingUGCType ugc_matching_type);
+  QueryUGCWorker(Nan::Callback* success_callback, Nan::Callback* error_callback,
+                 EUGCMatchingUGCType ugc_matching_type, uint32 app_id,
+                 uint32 page_num);
   void OnUGCQueryCompleted(SteamUGCQueryCompleted_t* result,
                            bool io_failure);
 
@@ -99,6 +99,8 @@ class QueryUGCWorker : public SteamCallbackAsyncWorker {
  protected:
   EUGCMatchingUGCType ugc_matching_type_;
   std::vector<SteamUGCDetails_t> ugc_items_;
+  uint32 app_id_;
+  uint32 page_num_;
 
   CCallResult<QueryUGCWorker,
       SteamUGCQueryCompleted_t> ugc_query_call_result_;
@@ -109,7 +111,7 @@ class QueryAllUGCWorker : public QueryUGCWorker {
   QueryAllUGCWorker(Nan::Callback* success_callback,
                     Nan::Callback* error_callback,
                     EUGCMatchingUGCType ugc_matching_type,
-                    EUGCQuery ugc_query_type);
+                    EUGCQuery ugc_query_type, uint32 app_id, uint32 page_num);
 
   // Override Nan::AsyncWorker methods.
   virtual void Execute();
@@ -124,7 +126,8 @@ class QueryUserUGCWorker : public QueryUGCWorker {
                      Nan::Callback* error_callback,
                      EUGCMatchingUGCType ugc_matching_type,
                      EUserUGCList ugc_list,
-                     EUserUGCListSortOrder ugc_list_sort_order);
+                     EUserUGCListSortOrder ugc_list_sort_order, uint32 app_id,
+                     uint32 page_num);
 
   // Override Nan::AsyncWorker methods.
   virtual void Execute();
