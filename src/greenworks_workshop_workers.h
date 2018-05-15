@@ -161,7 +161,9 @@ class SynchronizeItemsWorker : public SteamCallbackAsyncWorker {
  public:
   SynchronizeItemsWorker(Nan::Callback* success_callback,
                          Nan::Callback* error_callback,
-                         const std::string& download_dir);
+                         const std::string& download_dir,
+                         uint32 app_id,
+                         uint32 page_num);
 
   void OnUGCQueryCompleted(SteamUGCQueryCompleted_t* result,
                            bool io_failure);
@@ -177,6 +179,8 @@ class SynchronizeItemsWorker : public SteamCallbackAsyncWorker {
   std::string download_dir_;
   std::vector<SteamUGCDetails_t> ugc_items_;
   std::vector<UGCHandle_t> download_ugc_items_handle_;
+  uint32 app_id_;
+  uint32 page_num_;
   CCallResult<SynchronizeItemsWorker,
       RemoteStorageDownloadUGCResult_t> download_call_result_;
   CCallResult<SynchronizeItemsWorker,

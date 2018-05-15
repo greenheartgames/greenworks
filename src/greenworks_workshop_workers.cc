@@ -369,23 +369,24 @@ void DownloadItemWorker::OnDownloadCompleted(
 }
 
 SynchronizeItemsWorker::SynchronizeItemsWorker(Nan::Callback* success_callback,
-    Nan::Callback* error_callback, const std::string& download_dir)
-        :SteamCallbackAsyncWorker(success_callback, error_callback),
-         current_download_items_pos_(0),
-         download_dir_(download_dir) {
-}
+                                               Nan::Callback* error_callback,
+                                               const std::string& download_dir,
+                                               uint32 app_id, uint32 page_num)
+    : SteamCallbackAsyncWorker(success_callback, error_callback),
+      current_download_items_pos_(0),
+      download_dir_(download_dir),
+      app_id_(app_id),
+      page_num_(page_num) {}
 
 void SynchronizeItemsWorker::Execute() {
-  uint32 app_id = SteamUtils()->GetAppID();
-
   UGCQueryHandle_t ugc_handle = SteamUGC()->CreateQueryUserUGCRequest(
       SteamUser()->GetSteamID().GetAccountID(),
       k_EUserUGCList_Subscribed,
       k_EUGCMatchingUGCType_Items,
       k_EUserUGCListSortOrder_SubscriptionDateDesc,
-      app_id,
-      app_id,
-      1);
+      app_id_,
+      app_id_,
+      page_num_);
   SteamAPICall_t ugc_query_result = SteamUGC()->SendQueryUGCRequest(ugc_handle);
   ugc_query_call_result_.Set(ugc_query_result, this,
       &SynchronizeItemsWorker::OnUGCQueryCompleted);

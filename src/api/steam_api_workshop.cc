@@ -265,7 +265,8 @@ NAN_METHOD(UGCSynchronizeItems) {
     error_callback = new Nan::Callback(info[2].As<v8::Function>());
 
   Nan::AsyncQueueWorker(new greenworks::SynchronizeItemsWorker(
-      success_callback, error_callback, download_dir));
+      success_callback, error_callback, download_dir,
+      SteamUtils()->GetAppID(), /*page_num=*/1));
   info.GetReturnValue().Set(Nan::Undefined());
 }
 
