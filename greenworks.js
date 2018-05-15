@@ -58,6 +58,19 @@ greenworks.ugcGetUserItems = function(options, ugc_matching_type, ugc_list_sort_
   greenworks.ugcGetUserItems(options, ugc_matching_type, ugc_list_sort_order, ugc_list, success_callback, error_callback);
 }
 
+greenworks.ugcSynchronizeItems = function (options, sync_dir, success_callback, error_callback) {
+  if (typeof options !== 'object') {
+    error_callback = success_callback;
+    success_callback = sync_dir;
+    sync_dir = options;
+    options = {
+      'app_id': greenworks.getAppId(),
+      'page_num': 1
+    }
+  }
+  greenworks._ugcSynchronizeItems(options, sync_dir, success_callback, error_callback);
+}
+
 // An utility function for publish related APIs.
 // It processes remains steps after saving files to Steam Cloud.
 function file_share_process(file_name, image_name, next_process_func,

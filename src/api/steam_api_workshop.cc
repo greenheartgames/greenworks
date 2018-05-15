@@ -274,21 +274,34 @@ NAN_METHOD(UGCDownloadItem) {
 
 NAN_METHOD(UGCSynchronizeItems) {
   Nan::HandleScope scope;
-  if (info.Length() < 2 || !info[0]->IsString() || !info[1]->IsFunction()) {
+  if (info.Length() < 3 || !info[0]->IsObject() || !info[1]->IsString() ||
+      !info[2]->IsFunction()) {
     THROW_BAD_ARGS("Bad arguments");
   }
-  std::string download_dir = *(v8::String::Utf8Value(info[0]));
+
+  Nan::MaybeLocal<v8::Object> maybe_opt = Nan::To<v8::Object>(info[0]);
+  if (maybe_opt.IsEmpty()) {
+    THROW_BAD_ARGS("The 1st parameter must be an object.");
+  }
+  auto options = maybe_opt.ToLocalChecked();
+  auto app_id = options->Get(Nan::New("app_id").ToLocalChecked());
+  auto page_num = options->Get(Nan::New("page_num").ToLocalChecked());
+  if (!app_id->IsInt32() || !page_num->IsInt32()) {
+    THROW_BAD_ARGS(
+        "The object parameter must have 'app_id' and 'page_num' fields.");
+  }
+  std::string download_dir = *(v8::String::Utf8Value(info[1]));
 
   Nan::Callback* success_callback =
-      new Nan::Callback(info[1].As<v8::Function>());
+      new Nan::Callback(info[2].As<v8::Function>());
   Nan::Callback* error_callback = NULL;
 
-  if (info.Length() > 2 && info[2]->IsFunction())
-    error_callback = new Nan::Callback(info[2].As<v8::Function>());
+  if (info.Length() > 3 && info[3]->IsFunction())
+    error_callback = new Nan::Callback(info[3].As<v8::Function>());
 
   Nan::AsyncQueueWorker(new greenworks::SynchronizeItemsWorker(
       success_callback, error_callback, download_dir,
-      SteamUtils()->GetAppID(), /*page_num=*/1));
+      app_id->Int32Value(), page_num->Int32Value()));
   info.GetReturnValue().Set(Nan::Undefined());
 }
 
@@ -357,7 +370,7 @@ void RegisterAPIs(v8::Handle<v8::Object> exports) {
            Nan::New("ugcDownloadItem").ToLocalChecked(),
            Nan::New<v8::FunctionTemplate>(UGCDownloadItem)->GetFunction());
   Nan::Set(exports,
-           Nan::New("ugcSynchronizeItems").ToLocalChecked(),
+           Nan::New("_ugcSynchronizeItems").ToLocalChecked(),
            Nan::New<v8::FunctionTemplate>(UGCSynchronizeItems)->GetFunction());
   Nan::Set(exports,
            Nan::New("ugcShowOverlay").ToLocalChecked(),
