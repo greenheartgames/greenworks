@@ -206,6 +206,18 @@ void UpdatePublishedWorkshopFileWorker::Execute() {
   if (!properties_.description.empty())
     SteamRemoteStorage()->UpdatePublishedFileDescription(update_handle,
         properties_.description.c_str());
+  if (!properties_.tags_scratch.empty()) {
+    SteamParamStringArray_t tags;
+    if (properties_.tags_scratch.size() == 1 &&
+        properties_.tags_scratch.front().empty()) { // clean the tag.
+      tags.m_nNumStrings = 0;
+      tags.m_ppStrings = nullptr;
+    } else {
+      tags.m_nNumStrings = properties_.tags_scratch.size();
+      tags.m_ppStrings = reinterpret_cast<const char**>(&properties_.tags);
+    }
+    SteamRemoteStorage()->UpdatePublishedFileTags(update_handle, &tags);
+  }
   SteamAPICall_t commit_update_result =
       SteamRemoteStorage()->CommitPublishedFileUpdate(update_handle);
   update_published_file_call_result_.Set(commit_update_result, this,
