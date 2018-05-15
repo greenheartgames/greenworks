@@ -131,11 +131,6 @@ NAN_METHOD(PublishWorkshopFile) {
       !info[2]->IsString() || !info[3]->IsString() || !info[4]->IsFunction()) {
     THROW_BAD_ARGS("Bad arguments");
   }
-  std::string file_name(*(v8::String::Utf8Value(info[0])));
-  std::string image_name(*(v8::String::Utf8Value(info[1])));
-  std::string title(*(v8::String::Utf8Value(info[2])));
-  std::string description(*(v8::String::Utf8Value(info[3])));
-
   Nan::Callback* success_callback =
       new Nan::Callback(info[4].As<v8::Function>());
   Nan::Callback* error_callback = NULL;
@@ -143,9 +138,15 @@ NAN_METHOD(PublishWorkshopFile) {
   if (info.Length() > 5 && info[5]->IsFunction())
     error_callback = new Nan::Callback(info[5].As<v8::Function>());
 
+  greenworks::PublishWorkshopFileWorker::Properties properties;
+  properties.app_id = SteamUtils()->GetAppID();
+  properties.file_path = (*(v8::String::Utf8Value(info[0])));
+  properties.image_path = (*(v8::String::Utf8Value(info[1])));
+  properties.title = (*(v8::String::Utf8Value(info[2])));
+  properties.description = (*(v8::String::Utf8Value(info[3])));
+
   Nan::AsyncQueueWorker(new greenworks::PublishWorkshopFileWorker(
-      success_callback, error_callback, file_name, image_name, title,
-      description));
+      success_callback, error_callback, properties));
   info.GetReturnValue().Set(Nan::Undefined());
 }
 

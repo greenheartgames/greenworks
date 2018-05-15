@@ -33,12 +33,21 @@ class FileShareWorker : public SteamCallbackAsyncWorker {
 
 class PublishWorkshopFileWorker : public SteamCallbackAsyncWorker {
  public:
+  struct Properties {
+    static constexpr int MAX_TAGS = 100;
+    uint32 app_id;
+    std::string file_path;
+    std::string image_path;
+    std::string title;
+    std::string description;
+
+    std::vector<std::string> tags_scratch;
+    const char* tags[MAX_TAGS];
+  };
+
   PublishWorkshopFileWorker(Nan::Callback* success_callback,
                             Nan::Callback* error_callback,
-                            const std::string& file_path,
-                            const std::string& image_path,
-                            const std::string& title,
-                            const std::string& description);
+                            const Properties& properties);
   void OnFilePublishCompleted(RemoteStoragePublishFileResult_t* result,
                               bool io_failure);
 
@@ -47,10 +56,7 @@ class PublishWorkshopFileWorker : public SteamCallbackAsyncWorker {
   virtual void HandleOKCallback();
 
  private:
-  std::string file_path_;
-  std::string image_path_;
-  std::string title_;
-  std::string description_;
+  Properties properties_;
 
   PublishedFileId_t publish_file_id_;
   CCallResult<PublishWorkshopFileWorker,

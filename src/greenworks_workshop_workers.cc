@@ -130,26 +130,21 @@ void FileShareWorker::HandleOKCallback() {
 
 PublishWorkshopFileWorker::PublishWorkshopFileWorker(
     Nan::Callback* success_callback, Nan::Callback* error_callback,
-    const std::string& file_path, const std::string& image_path,
-    const std::string& title, const std::string& description):
-        SteamCallbackAsyncWorker(success_callback, error_callback),
-        file_path_(file_path),
-        image_path_(image_path),
-        title_(title),
-        description_(description) {
-}
+    const Properties& properties)
+    : SteamCallbackAsyncWorker(success_callback, error_callback),
+      properties_(properties) {}
 
 void PublishWorkshopFileWorker::Execute() {
   SteamParamStringArray_t tags;
   tags.m_nNumStrings = 0;
-  std::string file_name = utils::GetFileNameFromPath(file_path_);
-  std::string image_name = utils::GetFileNameFromPath(image_path_);
+  std::string file_name = utils::GetFileNameFromPath(properties_.file_path);
+  std::string image_name = utils::GetFileNameFromPath(properties_.image_path);
   SteamAPICall_t publish_result = SteamRemoteStorage()->PublishWorkshopFile(
       file_name.c_str(),
       image_name.empty()? NULL:image_name.c_str(),
-      SteamUtils()->GetAppID(),
-      title_.c_str(),
-      description_.empty()? NULL:description_.c_str(),
+      properties_.app_id,
+      properties_.title.c_str(),
+      properties_.description.empty()? NULL:properties_.description.c_str(),
       k_ERemoteStoragePublishedFileVisibilityPublic,
       &tags,
       k_EWorkshopFileTypeCommunity);
