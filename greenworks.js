@@ -80,7 +80,8 @@ greenworks.publishWorkshopFile = function(options, file_path, image_path, title,
     image_path = file_path;
     file_path = options;
     options = {
-      'app_id': greenworks.getAppId()
+      'app_id': greenworks.getAppId(),
+      'tags': []
     }
   }
   greenworks._publishWorkshopFile(options, file_path, image_path, title, description, success_callback, error_callback);

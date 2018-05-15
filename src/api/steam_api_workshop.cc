@@ -138,9 +138,24 @@ NAN_METHOD(PublishWorkshopFile) {
   }
   auto options = maybe_opt.ToLocalChecked();
   auto app_id = options->Get(Nan::New("app_id").ToLocalChecked());
-  if (!app_id->IsInt32()) {
+  auto tags = options->Get(Nan::New("tags").ToLocalChecked());
+  if (!app_id->IsInt32() || !tags->IsArray()) {
     THROW_BAD_ARGS(
-        "The object parameter must have 'app_id' field.");
+        "The object parameter must have 'app_id' and 'tags' field.");
+  }
+  greenworks::PublishWorkshopFileWorker::Properties properties;
+
+  v8::Local<v8::Array> tags_array = tags.As<v8::Array>();
+  if (tags_array->Length() >
+      greenworks::PublishWorkshopFileWorker::Properties::MAX_TAGS) {
+    THROW_BAD_ARGS("The length of 'tags' must be less than 100.");
+  }
+  for (uint32_t i = 0; i < tags_array->Length(); ++i) {
+    if (!tags_array->Get(i)->IsString())
+      THROW_BAD_ARGS("Bad arguments");
+    v8::String::Utf8Value tag(tags_array->Get(i));
+    properties.tags_scratch.push_back(*tag);
+    properties.tags[i] = properties.tags_scratch.back().c_str();
   }
 
   Nan::Callback* success_callback =
@@ -150,7 +165,6 @@ NAN_METHOD(PublishWorkshopFile) {
   if (info.Length() > 6 && info[6]->IsFunction())
     error_callback = new Nan::Callback(info[6].As<v8::Function>());
 
-  greenworks::PublishWorkshopFileWorker::Properties properties;
   properties.app_id = app_id->Int32Value();
   properties.file_path = (*(v8::String::Utf8Value(info[1])));
   properties.image_path = (*(v8::String::Utf8Value(info[2])));

@@ -136,7 +136,9 @@ PublishWorkshopFileWorker::PublishWorkshopFileWorker(
 
 void PublishWorkshopFileWorker::Execute() {
   SteamParamStringArray_t tags;
-  tags.m_nNumStrings = 0;
+  tags.m_nNumStrings = properties_.tags_scratch.size();
+  tags.m_ppStrings = reinterpret_cast<const char**>(&properties_.tags);
+
   std::string file_name = utils::GetFileNameFromPath(properties_.file_path);
   std::string image_name = utils::GetFileNameFromPath(properties_.image_path);
   SteamAPICall_t publish_result = SteamRemoteStorage()->PublishWorkshopFile(
