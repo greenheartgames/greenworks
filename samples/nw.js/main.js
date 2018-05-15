@@ -11,7 +11,7 @@ function testSteamAPI() {
   if (!greenworks) {
     log('Greenworks not support for ' + os.platform() + ' platform');
   } else {
-    if (!greenworks.initAPI()) {
+    if (!greenworks.init()) {
       log('Error on initializing steam API.');
     } else {
       log('Steam API initialized successfully.');

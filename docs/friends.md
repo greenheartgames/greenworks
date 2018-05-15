@@ -6,7 +6,7 @@ information about users.
 ```javascript
 var greenworks = require('./greenworks');
 
-if (greenworks.initAPI()) {
+if (greenworks.init()) {
   greenworks.on('persona-state-change',
                 function(steam_id, persona_change_flag) {
     if (persona_change_flag == greenworks.PersonaChange.Name)

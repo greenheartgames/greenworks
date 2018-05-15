@@ -48,7 +48,7 @@ Create `index.html`:
   SteamAPI Init:
   <script>
     var greenworks = require('./greenworks');
-    document.write(greenworks.initAPI());
+    document.write(greenworks.init());
   </script>
 </body>
 ```
