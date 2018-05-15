@@ -180,31 +180,53 @@ NAN_METHOD(UpdatePublishedWorkshopFile) {
 
 NAN_METHOD(UGCGetItems) {
   Nan::HandleScope scope;
-  if (info.Length() < 3 || !info[0]->IsInt32() || !info[1]->IsInt32() ||
-      !info[2]->IsFunction()) {
+  if (info.Length() < 3 || !info[0]->IsInt32() || !info[1]->IsInt32()) {
     THROW_BAD_ARGS("Bad arguments");
   }
 
   EUGCMatchingUGCType ugc_matching_type = static_cast<EUGCMatchingUGCType>(
       info[0]->Int32Value());
   EUGCQuery ugc_query_type = static_cast<EUGCQuery>(info[1]->Int32Value());
+  
+  Nan::Callback* success_callback = NULL;
+  uint32 unPage = 1;
 
-  Nan::Callback* success_callback =
+  if(info[2]->IsFunction()) {
+
+    success_callback =
       new Nan::Callback(info[2].As<v8::Function>());
+
+  } else if(info[2]->IsUint32()) {
+
+    unPage = info[2]->Uint32Value();
+    if(unPage < 1)
+      THROW_BAD_ARGS("unPage must be atleast 1!");
+
+    if(info.Length() < 4 || !info[3]->IsFunction())
+      THROW_BAD_ARGS("No success_callback");
+
+    success_callback =
+      new Nan::Callback(info[3].As<v8::Function>());
+
+  } else {
+    THROW_BAD_ARGS("Bad arguments");
+  }
+
   Nan::Callback* error_callback = NULL;
 
-  if (info.Length() > 3 && info[3]->IsFunction())
-    error_callback = new Nan::Callback(info[3].As<v8::Function>());
+  if (info.Length() > 3 && info[4]->IsFunction())
+    error_callback = new Nan::Callback(info[4].As<v8::Function>());
 
   Nan::AsyncQueueWorker(new greenworks::QueryAllUGCWorker(
-      success_callback, error_callback, ugc_matching_type, ugc_query_type));
+      success_callback, error_callback, ugc_matching_type, ugc_query_type,
+      unPage));
   info.GetReturnValue().Set(Nan::Undefined());
 }
 
 NAN_METHOD(UGCGetUserItems) {
   Nan::HandleScope scope;
   if (info.Length() < 4 || !info[0]->IsInt32() || !info[1]->IsInt32() ||
-      !info[2]->IsInt32() || !info[3]->IsFunction()) {
+      !info[2]->IsInt32()) {
     THROW_BAD_ARGS("Bad arguments");
   }
 
@@ -214,16 +236,37 @@ NAN_METHOD(UGCGetUserItems) {
       info[1]->Int32Value());
   EUserUGCList ugc_list = static_cast<EUserUGCList>(info[2]->Int32Value());
 
-  Nan::Callback* success_callback =
+  Nan::Callback* success_callback = NULL;
+  uint32 unPage = 1;
+
+  if(info[3]->IsFunction()) {
+    success_callback =
       new Nan::Callback(info[3].As<v8::Function>());
+
+  } else if(info[3]->IsUint32()) {
+
+    unPage = info[3]->Uint32Value();
+    if(unPage < 1)
+      THROW_BAD_ARGS("unPage must be atleast 1!");
+
+    if(info.Length() < 5 || !info[4]->IsFunction())
+      THROW_BAD_ARGS("No success_callback");
+
+    success_callback =
+      new Nan::Callback(info[4].As<v8::Function>());
+
+  } else {
+    THROW_BAD_ARGS("Bad arguments");
+  }
+
   Nan::Callback* error_callback = NULL;
 
-  if (info.Length() > 4 && info[4]->IsFunction())
-    error_callback = new Nan::Callback(info[4].As<v8::Function>());
+  if (info.Length() > 4 && info[5]->IsFunction())
+    error_callback = new Nan::Callback(info[5].As<v8::Function>());
 
   Nan::AsyncQueueWorker(new greenworks::QueryUserUGCWorker(
       success_callback, error_callback, ugc_matching_type, ugc_list,
-      ugc_list_order));
+      ugc_list_order, unPage));
   info.GetReturnValue().Set(Nan::Undefined());
 }
 

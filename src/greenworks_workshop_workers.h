@@ -109,13 +109,15 @@ class QueryAllUGCWorker : public QueryUGCWorker {
   QueryAllUGCWorker(Nan::Callback* success_callback,
                     Nan::Callback* error_callback,
                     EUGCMatchingUGCType ugc_matching_type,
-                    EUGCQuery ugc_query_type);
+                    EUGCQuery ugc_query_type,
+                    uint32 unPage);
 
   // Override Nan::AsyncWorker methods.
   virtual void Execute();
 
  private:
   EUGCQuery ugc_query_type_;
+  uint32 unPage_;
 };
 
 class QueryUserUGCWorker : public QueryUGCWorker {
@@ -124,7 +126,8 @@ class QueryUserUGCWorker : public QueryUGCWorker {
                      Nan::Callback* error_callback,
                      EUGCMatchingUGCType ugc_matching_type,
                      EUserUGCList ugc_list,
-                     EUserUGCListSortOrder ugc_list_sort_order);
+                     EUserUGCListSortOrder ugc_list_sort_order,
+                     uint32 unPage);
 
   // Override Nan::AsyncWorker methods.
   virtual void Execute();
@@ -132,6 +135,7 @@ class QueryUserUGCWorker : public QueryUGCWorker {
  private:
   EUserUGCList ugc_list_;
   EUserUGCListSortOrder ugc_list_sort_order_;
+  uint32 unPage_;
 };
 
 class DownloadItemWorker : public SteamCallbackAsyncWorker {
