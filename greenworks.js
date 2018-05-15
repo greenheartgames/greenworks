@@ -29,7 +29,8 @@ function error_process(err, error_callback) {
     error_callback(err);
 }
 
-greenworks.ugcGetItems = function(options, ugc_matching_type, ugc_query_type, success_callback, error_callback) {
+greenworks.ugcGetItems = function(options, ugc_matching_type, ugc_query_type,
+    success_callback, error_callback) {
   if (typeof options !== 'object') {
     error_callback = success_callback;
     success_callback = ugc_query_type;
@@ -40,10 +41,12 @@ greenworks.ugcGetItems = function(options, ugc_matching_type, ugc_query_type, su
       'page_num': 1
     }
   }
-  greenworks._ugcGetItems(options, ugc_matching_type, ugc_query_type, success_callback, error_callback);
+  greenworks._ugcGetItems(options, ugc_matching_type, ugc_query_type,
+      success_callback, error_callback);
 }
 
-greenworks.ugcGetUserItems = function(options, ugc_matching_type, ugc_list_sort_order, ugc_list, success_callback, error_callback) {
+greenworks.ugcGetUserItems = function(options, ugc_matching_type,
+    ugc_list_sort_order, ugc_list, success_callback, error_callback) {
   if (typeof options !== 'object') {
     error_callback = success_callback;
     success_callback = ugc_list;
@@ -55,10 +58,12 @@ greenworks.ugcGetUserItems = function(options, ugc_matching_type, ugc_list_sort_
       'page_num': 1
     }
   }
-  greenworks.ugcGetUserItems(options, ugc_matching_type, ugc_list_sort_order, ugc_list, success_callback, error_callback);
+  greenworks.ugcGetUserItems(options, ugc_matching_type, ugc_list_sort_order,
+      ugc_list, success_callback, error_callback);
 }
 
-greenworks.ugcSynchronizeItems = function (options, sync_dir, success_callback, error_callback) {
+greenworks.ugcSynchronizeItems = function (options, sync_dir, success_callback,
+    error_callback) {
   if (typeof options !== 'object') {
     error_callback = success_callback;
     success_callback = sync_dir;
@@ -68,10 +73,12 @@ greenworks.ugcSynchronizeItems = function (options, sync_dir, success_callback, 
       'page_num': 1
     }
   }
-  greenworks._ugcSynchronizeItems(options, sync_dir, success_callback, error_callback);
+  greenworks._ugcSynchronizeItems(options, sync_dir, success_callback,
+      error_callback);
 }
 
-greenworks.publishWorkshopFile = function(options, file_path, image_path, title, description, success_callback, error_callback) {
+greenworks.publishWorkshopFile = function(options, file_path, image_path, title,
+    description, success_callback, error_callback) {
   if (typeof options !== 'object') {
     error_callback = success_callback;
     success_callback = description;
@@ -84,10 +91,13 @@ greenworks.publishWorkshopFile = function(options, file_path, image_path, title,
       'tags': []
     }
   }
-  greenworks._publishWorkshopFile(options, file_path, image_path, title, description, success_callback, error_callback);
+  greenworks._publishWorkshopFile(options, file_path, image_path, title,
+      description, success_callback, error_callback);
 }
 
-greenworks.updatePublishedWorkshopFile = function(options, published_file_handle, file_path, image_path, title, description, success_callback, error_callback) {
+greenworks.updatePublishedWorkshopFile = function(options,
+    published_file_handle, file_path, image_path, title, description,
+    success_callback, error_callback) {
   if (typeof options !== 'object') {
     error_callback = success_callback;
     success_callback = description;
@@ -100,7 +110,9 @@ greenworks.updatePublishedWorkshopFile = function(options, published_file_handle
       'tags': [] // No tags are set
     }
   }
-  greenworks._updatePublishedWorkshopFile(options, published_file_handle, file_path, image_path, title, description, success_callback, error_callback);
+  greenworks._updatePublishedWorkshopFile(options, published_file_handle,
+     file_path, image_path, title, description, success_callback,
+     error_callback);
 }
 
 // An utility function for publish related APIs.

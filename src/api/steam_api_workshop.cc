@@ -133,9 +133,6 @@ NAN_METHOD(PublishWorkshopFile) {
    THROW_BAD_ARGS("Bad arguments");
   }
   Nan::MaybeLocal<v8::Object> maybe_opt = Nan::To<v8::Object>(info[0]);
-  if (maybe_opt.IsEmpty()) {
-    THROW_BAD_ARGS("The 1st parameter must be an object.");
-  }
   auto options = maybe_opt.ToLocalChecked();
   auto app_id = options->Get(Nan::New("app_id").ToLocalChecked());
   auto tags = options->Get(Nan::New("tags").ToLocalChecked());
@@ -183,9 +180,6 @@ NAN_METHOD(UpdatePublishedWorkshopFile) {
     THROW_BAD_ARGS("Bad arguments");
   }
   Nan::MaybeLocal<v8::Object> maybe_opt = Nan::To<v8::Object>(info[0]);
-  if (maybe_opt.IsEmpty()) {
-    THROW_BAD_ARGS("The 1st parameter must be an object.");
-  }
   auto options = maybe_opt.ToLocalChecked();
   auto tags = options->Get(Nan::New("tags").ToLocalChecked());
   if (!tags->IsArray()) {
@@ -230,9 +224,6 @@ NAN_METHOD(UGCGetItems) {
     THROW_BAD_ARGS("Bad arguments");
   }
   Nan::MaybeLocal<v8::Object> maybe_opt = Nan::To<v8::Object>(info[0]);
-  if (maybe_opt.IsEmpty()) {
-    THROW_BAD_ARGS("The 1st parameter must be an object.");
-  }
   auto options = maybe_opt.ToLocalChecked();
   auto app_id = options->Get(Nan::New("app_id").ToLocalChecked());
   auto page_num = options->Get(Nan::New("page_num").ToLocalChecked());
@@ -265,9 +256,6 @@ NAN_METHOD(UGCGetUserItems) {
     THROW_BAD_ARGS("Bad arguments");
   }
   Nan::MaybeLocal<v8::Object> maybe_opt = Nan::To<v8::Object>(info[0]);
-  if (maybe_opt.IsEmpty()) {
-    THROW_BAD_ARGS("The 1st parameter must be an object.");
-  }
   auto options = maybe_opt.ToLocalChecked();
   auto app_id = options->Get(Nan::New("app_id").ToLocalChecked());
   auto page_num = options->Get(Nan::New("page_num").ToLocalChecked());
@@ -325,9 +313,6 @@ NAN_METHOD(UGCSynchronizeItems) {
   }
 
   Nan::MaybeLocal<v8::Object> maybe_opt = Nan::To<v8::Object>(info[0]);
-  if (maybe_opt.IsEmpty()) {
-    THROW_BAD_ARGS("The 1st parameter must be an object.");
-  }
   auto options = maybe_opt.ToLocalChecked();
   auto app_id = options->Get(Nan::New("app_id").ToLocalChecked());
   auto page_num = options->Get(Nan::New("page_num").ToLocalChecked());
