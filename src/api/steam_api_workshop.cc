@@ -177,26 +177,46 @@ NAN_METHOD(PublishWorkshopFile) {
 NAN_METHOD(UpdatePublishedWorkshopFile) {
   Nan::HandleScope scope;
 
-  if (info.Length() < 6 || !info[0]->IsString() || !info[1]->IsString() ||
+  if (info.Length() < 7 || !info[0]->IsObject() || !info[1]->IsString() ||
       !info[2]->IsString() || !info[3]->IsString() || !info[4]->IsString() ||
-      !info[5]->IsFunction()) {
+      !info[5]->IsString() || !info[6]->IsFunction()) {
     THROW_BAD_ARGS("Bad arguments");
   }
+  Nan::MaybeLocal<v8::Object> maybe_opt = Nan::To<v8::Object>(info[0]);
+  if (maybe_opt.IsEmpty()) {
+    THROW_BAD_ARGS("The 1st parameter must be an object.");
+  }
+  auto options = maybe_opt.ToLocalChecked();
+  auto tags = options->Get(Nan::New("tags").ToLocalChecked());
+  if (!tags->IsArray()) {
+    THROW_BAD_ARGS("The object parameter must have 'tags' field.");
+  }
+  greenworks::WorkshopFileProperties properties;
 
+  v8::Local<v8::Array> tags_array = tags.As<v8::Array>();
+  if (tags_array->Length() > greenworks::WorkshopFileProperties::MAX_TAGS) {
+    THROW_BAD_ARGS("The length of 'tags' must be less than 100.");
+  }
+  for (uint32_t i = 0; i < tags_array->Length(); ++i) {
+    if (!tags_array->Get(i)->IsString())
+      THROW_BAD_ARGS("Bad arguments");
+    v8::String::Utf8Value tag(tags_array->Get(i));
+    properties.tags_scratch.push_back(*tag);
+    properties.tags[i] = properties.tags_scratch.back().c_str();
+  }
   Nan::Callback* success_callback =
-      new Nan::Callback(info[5].As<v8::Function>());
+      new Nan::Callback(info[6].As<v8::Function>());
   Nan::Callback* error_callback = NULL;
 
-  if (info.Length() > 6 && info[6]->IsFunction())
-    error_callback = new Nan::Callback(info[6].As<v8::Function>());
+  if (info.Length() > 7 && info[7]->IsFunction())
+    error_callback = new Nan::Callback(info[7].As<v8::Function>());
 
-  greenworks::WorkshopFileProperties properties;
   PublishedFileId_t published_file_id = utils::strToUint64(
-      *(v8::String::Utf8Value(info[0])));
-  properties.file_path = (*(v8::String::Utf8Value(info[1])));
-  properties.image_path = (*(v8::String::Utf8Value(info[2])));
-  properties.title = (*(v8::String::Utf8Value(info[3])));
-  properties.description = (*(v8::String::Utf8Value(info[4])));
+      *(v8::String::Utf8Value(info[1])));
+  properties.file_path = (*(v8::String::Utf8Value(info[2])));
+  properties.image_path = (*(v8::String::Utf8Value(info[3])));
+  properties.title = (*(v8::String::Utf8Value(info[4])));
+  properties.description = (*(v8::String::Utf8Value(info[5])));
 
   Nan::AsyncQueueWorker(new greenworks::UpdatePublishedWorkshopFileWorker(
       success_callback, error_callback, published_file_id, properties));
@@ -382,7 +402,7 @@ void RegisterAPIs(v8::Handle<v8::Object> exports) {
            Nan::New("_publishWorkshopFile").ToLocalChecked(),
            Nan::New<v8::FunctionTemplate>(PublishWorkshopFile)->GetFunction());
   Nan::Set(exports,
-           Nan::New("updatePublishedWorkshopFile").ToLocalChecked(),
+           Nan::New("_updatePublishedWorkshopFile").ToLocalChecked(),
            Nan::New<v8::FunctionTemplate>(
                UpdatePublishedWorkshopFile)->GetFunction());
   Nan::Set(exports,

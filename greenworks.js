@@ -87,6 +87,22 @@ greenworks.publishWorkshopFile = function(options, file_path, image_path, title,
   greenworks._publishWorkshopFile(options, file_path, image_path, title, description, success_callback, error_callback);
 }
 
+greenworks.updatePublishedWorkshopFile = function(options, published_file_handle, file_path, image_path, title, description, success_callback, error_callback) {
+  if (typeof options !== 'object') {
+    error_callback = success_callback;
+    success_callback = description;
+    description = title;
+    title = image_path;
+    image_path = file_path;
+    file_path = published_file_handle;
+    published_file_handle = options;
+    options = {
+      'tags': [] // No tags are set
+    }
+  }
+  greenworks._updatePublishedWorkshopFile(options, published_file_handle, file_path, image_path, title, description, success_callback, error_callback);
+}
+
 // An utility function for publish related APIs.
 // It processes remains steps after saving files to Steam Cloud.
 function file_share_process(file_name, image_name, next_process_func,
