@@ -12,8 +12,8 @@ namespace greenworks {
 
 namespace {
 
-SteamClient* g_steam_client = NULL;
-uv_timer_t* g_steam_timer = NULL;
+SteamClient* g_steam_client = nullptr;
+uv_timer_t* g_steam_timer = nullptr;
 
 void on_timer_close_complete(uv_handle_t* handle) {
   delete reinterpret_cast<uv_timer_t*>(handle);

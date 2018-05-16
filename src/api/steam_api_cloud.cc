@@ -27,7 +27,7 @@ NAN_METHOD(SaveTextToFile) {
   std::string content(*(v8::String::Utf8Value(info[1])));
   Nan::Callback* success_callback =
       new Nan::Callback(info[2].As<v8::Function>());
-  Nan::Callback* error_callback = NULL;
+  Nan::Callback* error_callback = nullptr;
 
   if (info.Length() > 3 && info[3]->IsFunction())
     error_callback = new Nan::Callback(info[3].As<v8::Function>());
@@ -49,7 +49,7 @@ NAN_METHOD(DeleteFile) {
   std::string file_name(*(v8::String::Utf8Value(info[0])));
   Nan::Callback* success_callback =
       new Nan::Callback(info[1].As<v8::Function>());
-  Nan::Callback* error_callback = NULL;
+  Nan::Callback* error_callback = nullptr;
 
   if (info.Length() > 2 && info[2]->IsFunction())
     error_callback = new Nan::Callback(info[2].As<v8::Function>());
@@ -78,7 +78,7 @@ NAN_METHOD(SaveFilesToCloud) {
 
   Nan::Callback* success_callback =
       new Nan::Callback(info[1].As<v8::Function>());
-  Nan::Callback* error_callback = NULL;
+  Nan::Callback* error_callback = nullptr;
 
   if (info.Length() > 2 && info[2]->IsFunction())
     error_callback = new Nan::Callback(info[2].As<v8::Function>());
@@ -98,7 +98,7 @@ NAN_METHOD(ReadTextFromFile) {
   std::string file_name(*(v8::String::Utf8Value(info[0])));
   Nan::Callback* success_callback =
       new Nan::Callback(info[1].As<v8::Function>());
-  Nan::Callback* error_callback = NULL;
+  Nan::Callback* error_callback = nullptr;
 
   if (info.Length() > 2 && info[2]->IsFunction())
     error_callback = new Nan::Callback(info[2].As<v8::Function>());
@@ -142,7 +142,7 @@ NAN_METHOD(GetCloudQuota) {
   }
   Nan::Callback* success_callback =
       new Nan::Callback(info[0].As<v8::Function>());
-  Nan::Callback* error_callback = NULL;
+  Nan::Callback* error_callback = nullptr;
 
   if (info.Length() > 2 && info[1]->IsFunction())
     error_callback = new Nan::Callback(info[1].As<v8::Function>());

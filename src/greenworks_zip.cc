@@ -140,7 +140,7 @@ int getFileCrc(const char* filenameinzip, void* buf, unsigned long size_buf, uns
   FILE * fin = fopen(filenameinzip, "rb");
   unsigned long size_read = 0;
   unsigned long total_read = 0;
-  if (fin == NULL)
+  if (fin == nullptr)
   {
     err = ZIP_ERRNO;
   }
@@ -174,7 +174,7 @@ int isLargeFile(const char* filename) {
   ZPOS64_T pos = 0;
   FILE* pFile = fopen64(filename, "rb");
 
-  if (pFile != NULL) {
+  if (pFile != nullptr) {
     fseeko64(pFile, 0, SEEK_END);
     pos = ftello64(pFile);
 
@@ -283,13 +283,13 @@ int zip(const char* targetFile, const char* sourceDir, int compressionLevel, con
   char filename_try[MAXFILENAME + 16];
   int err = 0;
   int size_buf = 0;
-  void* buf = NULL;
+  void* buf = nullptr;
   int i, len;
   int dot_found = 0;
 
   size_buf = WRITEBUFFERSIZE;
   buf = (void*)malloc(size_buf);
-  if (buf == NULL)
+  if (buf == nullptr)
     return ZIP_INTERNALERROR;
 
   strncpy(filename_try, targetFile, MAXFILENAME - 1);
@@ -316,7 +316,7 @@ int zip(const char* targetFile, const char* sourceDir, int compressionLevel, con
   zf = zipOpen64(filename_try, (opt_overwrite == 2) ? 2 : 0);
 #endif
 
-  if (zf == NULL)
+  if (zf == nullptr)
     err = ZIP_ERRNO;
 
   std::vector<std::string> files = GetDirectoryList(sourceDir);
@@ -341,7 +341,7 @@ int zip(const char* targetFile, const char* sourceDir, int compressionLevel, con
 
       filetime(filenameinzip, &zi.tmz_date, &zi.dosDate);
 
-      if ((password != NULL && strlen(password) > 0) && (err == ZIP_OK))
+      if ((password != nullptr && strlen(password) > 0) && (err == ZIP_OK))
         err = getFileCrc(filenameinzip, buf, size_buf, &crcFile);
 
       zip64 = isLargeFile(filenameinzip);
@@ -360,13 +360,13 @@ int zip(const char* targetFile, const char* sourceDir, int compressionLevel, con
         savefilenameinzip++;
 
       // Using 4 for unicode compatibility (UTF8) -- tested with chinese, does not work as expected
-      err = zipOpenNewFileInZip4_64(zf, savefilenameinzip, &zi, NULL, 0, NULL, 0, NULL, (opt_compress_level != 0) ? Z_DEFLATED : 0, opt_compress_level, 0, -MAX_WBITS, DEF_MEM_LEVEL, Z_DEFAULT_STRATEGY, password, crcFile, 36, 1 << 11, zip64);
+      err = zipOpenNewFileInZip4_64(zf, savefilenameinzip, &zi, nullptr, 0, nullptr, 0, nullptr, (opt_compress_level != 0) ? Z_DEFLATED : 0, opt_compress_level, 0, -MAX_WBITS, DEF_MEM_LEVEL, Z_DEFAULT_STRATEGY, password, crcFile, 36, 1 << 11, zip64);
 
       if (err != ZIP_OK)
         break;
 
       fin = fopen64(filenameinzip, "rb");
-      if (fin == NULL)
+      if (fin == nullptr)
         err = ZIP_ERRNO;
 
       if (err == ZIP_OK) {
@@ -390,7 +390,7 @@ int zip(const char* targetFile, const char* sourceDir, int compressionLevel, con
         err = zipCloseFileInZip(zf);
     }
   }
-  zipClose(zf, NULL);
+  zipClose(zf, nullptr);
   free(buf);
   return err;
 }

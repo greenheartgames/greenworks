@@ -111,13 +111,13 @@ int mymkdir(const char* dirname) {
 int makedir(const char *newdir) {
   char *buffer;
   char *p;
-  int len = (int)strlen(newdir);
+  auto len = (int)strlen(newdir);
 
   if (len <= 0)
     return 0;
 
   buffer = (char*)malloc(len + 1);
-  if (buffer == NULL)
+  if (buffer == nullptr)
     return UNZ_INTERNALERROR;
   strcpy(buffer, newdir);
 
@@ -154,19 +154,19 @@ int do_extract_currentfile(unzFile uf, const int* popt_extract_without_path,
   char filename_inzip[256];
   char* filename_withoutpath;
   char* p;
-  FILE *fout = NULL;
+  FILE *fout = nullptr;
   void* buf;
 
   unz_file_info64 file_info;
   int err = unzGetCurrentFileInfo64(uf, &file_info, filename_inzip,
-      sizeof(filename_inzip), NULL, 0, NULL, 0);
+      sizeof(filename_inzip), nullptr, 0, nullptr, 0);
 
   if (err != UNZ_OK)
     return err;
 
   uInt size_buf = WRITEBUFFERSIZE;
   buf = (void*)malloc(size_buf);
-  if (buf == NULL)
+  if (buf == nullptr)
     return UNZ_INTERNALERROR;
 
   p = filename_withoutpath = filename_inzip;
@@ -196,7 +196,7 @@ int do_extract_currentfile(unzFile uf, const int* popt_extract_without_path,
       fout = fopen64(write_filename, "wb");
 
       /* some zipfile don't contain directory alone before file */
-      if ((fout == NULL) && ((*popt_extract_without_path) == 0) &&
+      if ((fout == nullptr) && ((*popt_extract_without_path) == 0) &&
         (filename_withoutpath != (char*)filename_inzip))
       {
         char c = *(filename_withoutpath - 1);
@@ -207,7 +207,7 @@ int do_extract_currentfile(unzFile uf, const int* popt_extract_without_path,
       }
     }
 
-    if (fout != NULL) {
+    if (fout != nullptr) {
       do {
         err = unzReadCurrentFile(uf, buf, size_buf);
         if (err<0)
@@ -267,10 +267,10 @@ namespace greenworks {
 
 int unzip(const char *zipfilename, const char *dirname, const char *password) {
   char filename_try[MAXFILENAME + 16] = "";
-  unzFile uf = NULL;
+  unzFile uf = nullptr;
   int ret_value = 0;
 
-  if (zipfilename != NULL) {
+  if (zipfilename != nullptr) {
 #ifdef USEWIN32IOAPI
     zlib_filefunc64_def ffunc;
 #endif
@@ -285,7 +285,7 @@ int unzip(const char *zipfilename, const char *dirname, const char *password) {
 #else
     uf = unzOpen64(zipfilename);
 #endif
-    if (uf == NULL) {
+    if (uf == nullptr) {
       strcat(filename_try, ".zip");
 #ifdef USEWIN32IOAPI
       uf = unzOpen2_64(filename_try, &ffunc);
@@ -295,7 +295,7 @@ int unzip(const char *zipfilename, const char *dirname, const char *password) {
     }
   }
 
-  if (uf == NULL)
+  if (uf == nullptr)
     return 1;
 
 #ifdef _WIN32

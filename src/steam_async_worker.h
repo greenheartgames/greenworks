@@ -15,10 +15,9 @@ class SteamAsyncWorker : public Nan::AsyncWorker {
   SteamAsyncWorker(Nan::Callback* success_callback,
                    Nan::Callback* error_callback);
 
-  ~SteamAsyncWorker();
+  ~SteamAsyncWorker() override;
 
-  // Override Nan::AsyncWorker methods:
-  virtual void HandleErrorCallback();
+  void HandleErrorCallback() override;
 
  protected:
   Nan::Callback* error_callback_;

@@ -22,7 +22,7 @@ NAN_METHOD(GetAuthSessionTicket) {
   }
   Nan::Callback* success_callback =
       new Nan::Callback(info[0].As<v8::Function>());
-  Nan::Callback* error_callback = NULL;
+  Nan::Callback* error_callback = nullptr;
   if (info.Length() > 1 && info[1]->IsFunction())
     error_callback = new Nan::Callback(info[1].As<v8::Function>());
   Nan::AsyncQueueWorker(new greenworks::GetAuthSessionTicketWorker(
@@ -51,7 +51,7 @@ NAN_METHOD(GetEncryptedAppTicket) {
   }
   Nan::Callback* success_callback =
       new Nan::Callback(info[1].As<v8::Function>());
-  Nan::Callback* error_callback = NULL;
+  Nan::Callback* error_callback = nullptr;
   if (info.Length() > 2 && info[2]->IsFunction())
     error_callback = new Nan::Callback(info[2].As<v8::Function>());
   Nan::AsyncQueueWorker(new greenworks::RequestEncryptedAppTicketWorker(

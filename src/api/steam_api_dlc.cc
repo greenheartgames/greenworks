@@ -23,7 +23,7 @@ NAN_METHOD(IsDLCInstalled) {
   if (info.Length() < 1 || !info[0]->IsUint32()) {
     THROW_BAD_ARGS("Bad arguments");
   }
-  AppId_t dlc_app_id = static_cast<AppId_t>(info[0]->Uint32Value());
+  auto dlc_app_id = static_cast<AppId_t>(info[0]->Uint32Value());
   info.GetReturnValue().Set(SteamApps()->BIsDlcInstalled(dlc_app_id));
 }
 
@@ -32,7 +32,7 @@ NAN_METHOD(installDLC) {
   if (info.Length() < 1 || !info[0]->IsUint32()) {
     THROW_BAD_ARGS("Bad arguments");
   }
-  AppId_t dlc_app_id = static_cast<AppId_t>(info[0]->Uint32Value());
+  auto dlc_app_id = static_cast<AppId_t>(info[0]->Uint32Value());
   SteamApps()->InstallDLC(dlc_app_id);
   info.GetReturnValue().Set(Nan::Undefined());
 }
@@ -42,7 +42,7 @@ NAN_METHOD(uninstallDLC) {
   if (info.Length() < 1 || !info[0]->IsUint32()) {
     THROW_BAD_ARGS("Bad arguments");
   }
-  AppId_t dlc_app_id = static_cast<AppId_t>(info[0]->Uint32Value());
+  auto dlc_app_id = static_cast<AppId_t>(info[0]->Uint32Value());
   SteamApps()->UninstallDLC(dlc_app_id);
   info.GetReturnValue().Set(Nan::Undefined());
 }

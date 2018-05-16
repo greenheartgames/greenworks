@@ -33,7 +33,7 @@ v8::Local<v8::Object> GetSteamUserCountType(int type_id) {
     Nan::ThrowTypeError("Bad argument");
     return Nan::New<v8::Object>();
   }
-  EAccountType type = static_cast<EAccountType>(type_id);
+  auto type = static_cast<EAccountType>(type_id);
   std::map<EAccountType, std::string> account_types = {
     MAKE_ENUM_PAIR(k_EAccountTypeInvalid),
     MAKE_ENUM_PAIR(k_EAccountTypeIndividual),
@@ -172,7 +172,7 @@ NAN_METHOD(GetNumberOfPlayers) {
   }
   Nan::Callback* success_callback =
       new Nan::Callback(info[0].As<v8::Function>());
-  Nan::Callback* error_callback = NULL;
+  Nan::Callback* error_callback = nullptr;
 
   if (info.Length() > 1 && info[1]->IsFunction())
     error_callback = new Nan::Callback(info[1].As<v8::Function>());
@@ -254,14 +254,14 @@ NAN_METHOD(GetImageRGBA) {
     THROW_BAD_ARGS("Fail to get image size");
   }
   int buffer_size = 4 * width * height;
-  char* image_buffer = new char[buffer_size];
+  auto* image_buffer = new char[buffer_size];
   if (!SteamUtils()->GetImageRGBA(image_handle,
                                   reinterpret_cast<uint8*>(image_buffer),
                                   buffer_size)) {
     THROW_BAD_ARGS("Fail to get image");
   }
   info.GetReturnValue().Set(
-      Nan::NewBuffer(image_buffer, buffer_size, FreeCallback, 0)
+      Nan::NewBuffer(image_buffer, buffer_size, FreeCallback, nullptr)
           .ToLocalChecked());
 }
 

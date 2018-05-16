@@ -23,8 +23,7 @@ class FileContentSaveWorker : public SteamAsyncWorker {
                         std::string file_name,
                         std::string content);
 
-  // Override NanAsyncWorker methods.
-  virtual void Execute();
+  void Execute() override;
 
  private:
   std::string file_name_;
@@ -37,8 +36,7 @@ class FilesSaveWorker : public SteamAsyncWorker {
                   Nan::Callback* error_callback,
                   const std::vector<std::string>& files_path);
 
-  // Override NanAsyncWorker methods.
-  virtual void Execute();
+  void Execute() override;
 
  private:
   std::vector<std::string> files_path_;
@@ -49,9 +47,8 @@ class FileReadWorker : public SteamAsyncWorker {
   FileReadWorker(Nan::Callback* success_callback, Nan::Callback* error_callback,
       std::string file_name);
 
-  // Override NanAsyncWorker methods.
-  virtual void Execute();
-  virtual void HandleOKCallback();
+  void Execute() override;
+  void HandleOKCallback() override;
 
  private:
   std::string file_name_;
@@ -64,8 +61,7 @@ class FileDeleteWorker : public SteamAsyncWorker {
                    Nan::Callback* error_callback,
                    std::string file_name);
 
-  // Override NanAsyncWorker methods.
-  virtual void Execute();
+  void Execute() override;
 
  private:
   std::string file_name_;
@@ -76,9 +72,8 @@ class CloudQuotaGetWorker : public SteamAsyncWorker {
   CloudQuotaGetWorker(Nan::Callback* success_callback,
       Nan::Callback* error_callback);
 
-  // Override NanAsyncWorker methods.
-  virtual void Execute();
-  virtual void HandleOKCallback();
+  void Execute() override;
+  void HandleOKCallback() override;
 
  private:
   uint64 total_bytes_;
@@ -90,8 +85,7 @@ class ActivateAchievementWorker : public SteamAsyncWorker {
   ActivateAchievementWorker(Nan::Callback* success_callback,
       Nan::Callback* error_callback, const std::string& achievement);
 
-  // Override NanAsyncWorker methods.
-  virtual void Execute();
+  void Execute() override;
 
  private:
   std::string achievement_;
@@ -103,9 +97,8 @@ class GetAchievementWorker : public SteamAsyncWorker {
                        Nan::Callback* error_callback,
                        const std::string& achievement);
 
-  // Override NanAsyncWorker methods.
-  virtual void Execute();
-  virtual void HandleOKCallback();
+  void Execute() override;
+  void HandleOKCallback() override;
 
  private:
   std::string achievement_;
@@ -118,8 +111,7 @@ class ClearAchievementWorker : public SteamAsyncWorker {
                        Nan::Callback* error_callback,
                        const std::string& achievement);
 
-  // Override NanAsyncWorker methods.
-  virtual void Execute();
+  void Execute() override;
 
  private:
   std::string achievement_;
@@ -132,9 +124,8 @@ class GetNumberOfPlayersWorker : public SteamCallbackAsyncWorker {
                            Nan::Callback* error_callback);
   void OnGetNumberOfPlayersCompleted(NumberOfCurrentPlayers_t* result,
                                      bool io_failure);
-  // Override NanAsyncWorker methods.
-  virtual void Execute();
-  virtual void HandleOKCallback();
+  void Execute() override;
+  void HandleOKCallback() override;
 
  private:
   int num_of_players_;
@@ -150,8 +141,7 @@ class CreateArchiveWorker : public SteamAsyncWorker {
                       const std::string& password,
                       int compress_level);
 
-  // Override NanAsyncWorker methods.
-  virtual void Execute();
+  void Execute() override;
 
  private:
   std::string zip_file_path_;
@@ -168,8 +158,7 @@ class ExtractArchiveWorker : public SteamAsyncWorker {
                        const std::string& extract_path,
                        const std::string& password);
 
-  // Override NanAsyncWorker methods.
-  virtual void Execute();
+  void Execute() override;
 
  private:
   std::string zip_file_path_;
@@ -185,8 +174,8 @@ class GetAuthSessionTicketWorker : public SteamCallbackAsyncWorker {
                  OnGetAuthSessionCompleted,
                  GetAuthSessionTicketResponse_t,
                  result);
-  virtual void Execute();
-  virtual void HandleOKCallback();
+  void Execute() override;
+  void HandleOKCallback() override;
 
  private:
   HAuthTicket handle_;
@@ -201,8 +190,8 @@ class RequestEncryptedAppTicketWorker : public SteamCallbackAsyncWorker {
                                   Nan::Callback* error_callback);
   void OnRequestEncryptedAppTicketCompleted(
       EncryptedAppTicketResponse_t*, bool);
-  virtual void Execute();
-  virtual void HandleOKCallback();
+  void Execute() override;
+  void HandleOKCallback() override;
 
  private:
   std::string user_data_;

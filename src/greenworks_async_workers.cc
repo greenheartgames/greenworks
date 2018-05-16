@@ -52,7 +52,7 @@ void FilesSaveWorker::Execute() {
   FilesContentContainer container;
   std::vector<int> files_content_length;
   for (size_t i = 0; i < files_path_.size(); ++i) {
-    char* content = NULL;
+    char* content = nullptr;
     int length = 0;
     if (!utils::ReadFile(files_path_[i].c_str(), &content, &length))
       break;
@@ -109,7 +109,7 @@ void FileReadWorker::Execute() {
 
   int32 file_size = steam_remote_storage->GetFileSize(file_name_.c_str());
 
-  char* content = new char[file_size+1];
+  auto* content = new char[file_size+1];
   int32 end_pos = steam_remote_storage->FileRead(
       file_name_.c_str(), content, file_size);
   content[end_pos] = '\0';
@@ -266,7 +266,7 @@ void CreateArchiveWorker::Execute() {
   int result = zip(zip_file_path_.c_str(),
                    source_dir_.c_str(),
                    compress_level_,
-                   password_.empty()?NULL:password_.c_str());
+                   password_.empty()?nullptr:password_.c_str());
   if (result)
     SetErrorMessage("Error on creating zip file.");
 }
@@ -282,7 +282,7 @@ ExtractArchiveWorker::ExtractArchiveWorker(Nan::Callback* success_callback,
 
 void ExtractArchiveWorker::Execute() {
   int result = unzip(zip_file_path_.c_str(), extract_path_.c_str(),
-      password_.empty()?NULL:password_.c_str());
+      password_.empty()?nullptr:password_.c_str());
   if (result)
     SetErrorMessage("Error on extracting zip file.");
 }

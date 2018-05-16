@@ -132,7 +132,7 @@ NAN_METHOD(GetFriendCount) {
   if (info.Length() < 1 || !info[0]->IsInt32()) {
     THROW_BAD_ARGS("Bad arguments");
   }
-  EFriendFlags friend_flag = static_cast<EFriendFlags>(info[0]->Int32Value());
+  auto friend_flag = static_cast<EFriendFlags>(info[0]->Int32Value());
 
   info.GetReturnValue().Set(Nan::New<v8::Integer>(
     SteamFriends()->GetFriendCount(friend_flag)));
@@ -143,7 +143,7 @@ NAN_METHOD(GetFriends) {
   if (info.Length() < 1 || !info[0]->IsInt32()) {
     THROW_BAD_ARGS("Bad arguments");
   }
-  EFriendFlags friend_flag = static_cast<EFriendFlags>(info[0]->Int32Value());
+  auto friend_flag = static_cast<EFriendFlags>(info[0]->Int32Value());
   int friends_count = SteamFriends()->GetFriendCount(friend_flag);
   v8::Local<v8::Array> friends = Nan::New<v8::Array>(friends_count);
 
