@@ -127,43 +127,32 @@ NAN_METHOD(FileShare) {
 NAN_METHOD(PublishWorkshopFile) {
   Nan::HandleScope scope;
 
-  if (info.Length() < 5 || !info[0]->IsString() || !info[1]->IsString() ||
-      !info[2]->IsString() || !info[3]->IsString() || !info[4]->IsFunction()) {
-    THROW_BAD_ARGS("Bad arguments");
-  }
-  std::string file_name(*(v8::String::Utf8Value(info[0])));
-  std::string image_name(*(v8::String::Utf8Value(info[1])));
-  std::string title(*(v8::String::Utf8Value(info[2])));
-  std::string description(*(v8::String::Utf8Value(info[3])));
-
-  Nan::Callback* success_callback =
-      new Nan::Callback(info[4].As<v8::Function>());
-  Nan::Callback* error_callback = NULL;
-
-  if (info.Length() > 5 && info[5]->IsFunction())
-    error_callback = new Nan::Callback(info[5].As<v8::Function>());
-
-  Nan::AsyncQueueWorker(new greenworks::PublishWorkshopFileWorker(
-      success_callback, error_callback, file_name, image_name, title,
-      description));
-  info.GetReturnValue().Set(Nan::Undefined());
-}
-
-NAN_METHOD(UpdatePublishedWorkshopFile) {
-  Nan::HandleScope scope;
-
-  if (info.Length() < 6 || !info[0]->IsString() || !info[1]->IsString() ||
+  if (info.Length() < 6 || !info[0]->IsObject() || !info[1]->IsString() ||
       !info[2]->IsString() || !info[3]->IsString() || !info[4]->IsString() ||
       !info[5]->IsFunction()) {
     THROW_BAD_ARGS("Bad arguments");
   }
+  Nan::MaybeLocal<v8::Object> maybe_opt = Nan::To<v8::Object>(info[0]);
+  auto options = maybe_opt.ToLocalChecked();
+  auto app_id = options->Get(Nan::New("app_id").ToLocalChecked());
+  auto tags = options->Get(Nan::New("tags").ToLocalChecked());
+  if (!app_id->IsInt32() || !tags->IsArray()) {
+    THROW_BAD_ARGS(
+        "The object parameter must have 'app_id' and 'tags' field.");
+  }
+  greenworks::WorkshopFileProperties properties;
 
-  PublishedFileId_t published_file_id = utils::strToUint64(
-      *(v8::String::Utf8Value(info[0])));
-  std::string file_name(*(v8::String::Utf8Value(info[1])));
-  std::string image_name(*(v8::String::Utf8Value(info[2])));
-  std::string title(*(v8::String::Utf8Value(info[3])));
-  std::string description(*(v8::String::Utf8Value(info[4])));
+  v8::Local<v8::Array> tags_array = tags.As<v8::Array>();
+  if (tags_array->Length() > greenworks::WorkshopFileProperties::MAX_TAGS) {
+    THROW_BAD_ARGS("The length of 'tags' must be less than 100.");
+  }
+  for (uint32_t i = 0; i < tags_array->Length(); ++i) {
+    if (!tags_array->Get(i)->IsString())
+      THROW_BAD_ARGS("Bad arguments");
+    v8::String::Utf8Value tag(tags_array->Get(i));
+    properties.tags_scratch.push_back(*tag);
+    properties.tags[i] = properties.tags_scratch.back().c_str();
+  }
 
   Nan::Callback* success_callback =
       new Nan::Callback(info[5].As<v8::Function>());
@@ -172,47 +161,80 @@ NAN_METHOD(UpdatePublishedWorkshopFile) {
   if (info.Length() > 6 && info[6]->IsFunction())
     error_callback = new Nan::Callback(info[6].As<v8::Function>());
 
+  properties.file_path = (*(v8::String::Utf8Value(info[1])));
+  properties.image_path = (*(v8::String::Utf8Value(info[2])));
+  properties.title = (*(v8::String::Utf8Value(info[3])));
+  properties.description = (*(v8::String::Utf8Value(info[4])));
+
+  Nan::AsyncQueueWorker(new greenworks::PublishWorkshopFileWorker(
+      success_callback, error_callback, app_id->Int32Value(), properties));
+  info.GetReturnValue().Set(Nan::Undefined());
+}
+
+NAN_METHOD(UpdatePublishedWorkshopFile) {
+  Nan::HandleScope scope;
+
+  if (info.Length() < 7 || !info[0]->IsObject() || !info[1]->IsString() ||
+      !info[2]->IsString() || !info[3]->IsString() || !info[4]->IsString() ||
+      !info[5]->IsString() || !info[6]->IsFunction()) {
+    THROW_BAD_ARGS("Bad arguments");
+  }
+  Nan::MaybeLocal<v8::Object> maybe_opt = Nan::To<v8::Object>(info[0]);
+  auto options = maybe_opt.ToLocalChecked();
+  auto tags = options->Get(Nan::New("tags").ToLocalChecked());
+  if (!tags->IsArray()) {
+    THROW_BAD_ARGS("The object parameter must have 'tags' field.");
+  }
+  greenworks::WorkshopFileProperties properties;
+
+  v8::Local<v8::Array> tags_array = tags.As<v8::Array>();
+  if (tags_array->Length() > greenworks::WorkshopFileProperties::MAX_TAGS) {
+    THROW_BAD_ARGS("The length of 'tags' must be less than 100.");
+  }
+  for (uint32_t i = 0; i < tags_array->Length(); ++i) {
+    if (!tags_array->Get(i)->IsString())
+      THROW_BAD_ARGS("Bad arguments");
+    v8::String::Utf8Value tag(tags_array->Get(i));
+    properties.tags_scratch.push_back(*tag);
+    properties.tags[i] = properties.tags_scratch.back().c_str();
+  }
+  Nan::Callback* success_callback =
+      new Nan::Callback(info[6].As<v8::Function>());
+  Nan::Callback* error_callback = NULL;
+
+  if (info.Length() > 7 && info[7]->IsFunction())
+    error_callback = new Nan::Callback(info[7].As<v8::Function>());
+
+  PublishedFileId_t published_file_id = utils::strToUint64(
+      *(v8::String::Utf8Value(info[1])));
+  properties.file_path = (*(v8::String::Utf8Value(info[2])));
+  properties.image_path = (*(v8::String::Utf8Value(info[3])));
+  properties.title = (*(v8::String::Utf8Value(info[4])));
+  properties.description = (*(v8::String::Utf8Value(info[5])));
+
   Nan::AsyncQueueWorker(new greenworks::UpdatePublishedWorkshopFileWorker(
-      success_callback, error_callback, published_file_id, file_name,
-      image_name, title, description));
+      success_callback, error_callback, published_file_id, properties));
   info.GetReturnValue().Set(Nan::Undefined());
 }
 
 NAN_METHOD(UGCGetItems) {
   Nan::HandleScope scope;
-  if (info.Length() < 3 || !info[0]->IsInt32() || !info[1]->IsInt32() ||
-      !info[2]->IsFunction()) {
-    THROW_BAD_ARGS("Bad arguments");
-  }
-
-  EUGCMatchingUGCType ugc_matching_type = static_cast<EUGCMatchingUGCType>(
-      info[0]->Int32Value());
-  EUGCQuery ugc_query_type = static_cast<EUGCQuery>(info[1]->Int32Value());
-
-  Nan::Callback* success_callback =
-      new Nan::Callback(info[2].As<v8::Function>());
-  Nan::Callback* error_callback = NULL;
-
-  if (info.Length() > 3 && info[3]->IsFunction())
-    error_callback = new Nan::Callback(info[3].As<v8::Function>());
-
-  Nan::AsyncQueueWorker(new greenworks::QueryAllUGCWorker(
-      success_callback, error_callback, ugc_matching_type, ugc_query_type));
-  info.GetReturnValue().Set(Nan::Undefined());
-}
-
-NAN_METHOD(UGCGetUserItems) {
-  Nan::HandleScope scope;
-  if (info.Length() < 4 || !info[0]->IsInt32() || !info[1]->IsInt32() ||
+  if (info.Length() < 4 || !info[0]->IsObject() || !info[1]->IsInt32() ||
       !info[2]->IsInt32() || !info[3]->IsFunction()) {
     THROW_BAD_ARGS("Bad arguments");
   }
+  Nan::MaybeLocal<v8::Object> maybe_opt = Nan::To<v8::Object>(info[0]);
+  auto options = maybe_opt.ToLocalChecked();
+  auto app_id = options->Get(Nan::New("app_id").ToLocalChecked());
+  auto page_num = options->Get(Nan::New("page_num").ToLocalChecked());
+  if (!app_id->IsInt32() || !page_num->IsInt32()) {
+    THROW_BAD_ARGS(
+        "The object parameter must have 'app_id' and 'page_num' fields.");
+  }
 
   EUGCMatchingUGCType ugc_matching_type = static_cast<EUGCMatchingUGCType>(
-      info[0]->Int32Value());
-  EUserUGCListSortOrder ugc_list_order = static_cast<EUserUGCListSortOrder>(
       info[1]->Int32Value());
-  EUserUGCList ugc_list = static_cast<EUserUGCList>(info[2]->Int32Value());
+  EUGCQuery ugc_query_type = static_cast<EUGCQuery>(info[2]->Int32Value());
 
   Nan::Callback* success_callback =
       new Nan::Callback(info[3].As<v8::Function>());
@@ -221,9 +243,43 @@ NAN_METHOD(UGCGetUserItems) {
   if (info.Length() > 4 && info[4]->IsFunction())
     error_callback = new Nan::Callback(info[4].As<v8::Function>());
 
+  Nan::AsyncQueueWorker(new greenworks::QueryAllUGCWorker(
+      success_callback, error_callback, ugc_matching_type, ugc_query_type,
+      app_id->Int32Value(), page_num->Int32Value()));
+  info.GetReturnValue().Set(Nan::Undefined());
+}
+
+NAN_METHOD(UGCGetUserItems) {
+  Nan::HandleScope scope;
+  if (info.Length() < 5 || info[0]->IsObject() || !info[1]->IsInt32() ||
+      !info[2]->IsInt32() || !info[3]->IsInt32() || !info[4]->IsFunction()) {
+    THROW_BAD_ARGS("Bad arguments");
+  }
+  Nan::MaybeLocal<v8::Object> maybe_opt = Nan::To<v8::Object>(info[0]);
+  auto options = maybe_opt.ToLocalChecked();
+  auto app_id = options->Get(Nan::New("app_id").ToLocalChecked());
+  auto page_num = options->Get(Nan::New("page_num").ToLocalChecked());
+  if (!app_id->IsInt32() || !page_num->IsInt32()) {
+    THROW_BAD_ARGS(
+        "The object parameter must have 'app_id' and 'page_num' fields.");
+  }
+
+  EUGCMatchingUGCType ugc_matching_type = static_cast<EUGCMatchingUGCType>(
+      info[1]->Int32Value());
+  EUserUGCListSortOrder ugc_list_order = static_cast<EUserUGCListSortOrder>(
+      info[2]->Int32Value());
+  EUserUGCList ugc_list = static_cast<EUserUGCList>(info[3]->Int32Value());
+
+  Nan::Callback* success_callback =
+      new Nan::Callback(info[4].As<v8::Function>());
+  Nan::Callback* error_callback = NULL;
+
+  if (info.Length() > 5 && info[5]->IsFunction())
+    error_callback = new Nan::Callback(info[4].As<v8::Function>());
+
   Nan::AsyncQueueWorker(new greenworks::QueryUserUGCWorker(
       success_callback, error_callback, ugc_matching_type, ugc_list,
-      ugc_list_order));
+      ugc_list_order, app_id->Int32Value(), page_num->Int32Value()));
   info.GetReturnValue().Set(Nan::Undefined());
 }
 
@@ -251,20 +307,31 @@ NAN_METHOD(UGCDownloadItem) {
 
 NAN_METHOD(UGCSynchronizeItems) {
   Nan::HandleScope scope;
-  if (info.Length() < 2 || !info[0]->IsString() || !info[1]->IsFunction()) {
+  if (info.Length() < 3 || !info[0]->IsObject() || !info[1]->IsString() ||
+      !info[2]->IsFunction()) {
     THROW_BAD_ARGS("Bad arguments");
   }
-  std::string download_dir = *(v8::String::Utf8Value(info[0]));
+
+  Nan::MaybeLocal<v8::Object> maybe_opt = Nan::To<v8::Object>(info[0]);
+  auto options = maybe_opt.ToLocalChecked();
+  auto app_id = options->Get(Nan::New("app_id").ToLocalChecked());
+  auto page_num = options->Get(Nan::New("page_num").ToLocalChecked());
+  if (!app_id->IsInt32() || !page_num->IsInt32()) {
+    THROW_BAD_ARGS(
+        "The object parameter must have 'app_id' and 'page_num' fields.");
+  }
+  std::string download_dir = *(v8::String::Utf8Value(info[1]));
 
   Nan::Callback* success_callback =
-      new Nan::Callback(info[1].As<v8::Function>());
+      new Nan::Callback(info[2].As<v8::Function>());
   Nan::Callback* error_callback = NULL;
 
-  if (info.Length() > 2 && info[2]->IsFunction())
-    error_callback = new Nan::Callback(info[2].As<v8::Function>());
+  if (info.Length() > 3 && info[3]->IsFunction())
+    error_callback = new Nan::Callback(info[3].As<v8::Function>());
 
   Nan::AsyncQueueWorker(new greenworks::SynchronizeItemsWorker(
-      success_callback, error_callback, download_dir));
+      success_callback, error_callback, download_dir,
+      app_id->Int32Value(), page_num->Int32Value()));
   info.GetReturnValue().Set(Nan::Undefined());
 }
 
@@ -317,23 +384,23 @@ void RegisterAPIs(v8::Handle<v8::Object> exports) {
            Nan::New("fileShare").ToLocalChecked(),
            Nan::New<v8::FunctionTemplate>(FileShare)->GetFunction());
   Nan::Set(exports,
-           Nan::New("publishWorkshopFile").ToLocalChecked(),
+           Nan::New("_publishWorkshopFile").ToLocalChecked(),
            Nan::New<v8::FunctionTemplate>(PublishWorkshopFile)->GetFunction());
   Nan::Set(exports,
-           Nan::New("updatePublishedWorkshopFile").ToLocalChecked(),
+           Nan::New("_updatePublishedWorkshopFile").ToLocalChecked(),
            Nan::New<v8::FunctionTemplate>(
                UpdatePublishedWorkshopFile)->GetFunction());
   Nan::Set(exports,
-           Nan::New("ugcGetItems").ToLocalChecked(),
+           Nan::New("_ugcGetItems").ToLocalChecked(),
            Nan::New<v8::FunctionTemplate>(UGCGetItems)->GetFunction());
   Nan::Set(exports,
-           Nan::New("ugcGetUserItems").ToLocalChecked(),
+           Nan::New("_ugcGetUserItems").ToLocalChecked(),
            Nan::New<v8::FunctionTemplate>(UGCGetUserItems)->GetFunction());
   Nan::Set(exports,
            Nan::New("ugcDownloadItem").ToLocalChecked(),
            Nan::New<v8::FunctionTemplate>(UGCDownloadItem)->GetFunction());
   Nan::Set(exports,
-           Nan::New("ugcSynchronizeItems").ToLocalChecked(),
+           Nan::New("_ugcSynchronizeItems").ToLocalChecked(),
            Nan::New<v8::FunctionTemplate>(UGCSynchronizeItems)->GetFunction());
   Nan::Set(exports,
            Nan::New("ugcShowOverlay").ToLocalChecked(),

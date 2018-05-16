@@ -105,8 +105,11 @@ Represents Steam SDK `EUserUGCListSortOrder`, sort order for user published UGC 
     with users and features.
 * `error_callback` Function(err)
 
-### greenworks.publishWorkshopFile(file_path, image_path, title, description, success_callback, [error_callback])
+### greenworks.publishWorkshopFile([options, ] file_path, image_path, title, description, success_callback, [error_callback])
 
+* `options` Object
+   * `app_id` Integer: The App ID that will be using this workshop file
+   * `tag` Array of String: The tags of the workshop file
 * `file_path` String
 * `image_path` String
 * `title` String
@@ -121,8 +124,11 @@ Publishes `file_path` workshop item on Steam. The files `file_path` and
 
 An empty String of `image_path` means no image for the workshp item.
 
-### greenworks.updatePublishedWorkshopFile(published_file_handle, file_path, image_path, title, description, success_callback, [error_callback])
+### greenworks.updatePublishedWorkshopFile([options, ] published_file_handle, file_path, image_path, title, description, success_callback, [error_callback])
 
+* `options` Object
+   * `tag` Array of String: The tags of the workshop file. To delete all
+     existing tags, passing an array with an empty string `['']`
 * `published_file_handle` String: Represents uint64, the published file handle.
 * `file_path` String
 * `image_path` String
@@ -163,16 +169,24 @@ Publishes user generated content(ugc) to Steam workshop.
 
 Updates published ugc.
 
-### greenworks.ugcGetItems(ugc_matching_type, ugc_query_type, success_callback, [error_callback])
+### greenworks.ugcGetItems([options, ] ugc_matching_type, ugc_query_type, success_callback, [error_callback])
 
+* `options` Object
+   * `app_id` Integer: The consumer App ID
+   * `page_num` Integer: The page number of the results to receive, this should
+     start at 1 on the first call
 * `ugc_matching_type` greenworks.UGCMatchingType
 * `ugc_query_type` greenworks.UGCQueryType
 * `success_callback` Function(items)
   * `items` Array of `SteamUGCDetails` Object
 * `error_callback` Function(err)
 
-### greenworks.ugcGetUserItems(ugc_matching_type, ugc_list_sort_order, ugc_list, success_callback, [error_callback])
+### greenworks.ugcGetUserItems([options, ] ugc_matching_type, ugc_list_sort_order, ugc_list, success_callback, [error_callback])
 
+* `options` Object
+   * `app_id` Integer: The consumer App ID
+   * `page_num` Integer: The page number of the results to receive, this should
+     start at 1 on the first call
 * `ugc_matching_type` greenworks.UGCMatchingType
 * `ugc_list_sort_order` greenworks.UserUGCListSortOrder
 * `ugc_list` greenworks.UserUGCList
@@ -187,8 +201,12 @@ Updates published ugc.
 * `success_callback` Function()
 * `error_callback` Function(err)
 
-### greenworks.ugcSynchronizeItems(sync_dir, success_callback, [error_callback])
+### greenworks.ugcSynchronizeItems([options, ] sync_dir, success_callback, [error_callback])
 
+* `options` Object
+   * `app_id` Integer: The consumer App ID
+   * `page_num` Integer: The page number of the results to receive, this should
+     start at 1 on the first call
 * `sync_dir` String: The directory to download the sync workshop item.
 * `success_callback` Function(items)
   * `items` Array of Object

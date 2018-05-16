@@ -31,14 +31,23 @@ class FileShareWorker : public SteamCallbackAsyncWorker {
   CCallResult<FileShareWorker, RemoteStorageFileShareResult_t> call_result_;
 };
 
+struct WorkshopFileProperties {
+  static constexpr int MAX_TAGS = 100;
+  std::string file_path;
+  std::string image_path;
+  std::string title;
+  std::string description;
+
+  std::vector<std::string> tags_scratch;
+  const char* tags[MAX_TAGS];
+};
+
 class PublishWorkshopFileWorker : public SteamCallbackAsyncWorker {
  public:
   PublishWorkshopFileWorker(Nan::Callback* success_callback,
                             Nan::Callback* error_callback,
-                            const std::string& file_path,
-                            const std::string& image_path,
-                            const std::string& title,
-                            const std::string& description);
+                            uint32 app_id,
+                            const WorkshopFileProperties& properties);
   void OnFilePublishCompleted(RemoteStoragePublishFileResult_t* result,
                               bool io_failure);
 
@@ -47,10 +56,8 @@ class PublishWorkshopFileWorker : public SteamCallbackAsyncWorker {
   virtual void HandleOKCallback();
 
  private:
-  std::string file_path_;
-  std::string image_path_;
-  std::string title_;
-  std::string description_;
+  uint32 app_id_;
+  WorkshopFileProperties properties_;
 
   PublishedFileId_t publish_file_id_;
   CCallResult<PublishWorkshopFileWorker,
@@ -62,10 +69,7 @@ class UpdatePublishedWorkshopFileWorker : public SteamCallbackAsyncWorker {
   UpdatePublishedWorkshopFileWorker(Nan::Callback* success_callback,
                                     Nan::Callback* error_callback,
                                     PublishedFileId_t published_file_id,
-                                    const std::string& file_path,
-                                    const std::string& image_path,
-                                    const std::string& title,
-                                    const std::string& description);
+                                    const WorkshopFileProperties& properties);
   void OnCommitPublishedFileUpdateCompleted(
       RemoteStorageUpdatePublishedFileResult_t* result, bool io_failure);
 
@@ -74,10 +78,7 @@ class UpdatePublishedWorkshopFileWorker : public SteamCallbackAsyncWorker {
 
  private:
   PublishedFileId_t published_file_id_;
-  std::string file_path_;
-  std::string image_path_;
-  std::string title_;
-  std::string description_;
+  WorkshopFileProperties properties_;
 
   CCallResult<UpdatePublishedWorkshopFileWorker,
       RemoteStorageUpdatePublishedFileResult_t>
@@ -87,9 +88,9 @@ class UpdatePublishedWorkshopFileWorker : public SteamCallbackAsyncWorker {
 // A base worker class for querying (user/all) ugc.
 class QueryUGCWorker : public SteamCallbackAsyncWorker {
  public:
-  QueryUGCWorker(Nan::Callback* success_callback,
-                 Nan::Callback* error_callback,
-                 EUGCMatchingUGCType ugc_matching_type);
+  QueryUGCWorker(Nan::Callback* success_callback, Nan::Callback* error_callback,
+                 EUGCMatchingUGCType ugc_matching_type, uint32 app_id,
+                 uint32 page_num);
   void OnUGCQueryCompleted(SteamUGCQueryCompleted_t* result,
                            bool io_failure);
 
@@ -99,6 +100,8 @@ class QueryUGCWorker : public SteamCallbackAsyncWorker {
  protected:
   EUGCMatchingUGCType ugc_matching_type_;
   std::vector<SteamUGCDetails_t> ugc_items_;
+  uint32 app_id_;
+  uint32 page_num_;
 
   CCallResult<QueryUGCWorker,
       SteamUGCQueryCompleted_t> ugc_query_call_result_;
@@ -109,7 +112,7 @@ class QueryAllUGCWorker : public QueryUGCWorker {
   QueryAllUGCWorker(Nan::Callback* success_callback,
                     Nan::Callback* error_callback,
                     EUGCMatchingUGCType ugc_matching_type,
-                    EUGCQuery ugc_query_type);
+                    EUGCQuery ugc_query_type, uint32 app_id, uint32 page_num);
 
   // Override Nan::AsyncWorker methods.
   virtual void Execute();
@@ -124,7 +127,8 @@ class QueryUserUGCWorker : public QueryUGCWorker {
                      Nan::Callback* error_callback,
                      EUGCMatchingUGCType ugc_matching_type,
                      EUserUGCList ugc_list,
-                     EUserUGCListSortOrder ugc_list_sort_order);
+                     EUserUGCListSortOrder ugc_list_sort_order, uint32 app_id,
+                     uint32 page_num);
 
   // Override Nan::AsyncWorker methods.
   virtual void Execute();
@@ -158,7 +162,9 @@ class SynchronizeItemsWorker : public SteamCallbackAsyncWorker {
  public:
   SynchronizeItemsWorker(Nan::Callback* success_callback,
                          Nan::Callback* error_callback,
-                         const std::string& download_dir);
+                         const std::string& download_dir,
+                         uint32 app_id,
+                         uint32 page_num);
 
   void OnUGCQueryCompleted(SteamUGCQueryCompleted_t* result,
                            bool io_failure);
@@ -174,6 +180,8 @@ class SynchronizeItemsWorker : public SteamCallbackAsyncWorker {
   std::string download_dir_;
   std::vector<SteamUGCDetails_t> ugc_items_;
   std::vector<UGCHandle_t> download_ugc_items_handle_;
+  uint32 app_id_;
+  uint32 page_num_;
   CCallResult<SynchronizeItemsWorker,
       RemoteStorageDownloadUGCResult_t> download_call_result_;
   CCallResult<SynchronizeItemsWorker,

@@ -130,26 +130,24 @@ void FileShareWorker::HandleOKCallback() {
 
 PublishWorkshopFileWorker::PublishWorkshopFileWorker(
     Nan::Callback* success_callback, Nan::Callback* error_callback,
-    const std::string& file_path, const std::string& image_path,
-    const std::string& title, const std::string& description):
-        SteamCallbackAsyncWorker(success_callback, error_callback),
-        file_path_(file_path),
-        image_path_(image_path),
-        title_(title),
-        description_(description) {
-}
+    uint32 app_id, const WorkshopFileProperties& properties)
+    : SteamCallbackAsyncWorker(success_callback, error_callback),
+      app_id_(app_id),
+      properties_(properties) {}
 
 void PublishWorkshopFileWorker::Execute() {
   SteamParamStringArray_t tags;
-  tags.m_nNumStrings = 0;
-  std::string file_name = utils::GetFileNameFromPath(file_path_);
-  std::string image_name = utils::GetFileNameFromPath(image_path_);
+  tags.m_nNumStrings = properties_.tags_scratch.size();
+  tags.m_ppStrings = reinterpret_cast<const char**>(&properties_.tags);
+
+  std::string file_name = utils::GetFileNameFromPath(properties_.file_path);
+  std::string image_name = utils::GetFileNameFromPath(properties_.image_path);
   SteamAPICall_t publish_result = SteamRemoteStorage()->PublishWorkshopFile(
       file_name.c_str(),
       image_name.empty()? NULL:image_name.c_str(),
-      SteamUtils()->GetAppID(),
-      title_.c_str(),
-      description_.empty()? NULL:description_.c_str(),
+      app_id_,
+      properties_.title.c_str(),
+      properties_.description.empty()? NULL:properties_.description.c_str(),
       k_ERemoteStoragePublishedFileVisibilityPublic,
       &tags,
       k_EWorkshopFileTypeCommunity);
@@ -183,36 +181,45 @@ void PublishWorkshopFileWorker::HandleOKCallback() {
 
 UpdatePublishedWorkshopFileWorker::UpdatePublishedWorkshopFileWorker(
     Nan::Callback* success_callback, Nan::Callback* error_callback,
-    PublishedFileId_t published_file_id, const std::string& file_path,
-    const std::string& image_path, const std::string& title,
-    const std::string& description):
-        SteamCallbackAsyncWorker(success_callback, error_callback),
-        published_file_id_(published_file_id),
-        file_path_(file_path),
-        image_path_(image_path),
-        title_(title),
-        description_(description) {
-}
+    PublishedFileId_t published_file_id,
+    const WorkshopFileProperties& properties)
+    : SteamCallbackAsyncWorker(success_callback, error_callback),
+      published_file_id_(published_file_id),
+      properties_(properties) {}
 
 void UpdatePublishedWorkshopFileWorker::Execute() {
   PublishedFileUpdateHandle_t update_handle =
       SteamRemoteStorage()->CreatePublishedFileUpdateRequest(
           published_file_id_);
 
-  const std::string file_name = utils::GetFileNameFromPath(file_path_);
-  const std::string image_name = utils::GetFileNameFromPath(image_path_);
+  const std::string file_name =
+      utils::GetFileNameFromPath(properties_.file_path);
+  const std::string image_name =
+      utils::GetFileNameFromPath(properties_.image_path);
   if (!file_name.empty())
     SteamRemoteStorage()->UpdatePublishedFileFile(update_handle,
         file_name.c_str());
   if (!image_name.empty())
     SteamRemoteStorage()->UpdatePublishedFilePreviewFile(update_handle,
         image_name.c_str());
-  if (!title_.empty())
+  if (!properties_.title.empty())
     SteamRemoteStorage()->UpdatePublishedFileTitle(update_handle,
-        title_.c_str());
-  if (!description_.empty())
+        properties_.title.c_str());
+  if (!properties_.description.empty())
     SteamRemoteStorage()->UpdatePublishedFileDescription(update_handle,
-        description_.c_str());
+        properties_.description.c_str());
+  if (!properties_.tags_scratch.empty()) {
+    SteamParamStringArray_t tags;
+    if (properties_.tags_scratch.size() == 1 &&
+        properties_.tags_scratch.front().empty()) {  // clean the tag.
+      tags.m_nNumStrings = 0;
+      tags.m_ppStrings = nullptr;
+    } else {
+      tags.m_nNumStrings = properties_.tags_scratch.size();
+      tags.m_ppStrings = reinterpret_cast<const char**>(&properties_.tags);
+    }
+    SteamRemoteStorage()->UpdatePublishedFileTags(update_handle, &tags);
+  }
   SteamAPICall_t commit_update_result =
       SteamRemoteStorage()->CommitPublishedFileUpdate(update_handle);
   update_published_file_call_result_.Set(commit_update_result, this,
@@ -236,11 +243,13 @@ void UpdatePublishedWorkshopFileWorker::OnCommitPublishedFileUpdateCompleted(
 }
 
 QueryUGCWorker::QueryUGCWorker(Nan::Callback* success_callback,
-    Nan::Callback* error_callback, EUGCMatchingUGCType ugc_matching_type)
-        :SteamCallbackAsyncWorker(success_callback, error_callback),
-         ugc_matching_type_(ugc_matching_type) {
-}
-
+                               Nan::Callback* error_callback,
+                               EUGCMatchingUGCType ugc_matching_type,
+                               uint32 app_id, uint32 page_num)
+    : SteamCallbackAsyncWorker(success_callback, error_callback),
+      ugc_matching_type_(ugc_matching_type),
+      app_id_(app_id),
+      page_num_(page_num) {}
 
 void QueryUGCWorker::HandleOKCallback() {
   Nan::HandleScope scope;
@@ -272,20 +281,21 @@ void QueryUGCWorker::OnUGCQueryCompleted(SteamUGCQueryCompleted_t* result,
 }
 
 QueryAllUGCWorker::QueryAllUGCWorker(Nan::Callback* success_callback,
-    Nan::Callback* error_callback, EUGCMatchingUGCType ugc_matching_type,
-    EUGCQuery ugc_query_type)
-        :QueryUGCWorker(success_callback, error_callback, ugc_matching_type),
-         ugc_query_type_(ugc_query_type) {
-}
+                                     Nan::Callback* error_callback,
+                                     EUGCMatchingUGCType ugc_matching_type,
+                                     EUGCQuery ugc_query_type, uint32 app_id,
+                                     uint32 page_num)
+    : QueryUGCWorker(success_callback, error_callback, ugc_matching_type,
+                     app_id, page_num),
+      ugc_query_type_(ugc_query_type) {}
 
 void QueryAllUGCWorker::Execute() {
-  uint32 app_id = SteamUtils()->GetAppID();
   uint32 invalid_app_id = 0;
   // Set "creator_app_id" parameter to an invalid id to make Steam API return
   // all ugc items, otherwise the API won't get any results in some cases.
   UGCQueryHandle_t ugc_handle = SteamUGC()->CreateQueryAllUGCRequest(
       ugc_query_type_, ugc_matching_type_, /*creator_app_id=*/invalid_app_id,
-      /*consumer_app_id=*/app_id, 1);
+      /*consumer_app_id=*/app_id_, page_num_);
   SteamAPICall_t ugc_query_result = SteamUGC()->SendQueryUGCRequest(ugc_handle);
   ugc_query_call_result_.Set(ugc_query_result, this,
       &QueryAllUGCWorker::OnUGCQueryCompleted);
@@ -294,25 +304,24 @@ void QueryAllUGCWorker::Execute() {
   WaitForCompleted();
 }
 
-QueryUserUGCWorker::QueryUserUGCWorker(Nan::Callback* success_callback,
-    Nan::Callback* error_callback, EUGCMatchingUGCType ugc_matching_type,
-    EUserUGCList ugc_list, EUserUGCListSortOrder ugc_list_sort_order)
-        :QueryUGCWorker(success_callback, error_callback, ugc_matching_type),
-         ugc_list_(ugc_list),
-         ugc_list_sort_order_(ugc_list_sort_order) {
-}
+QueryUserUGCWorker::QueryUserUGCWorker(
+    Nan::Callback* success_callback, Nan::Callback* error_callback,
+    EUGCMatchingUGCType ugc_matching_type, EUserUGCList ugc_list,
+    EUserUGCListSortOrder ugc_list_sort_order, uint32 app_id, uint32 page_num)
+    : QueryUGCWorker(success_callback, error_callback, ugc_matching_type,
+                     app_id, page_num),
+      ugc_list_(ugc_list),
+      ugc_list_sort_order_(ugc_list_sort_order) {}
 
 void QueryUserUGCWorker::Execute() {
-  uint32 app_id = SteamUtils()->GetAppID();
-
   UGCQueryHandle_t ugc_handle = SteamUGC()->CreateQueryUserUGCRequest(
       SteamUser()->GetSteamID().GetAccountID(),
       ugc_list_,
       ugc_matching_type_,
       ugc_list_sort_order_,
-      app_id,
-      app_id,
-      1);
+      app_id_,
+      app_id_,
+      page_num_);
   SteamAPICall_t ugc_query_result = SteamUGC()->SendQueryUGCRequest(ugc_handle);
   ugc_query_call_result_.Set(ugc_query_result, this,
       &QueryUserUGCWorker::OnUGCQueryCompleted);
@@ -364,23 +373,24 @@ void DownloadItemWorker::OnDownloadCompleted(
 }
 
 SynchronizeItemsWorker::SynchronizeItemsWorker(Nan::Callback* success_callback,
-    Nan::Callback* error_callback, const std::string& download_dir)
-        :SteamCallbackAsyncWorker(success_callback, error_callback),
-         current_download_items_pos_(0),
-         download_dir_(download_dir) {
-}
+                                               Nan::Callback* error_callback,
+                                               const std::string& download_dir,
+                                               uint32 app_id, uint32 page_num)
+    : SteamCallbackAsyncWorker(success_callback, error_callback),
+      current_download_items_pos_(0),
+      download_dir_(download_dir),
+      app_id_(app_id),
+      page_num_(page_num) {}
 
 void SynchronizeItemsWorker::Execute() {
-  uint32 app_id = SteamUtils()->GetAppID();
-
   UGCQueryHandle_t ugc_handle = SteamUGC()->CreateQueryUserUGCRequest(
       SteamUser()->GetSteamID().GetAccountID(),
       k_EUserUGCList_Subscribed,
       k_EUGCMatchingUGCType_Items,
       k_EUserUGCListSortOrder_SubscriptionDateDesc,
-      app_id,
-      app_id,
-      1);
+      app_id_,
+      app_id_,
+      page_num_);
   SteamAPICall_t ugc_query_result = SteamUGC()->SendQueryUGCRequest(ugc_handle);
   ugc_query_call_result_.Set(ugc_query_result, this,
       &SynchronizeItemsWorker::OnUGCQueryCompleted);

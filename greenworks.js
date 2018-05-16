@@ -29,6 +29,92 @@ function error_process(err, error_callback) {
     error_callback(err);
 }
 
+greenworks.ugcGetItems = function(options, ugc_matching_type, ugc_query_type,
+    success_callback, error_callback) {
+  if (typeof options !== 'object') {
+    error_callback = success_callback;
+    success_callback = ugc_query_type;
+    ugc_query_type = ugc_matching_type;
+    ugc_matching_type = options;
+    options = {
+      'app_id': greenworks.getAppId(),
+      'page_num': 1
+    }
+  }
+  greenworks._ugcGetItems(options, ugc_matching_type, ugc_query_type,
+      success_callback, error_callback);
+}
+
+greenworks.ugcGetUserItems = function(options, ugc_matching_type,
+    ugc_list_sort_order, ugc_list, success_callback, error_callback) {
+  if (typeof options !== 'object') {
+    error_callback = success_callback;
+    success_callback = ugc_list;
+    ugc_list = ugc_list_sort_order;
+    ugc_list_sort_order = ugc_matching_type;
+    ugc_matching_type = options;
+    options = {
+      'app_id': greenworks.getAppId(),
+      'page_num': 1
+    }
+  }
+  greenworks.ugcGetUserItems(options, ugc_matching_type, ugc_list_sort_order,
+      ugc_list, success_callback, error_callback);
+}
+
+greenworks.ugcSynchronizeItems = function (options, sync_dir, success_callback,
+    error_callback) {
+  if (typeof options !== 'object') {
+    error_callback = success_callback;
+    success_callback = sync_dir;
+    sync_dir = options;
+    options = {
+      'app_id': greenworks.getAppId(),
+      'page_num': 1
+    }
+  }
+  greenworks._ugcSynchronizeItems(options, sync_dir, success_callback,
+      error_callback);
+}
+
+greenworks.publishWorkshopFile = function(options, file_path, image_path, title,
+    description, success_callback, error_callback) {
+  if (typeof options !== 'object') {
+    error_callback = success_callback;
+    success_callback = description;
+    description = title;
+    title = image_path;
+    image_path = file_path;
+    file_path = options;
+    options = {
+      'app_id': greenworks.getAppId(),
+      'tags': []
+    }
+  }
+  greenworks._publishWorkshopFile(options, file_path, image_path, title,
+      description, success_callback, error_callback);
+}
+
+greenworks.updatePublishedWorkshopFile = function(options,
+    published_file_handle, file_path, image_path, title, description,
+    success_callback, error_callback) {
+  if (typeof options !== 'object') {
+    error_callback = success_callback;
+    success_callback = description;
+    description = title;
+    title = image_path;
+    image_path = file_path;
+    file_path = published_file_handle;
+    published_file_handle = options;
+    options = {
+      'tags': [] // No tags are set
+    }
+  }
+  greenworks._updatePublishedWorkshopFile(options, published_file_handle,
+     file_path, image_path, title, description, success_callback,
+     error_callback);
+}
+
 // An utility function for publish related APIs.
 // It processes remains steps after saving files to Steam Cloud.
 function file_share_process(file_name, image_name, next_process_func,
