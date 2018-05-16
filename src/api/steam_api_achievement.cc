@@ -70,7 +70,7 @@ NAN_METHOD(ClearAchievement) {
 
 NAN_METHOD(GetAchievementNames) {
   Nan::HandleScope scope;
-  int count = static_cast<int>(SteamUserStats()->GetNumAchievements());
+  auto count = static_cast<int>(SteamUserStats()->GetNumAchievements());
   v8::Local<v8::Array> names = Nan::New<v8::Array>(count);
   for (int i = 0; i < count; ++i) {
     names->Set(

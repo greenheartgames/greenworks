@@ -358,7 +358,7 @@ void DownloadItemWorker::OnDownloadCompleted(
         download_dir_);
 
     int file_size_in_bytes = result->m_nSizeInBytes;
-    char* content = new char[file_size_in_bytes];
+    auto* content = new char[file_size_in_bytes];
 
     SteamRemoteStorage()->UGCRead(download_file_handle_,
         content, file_size_in_bytes, 0, k_EUGCRead_Close);
@@ -444,7 +444,7 @@ void SynchronizeItemsWorker::OnDownloadCompleted(
         download_dir_);
 
     int file_size_in_bytes = result->m_nSizeInBytes;
-    char* content = new char[file_size_in_bytes];
+    auto* content = new char[file_size_in_bytes];
 
     SteamRemoteStorage()->UGCRead(result->m_hFile,
         content, file_size_in_bytes, 0, k_EUGCRead_Close);

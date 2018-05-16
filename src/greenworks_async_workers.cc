@@ -109,7 +109,7 @@ void FileReadWorker::Execute() {
 
   int32 file_size = steam_remote_storage->GetFileSize(file_name_.c_str());
 
-  char* content = new char[file_size+1];
+  auto* content = new char[file_size+1];
   int32 end_pos = steam_remote_storage->FileRead(
       file_name_.c_str(), content, file_size);
   content[end_pos] = '\0';

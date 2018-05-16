@@ -111,7 +111,7 @@ int mymkdir(const char* dirname) {
 int makedir(const char *newdir) {
   char *buffer;
   char *p;
-  int len = (int)strlen(newdir);
+  auto len = (int)strlen(newdir);
 
   if (len <= 0)
     return 0;
