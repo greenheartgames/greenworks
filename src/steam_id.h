@@ -38,7 +38,7 @@ class SteamID : public Nan::ObjectWrap {
 
  private:
   explicit SteamID(CSteamID steam_id) : steam_id_(steam_id) {}
-  ~SteamID() {}
+  ~SteamID() override {}
 
   CSteamID steam_id_;
 };

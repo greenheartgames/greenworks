@@ -21,9 +21,8 @@ class FileShareWorker : public SteamCallbackAsyncWorker {
   void OnFileShareCompleted(RemoteStorageFileShareResult_t* result,
                             bool io_failure);
 
-  // Override Nan::AsyncWorker methods.
-  virtual void Execute();
-  virtual void HandleOKCallback();
+  void Execute() override;
+  void HandleOKCallback() override;
 
  private:
   const std::string file_path_;
@@ -51,9 +50,8 @@ class PublishWorkshopFileWorker : public SteamCallbackAsyncWorker {
   void OnFilePublishCompleted(RemoteStoragePublishFileResult_t* result,
                               bool io_failure);
 
-  // Override Nan::AsyncWorker methods.
-  virtual void Execute();
-  virtual void HandleOKCallback();
+  void Execute() override;
+  void HandleOKCallback() override;
 
  private:
   uint32 app_id_;
@@ -73,8 +71,7 @@ class UpdatePublishedWorkshopFileWorker : public SteamCallbackAsyncWorker {
   void OnCommitPublishedFileUpdateCompleted(
       RemoteStorageUpdatePublishedFileResult_t* result, bool io_failure);
 
-  // Override Nan::AsyncWorker methods.
-  virtual void Execute();
+  void Execute() override;
 
  private:
   PublishedFileId_t published_file_id_;
@@ -94,8 +91,7 @@ class QueryUGCWorker : public SteamCallbackAsyncWorker {
   void OnUGCQueryCompleted(SteamUGCQueryCompleted_t* result,
                            bool io_failure);
 
-  // Override Nan::AsyncWorker methods.
-  virtual void HandleOKCallback();
+  void HandleOKCallback() override;
 
  protected:
   EUGCMatchingUGCType ugc_matching_type_;
@@ -114,8 +110,7 @@ class QueryAllUGCWorker : public QueryUGCWorker {
                     EUGCMatchingUGCType ugc_matching_type,
                     EUGCQuery ugc_query_type, uint32 app_id, uint32 page_num);
 
-  // Override Nan::AsyncWorker methods.
-  virtual void Execute();
+  void Execute() override;
 
  private:
   EUGCQuery ugc_query_type_;
@@ -130,8 +125,7 @@ class QueryUserUGCWorker : public QueryUGCWorker {
                      EUserUGCListSortOrder ugc_list_sort_order, uint32 app_id,
                      uint32 page_num);
 
-  // Override Nan::AsyncWorker methods.
-  virtual void Execute();
+  void Execute() override;
 
  private:
   EUserUGCList ugc_list_;
@@ -148,8 +142,7 @@ class DownloadItemWorker : public SteamCallbackAsyncWorker {
   void OnDownloadCompleted(RemoteStorageDownloadUGCResult_t* result,
       bool io_failure);
 
-  // Override Nan::AsyncWorker methods.
-  virtual void Execute();
+  void Execute() override;
 
  private:
   UGCHandle_t download_file_handle_;
@@ -171,9 +164,8 @@ class SynchronizeItemsWorker : public SteamCallbackAsyncWorker {
   void OnDownloadCompleted(RemoteStorageDownloadUGCResult_t* result,
       bool io_failure);
 
-  // Override Nan::AsyncWorker methods.
-  virtual void Execute();
-  virtual void HandleOKCallback();
+  void Execute() override;
+  void HandleOKCallback() override;
 
  private:
   size_t current_download_items_pos_;
@@ -197,8 +189,7 @@ class UnsubscribePublishedFileWorker : public SteamCallbackAsyncWorker {
   void OnUnsubscribeCompleted(RemoteStoragePublishedFileUnsubscribed_t* result,
       bool io_failure);
 
-  // Override Nan::AsyncWorker methods.
-  virtual void Execute();
+  void Execute() override;
 
  private:
   PublishedFileId_t unsubscribe_file_id_;
