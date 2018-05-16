@@ -125,12 +125,12 @@ NAN_METHOD(FileShare) {
 }
 
 NAN_METHOD(PublishWorkshopFile) {
- Nan::HandleScope scope;
+  Nan::HandleScope scope;
 
- if (info.Length() < 6 || !info[0]->IsObject() || !info[1]->IsString() ||
-     !info[2]->IsString() || !info[3]->IsString() || !info[4]->IsString() ||
-     !info[5]->IsFunction()) {
-   THROW_BAD_ARGS("Bad arguments");
+  if (info.Length() < 6 || !info[0]->IsObject() || !info[1]->IsString() ||
+      !info[2]->IsString() || !info[3]->IsString() || !info[4]->IsString() ||
+      !info[5]->IsFunction()) {
+    THROW_BAD_ARGS("Bad arguments");
   }
   Nan::MaybeLocal<v8::Object> maybe_opt = Nan::To<v8::Object>(info[0]);
   auto options = maybe_opt.ToLocalChecked();

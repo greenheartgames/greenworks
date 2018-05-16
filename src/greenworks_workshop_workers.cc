@@ -192,8 +192,10 @@ void UpdatePublishedWorkshopFileWorker::Execute() {
       SteamRemoteStorage()->CreatePublishedFileUpdateRequest(
           published_file_id_);
 
-  const std::string file_name = utils::GetFileNameFromPath(properties_.file_path);
-  const std::string image_name = utils::GetFileNameFromPath(properties_.image_path);
+  const std::string file_name =
+      utils::GetFileNameFromPath(properties_.file_path);
+  const std::string image_name =
+      utils::GetFileNameFromPath(properties_.image_path);
   if (!file_name.empty())
     SteamRemoteStorage()->UpdatePublishedFileFile(update_handle,
         file_name.c_str());
@@ -209,7 +211,7 @@ void UpdatePublishedWorkshopFileWorker::Execute() {
   if (!properties_.tags_scratch.empty()) {
     SteamParamStringArray_t tags;
     if (properties_.tags_scratch.size() == 1 &&
-        properties_.tags_scratch.front().empty()) { // clean the tag.
+        properties_.tags_scratch.front().empty()) {  // clean the tag.
       tags.m_nNumStrings = 0;
       tags.m_ppStrings = nullptr;
     } else {
@@ -288,7 +290,6 @@ QueryAllUGCWorker::QueryAllUGCWorker(Nan::Callback* success_callback,
       ugc_query_type_(ugc_query_type) {}
 
 void QueryAllUGCWorker::Execute() {
-  //uint32 app_id = SteamUtils()->GetAppID();
   uint32 invalid_app_id = 0;
   // Set "creator_app_id" parameter to an invalid id to make Steam API return
   // all ugc items, otherwise the API won't get any results in some cases.
@@ -313,8 +314,6 @@ QueryUserUGCWorker::QueryUserUGCWorker(
       ugc_list_sort_order_(ugc_list_sort_order) {}
 
 void QueryUserUGCWorker::Execute() {
-  //uint32 app_id = SteamUtils()->GetAppID();
-
   UGCQueryHandle_t ugc_handle = SteamUGC()->CreateQueryUserUGCRequest(
       SteamUser()->GetSteamID().GetAccountID(),
       ugc_list_,
