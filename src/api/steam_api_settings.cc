@@ -172,7 +172,7 @@ NAN_METHOD(GetNumberOfPlayers) {
   }
   Nan::Callback* success_callback =
       new Nan::Callback(info[0].As<v8::Function>());
-  Nan::Callback* error_callback = NULL;
+  Nan::Callback* error_callback = nullptr;
 
   if (info.Length() > 1 && info[1]->IsFunction())
     error_callback = new Nan::Callback(info[1].As<v8::Function>());
@@ -261,7 +261,7 @@ NAN_METHOD(GetImageRGBA) {
     THROW_BAD_ARGS("Fail to get image");
   }
   info.GetReturnValue().Set(
-      Nan::NewBuffer(image_buffer, buffer_size, FreeCallback, 0)
+      Nan::NewBuffer(image_buffer, buffer_size, FreeCallback, nullptr)
           .ToLocalChecked());
 }
 

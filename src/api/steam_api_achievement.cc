@@ -22,7 +22,7 @@ NAN_METHOD(ActivateAchievement) {
   std::string achievement = (*(v8::String::Utf8Value(info[0])));
   Nan::Callback* success_callback =
       new Nan::Callback(info[1].As<v8::Function>());
-  Nan::Callback* error_callback = NULL;
+  Nan::Callback* error_callback = nullptr;
 
   if (info.Length() > 2 && info[2]->IsFunction())
     error_callback = new Nan::Callback(info[2].As<v8::Function>());
@@ -41,7 +41,7 @@ NAN_METHOD(GetAchievement) {
   std::string achievement = (*(v8::String::Utf8Value(info[0])));
   Nan::Callback* success_callback =
       new Nan::Callback(info[1].As<v8::Function>());
-  Nan::Callback* error_callback = NULL;
+  Nan::Callback* error_callback = nullptr;
 
   if (info.Length() > 2 && info[2]->IsFunction())
     error_callback = new Nan::Callback(info[2].As<v8::Function>());
@@ -58,7 +58,7 @@ NAN_METHOD(ClearAchievement) {
   std::string achievement = (*(v8::String::Utf8Value(info[0])));
   Nan::Callback* success_callback =
       new Nan::Callback(info[1].As<v8::Function>());
-  Nan::Callback* error_callback = NULL;
+  Nan::Callback* error_callback = nullptr;
 
   if (info.Length() > 2 && info[2]->IsFunction())
     error_callback = new Nan::Callback(info[2].As<v8::Function>());

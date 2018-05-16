@@ -144,10 +144,10 @@ void PublishWorkshopFileWorker::Execute() {
   std::string image_name = utils::GetFileNameFromPath(properties_.image_path);
   SteamAPICall_t publish_result = SteamRemoteStorage()->PublishWorkshopFile(
       file_name.c_str(),
-      image_name.empty()? NULL:image_name.c_str(),
+      image_name.empty()? nullptr:image_name.c_str(),
       app_id_,
       properties_.title.c_str(),
-      properties_.description.empty()? NULL:properties_.description.c_str(),
+      properties_.description.empty()? nullptr:properties_.description.c_str(),
       k_ERemoteStoragePublishedFileVisibilityPublic,
       &tags,
       k_EWorkshopFileTypeCommunity);

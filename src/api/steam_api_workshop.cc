@@ -114,7 +114,7 @@ NAN_METHOD(FileShare) {
   std::string file_name(*(v8::String::Utf8Value(info[0])));
   Nan::Callback* success_callback =
       new Nan::Callback(info[1].As<v8::Function>());
-  Nan::Callback* error_callback = NULL;
+  Nan::Callback* error_callback = nullptr;
 
   if (info.Length() > 2 && info[2]->IsFunction())
     error_callback = new Nan::Callback(info[2].As<v8::Function>());
@@ -156,7 +156,7 @@ NAN_METHOD(PublishWorkshopFile) {
 
   Nan::Callback* success_callback =
       new Nan::Callback(info[5].As<v8::Function>());
-  Nan::Callback* error_callback = NULL;
+  Nan::Callback* error_callback = nullptr;
 
   if (info.Length() > 6 && info[6]->IsFunction())
     error_callback = new Nan::Callback(info[6].As<v8::Function>());
@@ -200,7 +200,7 @@ NAN_METHOD(UpdatePublishedWorkshopFile) {
   }
   Nan::Callback* success_callback =
       new Nan::Callback(info[6].As<v8::Function>());
-  Nan::Callback* error_callback = NULL;
+  Nan::Callback* error_callback = nullptr;
 
   if (info.Length() > 7 && info[7]->IsFunction())
     error_callback = new Nan::Callback(info[7].As<v8::Function>());
@@ -238,7 +238,7 @@ NAN_METHOD(UGCGetItems) {
 
   Nan::Callback* success_callback =
       new Nan::Callback(info[3].As<v8::Function>());
-  Nan::Callback* error_callback = NULL;
+  Nan::Callback* error_callback = nullptr;
 
   if (info.Length() > 4 && info[4]->IsFunction())
     error_callback = new Nan::Callback(info[4].As<v8::Function>());
@@ -272,7 +272,7 @@ NAN_METHOD(UGCGetUserItems) {
 
   Nan::Callback* success_callback =
       new Nan::Callback(info[4].As<v8::Function>());
-  Nan::Callback* error_callback = NULL;
+  Nan::Callback* error_callback = nullptr;
 
   if (info.Length() > 5 && info[5]->IsFunction())
     error_callback = new Nan::Callback(info[4].As<v8::Function>());
@@ -295,7 +295,7 @@ NAN_METHOD(UGCDownloadItem) {
 
   Nan::Callback* success_callback =
       new Nan::Callback(info[2].As<v8::Function>());
-  Nan::Callback* error_callback = NULL;
+  Nan::Callback* error_callback = nullptr;
 
   if (info.Length() > 3 && info[3]->IsFunction())
     error_callback = new Nan::Callback(info[3].As<v8::Function>());
@@ -324,7 +324,7 @@ NAN_METHOD(UGCSynchronizeItems) {
 
   Nan::Callback* success_callback =
       new Nan::Callback(info[2].As<v8::Function>());
-  Nan::Callback* error_callback = NULL;
+  Nan::Callback* error_callback = nullptr;
 
   if (info.Length() > 3 && info[3]->IsFunction())
     error_callback = new Nan::Callback(info[3].As<v8::Function>());
@@ -364,7 +364,7 @@ NAN_METHOD(UGCUnsubscribe) {
       *(v8::String::Utf8Value(info[0])));
   Nan::Callback* success_callback =
       new Nan::Callback(info[1].As<v8::Function>());
-  Nan::Callback* error_callback = NULL;
+  Nan::Callback* error_callback = nullptr;
 
   if (info.Length() > 2 && info[2]->IsFunction())
     error_callback = new Nan::Callback(info[2].As<v8::Function>());

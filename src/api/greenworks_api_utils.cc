@@ -27,7 +27,7 @@ NAN_METHOD(CreateArchive) {
 
   Nan::Callback* success_callback =
       new Nan::Callback(info[4].As<v8::Function>());
-  Nan::Callback* error_callback = NULL;
+  Nan::Callback* error_callback = nullptr;
 
   if (info.Length() > 5 && info[5]->IsFunction())
     error_callback = new Nan::Callback(info[5].As<v8::Function>());
@@ -50,7 +50,7 @@ NAN_METHOD(ExtractArchive) {
 
   Nan::Callback* success_callback =
       new Nan::Callback(info[3].As<v8::Function>());
-  Nan::Callback* error_callback = NULL;
+  Nan::Callback* error_callback = nullptr;
 
   if (info.Length() > 4 && info[4]->IsFunction())
     error_callback = new Nan::Callback(info[4].As<v8::Function>());
