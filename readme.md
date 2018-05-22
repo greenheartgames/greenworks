@@ -16,7 +16,7 @@ Since then, it has been open-sourced and is
 * Greenworks is built using [Native Abstractions for Node.js](https://github.com/nodejs/nan) to
 support different node versions.
 * The project is currently funded by Greenheart Games and other
-[donors](https://pledgie.com/campaigns/27218#donors).
+donors.
 
 ## Download
 
