@@ -109,7 +109,7 @@ Represents Steam SDK `EUserUGCListSortOrder`, sort order for user published UGC 
 
 * `options` Object
    * `app_id` Integer: The App ID that will be using this workshop file
-   * `tag` Array of String: The tags of the workshop file
+   * `tags` Array of String: The tags of the workshop file
 * `file_path` String
 * `image_path` String
 * `title` String
@@ -127,7 +127,7 @@ An empty String of `image_path` means no image for the workshp item.
 ### greenworks.updatePublishedWorkshopFile([options, ] published_file_handle, file_path, image_path, title, description, success_callback, [error_callback])
 
 * `options` Object
-   * `tag` Array of String: The tags of the workshop file. To delete all
+   * `tags` Array of String: The tags of the workshop file. To delete all
      existing tags, passing an array with an empty string `['']`
 * `published_file_handle` String: Represents uint64, the published file handle.
 * `file_path` String
