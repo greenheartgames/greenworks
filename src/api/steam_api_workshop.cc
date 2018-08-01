@@ -251,7 +251,7 @@ NAN_METHOD(UGCGetItems) {
 
 NAN_METHOD(UGCGetUserItems) {
   Nan::HandleScope scope;
-  if (info.Length() < 5 || info[0]->IsObject() || !info[1]->IsInt32() ||
+  if (info.Length() < 5 || !info[0]->IsObject() || !info[1]->IsInt32() ||
       !info[2]->IsInt32() || !info[3]->IsInt32() || !info[4]->IsFunction()) {
     THROW_BAD_ARGS("Bad arguments");
   }

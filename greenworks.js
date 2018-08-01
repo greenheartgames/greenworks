@@ -58,7 +58,7 @@ greenworks.ugcGetUserItems = function(options, ugc_matching_type,
       'page_num': 1
     }
   }
-  greenworks.ugcGetUserItems(options, ugc_matching_type, ugc_list_sort_order,
+  greenworks._ugcGetUserItems(options, ugc_matching_type, ugc_list_sort_order,
       ugc_list, success_callback, error_callback);
 }
 
