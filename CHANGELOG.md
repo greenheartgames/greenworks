@@ -1,3 +1,10 @@
+## 2018.05.16 v0.13.0 stable
+
+* Greenworks complied for NW.js v0.27.5, v0.28.3, v0.29.4, v0.30.4 and Electron v2.0.0 with Steamworks SDK 1.42
+* Extend workshop APIs:
+  *  Add `options` parameter to  `publishWorkshopFile`, `updatePublishedWorkshopFile`, `ugcGetItems`, `ugcGetUserItems`, and `ugcSynchronizeItems`
+* Add APIs for enumerating files on cloud: `getFileCount` and `getFileNameAndSize`
+
 ## 2017.12.02 v0.12.0 stable
 
 * Greenworks complied for NW.js v0.24.4, v0.25.4 & v0.26.6 with Steamworks SDK 1.41
