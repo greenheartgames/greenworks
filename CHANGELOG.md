@@ -1,3 +1,8 @@
+## 2018.11.18 v0.14.0 stable
+
+* Greenworks complied for for NW.js v0.31.5, v0.32.4, v0.33.3 and Electron v3.0.9, v4.0.0-beta 7 with Steamworks SDK 1.42
+* Fix an infinite loop in ugcGetUserItems, #203 (thanks to @Emad88)
+
 ## 2018.05.16 v0.13.0 stable
 
 * Greenworks complied for NW.js v0.27.5, v0.28.3, v0.29.4, v0.30.4 and Electron v2.0.0 with Steamworks SDK 1.42
