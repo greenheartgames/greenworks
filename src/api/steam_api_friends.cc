@@ -207,7 +207,8 @@ NAN_METHOD(RequestUserInformation) {
   if (!steam_id.IsValid()) {
     THROW_BAD_ARGS("Steam ID is invalid");
   }
-  SteamFriends()->RequestUserInformation(steam_id, require_name_only);
+  info.GetReturnValue().Set(
+      SteamFriends()->RequestUserInformation(steam_id, require_name_only));
 }
 
 NAN_METHOD(SetListenForFriendsMessages) {
