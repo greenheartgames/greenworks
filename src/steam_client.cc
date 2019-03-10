@@ -50,7 +50,7 @@ SteamClient::SteamClient()
       OnLobbyCreated_(this, &SteamClient::OnLobbyCreated),
       OnLobbyDataUpdate_(this, &SteamClient::OnLobbyDataUpdate),
       OnLobbyEnter_(this, &SteamClient::OnLobbyEnter),
-      OnLobbyInvite_(this, &SteamClient::OnLobbyInvite), {}
+      OnLobbyInvite_(this, &SteamClient::OnLobbyInvite) {}
 
 SteamClient::~SteamClient() {
   for (size_t i = 0; i < observer_list_.size(); ++i) {
