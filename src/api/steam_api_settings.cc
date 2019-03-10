@@ -265,6 +265,12 @@ NAN_METHOD(GetImageRGBA) {
           .ToLocalChecked());
 }
 
+NAN_METHOD(RunCallbacks) {
+  Nan::HandleScope scope;
+  SteamAPI_RunCallbacks();
+  info.GetReturnValue().Set(Nan::Undefined());
+}
+
 void RegisterAPIs(v8::Handle<v8::Object> exports) {
   Nan::Set(exports,
            Nan::New("_version").ToLocalChecked(),
@@ -314,6 +320,9 @@ void RegisterAPIs(v8::Handle<v8::Object> exports) {
   Nan::Set(exports,
            Nan::New("getImageRGBA").ToLocalChecked(),
            Nan::New<v8::FunctionTemplate>(GetImageRGBA)->GetFunction());
+  Nan::Set(exports,
+           Nan::New("runCallbacks").ToLocalChecked(),
+           Nan::New<v8::FunctionTemplate>(RunCallbacks)->GetFunction());
 }
 
 SteamAPIRegistry::Add X(RegisterAPIs);
