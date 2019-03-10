@@ -266,6 +266,20 @@ NAN_METHOD(GetFriendMessage) {
   info.GetReturnValue().Set(result);
 }
 
+NAN_METHOD(GetFriendPersonaName) {
+  Nan::HandleScope scope;
+  if (info.Length() < 1 || !info[0]->IsString()) {
+    THROW_BAD_ARGS("Bad arguments");
+  }
+  std::string steam_id_str(*(v8::String::Utf8Value(info[0])));
+  CSteamID steam_id(utils::strToUint64(steam_id_str));
+  if (!steam_id.IsValid()) {
+    THROW_BAD_ARGS("Steam ID is invalid");
+  }
+  info.GetReturnValue().Set(
+      SteamFriends()->GetFriendPersonaName(steam_id));
+}
+
 void RegisterAPIs(v8::Handle<v8::Object> exports) {
   InitFriendFlags(exports);
   InitFriendRelationship(exports);
@@ -298,6 +312,9 @@ void RegisterAPIs(v8::Handle<v8::Object> exports) {
                ->GetFunction());
   Nan::Set(exports, Nan::New("getFriendMessage").ToLocalChecked(),
            Nan::New<v8::FunctionTemplate>(GetFriendMessage)
+               ->GetFunction());
+  Nan::Set(exports, Nan::New("getFriendPersonaName").ToLocalChecked(),
+           Nan::New<v8::FunctionTemplate>(GetFriendPersonaName)
                ->GetFunction());
 }
 
