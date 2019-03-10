@@ -115,4 +115,54 @@ void SteamEvent::OnMicroTxnAuthorizationResponse(uint32 AppID,
   Nan::MakeCallback(
       Nan::New(persistent_steam_events_), "on", 4, argv);
 }
+
+void SteamEvent::OnLobbyCreated(int status_code, uint64 SteamIdLobby) {
+  Nan::HandleScope scope;
+  v8::Local<v8::Value> argv[] = {
+      Nan::New("lobby-created").ToLocalChecked(),
+      Nan::New(status_code),
+      Nan::New(utils::uint64ToString(SteamIdLobby)).ToLocalChecked()
+  };
+  Nan::MakeCallback(
+      Nan::New(persistent_steam_events_), "on", 3, argv);
+}
+
+void SteamEvent::OnLobbyDataUpdate(uint64 SteamIdLobby, uint64 SteamIdMember, bool Success) {
+  Nan::HandleScope scope;
+  v8::Local<v8::Value> argv[] = {
+      Nan::New("lobby-data-update").ToLocalChecked(),
+      Nan::New(utils::uint64ToString(SteamIdLobby)).ToLocalChecked(),
+      Nan::New(utils::uint64ToString(SteamIdMember)).ToLocalChecked(),
+      Nan::New(Success),
+  };
+  Nan::MakeCallback(
+      Nan::New(persistent_steam_events_), "on", 4, argv);
+}
+
+void SteamEvent::OnLobbyEnter(uint64 SteamIdLobby, int ChatPermissions, bool Locked, int ChatRoomEnterResponse) {
+  Nan::HandleScope scope;
+  v8::Local<v8::Value> argv[] = {
+      Nan::New("lobby-enter").ToLocalChecked(),
+      Nan::New(utils::uint64ToString(SteamIdLobby)).ToLocalChecked(),
+      Nan::New(ChatPermissions),
+      Nan::New(Locked),
+      Nan::New(ChatRoomEnterResponse),
+  };
+  Nan::MakeCallback(
+      Nan::New(persistent_steam_events_), "on", 5, argv);
+}
+
+void SteamEvent::OnLobbyInvite(uint64 SteamIdUser, uint64 SteamIdLobby, uint64 GameId) {
+  Nan::HandleScope scope;
+  v8::Local<v8::Value> argv[] = {
+      Nan::New("lobby-invite").ToLocalChecked(),
+      Nan::New(utils::uint64ToString(SteamIdUser)).ToLocalChecked(),
+      Nan::New(utils::uint64ToString(SteamIdLobby)).ToLocalChecked(),
+      Nan::New(utils::uint64ToString(GameId)).ToLocalChecked()
+  };
+  Nan::MakeCallback(
+      Nan::New(persistent_steam_events_), "on", 4, argv);
+}
+
+
 }  // namespace greenworks

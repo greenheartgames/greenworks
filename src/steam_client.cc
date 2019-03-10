@@ -46,7 +46,11 @@ SteamClient::SteamClient()
       dlc_installed_(this, &SteamClient::OnDLCInstalled),
       MicroTxnAuthorizationResponse_(
           this,
-          &SteamClient::OnMicroTxnAuthorizationResponse) {}
+          &SteamClient::OnMicroTxnAuthorizationResponse),
+      OnLobbyCreated_(this, &SteamClient::OnLobbyCreated),
+      OnLobbyDataUpdate_(this, &SteamClient::OnLobbyDataUpdate),
+      OnLobbyEnter_(this, &SteamClient::OnLobbyEnter),
+      OnLobbyInvite_(this, &SteamClient::OnLobbyInvite), {}
 
 SteamClient::~SteamClient() {
   for (size_t i = 0; i < observer_list_.size(); ++i) {
@@ -136,6 +140,42 @@ void SteamClient::OnMicroTxnAuthorizationResponse(
     observer_list_[i]->OnMicroTxnAuthorizationResponse(
         callback->m_unAppID, callback->m_ulOrderID,
         callback->m_bAuthorized);
+  }
+}
+
+void SteamClient::OnLobbyCreated(LobbyCreated_t *callback) {
+  for (size_t i = 0; i < observer_list_.size(); ++i) {
+    observer_list_[i]->OnLobbyCreated(
+        static_cast<int>(callback->m_eResult),
+        callback->m_ulSteamIDLobby.ConvertToUint64());
+  }
+}
+
+void SteamClient::OnLobbyDataUpdate(LobbyDataUpdate_t *callback) {
+  for (size_t i = 0; i < observer_list_.size(); ++i) {
+    observer_list_[i]->OnLobbyDataUpdate(
+        callback->m_ulSteamIDLobby.ConvertToUint64(),
+        callback->m_ulSteamIDMember.ConvertToUint64(),
+        static_cast<bool>(callback->m_bSuccess));
+  }
+}
+
+void SteamClient::OnLobbyEnter(LobbyEnter_t *callback) {
+  for (size_t i = 0; i < observer_list_.size(); ++i) {
+    observer_list_[i]->OnLobbyEnter(
+        callback->m_ulSteamIDLobby.ConvertToUint64(),
+        callback->m_rgfChatPermissions,
+        static_cast<bool>(callback->m_bLocked),
+        static_cast<int>(callback->m_EChatRoomEnterResponse));
+  }
+}
+
+void SteamClient::OnLobbyInvite(LobbyInvite_t *callback) {
+  for (size_t i = 0; i < observer_list_.size(); ++i) {
+    observer_list_[i]->OnLobbyInvite(
+        callback->m_ulSteamIDUser.ConvertToUint64(),
+        callback->m_ulSteamIDLobby.ConvertToUint64(),
+        callback->m_ulGameID.ConvertToUint64());
   }
 }
 
