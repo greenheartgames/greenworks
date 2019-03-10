@@ -277,7 +277,8 @@ NAN_METHOD(GetFriendPersonaName) {
     THROW_BAD_ARGS("Steam ID is invalid");
   }
   info.GetReturnValue().Set(
-      SteamFriends()->GetFriendPersonaName(steam_id));
+      Nan::New(SteamFriends()->GetFriendPersonaName(steam_id))
+          .ToLocalChecked());
 }
 
 void RegisterAPIs(v8::Handle<v8::Object> exports) {
