@@ -348,6 +348,12 @@ void RegisterAPIs(v8::Handle<v8::Object> exports) {
   Nan::Set(exports, Nan::New("getFriendPersonaName").ToLocalChecked(),
            Nan::New<v8::FunctionTemplate>(GetFriendPersonaName)
                ->GetFunction());
+  Nan::Set(exports,
+           Nan::New("setRichPresence").ToLocalChecked(),
+           Nan::New<v8::FunctionTemplate>(SetRichPresence)->GetFunction());
+  Nan::Set(exports,
+           Nan::New("clearRichPresence").ToLocalChecked(),
+           Nan::New<v8::FunctionTemplate>(ClearRichPresence)->GetFunction());
 }
 
 SteamAPIRegistry::Add X(RegisterAPIs);
