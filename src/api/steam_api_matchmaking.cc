@@ -85,7 +85,7 @@ NAN_METHOD(DeleteLobbyData) {
     THROW_BAD_ARGS("Steam ID is invalid");
   }
   info.GetReturnValue().Set(
-    SteamMatchmaking()->DeleteLobbyData(steam_id, pch_key_str)
+    SteamMatchmaking()->DeleteLobbyData(steam_id, pch_key_str.data())
   );
 }
 
@@ -112,7 +112,7 @@ NAN_METHOD(GetLobbyData) {
   }
   info.GetReturnValue().Set(
     Nan::New(
-      SteamMatchmaking()->GetLobbyData(steam_id, pch_key_str)
+      SteamMatchmaking()->GetLobbyData(steam_id, pch_key_str.data())
     ).ToLocalChecked()
   );
 }
@@ -224,7 +224,7 @@ NAN_METHOD(SetLobbyData) {
     THROW_BAD_ARGS("Steam ID is invalid");
   }
   info.GetReturnValue().Set(
-    SteamMatchmaking()->SetLobbyData(steam_id, pch_key_str, pch_value_str)
+    SteamMatchmaking()->SetLobbyData(steam_id, pch_key_str.data(), pch_value_str.data())
   );
 }
 
@@ -239,9 +239,7 @@ NAN_METHOD(SetLobbyJoinable) {
     THROW_BAD_ARGS("Steam ID is invalid");
   }
   info.GetReturnValue().Set(
-    Nan::New(
-      SteamMatchmaking()->SetLobbyJoinable(steam_id, info[1]->BooleanValue())
-    ).ToLocalChecked()
+    SteamMatchmaking()->SetLobbyJoinable(steam_id, info[1]->BooleanValue())
   );
 }
 
@@ -258,9 +256,7 @@ NAN_METHOD(SetLobbyOwner) {
     THROW_BAD_ARGS("Steam ID is invalid");
   }
   info.GetReturnValue().Set(
-    Nan::New(
-      SteamMatchmaking()->SetLobbyOwner(steam_id_lobby, steam_id_user)
-    ).ToLocalChecked()
+    SteamMatchmaking()->SetLobbyOwner(steam_id_lobby, steam_id_user)
   );
 }
 
@@ -276,9 +272,7 @@ NAN_METHOD(SetLobbyType) {
   }
   auto lobby_type = static_cast<ELobbyType>(info[0]->Int32Value());
   info.GetReturnValue().Set(
-    Nan::New(
-      SteamMatchmaking()->SetLobbyType(steam_id, lobby_type)
-    ).ToLocalChecked()
+    SteamMatchmaking()->SetLobbyType(steam_id, lobby_type)
   );
 }
 
