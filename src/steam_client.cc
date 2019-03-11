@@ -147,15 +147,15 @@ void SteamClient::OnLobbyCreated(LobbyCreated_t *callback) {
   for (size_t i = 0; i < observer_list_.size(); ++i) {
     observer_list_[i]->OnLobbyCreated(
         static_cast<int>(callback->m_eResult),
-        callback->m_ulSteamIDLobby.ConvertToUint64());
+        callback->m_ulSteamIDLobby);
   }
 }
 
 void SteamClient::OnLobbyDataUpdate(LobbyDataUpdate_t *callback) {
   for (size_t i = 0; i < observer_list_.size(); ++i) {
     observer_list_[i]->OnLobbyDataUpdate(
-        callback->m_ulSteamIDLobby.ConvertToUint64(),
-        callback->m_ulSteamIDMember.ConvertToUint64(),
+        callback->m_ulSteamIDLobby,
+        callback->m_ulSteamIDMember,
         static_cast<bool>(callback->m_bSuccess));
   }
 }
@@ -163,7 +163,7 @@ void SteamClient::OnLobbyDataUpdate(LobbyDataUpdate_t *callback) {
 void SteamClient::OnLobbyEnter(LobbyEnter_t *callback) {
   for (size_t i = 0; i < observer_list_.size(); ++i) {
     observer_list_[i]->OnLobbyEnter(
-        callback->m_ulSteamIDLobby.ConvertToUint64(),
+        callback->m_ulSteamIDLobby,
         callback->m_rgfChatPermissions,
         static_cast<bool>(callback->m_bLocked),
         static_cast<int>(callback->m_EChatRoomEnterResponse));
@@ -173,9 +173,9 @@ void SteamClient::OnLobbyEnter(LobbyEnter_t *callback) {
 void SteamClient::OnLobbyInvite(LobbyInvite_t *callback) {
   for (size_t i = 0; i < observer_list_.size(); ++i) {
     observer_list_[i]->OnLobbyInvite(
-        callback->m_ulSteamIDUser.ConvertToUint64(),
-        callback->m_ulSteamIDLobby.ConvertToUint64(),
-        callback->m_ulGameID.ConvertToUint64());
+        callback->m_ulSteamIDUser,
+        callback->m_ulSteamIDLobby,
+        callback->m_ulGameID);
   }
 }
 
