@@ -94,7 +94,7 @@ NAN_METHOD(GetLobbyByIndex) {
   if (info.Length() < 1 || !info[0]->IsInt32()) {
     THROW_BAD_ARGS("Bad arguments");
   }
-  CSteamID lobby_id = SteamMatchmaking()->DeleteLobbyData(steam_id, pch_key_str);
+  CSteamID lobby_id = SteamMatchmaking()->GetLobbyByIndex(info[0]->Int32Value());
   v8::Local<v8::Object> result = greenworks::SteamID::Create(lobby_id);
   info.GetReturnValue().Set(result);
 }
