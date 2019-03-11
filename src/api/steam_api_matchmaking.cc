@@ -67,9 +67,9 @@ NAN_METHOD(CreateLobby) {
   auto lobby_type = static_cast<ELobbyType>(info[0]->Int32Value());
 
   info.GetReturnValue().Set(
-    Nan::New<v8::Integer>(
+    Nan::New(
         SteamMatchmaking()->CreateLobby(lobby_type, info[1]->Int32Value())
-    )
+    ).ToLocalChecked()
   );
 }
 
