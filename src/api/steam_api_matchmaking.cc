@@ -59,6 +59,120 @@ void InitLobbyType(v8::Handle<v8::Object> exports) {
   Nan::Set(exports, Nan::New("LobbyType").ToLocalChecked(), lobby_type);
 }
 
+void InitResult(v8::Handle<v8::Object> exports) {
+  v8::Local<v8::Object> e_result = Nan::New<v8::Object>();
+  SET_TYPE(e_result, "OK", k_EResultOK);
+  SET_TYPE(e_result, "Fail", k_EResultFail);
+  SET_TYPE(e_result, "NoConnection", k_EResultNoConnection);
+  SET_TYPE(e_result, "InvalidPassword", k_EResultInvalidPassword);
+  SET_TYPE(e_result, "LoggedInElsewhere", k_EResultLoggedInElsewhere);
+  SET_TYPE(e_result, "InvalidProtocolVer", k_EResultInvalidProtocolVer);
+  SET_TYPE(e_result, "InvalidParam", k_EResultInvalidParam);
+  SET_TYPE(e_result, "FileNotFound", k_EResultFileNotFound);
+  SET_TYPE(e_result, "Busy", k_EResultBusy);
+  SET_TYPE(e_result, "InvalidState", k_EResultInvalidState);
+  SET_TYPE(e_result, "InvalidName", k_EResultInvalidName);
+  SET_TYPE(e_result, "InvalidEmail", k_EResultInvalidEmail);
+  SET_TYPE(e_result, "DuplicateName", k_EResultDuplicateName);
+  SET_TYPE(e_result, "AccessDenied", k_EResultAccessDenied);
+  SET_TYPE(e_result, "Timeout", k_EResultTimeout);
+  SET_TYPE(e_result, "Banned", k_EResultBanned);
+  SET_TYPE(e_result, "AccountNotFound", k_EResultAccountNotFound);
+  SET_TYPE(e_result, "InvalidSteamID", k_EResultInvalidSteamID);
+  SET_TYPE(e_result, "ServiceUnavailable", k_EResultServiceUnavailable);
+  SET_TYPE(e_result, "NotLoggedOn", k_EResultNotLoggedOn);
+  SET_TYPE(e_result, "Pending", k_EResultPending);
+  SET_TYPE(e_result, "EncryptionFailure", k_EResultEncryptionFailure);
+  SET_TYPE(e_result, "InsufficientPrivilege", k_EResultInsufficientPrivilege);
+  SET_TYPE(e_result, "LimitExceeded", k_EResultLimitExceeded);
+  SET_TYPE(e_result, "Revoked", k_EResultRevoked);
+  SET_TYPE(e_result, "Expired", k_EResultExpired);
+  SET_TYPE(e_result, "AlreadyRedeemed", k_EResultAlreadyRedeemed);
+  SET_TYPE(e_result, "DuplicateRequest", k_EResultDuplicateRequest);
+  SET_TYPE(e_result, "AlreadyOwned", k_EResultAlreadyOwned);
+  SET_TYPE(e_result, "IPNotFound", k_EResultIPNotFound);
+  SET_TYPE(e_result, "PersistFailed", k_EResultPersistFailed);
+  SET_TYPE(e_result, "LockingFailed", k_EResultLockingFailed);
+  SET_TYPE(e_result, "LogonSessionReplaced", k_EResultLogonSessionReplaced);
+  SET_TYPE(e_result, "ConnectFailed", k_EResultConnectFailed);
+  SET_TYPE(e_result, "HandshakeFailed", k_EResultHandshakeFailed);
+  SET_TYPE(e_result, "IOFailure", k_EResultIOFailure);
+  SET_TYPE(e_result, "RemoteDisconnect", k_EResultRemoteDisconnect);
+  SET_TYPE(e_result, "ShoppingCartNotFound", k_EResultShoppingCartNotFound);
+  SET_TYPE(e_result, "Blocked", k_EResultBlocked);
+  SET_TYPE(e_result, "Ignored", k_EResultIgnored);
+  SET_TYPE(e_result, "NoMatch", k_EResultNoMatch);
+  SET_TYPE(e_result, "AccountDisabled", k_EResultAccountDisabled);
+  SET_TYPE(e_result, "ServiceReadOnly", k_EResultServiceReadOnly);
+  SET_TYPE(e_result, "AccountNotFeatured", k_EResultAccountNotFeatured);
+  SET_TYPE(e_result, "AdministratorOK", k_EResultAdministratorOK);
+  SET_TYPE(e_result, "ContentVersion", k_EResultContentVersion);
+  SET_TYPE(e_result, "TryAnotherCM", k_EResultTryAnotherCM);
+  SET_TYPE(e_result, "PasswordRequiredToKickSession", k_EResultPasswordRequiredToKickSession);
+  SET_TYPE(e_result, "AlreadyLoggedInElsewhere", k_EResultAlreadyLoggedInElsewhere);
+  SET_TYPE(e_result, "Suspended", k_EResultSuspended);
+  SET_TYPE(e_result, "Cancelled", k_EResultCancelled);
+  SET_TYPE(e_result, "DataCorruption", k_EResultDataCorruption);
+  SET_TYPE(e_result, "DiskFull", k_EResultDiskFull);
+  SET_TYPE(e_result, "RemoteCallFailed", k_EResultRemoteCallFailed);
+  SET_TYPE(e_result, "PasswordUnset", k_EResultPasswordUnset);
+  SET_TYPE(e_result, "ExternalAccountUnlinked", k_EResultExternalAccountUnlinked);
+  SET_TYPE(e_result, "PSNTicketInvalid", k_EResultPSNTicketInvalid);
+  SET_TYPE(e_result, "ExternalAccountAlreadyLinked", k_EResultExternalAccountAlreadyLinked);
+  SET_TYPE(e_result, "RemoteFileConflict", k_EResultRemoteFileConflict);
+  SET_TYPE(e_result, "IllegalPassword", k_EResultIllegalPassword);
+  SET_TYPE(e_result, "SameAsPreviousValue", k_EResultSameAsPreviousValue);
+  SET_TYPE(e_result, "AccountLogonDenied", k_EResultAccountLogonDenied);
+  SET_TYPE(e_result, "CannotUseOldPassword", k_EResultCannotUseOldPassword);
+  SET_TYPE(e_result, "InvalidLoginAuthCode", k_EResultInvalidLoginAuthCode);
+  SET_TYPE(e_result, "AccountLogonDeniedNoMail", k_EResultAccountLogonDeniedNoMail);
+  SET_TYPE(e_result, "HardwareNotCapableOfIPT", k_EResultHardwareNotCapableOfIPT);
+  SET_TYPE(e_result, "IPTInitError", k_EResultIPTInitError);
+  SET_TYPE(e_result, "ParentalControlRestricted", k_EResultParentalControlRestricted);
+  SET_TYPE(e_result, "FacebookQueryError", k_EResultFacebookQueryError);
+  SET_TYPE(e_result, "ExpiredLoginAuthCode", k_EResultExpiredLoginAuthCode);
+  SET_TYPE(e_result, "IPLoginRestrictionFailed", k_EResultIPLoginRestrictionFailed);
+  SET_TYPE(e_result, "AccountLockedDown", k_EResultAccountLockedDown);
+  SET_TYPE(e_result, "AccountLogonDeniedVerifiedEmailRequired", k_EResultAccountLogonDeniedVerifiedEmailRequired);
+  SET_TYPE(e_result, "NoMatchingURL", k_EResultNoMatchingURL);
+  SET_TYPE(e_result, "BadResponse", k_EResultBadResponse);
+  SET_TYPE(e_result, "RequirePasswordReEntry", k_EResultRequirePasswordReEntry);
+  SET_TYPE(e_result, "ValueOutOfRange", k_EResultValueOutOfRange);
+  SET_TYPE(e_result, "UnexpectedError", k_EResultUnexpectedError);
+  SET_TYPE(e_result, "Disabled", k_EResultDisabled);
+  SET_TYPE(e_result, "InvalidCEGSubmission", k_EResultInvalidCEGSubmission);
+  SET_TYPE(e_result, "RestrictedDevice", k_EResultRestrictedDevice);
+  SET_TYPE(e_result, "RegionLocked", k_EResultRegionLocked);
+  SET_TYPE(e_result, "RateLimitExceeded", k_EResultRateLimitExceeded);
+  SET_TYPE(e_result, "AccountLoginDeniedNeedTwoFactor", k_EResultAccountLoginDeniedNeedTwoFactor);
+  SET_TYPE(e_result, "ItemDeleted", k_EResultItemDeleted);
+  SET_TYPE(e_result, "AccountLoginDeniedThrottle", k_EResultAccountLoginDeniedThrottle);
+  SET_TYPE(e_result, "TwoFactorCodeMismatch", k_EResultTwoFactorCodeMismatch);
+  SET_TYPE(e_result, "TwoFactorActivationCodeMismatch", k_EResultTwoFactorActivationCodeMismatch);
+  SET_TYPE(e_result, "AccountAssociatedToMultiplePartners", k_EResultAccountAssociatedToMultiplePartners);
+  SET_TYPE(e_result, "NotModified", k_EResultNotModified);
+  SET_TYPE(e_result, "NoMobileDevice", k_EResultNoMobileDevice);
+  SET_TYPE(e_result, "TimeNotSynced", k_EResultTimeNotSynced);
+  SET_TYPE(e_result, "SmsCodeFailed", k_EResultSmsCodeFailed);
+  SET_TYPE(e_result, "AccountLimitExceeded", k_EResultAccountLimitExceeded);
+  SET_TYPE(e_result, "AccountActivityLimitExceeded", k_EResultAccountActivityLimitExceeded);
+  SET_TYPE(e_result, "PhoneActivityLimitExceeded", k_EResultPhoneActivityLimitExceeded);
+  SET_TYPE(e_result, "RefundToWallet", k_EResultRefundToWallet);
+  SET_TYPE(e_result, "EmailSendFailure", k_EResultEmailSendFailure);
+  SET_TYPE(e_result, "NotSettled", k_EResultNotSettled);
+  SET_TYPE(e_result, "NeedCaptcha", k_EResultNeedCaptcha);
+  SET_TYPE(e_result, "GSLTDenied", k_EResultGSLTDenied);
+  SET_TYPE(e_result, "GSOwnerDenied", k_EResultGSOwnerDenied);
+  SET_TYPE(e_result, "InvalidItemType", k_EResultInvalidItemType);
+  SET_TYPE(e_result, "IPBanned", k_EResultIPBanned);
+  SET_TYPE(e_result, "GSLTExpired", k_EResultGSLTExpired);
+  SET_TYPE(e_result, "InsufficientFunds", k_EResultInsufficientFunds);
+  SET_TYPE(e_result, "TooManyPending", k_EResultTooManyPending);
+  Nan::Persistent<v8::Object> constructor;
+  constructor.Reset(e_result);
+  Nan::Set(exports, Nan::New("Result").ToLocalChecked(), e_result);
+}
+
 NAN_METHOD(CreateLobby) {
   Nan::HandleScope scope;
   if (info.Length() < 2 || !info[0]->IsInt32() || !info[1]->IsInt32()) {
@@ -285,6 +399,7 @@ void RegisterAPIs(v8::Handle<v8::Object> exports) {
   InitLobbyComparison(exports);
   InitLobbyDistanceFilter(exports);
   InitLobbyType(exports);
+  InitResult(exports);
 
   Nan::Set(exports,
            Nan::New("createLobby").ToLocalChecked(),
