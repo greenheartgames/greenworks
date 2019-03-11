@@ -66,11 +66,12 @@ NAN_METHOD(CreateLobby) {
   }
   auto lobby_type = static_cast<ELobbyType>(info[0]->Int32Value());
 
-  uint64 result = SteamMatchmaking()->CreateLobby(lobby_type, info[1]->Int32Value());
-
-
   info.GetReturnValue().Set(
-    Nan::New(utils::uint64ToString(result_str)).ToLocalChecked()
+    Nan::New(
+      utils::uint64ToString(
+        SteamMatchmaking()->CreateLobby(lobby_type, info[1]->Int32Value())
+      )
+    ).ToLocalChecked()
   );
 }
 
