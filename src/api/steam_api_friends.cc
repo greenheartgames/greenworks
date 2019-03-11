@@ -281,6 +281,39 @@ NAN_METHOD(GetFriendPersonaName) {
           .ToLocalChecked());
 }
 
+NAN_METHOD(SetPlayedWith) {
+  Nan::HandleScope scope;
+  if (info.Length() < 1 || !info[0]->IsString()) {
+    THROW_BAD_ARGS("Bad arguments");
+  }
+  std::string steam_id_str(*(v8::String::Utf8Value(info[0])));
+  CSteamID steam_id(utils::strToUint64(steam_id_str));
+  if (!steam_id.IsValid()) {
+    THROW_BAD_ARGS("Steam ID is invalid");
+  }
+  SteamFriends()->SetPlayedWith(steam_id);
+}
+
+NAN_METHOD(SetRichPresence) {
+  Nan::HandleScope scope;
+  if (info.Length() < 2 || !info[0]->IsString() || !info[1]->IsString()) {
+    THROW_BAD_ARGS("Bad arguments");
+  }
+  std::string pch_key_str(*(v8::String::Utf8Value(info[0])));
+  std::string pch_value_str(*(v8::String::Utf8Value(info[1])));
+
+  info.GetReturnValue().Set(
+    SteamFriends()->SetRichPresence(pch_key_str.data(), pch_value_str.data())
+  );
+}
+
+NAN_METHOD(ClearRichPresence) {
+  Nan::HandleScope scope;
+  info.GetReturnValue().Set(
+    SteamFriends()->ClearRichPresence()
+  );
+}
+
 void RegisterAPIs(v8::Handle<v8::Object> exports) {
   InitFriendFlags(exports);
   InitFriendRelationship(exports);
