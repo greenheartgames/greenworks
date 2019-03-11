@@ -354,6 +354,9 @@ void RegisterAPIs(v8::Handle<v8::Object> exports) {
   Nan::Set(exports,
            Nan::New("clearRichPresence").ToLocalChecked(),
            Nan::New<v8::FunctionTemplate>(ClearRichPresence)->GetFunction());
+  Nan::Set(exports,
+           Nan::New("setPlayedWith").ToLocalChecked(),
+           Nan::New<v8::FunctionTemplate>(SetPlayedWith)->GetFunction());
 }
 
 SteamAPIRegistry::Add X(RegisterAPIs);
