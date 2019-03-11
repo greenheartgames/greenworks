@@ -309,9 +309,7 @@ NAN_METHOD(SetRichPresence) {
 
 NAN_METHOD(ClearRichPresence) {
   Nan::HandleScope scope;
-  info.GetReturnValue().Set(
-    SteamFriends()->ClearRichPresence()
-  );
+  SteamFriends()->ClearRichPresence();
 }
 
 void RegisterAPIs(v8::Handle<v8::Object> exports) {
