@@ -85,7 +85,6 @@ class SteamClient {
   STEAM_CALLBACK(SteamClient, OnLobbyCreated, LobbyCreated_t, OnLobbyCreated_);
   STEAM_CALLBACK(SteamClient, OnLobbyDataUpdate, LobbyDataUpdate_t, OnLobbyDataUpdate_);
   STEAM_CALLBACK(SteamClient, OnLobbyEnter, LobbyEnter_t, OnLobbyEnter_);
-  STEAM_CALLBACK(SteamClient, OnLobbyCreated, LobbyCreated_t, OnLobbyCreated_);
   STEAM_CALLBACK(SteamClient, OnLobbyInvite, LobbyInvite_t, OnLobbyInvite_);
 };
 
