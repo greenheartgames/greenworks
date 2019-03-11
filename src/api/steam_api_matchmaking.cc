@@ -194,9 +194,11 @@ NAN_METHOD(JoinLobby) {
     THROW_BAD_ARGS("Steam ID is invalid");
   }
   info.GetReturnValue().Set(
-    Nan::New<v8::Integer>(
+    Nan::New(
+      utils::uint64ToString(
         SteamMatchmaking()->JoinLobby(steam_id)
-    )
+      )
+    ).ToLocalChecked()
   );
 }
 
