@@ -195,7 +195,7 @@ NAN_METHOD(DeleteLobbyData) {
     THROW_BAD_ARGS("Bad arguments");
   }
   std::string steam_id_str(*(v8::String::Utf8Value(info[0])));
-  std::string pch_key_str(*(v8::String::Utf8Value(info[0])));
+  std::string pch_key_str(*(v8::String::Utf8Value(info[1])));
   CSteamID steam_id(utils::strToUint64(steam_id_str));
   if (!steam_id.IsValid()) {
     THROW_BAD_ARGS("Steam ID is invalid");
@@ -221,7 +221,7 @@ NAN_METHOD(GetLobbyData) {
     THROW_BAD_ARGS("Bad arguments");
   }
   std::string steam_id_str(*(v8::String::Utf8Value(info[0])));
-  std::string pch_key_str(*(v8::String::Utf8Value(info[0])));
+  std::string pch_key_str(*(v8::String::Utf8Value(info[1])));
   CSteamID steam_id(utils::strToUint64(steam_id_str));
   if (!steam_id.IsValid()) {
     THROW_BAD_ARGS("Steam ID is invalid");
