@@ -336,7 +336,7 @@ NAN_METHOD(ActivateGameOverlayToUser) {
   if (!steam_id.IsValid()) {
     THROW_BAD_ARGS("Steam ID is invalid");
   }
-  SteamFriends()->ActivateGameOverlayInviteDialog(pch_dialog_str.data(), steam_id);
+  SteamFriends()->ActivateGameOverlayToUser(pch_dialog_str.data(), steam_id);
 }
 
 void RegisterAPIs(v8::Handle<v8::Object> exports) {
