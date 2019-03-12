@@ -183,8 +183,8 @@ void SteamClient::OnLobbyInvite(LobbyInvite_t *callback) {
 void SteamClient::OnGameLobbyJoinRequested(GameLobbyJoinRequested_t *callback) {
   for (size_t i = 0; i < observer_list_.size(); ++i) {
     observer_list_[i]->OnGameLobbyJoinRequested(
-        callback->m_steamIDLobby,
-        callback->m_steamIDFriend);
+        callback->m_steamIDLobby.ConvertToUint64(),
+        callback->m_steamIDFriend.ConvertToUint64());
   }
 }
 
