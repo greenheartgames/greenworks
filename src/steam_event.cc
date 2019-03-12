@@ -164,5 +164,16 @@ void SteamEvent::OnLobbyInvite(uint64 SteamIdUser, uint64 SteamIdLobby, uint64 G
       Nan::New(persistent_steam_events_), "on", 4, argv);
 }
 
+void SteamEvent::OnGameLobbyJoinRequested(uint64 SteamIdLobby, uint64 SteamIdUser) {
+  Nan::HandleScope scope;
+  v8::Local<v8::Value> argv[] = {
+      Nan::New("lobby-join-requested").ToLocalChecked(),
+      Nan::New(utils::uint64ToString(SteamIdLobby)).ToLocalChecked(),
+      Nan::New(utils::uint64ToString(SteamIdUser)).ToLocalChecked()
+  };
+  Nan::MakeCallback(
+      Nan::New(persistent_steam_events_), "on", 3, argv);
+}
+
 
 }  // namespace greenworks

@@ -50,7 +50,8 @@ SteamClient::SteamClient()
       OnLobbyCreated_(this, &SteamClient::OnLobbyCreated),
       OnLobbyDataUpdate_(this, &SteamClient::OnLobbyDataUpdate),
       OnLobbyEnter_(this, &SteamClient::OnLobbyEnter),
-      OnLobbyInvite_(this, &SteamClient::OnLobbyInvite) {}
+      OnLobbyInvite_(this, &SteamClient::OnLobbyInvite),
+      OnGameLobbyJoinRequested_(this, &SteamClient::OnGameLobbyJoinRequested) {}
 
 SteamClient::~SteamClient() {
   for (size_t i = 0; i < observer_list_.size(); ++i) {
@@ -176,6 +177,14 @@ void SteamClient::OnLobbyInvite(LobbyInvite_t *callback) {
         callback->m_ulSteamIDUser,
         callback->m_ulSteamIDLobby,
         callback->m_ulGameID);
+  }
+}
+
+void SteamClient::OnGameLobbyJoinRequested(GameLobbyJoinRequested_t *callback) {
+  for (size_t i = 0; i < observer_list_.size(); ++i) {
+    observer_list_[i]->OnGameLobbyJoinRequested(
+        callback->m_ulSteamIDLobby,
+        callback->m_ulSteamIDUser);
   }
 }
 
