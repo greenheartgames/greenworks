@@ -312,6 +312,33 @@ NAN_METHOD(ClearRichPresence) {
   SteamFriends()->ClearRichPresence();
 }
 
+NAN_METHOD(ActivateGameOverlayInviteDialog) {
+  Nan::HandleScope scope;
+  if (info.Length() < 1 || !info[0]->IsString()) {
+    THROW_BAD_ARGS("Bad arguments");
+  }
+  std::string steam_id_str(*(v8::String::Utf8Value(info[0])));
+  CSteamID steam_id(utils::strToUint64(steam_id_str));
+  if (!steam_id.IsValid()) {
+    THROW_BAD_ARGS("Steam ID is invalid");
+  }
+  SteamFriends()->ActivateGameOverlayInviteDialog(steam_id);
+}
+
+NAN_METHOD(ActivateGameOverlayToUser) {
+  Nan::HandleScope scope;
+  if (info.Length() < 2 || !info[0]->IsString() || !info[1]->IsString()) {
+    THROW_BAD_ARGS("Bad arguments");
+  }
+  std::string pch_dialog_str(*(v8::String::Utf8Value(info[0])));
+  std::string steam_id_str(*(v8::String::Utf8Value(info[1])));
+  CSteamID steam_id(utils::strToUint64(steam_id_str));
+  if (!steam_id.IsValid()) {
+    THROW_BAD_ARGS("Steam ID is invalid");
+  }
+  SteamFriends()->ActivateGameOverlayInviteDialog(pch_dialog_str.data(), steam_id);
+}
+
 void RegisterAPIs(v8::Handle<v8::Object> exports) {
   InitFriendFlags(exports);
   InitFriendRelationship(exports);
@@ -357,6 +384,12 @@ void RegisterAPIs(v8::Handle<v8::Object> exports) {
   Nan::Set(exports,
            Nan::New("setPlayedWith").ToLocalChecked(),
            Nan::New<v8::FunctionTemplate>(SetPlayedWith)->GetFunction());
+  Nan::Set(exports,
+           Nan::New("activateGameOverlayInviteDialog").ToLocalChecked(),
+           Nan::New<v8::FunctionTemplate>(ActivateGameOverlayInviteDialog)->GetFunction());
+  Nan::Set(exports,
+           Nan::New("activateGameOverlayToUser").ToLocalChecked(),
+           Nan::New<v8::FunctionTemplate>(ActivateGameOverlayToUser)->GetFunction());
 }
 
 SteamAPIRegistry::Add X(RegisterAPIs);
