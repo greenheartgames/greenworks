@@ -13,10 +13,10 @@
     "compdb": "node-gyp configure -- -f ninja && ninja -C build/Release -t compdb cxx > compile_commands.json"
   },
   "dependencies": {
-    "nan": "^2.8.0"
+    "nan": "^2.12.1"
   },
   "devDependencies": {
-    "mocha": "1.21.4"
+    "mocha": "^1.21.5"
   },
   "gypfile": true,
   "main": "greenworks.js"
