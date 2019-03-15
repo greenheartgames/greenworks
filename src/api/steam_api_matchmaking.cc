@@ -429,7 +429,7 @@ void RegisterAPIs(v8::Handle<v8::Object> exports) {
            Nan::New("joinLobby").ToLocalChecked(),
            Nan::New<v8::FunctionTemplate>(JoinLobby)->GetFunction());
   Nan::Set(exports,
-           Nan::New("LeaveLobby").ToLocalChecked(),
+           Nan::New("leaveLobby").ToLocalChecked(),
            Nan::New<v8::FunctionTemplate>(LeaveLobby)->GetFunction());
   Nan::Set(exports,
            Nan::New("setLobbyData").ToLocalChecked(),
