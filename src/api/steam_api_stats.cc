@@ -133,7 +133,7 @@ NAN_METHOD(ResetAllStats) {
   info.GetReturnValue().Set(SteamUserStats()->ResetAllStats(reset_achievement));
 }
 
-void RegisterAPIs(v8::Handle<v8::Object> target) {
+void RegisterAPIs(v8::Local<v8::Object> target) {
   Nan::Set(target, Nan::New("getStatInt").ToLocalChecked(),
            Nan::New<v8::FunctionTemplate>(GetStatInt)->GetFunction());
   Nan::Set(target, Nan::New("getStatFloat").ToLocalChecked(),

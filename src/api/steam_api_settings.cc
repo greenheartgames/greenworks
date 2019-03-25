@@ -265,7 +265,7 @@ NAN_METHOD(GetImageRGBA) {
           .ToLocalChecked());
 }
 
-void RegisterAPIs(v8::Handle<v8::Object> exports) {
+void RegisterAPIs(v8::Local<v8::Object> exports) {
   Nan::Set(exports,
            Nan::New("_version").ToLocalChecked(),
            Nan::New(GREENWORKS_VERSION).ToLocalChecked());

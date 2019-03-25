@@ -16,7 +16,7 @@ namespace greenworks {
 namespace api {
 namespace {
 
-void InitFriendFlags(v8::Handle<v8::Object> exports) {
+void InitFriendFlags(v8::Local<v8::Object> exports) {
   v8::Local<v8::Object> friend_flags = Nan::New<v8::Object>();
   SET_TYPE(friend_flags, "None", k_EFriendFlagNone);
   SET_TYPE(friend_flags, "Blocked", k_EFriendFlagBlocked);
@@ -41,7 +41,7 @@ void InitFriendFlags(v8::Handle<v8::Object> exports) {
            friend_flags);
 }
 
-void InitFriendRelationship(v8::Handle<v8::Object> exports) {
+void InitFriendRelationship(v8::Local<v8::Object> exports) {
   v8::Local<v8::Object> relationship = Nan::New<v8::Object>();
   SET_TYPE(relationship, "None", k_EFriendRelationshipNone);
   SET_TYPE(relationship, "Blocked", k_EFriendRelationshipBlocked);
@@ -61,7 +61,7 @@ void InitFriendRelationship(v8::Handle<v8::Object> exports) {
            relationship);
 }
 
-void InitFriendPersonaChange(v8::Handle<v8::Object> exports) {
+void InitFriendPersonaChange(v8::Local<v8::Object> exports) {
   v8::Local<v8::Object> persona_change = Nan::New<v8::Object>();
   SET_TYPE(persona_change, "Name", k_EPersonaChangeName);
   SET_TYPE(persona_change, "Status", k_EPersonaChangeStatus);
@@ -85,7 +85,7 @@ void InitFriendPersonaChange(v8::Handle<v8::Object> exports) {
            persona_change);
 }
 
-void InitAccountType(v8::Handle<v8::Object> exports) {
+void InitAccountType(v8::Local<v8::Object> exports) {
   v8::Local<v8::Object> account_type = Nan::New<v8::Object>();
   SET_TYPE(account_type, "Invalid", k_EAccountTypeInvalid);
   SET_TYPE(account_type, "Individual", k_EAccountTypeIndividual);
@@ -105,7 +105,7 @@ void InitAccountType(v8::Handle<v8::Object> exports) {
            account_type);
 }
 
-void InitChatEntryType(v8::Handle<v8::Object> exports) {
+void InitChatEntryType(v8::Local<v8::Object> exports) {
   v8::Local<v8::Object> chat_entry_type = Nan::New<v8::Object>();
   SET_TYPE(chat_entry_type, "Invalid", k_EChatEntryTypeInvalid);
   SET_TYPE(chat_entry_type, "ChatMsg", k_EChatEntryTypeChatMsg);
@@ -266,7 +266,7 @@ NAN_METHOD(GetFriendMessage) {
   info.GetReturnValue().Set(result);
 }
 
-void RegisterAPIs(v8::Handle<v8::Object> exports) {
+void RegisterAPIs(v8::Local<v8::Object> exports) {
   InitFriendFlags(exports);
   InitFriendRelationship(exports);
   InitFriendPersonaChange(exports);

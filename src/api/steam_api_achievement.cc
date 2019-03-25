@@ -85,7 +85,7 @@ NAN_METHOD(GetNumberOfAchievements) {
   info.GetReturnValue().Set(steam_user_stats->GetNumAchievements());
 }
 
-void RegisterAPIs(v8::Handle<v8::Object> target) {
+void RegisterAPIs(v8::Local<v8::Object> target) {
   Nan::Set(target,
            Nan::New("activateAchievement").ToLocalChecked(),
            Nan::New<v8::FunctionTemplate>(ActivateAchievement)->GetFunction());

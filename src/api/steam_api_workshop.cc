@@ -13,7 +13,7 @@ namespace greenworks {
 namespace api {
 namespace {
 
-void InitUgcMatchingTypes(v8::Handle<v8::Object> exports) {
+void InitUgcMatchingTypes(v8::Local<v8::Object> exports) {
   v8::Local<v8::Object> ugc_matching_type = Nan::New<v8::Object>();
   SET_TYPE(ugc_matching_type, "Items", k_EUGCMatchingUGCType_Items);
   SET_TYPE(ugc_matching_type, "ItemsMtx", k_EUGCMatchingUGCType_Items_Mtx);
@@ -38,7 +38,7 @@ void InitUgcMatchingTypes(v8::Handle<v8::Object> exports) {
            ugc_matching_type);
 }
 
-void InitUgcQueryTypes(v8::Handle<v8::Object> exports) {
+void InitUgcQueryTypes(v8::Local<v8::Object> exports) {
   v8::Local<v8::Object> ugc_query_type = Nan::New<v8::Object>();
   SET_TYPE(ugc_query_type, "RankedByVote", k_EUGCQuery_RankedByVote);
   SET_TYPE(ugc_query_type, "RankedByPublicationDate",
@@ -67,7 +67,7 @@ void InitUgcQueryTypes(v8::Handle<v8::Object> exports) {
            ugc_query_type);
 }
 
-void InitUserUgcList(v8::Handle<v8::Object> exports) {
+void InitUserUgcList(v8::Local<v8::Object> exports) {
   v8::Local<v8::Object> ugc_list = Nan::New<v8::Object>();
   SET_TYPE(ugc_list, "Published", k_EUserUGCList_Published);
   SET_TYPE(ugc_list, "VotedOn", k_EUserUGCList_VotedOn);
@@ -83,7 +83,7 @@ void InitUserUgcList(v8::Handle<v8::Object> exports) {
   Nan::Set(exports, Nan::New("UserUGCList").ToLocalChecked(), ugc_list);
 }
 
-void InitUserUgcListSortOrder(v8::Handle<v8::Object> exports) {
+void InitUserUgcListSortOrder(v8::Local<v8::Object> exports) {
   v8::Local<v8::Object> ugc_list_sort_order = Nan::New<v8::Object>();
   SET_TYPE(ugc_list_sort_order, "CreationOrderDesc",
            k_EUserUGCListSortOrder_CreationOrderDesc);
@@ -374,7 +374,7 @@ NAN_METHOD(UGCUnsubscribe) {
   info.GetReturnValue().Set(Nan::Undefined());
 }
 
-void RegisterAPIs(v8::Handle<v8::Object> exports) {
+void RegisterAPIs(v8::Local<v8::Object> exports) {
   InitUgcMatchingTypes(exports);
   InitUgcQueryTypes(exports);
   InitUserUgcListSortOrder(exports);
