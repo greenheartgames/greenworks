@@ -148,7 +148,7 @@ NAN_METHOD(getTicketAppId) {
   info.GetReturnValue().Set(app_id);
 }
 
-void RegisterAPIs(v8::Handle<v8::Object> target) {
+void RegisterAPIs(v8::Local<v8::Object> target) {
   Nan::Set(target,
            Nan::New("EncryptedAppTicketSymmetricKeyLength").ToLocalChecked(),
            Nan::New(k_nSteamEncryptedAppTicketSymmetricKeyLen));

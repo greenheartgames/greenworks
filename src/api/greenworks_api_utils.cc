@@ -60,7 +60,7 @@ NAN_METHOD(ExtractArchive) {
   info.GetReturnValue().Set(Nan::Undefined());
 }
 
-void RegisterAPIs(v8::Handle<v8::Object> exports) {
+void RegisterAPIs(v8::Local<v8::Object> exports) {
   // Prepare constructor template
   v8::Local<v8::FunctionTemplate> tpl = Nan::New<v8::FunctionTemplate>();
   Nan::SetMethod(tpl, "createArchive", CreateArchive);

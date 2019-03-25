@@ -25,14 +25,14 @@ namespace api {
 
 class SteamAPIRegistry {
  public:
-  typedef std::function<void(v8::Handle<v8::Object>)> RegistryFactory;
+  typedef std::function<void(v8::Local<v8::Object>)> RegistryFactory;
 
   static SteamAPIRegistry* GetInstance() {
     static SteamAPIRegistry steam_api_registry;
     return &steam_api_registry;
   }
 
-  void RegisterAllAPIs(v8::Handle<v8::Object> exports) {
+  void RegisterAllAPIs(v8::Local<v8::Object> exports) {
     for (const auto& factory : registry_factories_) {
       factory(exports);
     }

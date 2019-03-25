@@ -174,7 +174,7 @@ NAN_METHOD(GetFileNameAndSize) {
   info.GetReturnValue().Set(result);
 }
 
-void RegisterAPIs(v8::Handle<v8::Object> target) {
+void RegisterAPIs(v8::Local<v8::Object> target) {
   Nan::Set(target,
            Nan::New("saveTextToFile").ToLocalChecked(),
            Nan::New<v8::FunctionTemplate>(SaveTextToFile)->GetFunction());

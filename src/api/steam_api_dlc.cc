@@ -47,7 +47,7 @@ NAN_METHOD(uninstallDLC) {
   info.GetReturnValue().Set(Nan::Undefined());
 }
 
-void RegisterAPIs(v8::Handle<v8::Object> target) {
+void RegisterAPIs(v8::Local<v8::Object> target) {
   Nan::Set(target, Nan::New("getDLCCount").ToLocalChecked(),
            Nan::New<v8::FunctionTemplate>(GetDLCCount)->GetFunction());
   Nan::Set(target, Nan::New("isDLCInstalled").ToLocalChecked(),
