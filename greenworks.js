@@ -10,8 +10,6 @@ var greenworks;
 if (process.platform == 'darwin') {
   if (process.arch == 'x64')
     greenworks = require('./lib/greenworks-osx64');
-  else if (process.arch == 'ia32')
-    greenworks = require('./lib/greenworks-osx32');
 } else if (process.platform == 'win32') {
   if (process.arch == 'x64')
     greenworks = require('./lib/greenworks-win64');
