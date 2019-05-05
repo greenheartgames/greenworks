@@ -13,6 +13,7 @@ Since then, it has been open-sourced and is
   * node v0.8, v0.10, v0.12, v4, v5, v6, v7, v8, v9 and v10
   * NW.js v0.8, v0.11+
   * Electron v1.0.0+
+  * Steam SDK v1.42 
 * Greenworks is built using [Native Abstractions for Node.js](https://github.com/nodejs/nan) to
 support different node versions.
 * The project is currently funded by Greenheart Games and other
