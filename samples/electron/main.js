@@ -49,7 +49,7 @@ function testSteamAPI() {
           function() { log('Getting cloud quota successfully.') },
           function(err) { log('Failed on getting cloud quota.') });
 
-      greenworks.activateAchievement('achievement',
+      greenworks.activateAchievement('ACH_WIN_ONE_GAME',
           function() { log('Activating achievement successfully'); },
           function(err) { log('Failed on activating achievement.'); });
 
