@@ -48,7 +48,7 @@ function testSteamAPI() {
       greenworks.getCloudQuota(
           function() { log('Getting cloud quota successfully.') },
           function(err) { log('Failed on getting cloud quota.') });
-
+      // The ACH_WIN_ONE_GAME achievement is available for the sample (id:480) game
       greenworks.activateAchievement('ACH_WIN_ONE_GAME',
           function() { log('Activating achievement successfully'); },
           function(err) { log('Failed on activating achievement.'); });
