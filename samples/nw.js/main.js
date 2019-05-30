@@ -37,7 +37,8 @@ function testSteamAPI() {
           function(quota, used) { log('Getting cloud quota successfully: '+used+' of '+quota) },
           function(err) { log('Failed on getting cloud quota.') });
 
-      greenworks.activateAchievement('achievement',
+      // The ACH_WIN_ONE_GAME achievement is available for the sample (id:480) game
+      greenworks.activateAchievement('ACH_WIN_ONE_GAME',
           function() { log('Activating achievement successfully'); },
           function(err) { log('Failed on activating achievement.'); });
 
