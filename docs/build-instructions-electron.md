@@ -1,6 +1,6 @@
 # Build Instructions for Electron
 
-You can choose to build Greenworks with either `node-gyp` or `electron-rebuild`. If you are unsure, use `electron-rebuild`.
+You can choose to build Greenworks with either `node-gyp` or `electron-rebuild`. If you are unsure, use `electron-rebuild`. You can also use prebuilt libraries (see the alternative option under `electron-rebuild`.)
 
 ## Building with node-gyp
 
@@ -64,6 +64,7 @@ does not have Steamworks SDK yet:
 ```shell
 npm install --save --ignore-scripts git+https://github.com/greenheartgames/greenworks.git
 ```
+   Note: If you would like to use pre built greenworks libraries, after the above is complete go to [Using Prebuilt](#using-prebuilt) below, when done skip to step 9.
 
 5) Provide the Steamworks SDK dependency to Greenworks by following
 [these steps](get-steamworks-sdk.md). (Essentially, You need to create and
@@ -131,3 +132,13 @@ copy node_modules\greenworks\samples\electron\main.js renderer.js
 ```shell
 npm start
 ```
+
+## Using Prebuilt
+
+Using prebuilt binary files for greenworks, instead of building them locally.
+
+1) Download the prebuilt *.node file needed for your version of Electron and OS and copy it to node_modules/greenworks/lib. They are found at: https://github.com/greenheartgames/greenworks/releases For example for windows we would use: https://github.com/greenheartgames/greenworks/releases/download/v0.14.0/greenworks-v0.14.0-electron-v3.0.9-win-x64.zip we will copy lib/greenworks-win64.node from the zip file to node_modules/greenworks/lib in our project directory.
+
+2) Get the Steamworks SDK. Download the Steamworks SDK from the Steam partner site. Make sure the version matches the one specified for the Greenworks plugin version (1.42 for our example). Unzip the file in a temporary folder. From the redistributable_bin folder, copy the appropriate files for the platform. For windows for example add redistributable_bin/win64/steam_api64.dll to node_modules/greenworks/lib in the project directory for the win64 build.
+
+   You also need to copy the sdkencryptedappticket library. This can be found in public/steam/lib in the Steamworks SDK. You need to copy this to node_modules/greenworks/lib in the same way you did for steam_api.dll. For example for the win64 version, copy public/steam/lib/win64/sdkencryptedappticket64.dll to node_modules/greenworks/lib in the project directory.
