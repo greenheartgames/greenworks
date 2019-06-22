@@ -47,9 +47,7 @@ NAN_MODULE_INIT(init) {
 
   greenworks::api::SteamAPIRegistry::GetInstance()->RegisterAllAPIs(target);
 
-  Nan::Set(target,
-           Nan::New("initAPI").ToLocalChecked(),
-           Nan::New<v8::FunctionTemplate>(InitAPI)->GetFunction());
+  SET_FUNCTION("initAPI", InitAPI);
 }
 
 }  // namespace

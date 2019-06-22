@@ -152,36 +152,14 @@ void RegisterAPIs(v8::Local<v8::Object> target) {
   Nan::Set(target,
            Nan::New("EncryptedAppTicketSymmetricKeyLength").ToLocalChecked(),
            Nan::New(k_nSteamEncryptedAppTicketSymmetricKeyLen));
-  Nan::Set(target,
-           Nan::New("getAuthSessionTicket").ToLocalChecked(),
-           Nan::New<v8::FunctionTemplate>(GetAuthSessionTicket)->GetFunction());
-  Nan::Set(target,
-           Nan::New("getEncryptedAppTicket").ToLocalChecked(),
-           Nan::New<v8::FunctionTemplate>(
-               GetEncryptedAppTicket)->GetFunction());
-  Nan::Set(target,
-           Nan::New("decryptAppTicket").ToLocalChecked(),
-           Nan::New<v8::FunctionTemplate>(
-               DecryptAppTicket)->GetFunction());
-  Nan::Set(target,
-           Nan::New("isTicketForApp").ToLocalChecked(),
-           Nan::New<v8::FunctionTemplate>(
-               IsTicketForApp)->GetFunction());
-  Nan::Set(target,
-           Nan::New("getTicketIssueTime").ToLocalChecked(),
-           Nan::New<v8::FunctionTemplate>(
-               getTicketIssueTime)->GetFunction());
-  Nan::Set(target,
-           Nan::New("getTicketSteamId").ToLocalChecked(),
-           Nan::New<v8::FunctionTemplate>(
-               getTicketSteamId)->GetFunction());
-  Nan::Set(target,
-           Nan::New("getTicketAppId").ToLocalChecked(),
-           Nan::New<v8::FunctionTemplate>(
-               getTicketAppId)->GetFunction());
-  Nan::Set(target,
-           Nan::New("cancelAuthTicket").ToLocalChecked(),
-           Nan::New<v8::FunctionTemplate>(CancelAuthTicket)->GetFunction());
+  SET_FUNCTION("getAuthSessionTicket", GetAuthSessionTicket);
+  SET_FUNCTION("getEncryptedAppTicket", GetEncryptedAppTicket);
+  SET_FUNCTION("decryptAppTicket", DecryptAppTicket);
+  SET_FUNCTION("isTicketForApp", IsTicketForApp);
+  SET_FUNCTION("getTicketIssueTime", getTicketIssueTime);
+  SET_FUNCTION("getTicketSteamId", getTicketSteamId);
+  SET_FUNCTION("getTicketAppId", getTicketAppId);
+  SET_FUNCTION("cancelAuthTicket", CancelAuthTicket);
 }
 
 SteamAPIRegistry::Add X(RegisterAPIs);

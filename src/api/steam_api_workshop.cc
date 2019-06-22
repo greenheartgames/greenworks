@@ -374,40 +374,21 @@ NAN_METHOD(UGCUnsubscribe) {
   info.GetReturnValue().Set(Nan::Undefined());
 }
 
-void RegisterAPIs(v8::Local<v8::Object> exports) {
-  InitUgcMatchingTypes(exports);
-  InitUgcQueryTypes(exports);
-  InitUserUgcListSortOrder(exports);
-  InitUserUgcList(exports);
+void RegisterAPIs(v8::Local<v8::Object> target) {
+  InitUgcMatchingTypes(target);
+  InitUgcQueryTypes(target);
+  InitUserUgcListSortOrder(target);
+  InitUserUgcList(target);
 
-  Nan::Set(exports,
-           Nan::New("fileShare").ToLocalChecked(),
-           Nan::New<v8::FunctionTemplate>(FileShare)->GetFunction());
-  Nan::Set(exports,
-           Nan::New("_publishWorkshopFile").ToLocalChecked(),
-           Nan::New<v8::FunctionTemplate>(PublishWorkshopFile)->GetFunction());
-  Nan::Set(exports,
-           Nan::New("_updatePublishedWorkshopFile").ToLocalChecked(),
-           Nan::New<v8::FunctionTemplate>(
-               UpdatePublishedWorkshopFile)->GetFunction());
-  Nan::Set(exports,
-           Nan::New("_ugcGetItems").ToLocalChecked(),
-           Nan::New<v8::FunctionTemplate>(UGCGetItems)->GetFunction());
-  Nan::Set(exports,
-           Nan::New("_ugcGetUserItems").ToLocalChecked(),
-           Nan::New<v8::FunctionTemplate>(UGCGetUserItems)->GetFunction());
-  Nan::Set(exports,
-           Nan::New("ugcDownloadItem").ToLocalChecked(),
-           Nan::New<v8::FunctionTemplate>(UGCDownloadItem)->GetFunction());
-  Nan::Set(exports,
-           Nan::New("_ugcSynchronizeItems").ToLocalChecked(),
-           Nan::New<v8::FunctionTemplate>(UGCSynchronizeItems)->GetFunction());
-  Nan::Set(exports,
-           Nan::New("ugcShowOverlay").ToLocalChecked(),
-           Nan::New<v8::FunctionTemplate>(UGCShowOverlay)->GetFunction());
-  Nan::Set(exports,
-           Nan::New("ugcUnsubscribe").ToLocalChecked(),
-           Nan::New<v8::FunctionTemplate>(UGCUnsubscribe)->GetFunction());
+  SET_FUNCTION("fileShare", FileShare);
+  SET_FUNCTION("_publishWorkshopFile", PublishWorkshopFile);
+  SET_FUNCTION("_updatePublishedWorkshopFile", UpdatePublishedWorkshopFile);
+  SET_FUNCTION("_ugcGetItems", UGCGetItems);
+  SET_FUNCTION("_ugcGetUserItems", UGCGetUserItems);
+  SET_FUNCTION("ugcDownloadItem", UGCDownloadItem);
+  SET_FUNCTION("_ugcSynchronizeItems", UGCSynchronizeItems);
+  SET_FUNCTION("ugcShowOverlay", UGCShowOverlay);
+  SET_FUNCTION("ugcUnsubscribe", UGCUnsubscribe);
 }
 
 SteamAPIRegistry::Add X(RegisterAPIs);

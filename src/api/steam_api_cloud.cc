@@ -175,37 +175,16 @@ NAN_METHOD(GetFileNameAndSize) {
 }
 
 void RegisterAPIs(v8::Local<v8::Object> target) {
-  Nan::Set(target,
-           Nan::New("saveTextToFile").ToLocalChecked(),
-           Nan::New<v8::FunctionTemplate>(SaveTextToFile)->GetFunction());
-  Nan::Set(target,
-           Nan::New("deleteFile").ToLocalChecked(),
-           Nan::New<v8::FunctionTemplate>(DeleteFile)->GetFunction());
-  Nan::Set(target,
-           Nan::New("readTextFromFile").ToLocalChecked(),
-           Nan::New<v8::FunctionTemplate>(ReadTextFromFile)->GetFunction());
-  Nan::Set(target,
-           Nan::New("saveFilesToCloud").ToLocalChecked(),
-           Nan::New<v8::FunctionTemplate>(SaveFilesToCloud)->GetFunction());
-  Nan::Set(target,
-           Nan::New("isCloudEnabled").ToLocalChecked(),
-           Nan::New<v8::FunctionTemplate>(IsCloudEnabled)->GetFunction());
-  Nan::Set(target,
-           Nan::New("isCloudEnabledForUser").ToLocalChecked(),
-           Nan::New<v8::FunctionTemplate>(
-               IsCloudEnabledForUser)->GetFunction());
-  Nan::Set(target,
-           Nan::New("enableCloud").ToLocalChecked(),
-           Nan::New<v8::FunctionTemplate>(EnableCloud)->GetFunction());
-  Nan::Set(target,
-           Nan::New("getCloudQuota").ToLocalChecked(),
-           Nan::New<v8::FunctionTemplate>(GetCloudQuota)->GetFunction());
-  Nan::Set(target,
-           Nan::New("getFileCount").ToLocalChecked(),
-           Nan::New<v8::FunctionTemplate>(GetFileCount)->GetFunction());
-  Nan::Set(target,
-           Nan::New("getFileNameAndSize").ToLocalChecked(),
-           Nan::New<v8::FunctionTemplate>(GetFileNameAndSize)->GetFunction());
+  SET_FUNCTION("saveTextToFile", SaveTextToFile);
+  SET_FUNCTION("deleteFile", DeleteFile);
+  SET_FUNCTION("readTextFromFile", ReadTextFromFile);
+  SET_FUNCTION("saveFilesToCloud", SaveFilesToCloud);
+  SET_FUNCTION("isCloudEnabled", IsCloudEnabled);
+  SET_FUNCTION("isCloudEnabledForUser", IsCloudEnabledForUser);
+  SET_FUNCTION("enableCloud", EnableCloud);
+  SET_FUNCTION("getCloudQuota", GetCloudQuota);
+  SET_FUNCTION("getFileCount", GetFileCount);
+  SET_FUNCTION("getFileNameAndSize", GetFileNameAndSize);
 }
 
 SteamAPIRegistry::Add X(RegisterAPIs);
