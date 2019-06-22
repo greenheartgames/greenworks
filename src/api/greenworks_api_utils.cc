@@ -66,8 +66,9 @@ void RegisterAPIs(v8::Local<v8::Object> exports) {
   Nan::SetMethod(tpl, "createArchive", CreateArchive);
   Nan::SetMethod(tpl, "extractArchive", ExtractArchive);
   Nan::Persistent<v8::Function> constructor;
-  constructor.Reset(tpl->GetFunction());
-  Nan::Set(exports, Nan::New("Utils").ToLocalChecked(), tpl->GetFunction());
+  constructor.Reset(Nan::GetFunction(tpl).ToLocalChecked());
+  Nan::Set(exports, Nan::New("Utils").ToLocalChecked(),
+           Nan::GetFunction(tpl).ToLocalChecked());
 }
 
 SteamAPIRegistry::Add X(RegisterAPIs);
