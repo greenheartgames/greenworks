@@ -265,55 +265,25 @@ NAN_METHOD(GetImageRGBA) {
           .ToLocalChecked());
 }
 
-void RegisterAPIs(v8::Local<v8::Object> exports) {
-  Nan::Set(exports,
+void RegisterAPIs(v8::Local<v8::Object> target) {
+  Nan::Set(target,
            Nan::New("_version").ToLocalChecked(),
            Nan::New(GREENWORKS_VERSION).ToLocalChecked());
-  Nan::Set(
-      exports, Nan::New("restartAppIfNecessary").ToLocalChecked(),
-      Nan::New<v8::FunctionTemplate>(RestartAppIfNecessary)->GetFunction());
-  Nan::Set(exports,
-           Nan::New("isSteamRunning").ToLocalChecked(),
-           Nan::New<v8::FunctionTemplate>(IsSteamRunning)->GetFunction());
-  Nan::Set(exports,
-           Nan::New("getSteamId").ToLocalChecked(),
-           Nan::New<v8::FunctionTemplate>(GetSteamId)->GetFunction());
-  Nan::Set(exports,
-           Nan::New("getAppId").ToLocalChecked(),
-           Nan::New<v8::FunctionTemplate>(GetAppId)->GetFunction());
-  Nan::Set(exports,
-           Nan::New("getCurrentGameLanguage").ToLocalChecked(),
-           Nan::New<v8::FunctionTemplate>(
-               GetCurrentGameLanguage)->GetFunction());
-  Nan::Set(exports,
-           Nan::New("getCurrentUILanguage").ToLocalChecked(),
-           Nan::New<v8::FunctionTemplate>(GetCurrentUILanguage)->GetFunction());
-  Nan::Set(exports,
-           Nan::New("getCurrentGameInstallDir").ToLocalChecked(),
-           Nan::New<v8::FunctionTemplate>(
-               GetCurrentGameInstallDir)->GetFunction());
-  Nan::Set(exports,
-           Nan::New("getNumberOfPlayers").ToLocalChecked(),
-           Nan::New<v8::FunctionTemplate>(GetNumberOfPlayers)->GetFunction());
-  Nan::Set(exports,
-           Nan::New("isGameOverlayEnabled").ToLocalChecked(),
-           Nan::New<v8::FunctionTemplate>(IsGameOverlayEnabled)->GetFunction());
-  Nan::Set(exports,
-           Nan::New("activateGameOverlay").ToLocalChecked(),
-           Nan::New<v8::FunctionTemplate>(ActivateGameOverlay)->GetFunction());
-  Nan::Set(exports,
-           Nan::New("activateGameOverlayToWebPage").ToLocalChecked(),
-           Nan::New<v8::FunctionTemplate>(
-               ActivateGameOverlayToWebPage)->GetFunction());
-  Nan::Set(exports,
-           Nan::New("isSubscribedApp").ToLocalChecked(),
-           Nan::New<v8::FunctionTemplate>(IsSubscribedApp)->GetFunction());
-  Nan::Set(exports,
-           Nan::New("getImageSize").ToLocalChecked(),
-           Nan::New<v8::FunctionTemplate>(GetImageSize)->GetFunction());
-  Nan::Set(exports,
-           Nan::New("getImageRGBA").ToLocalChecked(),
-           Nan::New<v8::FunctionTemplate>(GetImageRGBA)->GetFunction());
+
+  SET_FUNCTION("restartAppIfNecessary", RestartAppIfNecessary);
+  SET_FUNCTION("isSteamRunning", IsSteamRunning);
+  SET_FUNCTION("getSteamId", GetSteamId);
+  SET_FUNCTION("getAppId", GetAppId);
+  SET_FUNCTION("getCurrentGameLanguage", GetCurrentGameLanguage);
+  SET_FUNCTION("getCurrentUILanguage", GetCurrentUILanguage);
+  SET_FUNCTION("getCurrentGameInstallDir", GetCurrentGameInstallDir);
+  SET_FUNCTION("getNumberOfPlayers", GetNumberOfPlayers);
+  SET_FUNCTION("isGameOverlayEnabled", IsGameOverlayEnabled);
+  SET_FUNCTION("activateGameOverlay", ActivateGameOverlay);
+  SET_FUNCTION("activateGameOverlayToWebPage", ActivateGameOverlayToWebPage);
+  SET_FUNCTION("isSubscribedApp", IsSubscribedApp);
+  SET_FUNCTION("getImageSize", GetImageSize);
+  SET_FUNCTION("getImageRGBA", GetImageRGBA);
 }
 
 SteamAPIRegistry::Add X(RegisterAPIs);

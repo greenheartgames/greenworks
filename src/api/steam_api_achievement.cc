@@ -86,22 +86,11 @@ NAN_METHOD(GetNumberOfAchievements) {
 }
 
 void RegisterAPIs(v8::Local<v8::Object> target) {
-  Nan::Set(target,
-           Nan::New("activateAchievement").ToLocalChecked(),
-           Nan::New<v8::FunctionTemplate>(ActivateAchievement)->GetFunction());
-  Nan::Set(target,
-           Nan::New("getAchievement").ToLocalChecked(),
-           Nan::New<v8::FunctionTemplate>(GetAchievement)->GetFunction());
-  Nan::Set(target,
-           Nan::New("clearAchievement").ToLocalChecked(),
-           Nan::New<v8::FunctionTemplate>(ClearAchievement)->GetFunction());
-  Nan::Set(target,
-           Nan::New("getAchievementNames").ToLocalChecked(),
-           Nan::New<v8::FunctionTemplate>(GetAchievementNames)->GetFunction());
-  Nan::Set(target,
-           Nan::New("getNumberOfAchievements").ToLocalChecked(),
-           Nan::New<v8::FunctionTemplate>(
-               GetNumberOfAchievements)->GetFunction());
+  SET_FUNCTION("activateAchievement", ActivateAchievement);
+  SET_FUNCTION("getAchievement", GetAchievement);
+  SET_FUNCTION("clearAchievement", ClearAchievement);
+  SET_FUNCTION("getAchievementNames", GetAchievementNames);
+  SET_FUNCTION("getNumberOfAchievements", GetNumberOfAchievements);
 }
 
 SteamAPIRegistry::Add X(RegisterAPIs);

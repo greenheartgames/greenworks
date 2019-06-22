@@ -266,39 +266,22 @@ NAN_METHOD(GetFriendMessage) {
   info.GetReturnValue().Set(result);
 }
 
-void RegisterAPIs(v8::Local<v8::Object> exports) {
-  InitFriendFlags(exports);
-  InitFriendRelationship(exports);
-  InitFriendPersonaChange(exports);
-  InitAccountType(exports);
-  InitChatEntryType(exports);
+void RegisterAPIs(v8::Local<v8::Object> target) {
+  InitFriendFlags(target);
+  InitFriendRelationship(target);
+  InitFriendPersonaChange(target);
+  InitAccountType(target);
+  InitChatEntryType(target);
 
-  Nan::Set(exports,
-           Nan::New("getFriendCount").ToLocalChecked(),
-           Nan::New<v8::FunctionTemplate>(GetFriendCount)->GetFunction());
-  Nan::Set(exports,
-           Nan::New("getFriends").ToLocalChecked(),
-           Nan::New<v8::FunctionTemplate>(GetFriends)->GetFunction());
-  Nan::Set(exports, Nan::New("getSmallFriendAvatar").ToLocalChecked(),
-           Nan::New<v8::FunctionTemplate>(GetSmallFriendAvatar)->GetFunction());
-  Nan::Set(
-      exports, Nan::New("getMediumFriendAvatar").ToLocalChecked(),
-      Nan::New<v8::FunctionTemplate>(GetMediumFriendAvatar)->GetFunction());
-  Nan::Set(
-      exports, Nan::New("getLargeFriendAvatar").ToLocalChecked(),
-      Nan::New<v8::FunctionTemplate>(GetLargeFriendAvatar)->GetFunction());
-  Nan::Set(
-      exports, Nan::New("requestUserInformation").ToLocalChecked(),
-      Nan::New<v8::FunctionTemplate>(RequestUserInformation)->GetFunction());
-  Nan::Set(exports, Nan::New("setListenForFriendsMessage").ToLocalChecked(),
-           Nan::New<v8::FunctionTemplate>(SetListenForFriendsMessages)
-               ->GetFunction());
-  Nan::Set(exports, Nan::New("replyToFriendMessage").ToLocalChecked(),
-           Nan::New<v8::FunctionTemplate>(ReplyToFriendMessage)
-               ->GetFunction());
-  Nan::Set(exports, Nan::New("getFriendMessage").ToLocalChecked(),
-           Nan::New<v8::FunctionTemplate>(GetFriendMessage)
-               ->GetFunction());
+  SET_FUNCTION("getFriendCount", GetFriendCount);
+  SET_FUNCTION("getFriends", GetFriends);
+  SET_FUNCTION("getSmallFriendAvatar", GetSmallFriendAvatar);
+  SET_FUNCTION("getMediumFriendAvatar", GetMediumFriendAvatar);
+  SET_FUNCTION("getLargeFriendAvatar", GetLargeFriendAvatar);
+  SET_FUNCTION("requestUserInformation", RequestUserInformation);
+  SET_FUNCTION("setListenForFriendsMessage", SetListenForFriendsMessages);
+  SET_FUNCTION("replyToFriendMessage", ReplyToFriendMessage);
+  SET_FUNCTION("getFriendMessage", GetFriendMessage);
 }
 
 SteamAPIRegistry::Add X(RegisterAPIs);

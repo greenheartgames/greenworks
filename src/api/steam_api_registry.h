@@ -20,6 +20,11 @@
     obj->Set(Nan::New(type_name).ToLocalChecked(), \
              Nan::New(type))
 
+#define SET_FUNCTION(function_name, function)                 \
+  Nan::Set(target, Nan::New(function_name).ToLocalChecked(),          \
+           Nan::GetFunction(Nan::New<v8::FunctionTemplate>(function)) \
+               .ToLocalChecked());
+
 namespace greenworks {
 namespace api {
 
