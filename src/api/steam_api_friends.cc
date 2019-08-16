@@ -149,7 +149,7 @@ NAN_METHOD(GetFriends) {
 
   for (int i = 0; i < friends_count; ++i) {
     CSteamID steam_id = SteamFriends()->GetFriendByIndex(i, friend_flag);
-    friends->Set(i, greenworks::SteamID::Create(steam_id));
+    Nan::Set(friends,i, greenworks::SteamID::Create(steam_id));
   }
   info.GetReturnValue().Set(friends);
 }
@@ -259,9 +259,9 @@ NAN_METHOD(GetFriendMessage) {
       maximam_size, &chat_type);
 
   v8::Local<v8::Object> result = Nan::New<v8::Object>();
-  result->Set(Nan::New("message").ToLocalChecked(),
+  Nan::Set(result,Nan::New("message").ToLocalChecked(),
               Nan::New(message.get(), message_size).ToLocalChecked());
-  result->Set(Nan::New("chatEntryType").ToLocalChecked(),
+  Nan::Set(result,Nan::New("chatEntryType").ToLocalChecked(),
               Nan::New(chat_type));
   info.GetReturnValue().Set(result);
 }

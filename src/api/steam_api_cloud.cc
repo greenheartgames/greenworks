@@ -68,9 +68,9 @@ NAN_METHOD(SaveFilesToCloud) {
   v8::Local<v8::Array> files = info[0].As<v8::Array>();
   std::vector<std::string> files_path;
   for (uint32_t i = 0; i < files->Length(); ++i) {
-    if (!files->Get(i)->IsString())
+    if (!Nan::Get(files,i).ToLocalChecked()->IsString())
       THROW_BAD_ARGS("Bad arguments");
-    v8::String::Utf8Value string_array(files->Get(i));
+    v8::String::Utf8Value string_array(Nan::Get(files,i).ToLocalChecked());
     // Ignore empty path.
     if (string_array.length() > 0)
       files_path.push_back(*string_array);
@@ -167,9 +167,9 @@ NAN_METHOD(GetFileNameAndSize) {
   int32 file_size = 0;
   const char* file_name =
       SteamRemoteStorage()->GetFileNameAndSize(index, &file_size);
-  result->Set(Nan::New("name").ToLocalChecked(),
+  Nan::Set(result,Nan::New("name").ToLocalChecked(),
               Nan::New(file_name).ToLocalChecked());
-  result->Set(Nan::New("size").ToLocalChecked(),
+  Nan::Set(result,Nan::New("size").ToLocalChecked(),
               Nan::New(file_size));
   info.GetReturnValue().Set(result);
 }
