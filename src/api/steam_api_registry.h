@@ -16,9 +16,8 @@
        return;                   \
     } while (0);
 
-#define SET_TYPE(obj, type_name, type) \
-    Nan::Set(obj, Nan::New(type_name).ToLocalChecked(), \
-             Nan::New(type))
+#define SET_TYPE(obj, type_name, type)                                         \
+  Nan::Set(obj, Nan::New(type_name).ToLocalChecked(), Nan::New(type))
 
 #define SET_FUNCTION(function_name, function)                 \
   Nan::Set(target, Nan::New(function_name).ToLocalChecked(),          \

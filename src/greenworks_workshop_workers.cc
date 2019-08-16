@@ -17,64 +17,64 @@ namespace {
 v8::Local<v8::Object> ConvertToJsObject(const SteamUGCDetails_t& item) {
   v8::Local<v8::Object> result = Nan::New<v8::Object>();
 
-  Nan::Set(result,Nan::New("acceptedForUse").ToLocalChecked(),
-              Nan::New(item.m_bAcceptedForUse));
-  Nan::Set(result,Nan::New("banned").ToLocalChecked(),
-              Nan::New(item.m_bBanned));
-  Nan::Set(result,Nan::New("tagsTruncated").ToLocalChecked(),
-              Nan::New(item.m_bTagsTruncated));
-  Nan::Set(result,Nan::New("fileType").ToLocalChecked(),
-              Nan::New(item.m_eFileType));
-  Nan::Set(result,Nan::New("result").ToLocalChecked(),
-              Nan::New(item.m_eResult));
-  Nan::Set(result,Nan::New("visibility").ToLocalChecked(),
-              Nan::New(item.m_eVisibility));
-  Nan::Set(result,Nan::New("score").ToLocalChecked(),
-              Nan::New(item.m_flScore));
+  Nan::Set(result, Nan::New("acceptedForUse").ToLocalChecked(),
+           Nan::New(item.m_bAcceptedForUse));
+  Nan::Set(result, Nan::New("banned").ToLocalChecked(),
+           Nan::New(item.m_bBanned));
+  Nan::Set(result, Nan::New("tagsTruncated").ToLocalChecked(),
+           Nan::New(item.m_bTagsTruncated));
+  Nan::Set(result, Nan::New("fileType").ToLocalChecked(),
+           Nan::New(item.m_eFileType));
+  Nan::Set(result, Nan::New("result").ToLocalChecked(),
+           Nan::New(item.m_eResult));
+  Nan::Set(result, Nan::New("visibility").ToLocalChecked(),
+           Nan::New(item.m_eVisibility));
+  Nan::Set(result, Nan::New("score").ToLocalChecked(),
+           Nan::New(item.m_flScore));
 
-  Nan::Set(result,Nan::New("file").ToLocalChecked(),
-              Nan::New(utils::uint64ToString(item.m_hFile)).ToLocalChecked());
-  Nan::Set(result,Nan::New("fileName").ToLocalChecked(),
-              Nan::New(item.m_pchFileName).ToLocalChecked());
-  Nan::Set(result,Nan::New("fileSize").ToLocalChecked(),
-              Nan::New(item.m_nFileSize));
+  Nan::Set(result, Nan::New("file").ToLocalChecked(),
+           Nan::New(utils::uint64ToString(item.m_hFile)).ToLocalChecked());
+  Nan::Set(result, Nan::New("fileName").ToLocalChecked(),
+           Nan::New(item.m_pchFileName).ToLocalChecked());
+  Nan::Set(result, Nan::New("fileSize").ToLocalChecked(),
+           Nan::New(item.m_nFileSize));
 
-  Nan::Set(result,Nan::New("previewFile").ToLocalChecked(),
-              Nan::New(
-                  utils::uint64ToString(item.m_hPreviewFile)).ToLocalChecked());
-  Nan::Set(result,Nan::New("previewFileSize").ToLocalChecked(),
-              Nan::New(item.m_nPreviewFileSize));
+  Nan::Set(
+      result, Nan::New("previewFile").ToLocalChecked(),
+      Nan::New(utils::uint64ToString(item.m_hPreviewFile)).ToLocalChecked());
+  Nan::Set(result, Nan::New("previewFileSize").ToLocalChecked(),
+           Nan::New(item.m_nPreviewFileSize));
 
-  Nan::Set(result,Nan::New("steamIDOwner").ToLocalChecked(),
-              Nan::New(utils::uint64ToString(
-                  item.m_ulSteamIDOwner)).ToLocalChecked());
-  Nan::Set(result,Nan::New("consumerAppID").ToLocalChecked(),
-              Nan::New(item.m_nConsumerAppID));
-  Nan::Set(result,Nan::New("creatorAppID").ToLocalChecked(),
-              Nan::New(item.m_nCreatorAppID));
-  Nan::Set(result,Nan::New("publishedFileId").ToLocalChecked(),
-              Nan::New(utils::uint64ToString(
-                  item.m_nPublishedFileId)).ToLocalChecked());
+  Nan::Set(
+      result, Nan::New("steamIDOwner").ToLocalChecked(),
+      Nan::New(utils::uint64ToString(item.m_ulSteamIDOwner)).ToLocalChecked());
+  Nan::Set(result, Nan::New("consumerAppID").ToLocalChecked(),
+           Nan::New(item.m_nConsumerAppID));
+  Nan::Set(result, Nan::New("creatorAppID").ToLocalChecked(),
+           Nan::New(item.m_nCreatorAppID));
+  Nan::Set(result, Nan::New("publishedFileId").ToLocalChecked(),
+           Nan::New(utils::uint64ToString(item.m_nPublishedFileId))
+               .ToLocalChecked());
 
-  Nan::Set(result,Nan::New("title").ToLocalChecked(),
-              Nan::New(item.m_rgchTitle).ToLocalChecked());
-  Nan::Set(result,Nan::New("description").ToLocalChecked(),
-              Nan::New(item.m_rgchDescription).ToLocalChecked());
-  Nan::Set(result,Nan::New("URL").ToLocalChecked(),
-              Nan::New(item.m_rgchURL).ToLocalChecked());
-  Nan::Set(result,Nan::New("tags").ToLocalChecked(),
-              Nan::New(item.m_rgchTags).ToLocalChecked());
+  Nan::Set(result, Nan::New("title").ToLocalChecked(),
+           Nan::New(item.m_rgchTitle).ToLocalChecked());
+  Nan::Set(result, Nan::New("description").ToLocalChecked(),
+           Nan::New(item.m_rgchDescription).ToLocalChecked());
+  Nan::Set(result, Nan::New("URL").ToLocalChecked(),
+           Nan::New(item.m_rgchURL).ToLocalChecked());
+  Nan::Set(result, Nan::New("tags").ToLocalChecked(),
+           Nan::New(item.m_rgchTags).ToLocalChecked());
 
-  Nan::Set(result,Nan::New("timeAddedToUserList").ToLocalChecked(),
-              Nan::New(item.m_rtimeAddedToUserList));
-  Nan::Set(result,Nan::New("timeCreated").ToLocalChecked(),
-              Nan::New(item.m_rtimeCreated));
-  Nan::Set(result,Nan::New("timeUpdated").ToLocalChecked(),
-              Nan::New(item.m_rtimeUpdated));
-  Nan::Set(result,Nan::New("votesDown").ToLocalChecked(),
-              Nan::New(item.m_unVotesDown));
-  Nan::Set(result,Nan::New("votesUp").ToLocalChecked(),
-              Nan::New(item.m_unVotesUp));
+  Nan::Set(result, Nan::New("timeAddedToUserList").ToLocalChecked(),
+           Nan::New(item.m_rtimeAddedToUserList));
+  Nan::Set(result, Nan::New("timeCreated").ToLocalChecked(),
+           Nan::New(item.m_rtimeCreated));
+  Nan::Set(result, Nan::New("timeUpdated").ToLocalChecked(),
+           Nan::New(item.m_rtimeUpdated));
+  Nan::Set(result, Nan::New("votesDown").ToLocalChecked(),
+           Nan::New(item.m_unVotesDown));
+  Nan::Set(result, Nan::New("votesUp").ToLocalChecked(),
+           Nan::New(item.m_unVotesUp));
 
   return result;
 }
@@ -257,7 +257,7 @@ void QueryUGCWorker::HandleOKCallback() {
   v8::Local<v8::Array> items = Nan::New<v8::Array>(
       static_cast<int>(ugc_items_.size()));
   for (size_t i = 0; i < ugc_items_.size(); ++i)
-    Nan::Set(items,i, ConvertToJsObject(ugc_items_[i]));
+    Nan::Set(items, i, ConvertToJsObject(ugc_items_[i]));
   v8::Local<v8::Value> argv[] = { items };
   callback->Call(1, argv);
 }
@@ -490,8 +490,9 @@ void SynchronizeItemsWorker::HandleOKCallback() {
     bool is_updated = std::find(download_ugc_items_handle_.begin(),
         download_ugc_items_handle_.end(), ugc_items_[i].m_hFile) !=
         download_ugc_items_handle_.end();
-    Nan::Set(item,Nan::New("isUpdated").ToLocalChecked(), Nan::New(is_updated));
-    Nan::Set(items,i, item);
+    Nan::Set(item, Nan::New("isUpdated").ToLocalChecked(),
+             Nan::New(is_updated));
+    Nan::Set(items, i, item);
   }
   v8::Local<v8::Value> argv[] = { items };
   callback->Call(1, argv);
