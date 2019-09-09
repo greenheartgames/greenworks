@@ -166,6 +166,17 @@ NAN_METHOD(GetCurrentGameInstallDir) {
   info.GetReturnValue().Set(Nan::New("NOT IMPLEMENTED").ToLocalChecked());
 }
 
+NAN_METHOD(GetAppInstallDir) {
+  Nan::HandleScope scope;
+  if (info.Length() < 3 || !info[0]->IsUint32() || !info[2]->IsUint32()) {
+    THROW_BAD_ARGS("Bad arguments; expected: appid [uint32], destination [char buffer], destination size [uint32]");
+  }
+  AppId_t app_id = static_cast<AppId_t>(info[0]->Uint32Value());
+  char* buffer = (char*) node::Buffer::Data(info[1]->ToObject());
+  uint32 buffer_size = info[2]->Uint32Value();
+  SteamApps()->GetAppInstallDir(app_id, buffer, buffer_size);
+}
+
 NAN_METHOD(GetNumberOfPlayers) {
   Nan::HandleScope scope;
   if (info.Length() < 1 || !info[0]->IsFunction()) {
@@ -278,6 +289,7 @@ void RegisterAPIs(v8::Local<v8::Object> target) {
   SET_FUNCTION("getCurrentGameLanguage", GetCurrentGameLanguage);
   SET_FUNCTION("getCurrentUILanguage", GetCurrentUILanguage);
   SET_FUNCTION("getCurrentGameInstallDir", GetCurrentGameInstallDir);
+  SET_FUNCTION("getAppInstallDir", GetAppInstallDir);
   SET_FUNCTION("getNumberOfPlayers", GetNumberOfPlayers);
   SET_FUNCTION("isGameOverlayEnabled", IsGameOverlayEnabled);
   SET_FUNCTION("activateGameOverlay", ActivateGameOverlay);
