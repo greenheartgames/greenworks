@@ -168,13 +168,17 @@ NAN_METHOD(GetCurrentGameInstallDir) {
 
 NAN_METHOD(GetAppInstallDir) {
   Nan::HandleScope scope;
-  if (info.Length() < 3 || !info[0]->IsUint32() || !info[2]->IsUint32()) {
-    THROW_BAD_ARGS("Bad arguments; expected: appid [uint32], destination [char buffer], destination size [uint32]");
+  
+  if (info.Length() < 1 || !info[0]->IsUint32()) {
+    THROW_BAD_ARGS("Bad arguments; expected: appid [uint32]");
   }
+
   AppId_t app_id = static_cast<AppId_t>(info[0]->Uint32Value());
-  char* buffer = (char*) node::Buffer::Data(info[1]->ToObject());
-  uint32 buffer_size = info[2]->Uint32Value();
+  const int buffer_size = 260;  // MAX_PATH on 32bit Windows according to MSDN documentation
+  char buffer[buffer_size];
   SteamApps()->GetAppInstallDir(app_id, buffer, buffer_size);
+
+  info.GetReturnValue().Set(Nan::New(buffer, buffer_size).ToLocalChecked());
 }
 
 NAN_METHOD(GetNumberOfPlayers) {

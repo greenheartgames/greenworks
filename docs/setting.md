@@ -52,19 +52,8 @@ Not implement yet.
 ### greenworks.getAppInstallDir(app_id, buffer, buffer_size)
 
 * `app_id` Integer: The APP ID of your game
-* `buffer` Buffer: The buffer to write the path to
-* `buffer_size` Integer: The size of the buffer
 
-Fills the provided buffer with the absolute path to the app's installation directory.
-
-An example logging the installation path of an app matching id `1234`:
-```js
-var greenworks = require('./greenworks');
-const appId = 1234;
-const buffer = Buffer.alloc(260); // Maximum path length on win32 is 260 characters
-greenworks.getAppInstallDir(appId, buffer, buffer.length);
-console.log(`Installation directory: ${buffer.toString()}`);
-```
+Returns a `String` representing the absolute path to the app's installation directory.
 
 ### greenworks.getNumberOfPlayers(success_callback, [error_callback])
 
