@@ -178,6 +178,7 @@ NAN_METHOD(GetAppInstallDir) {
   char buffer[buffer_size];
   uint32 length = SteamApps()->GetAppInstallDir(app_id, buffer, buffer_size);
 
+  // The length takes \0 termination into account; return length-1 to remove it since Javascript has trouble handling it
   info.GetReturnValue().Set(Nan::New(buffer, length - 1).ToLocalChecked());
 }
 
