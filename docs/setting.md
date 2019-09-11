@@ -49,6 +49,12 @@ Returns a `String` represents the current language from Steam set in UI.
 
 Not implement yet.
 
+### greenworks.getAppInstallDir(app_id, buffer, buffer_size)
+
+* `app_id` Integer: The APP ID of your game
+
+Returns a `String` representing the absolute path to the app's installation directory.
+
 ### greenworks.getNumberOfPlayers(success_callback, [error_callback])
 
 * `success_callback` Function(num_of_players)
