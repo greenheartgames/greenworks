@@ -168,17 +168,18 @@ NAN_METHOD(GetCurrentGameInstallDir) {
 
 NAN_METHOD(GetAppInstallDir) {
   Nan::HandleScope scope;
-  
+
   if (info.Length() < 1 || !info[0]->IsUint32()) {
     THROW_BAD_ARGS("Bad arguments; expected: appid [uint32]");
   }
 
   AppId_t app_id = static_cast<AppId_t>(info[0]->Uint32Value());
-  const int buffer_size = 260;  // MAX_PATH on 32bit Windows according to MSDN documentation
+  const int buffer_size =
+      260;  // MAX_PATH on 32bit Windows according to MSDN documentation
   char buffer[buffer_size];
   uint32 length = SteamApps()->GetAppInstallDir(app_id, buffer, buffer_size);
 
-  // The length takes \0 termination into account; return length-1 to remove it since Javascript has trouble handling it
+  // The length takes \0 termination into account, we don't need it in JS.
   info.GetReturnValue().Set(Nan::New(buffer, length - 1).ToLocalChecked());
 }
 
