@@ -31,6 +31,10 @@ it returns `true`, your app is being restarted.
 
 Returns an `Integer` represents the app id of the current process.
 
+### greenworks.getAppBuildId()
+
+Returns an `Integer` representing the app's build id. May change at any time based on backend updates to the game.
+
 ### greenworks.getSteamId()
 
 Returns an [`SteamID`](friends.md#steamid) object represents the current Steam
@@ -83,6 +87,14 @@ Open a specified url in steam game overlay.
 * `appId` Integer: The APP ID of your game
 
 Returns a `Boolean` indicates whether the user has purchased that app.
+
+### greenworks.isAppInstalled(appId)
+
+* `appId` Integer: The APP ID of your game
+
+Returns a `Boolean` indicating whether the app is currently installed. The app may not actually be owned by the user. 
+
+Only works for base applications, for DLC use `isDLCInstalled` instead.
 
 ### greenworks.getImageSize(handle)
 

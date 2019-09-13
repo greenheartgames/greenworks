@@ -148,6 +148,12 @@ NAN_METHOD(GetAppId) {
       Nan::New(SteamUtils()->GetAppID()));
 }
 
+NAN_METHOD(GetAppBuildId) {
+  Nan::HandleScope scope;
+  info.GetReturnValue().Set(
+      Nan::New(SteamApps()->GetAppBuildId()));
+}
+
 NAN_METHOD(GetCurrentGameLanguage) {
   Nan::HandleScope scope;
   info.GetReturnValue().Set(
@@ -243,6 +249,16 @@ NAN_METHOD(IsSubscribedApp) {
   info.GetReturnValue().Set(Nan::New(subscribed));
 }
 
+NAN_METHOD(IsAppInstalled) {
+  Nan::HandleScope scope;
+  if (info.Length() < 1 && !info[0]->IsUint32()) {
+    THROW_BAD_ARGS("Bad arguments; expected: appid [uint32]");
+  }
+  AppId_t app_id = static_cast<AppId_t>(info[0]->Uint32Value());
+  bool installed = SteamApps()->BIsAppInstalled(app_id);
+  info.GetReturnValue().Set(Nan::New(installed));
+}
+
 NAN_METHOD(GetImageSize) {
   Nan::HandleScope scope;
   if (info.Length() < 1 && !info[0]->IsInt32()) {
@@ -292,6 +308,7 @@ void RegisterAPIs(v8::Local<v8::Object> target) {
   SET_FUNCTION("isSteamRunning", IsSteamRunning);
   SET_FUNCTION("getSteamId", GetSteamId);
   SET_FUNCTION("getAppId", GetAppId);
+  SET_FUNCTION("getAppBuildId", GetAppBuildId);
   SET_FUNCTION("getCurrentGameLanguage", GetCurrentGameLanguage);
   SET_FUNCTION("getCurrentUILanguage", GetCurrentUILanguage);
   SET_FUNCTION("getCurrentGameInstallDir", GetCurrentGameInstallDir);
@@ -300,6 +317,7 @@ void RegisterAPIs(v8::Local<v8::Object> target) {
   SET_FUNCTION("isGameOverlayEnabled", IsGameOverlayEnabled);
   SET_FUNCTION("activateGameOverlay", ActivateGameOverlay);
   SET_FUNCTION("activateGameOverlayToWebPage", ActivateGameOverlayToWebPage);
+  SET_FUNCTION("isAppInstalled", IsAppInstalled);
   SET_FUNCTION("isSubscribedApp", IsSubscribedApp);
   SET_FUNCTION("getImageSize", GetImageSize);
   SET_FUNCTION("getImageRGBA", GetImageRGBA);
