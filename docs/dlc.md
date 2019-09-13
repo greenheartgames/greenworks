@@ -4,7 +4,7 @@
 
 Returns the number of DLC pieces for the current running app.
 
-### greenworks.getDLCDataByIndex
+### greenworks.getDLCDataByIndex(index)
 
 * `index` Integer: The index of the DLC between 0 and `greenworks.getDLCCount`.
 
