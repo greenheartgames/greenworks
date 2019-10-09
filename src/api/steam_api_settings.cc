@@ -211,6 +211,11 @@ NAN_METHOD(IsGameOverlayEnabled) {
   info.GetReturnValue().Set(Nan::New(SteamUtils()->IsOverlayEnabled()));
 }
 
+NAN_METHOD(IsSteamInBigPictureMode) {
+  Nan::HandleScope scope;
+  info.GetReturnValue().Set(Nan::New(SteamUtils()->IsSteamInBigPictureMode()));
+}
+
 NAN_METHOD(ActivateGameOverlay) {
   Nan::HandleScope scope;
   if (info.Length() < 1 || !info[0]->IsString()) {
@@ -315,6 +320,7 @@ void RegisterAPIs(v8::Local<v8::Object> target) {
   SET_FUNCTION("getAppInstallDir", GetAppInstallDir);
   SET_FUNCTION("getNumberOfPlayers", GetNumberOfPlayers);
   SET_FUNCTION("isGameOverlayEnabled", IsGameOverlayEnabled);
+  SET_FUNCTION("isSteamInBigPictureMode", IsSteamInBigPictureMode);
   SET_FUNCTION("activateGameOverlay", ActivateGameOverlay);
   SET_FUNCTION("activateGameOverlayToWebPage", ActivateGameOverlayToWebPage);
   SET_FUNCTION("isAppInstalled", IsAppInstalled);
