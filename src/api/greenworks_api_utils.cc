@@ -20,10 +20,10 @@ NAN_METHOD(CreateArchive) {
       !info[2]->IsString() || !info[3]->IsInt32() || !info[4]->IsFunction()) {
     THROW_BAD_ARGS("bad arguments");
   }
-  std::string zip_file_path = *(v8::String::Utf8Value(info[0]));
-  std::string source_dir = *(v8::String::Utf8Value(info[1]));
-  std::string password = *(v8::String::Utf8Value(info[2]));
-  int compress_level = info[3]->Int32Value();
+  std::string zip_file_path = *(Nan::Utf8String(info[0]));
+  std::string source_dir = *(Nan::Utf8String(info[1]));
+  std::string password = *(Nan::Utf8String(info[2]));
+  int compress_level = Nan::To<int>(info[3]).FromJust();
 
   Nan::Callback* success_callback =
       new Nan::Callback(info[4].As<v8::Function>());
@@ -44,9 +44,9 @@ NAN_METHOD(ExtractArchive) {
       !info[2]->IsString() || !info[3]->IsFunction()) {
     THROW_BAD_ARGS("bad arguments");
   }
-  std::string zip_file_path = *(v8::String::Utf8Value(info[0]));
-  std::string extract_dir = *(v8::String::Utf8Value(info[1]));
-  std::string password = *(v8::String::Utf8Value(info[2]));
+  std::string zip_file_path = *(Nan::Utf8String(info[0]));
+  std::string extract_dir = *(Nan::Utf8String(info[1]));
+  std::string password = *(Nan::Utf8String(info[2]));
 
   Nan::Callback* success_callback =
       new Nan::Callback(info[3].As<v8::Function>());

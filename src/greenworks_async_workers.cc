@@ -127,7 +127,8 @@ void FileReadWorker::HandleOKCallback() {
   Nan::HandleScope scope;
 
   v8::Local<v8::Value> argv[] = { Nan::New(content_).ToLocalChecked() };
-  callback->Call(1, argv);
+  Nan::AsyncResource resource("greenworks:FileReadWorker.HandleOKCallback");
+  callback->Call(1, argv, &resource);
 }
 
 CloudQuotaGetWorker::CloudQuotaGetWorker(Nan::Callback* success_callback,
@@ -149,7 +150,8 @@ void CloudQuotaGetWorker::HandleOKCallback() {
   v8::Local<v8::Value> argv[] = {
       Nan::New(utils::uint64ToString(total_bytes_)).ToLocalChecked(),
       Nan::New(utils::uint64ToString(available_bytes_)).ToLocalChecked()};
-  callback->Call(2, argv);
+  Nan::AsyncResource resource("greenworks:CloudQuotaGetWorker.HandleOKCallback");
+  callback->Call(2, argv, &resource);
 }
 
 ActivateAchievementWorker::ActivateAchievementWorker(
@@ -193,7 +195,8 @@ void GetAchievementWorker::Execute() {
 void GetAchievementWorker::HandleOKCallback() {
   Nan::HandleScope scope;
   v8::Local<v8::Value> argv[] = { Nan::New(is_achieved_) };
-  callback->Call(1, argv);
+  Nan::AsyncResource resource("greenworks:GetAchievementWorker.HandleOKCallback");
+  callback->Call(1, argv, &resource);
 }
 
 ClearAchievementWorker::ClearAchievementWorker(
@@ -248,7 +251,8 @@ void GetNumberOfPlayersWorker::HandleOKCallback() {
   Nan::HandleScope scope;
 
   v8::Local<v8::Value> argv[] = { Nan::New(num_of_players_) };
-  callback->Call(1, argv);
+  Nan::AsyncResource resource("greenworks:GetNumberOfPlayersWorker.HandleOKCallback");
+  callback->Call(1, argv, &resource);
 }
 
 CreateArchiveWorker::CreateArchiveWorker(Nan::Callback* success_callback,
@@ -318,7 +322,8 @@ void GetAuthSessionTicketWorker::HandleOKCallback() {
           .ToLocalChecked());
   Nan::Set(ticket, Nan::New("handle").ToLocalChecked(), Nan::New(handle_));
   v8::Local<v8::Value> argv[] = { ticket };
-  callback->Call(1, argv);
+  Nan::AsyncResource resource("greenworks:GetAuthSessionTicketWorker.HandleOKCallback");
+  callback->Call(1, argv, &resource);
 }
 
 RequestEncryptedAppTicketWorker::RequestEncryptedAppTicketWorker(
@@ -354,7 +359,8 @@ void RequestEncryptedAppTicketWorker::HandleOKCallback() {
   v8::Local<v8::Value> argv[] = {
       Nan::CopyBuffer(reinterpret_cast<char *>(ticket_buf_), ticket_buf_size_)
           .ToLocalChecked() };
-  callback->Call(1, argv);
+  Nan::AsyncResource resource("greenworks:RequestEncryptedAppTicketWorker.HandleOKCallback");
+  callback->Call(1, argv, &resource);
 }
 
 }  // namespace greenworks

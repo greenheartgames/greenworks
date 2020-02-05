@@ -125,7 +125,8 @@ void FileShareWorker::HandleOKCallback() {
 
   v8::Local<v8::Value> argv[] = {
       Nan::New(utils::uint64ToString(share_file_handle_)).ToLocalChecked() };
-  callback->Call(1, argv);
+  Nan::AsyncResource resource("greenworks:FileShareWorker.HandleOKCallback");
+  callback->Call(1, argv, &resource);
 }
 
 PublishWorkshopFileWorker::PublishWorkshopFileWorker(
@@ -176,7 +177,8 @@ void PublishWorkshopFileWorker::HandleOKCallback() {
 
   v8::Local<v8::Value> argv[] = {
       Nan::New(utils::uint64ToString(publish_file_id_)).ToLocalChecked() };
-  callback->Call(1, argv);
+  Nan::AsyncResource resource("greenworks:PublishWorkshopFileWorker.HandleOKCallback");
+  callback->Call(1, argv, &resource);
 }
 
 UpdatePublishedWorkshopFileWorker::UpdatePublishedWorkshopFileWorker(
@@ -259,7 +261,8 @@ void QueryUGCWorker::HandleOKCallback() {
   for (size_t i = 0; i < ugc_items_.size(); ++i)
     Nan::Set(items, i, ConvertToJsObject(ugc_items_[i]));
   v8::Local<v8::Value> argv[] = { items };
-  callback->Call(1, argv);
+  Nan::AsyncResource resource("greenworks:QueryUGCWorker.HandleOKCallback");
+  callback->Call(1, argv, &resource);
 }
 
 void QueryUGCWorker::OnUGCQueryCompleted(SteamUGCQueryCompleted_t* result,
@@ -495,7 +498,8 @@ void SynchronizeItemsWorker::HandleOKCallback() {
     Nan::Set(items, i, item);
   }
   v8::Local<v8::Value> argv[] = { items };
-  callback->Call(1, argv);
+  Nan::AsyncResource resource("greenworks:SynchronizeItemsWorker.HandleOKCallback");
+  callback->Call(1, argv, &resource);
 }
 
 UnsubscribePublishedFileWorker::UnsubscribePublishedFileWorker(
