@@ -23,8 +23,8 @@ NAN_METHOD(SaveTextToFile) {
     THROW_BAD_ARGS("Bad arguments");
   }
 
-  std::string file_name(*(v8::String::Utf8Value(info[0])));
-  std::string content(*(v8::String::Utf8Value(info[1])));
+  std::string file_name(*(Nan::Utf8String(info[0])));
+  std::string content(*(Nan::Utf8String(info[1])));
   Nan::Callback* success_callback =
       new Nan::Callback(info[2].As<v8::Function>());
   Nan::Callback* error_callback = nullptr;
@@ -46,7 +46,7 @@ NAN_METHOD(DeleteFile) {
     THROW_BAD_ARGS("Bad arguments");
   }
 
-  std::string file_name(*(v8::String::Utf8Value(info[0])));
+  std::string file_name(*(Nan::Utf8String(info[0])));
   Nan::Callback* success_callback =
       new Nan::Callback(info[1].As<v8::Function>());
   Nan::Callback* error_callback = nullptr;
@@ -70,7 +70,7 @@ NAN_METHOD(SaveFilesToCloud) {
   for (uint32_t i = 0; i < files->Length(); ++i) {
     if (!Nan::Get(files, i).ToLocalChecked()->IsString())
       THROW_BAD_ARGS("Bad arguments");
-    v8::String::Utf8Value string_array(Nan::Get(files, i).ToLocalChecked());
+    Nan::Utf8String string_array(Nan::Get(files, i).ToLocalChecked());
     // Ignore empty path.
     if (string_array.length() > 0)
       files_path.push_back(*string_array);
@@ -95,7 +95,7 @@ NAN_METHOD(ReadTextFromFile) {
     THROW_BAD_ARGS("Bad arguments");
   }
 
-  std::string file_name(*(v8::String::Utf8Value(info[0])));
+  std::string file_name(*(Nan::Utf8String(info[0])));
   Nan::Callback* success_callback =
       new Nan::Callback(info[1].As<v8::Function>());
   Nan::Callback* error_callback = nullptr;
@@ -129,7 +129,7 @@ NAN_METHOD(EnableCloud) {
   if (info.Length() < 1) {
     THROW_BAD_ARGS("Bad arguments");
   }
-  bool enable_flag = info[0]->BooleanValue();
+  bool enable_flag = Nan::To<bool>(info[0]).FromJust();
   SteamRemoteStorage()->SetCloudEnabledForApp(enable_flag);
   info.GetReturnValue().Set(Nan::Undefined());
 }
@@ -163,7 +163,7 @@ NAN_METHOD(GetFileNameAndSize) {
   if (info.Length() < 1 || !info[0]->IsInt32()) {
     THROW_BAD_ARGS("Bad arguments");
   }
-  int32 index = info[0].As<v8::Number>()->Int32Value();
+  int32 index = Nan::To<int32>(info[0].As<v8::Number>()).FromJust();
   int32 file_size = 0;
   const char* file_name =
       SteamRemoteStorage()->GetFileNameAndSize(index, &file_size);

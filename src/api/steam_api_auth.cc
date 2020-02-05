@@ -35,7 +35,7 @@ NAN_METHOD(CancelAuthTicket) {
   if (info.Length() < 1 || !info[0]->IsNumber()) {
     THROW_BAD_ARGS("Bad arguments");
   }
-  HAuthTicket h = info[1].As<v8::Number>()->Int32Value();
+  HAuthTicket h = Nan::To<int32>(info[1].As<v8::Number>()).FromJust();
   SteamUser()->CancelAuthTicket(h);
   info.GetReturnValue().Set(Nan::Undefined());
 }
@@ -45,7 +45,7 @@ NAN_METHOD(GetEncryptedAppTicket) {
   if (info.Length() < 2 || !info[0]->IsString() || !info[1]->IsFunction()) {
     THROW_BAD_ARGS("Bad arguments");
   }
-  char* user_data = *(static_cast<v8::String::Utf8Value>(info[0]->ToString()));
+  char* user_data = *(Nan::Utf8String(info[0]));
   if (!user_data) {
     THROW_BAD_ARGS("Bad arguments");
   }
@@ -101,7 +101,7 @@ NAN_METHOD(IsTicketForApp) {
 
   char* decrypted_ticket_buf = node::Buffer::Data(info[0]);
   size_t decrypted_ticket_buf_size = node::Buffer::Length(info[0]);
-  uint32 app_id = info[1]->Uint32Value();
+  uint32 app_id = Nan::To<uint32>(info[1]).FromJust();
   bool result = SteamEncryptedAppTicket_BIsTicketForApp(
       reinterpret_cast<uint8*>(decrypted_ticket_buf), decrypted_ticket_buf_size,
       app_id);
