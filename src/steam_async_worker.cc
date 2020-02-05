@@ -24,7 +24,8 @@ void SteamAsyncWorker::HandleErrorCallback() {
   if (!error_callback_) return;
   Nan::HandleScope scope;
   v8::Local<v8::Value> argv[] = { Nan::New(ErrorMessage()).ToLocalChecked() };
-  error_callback_->Call(1, argv);
+  Nan::AsyncResource resource("greenworks:SteamAsyncWorker.HandleErrorCallback");
+  error_callback_->Call(1, argv, &resource);
 }
 
 SteamCallbackAsyncWorker::SteamCallbackAsyncWorker(
