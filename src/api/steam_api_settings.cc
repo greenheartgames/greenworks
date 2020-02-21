@@ -304,6 +304,12 @@ NAN_METHOD(GetImageRGBA) {
           .ToLocalChecked());
 }
 
+NAN_METHOD(GetIPCountry) {
+  Nan::HandleScope scope;
+  const char* countryCode = SteamUtils()->GetIPCountry();
+  info.GetReturnValue().Set(Nan::New(countryCode, 2).ToLocalChecked());
+}
+
 void RegisterAPIs(v8::Local<v8::Object> target) {
   Nan::Set(target,
            Nan::New("_version").ToLocalChecked(),
@@ -327,6 +333,7 @@ void RegisterAPIs(v8::Local<v8::Object> target) {
   SET_FUNCTION("isSubscribedApp", IsSubscribedApp);
   SET_FUNCTION("getImageSize", GetImageSize);
   SET_FUNCTION("getImageRGBA", GetImageRGBA);
+  SET_FUNCTION("getIPCountry", GetIPCountry);
 }
 
 SteamAPIRegistry::Add X(RegisterAPIs);
