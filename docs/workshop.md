@@ -245,13 +245,13 @@ existed in local).
 Shows the Steam overlay pointed to Steam's workshop page or to the specified
 workshop item.
 
-### greenworks.ugcGetItemState
+### greenworks.ugcGetItemState(published_file_id)
 
 * `published_file_id` String: Represents uint64, the id of published file.
 
 Fetches the `greenworks.UGCItemState` of the specified workshop item.
 
-### greenworks.ugcGetItemInstallInfo
+### greenworks.ugcGetItemInstallInfo(published_file_id)
 
 * `published_file_id` String: Represent uint64, the id of published file.
 
