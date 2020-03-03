@@ -1,7 +1,7 @@
 # Greenworks
 
 * Greenworks is a [node.js addon](https://nodejs.org/api/addons.html) that
-allows you to integrate your HTML5 app or game with
+allows you to integrate your HTML5 game (or app) with
 [Steamworks](http://www.steampowered.com/steamworks/) by exposing a number of
 Steamworks APIs to JavaScript.
 * Greenworks was originally developed by
