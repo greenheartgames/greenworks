@@ -95,6 +95,18 @@ Represents Steam SDK `EUserUGCListSortOrder`, sort order for user published UGC 
 * `VoteScoreDesc`
 * `ForModeration`
 
+### greenworks.UGCItemState
+
+Represents Steam SDK `EItemState`, local state of a workshop item (combinable flags)
+
+* `None`
+* `Subscribed`
+* `LegacyItem`
+* `Installed`
+* `NeedsUpdate`
+* `Downloading`
+* `DownloadPending`
+
 ## Methods
 
 ### greenworks.fileShare(file_path, success_callback, [error_callback])
@@ -228,7 +240,24 @@ existed in local).
 
 ### greenworks.ugcShowOverlay([published_file_id])
 
-* `published_file_id` String: Represent uint64, the id of published file.
+* `published_file_id` String: Represents uint64, the id of published file.
 
 Shows the Steam overlay pointed to Steam's workshop page or to the specified
 workshop item.
+
+### greenworks.ugcGetItemState(published_file_id)
+
+* `published_file_id` String: Represents uint64, the id of published file.
+
+Fetches the `greenworks.UGCItemState` of the specified workshop item.
+
+### greenworks.ugcGetItemInstallInfo(published_file_id)
+
+* `published_file_id` String: Represent uint64, the id of published file.
+
+Fetches a workshop item's install information if its state includes `greenworks.UGCItemState.Installed`.
+Returns `undefined` if the information could not be fetched, otherwise an `object` containing the following properties:
+
+* `sizeOnDisk` String: Represents uint64, the size of the item on disk
+* `folder` String: Path to the item's directory on disk, if state is `LegacyItem` this points to the file itself
+* `timestamp` Integer: Returns the time when the item was last updated

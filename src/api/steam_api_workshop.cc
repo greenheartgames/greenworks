@@ -105,6 +105,20 @@ void InitUserUgcListSortOrder(v8::Local<v8::Object> exports) {
            ugc_list_sort_order);
 }
 
+void InitUgcItemStates(v8::Local<v8::Object> exports) {
+  v8::Local<v8::Object> ugc_item_state = Nan::New<v8::Object>();
+  SET_TYPE(ugc_item_state, "None", k_EItemStateNone);
+  SET_TYPE(ugc_item_state, "Subscribed", k_EItemStateSubscribed);
+  SET_TYPE(ugc_item_state, "LegacyItem", k_EItemStateLegacyItem);
+  SET_TYPE(ugc_item_state, "Installed", k_EItemStateInstalled);
+  SET_TYPE(ugc_item_state, "NeedsUpdate", k_EItemStateNeedsUpdate);
+  SET_TYPE(ugc_item_state, "Downloading", k_EItemStateDownloading);
+  SET_TYPE(ugc_item_state, "DownloadPending", k_EItemStateDownloadPending);
+  Nan::Persistent<v8::Object> constructor;
+  constructor.Reset(ugc_item_state);
+  Nan::Set(exports, Nan::New("UGCItemState").ToLocalChecked(), ugc_item_state);
+}
+
 NAN_METHOD(FileShare) {
   Nan::HandleScope scope;
 
@@ -382,11 +396,46 @@ NAN_METHOD(UGCUnsubscribe) {
   info.GetReturnValue().Set(Nan::Undefined());
 }
 
+NAN_METHOD(UGCGetItemState) {
+  Nan::HandleScope scope;
+  if (info.Length() < 1 || !info[0]->IsString()) {
+    THROW_BAD_ARGS("Bad arguments; expected: publishedFileId [string]");
+  }
+  PublishedFileId_t file_id = utils::strToUint64(*(Nan::Utf8String(info[0])));
+  info.GetReturnValue().Set(Nan::New(SteamUGC()->GetItemState(file_id)));
+}
+
+NAN_METHOD(UGCGetItemInstallInfo) {
+  Nan::HandleScope scope;
+  if (info.Length() < 1 || !info[0]->IsString()) {
+    THROW_BAD_ARGS("Bad arguments; expected: publishedFileId [string]");
+  }
+  
+  PublishedFileId_t file_id = utils::strToUint64(*(Nan::Utf8String(info[0])));
+  uint64 size_on_disk;
+  const int folder_path_size = 260;  // MAX_PATH on 32bit Windows according to MSDN documentation
+  char folder_path[folder_path_size];
+  uint32 timestamp;
+  bool success = SteamUGC()->GetItemInstallInfo(file_id, &size_on_disk, folder_path, folder_path_size, &timestamp);
+  
+  if (!success) {
+    info.GetReturnValue().Set(Nan::Undefined());
+  }
+  else {
+    v8::Local<v8::Object> result = Nan::New<v8::Object>();
+    Nan::Set(result, Nan::New("sizeOnDisk").ToLocalChecked(), Nan::New(utils::uint64ToString(size_on_disk)).ToLocalChecked());
+    Nan::Set(result, Nan::New("folder").ToLocalChecked(), Nan::New(folder_path).ToLocalChecked());
+    Nan::Set(result, Nan::New("timestamp").ToLocalChecked(), Nan::New(timestamp));
+    info.GetReturnValue().Set(result);
+  }
+}
+
 void RegisterAPIs(v8::Local<v8::Object> target) {
   InitUgcMatchingTypes(target);
   InitUgcQueryTypes(target);
   InitUserUgcListSortOrder(target);
   InitUserUgcList(target);
+  InitUgcItemStates(target);
 
   SET_FUNCTION("fileShare", FileShare);
   SET_FUNCTION("_publishWorkshopFile", PublishWorkshopFile);
@@ -397,6 +446,8 @@ void RegisterAPIs(v8::Local<v8::Object> target) {
   SET_FUNCTION("_ugcSynchronizeItems", UGCSynchronizeItems);
   SET_FUNCTION("ugcShowOverlay", UGCShowOverlay);
   SET_FUNCTION("ugcUnsubscribe", UGCUnsubscribe);
+  SET_FUNCTION("ugcGetItemState", UGCGetItemState);
+  SET_FUNCTION("ugcGetItemInstallInfo", UGCGetItemInstallInfo);
 }
 
 SteamAPIRegistry::Add X(RegisterAPIs);
