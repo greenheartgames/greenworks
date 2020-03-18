@@ -34,6 +34,11 @@ class SteamEvent : public greenworks::SteamClient::Observer {
   void OnMicroTxnAuthorizationResponse(uint32 AppID,
                                        uint64 OrderID,
                                        bool Autorized) override;
+  void OnLobbyCreated(int status_code, uint64 SteamIdLobby);
+  void OnLobbyDataUpdate(uint64 SteamIdLobby, uint64 SteamIdMember, bool Success);
+  void OnLobbyEnter(uint64 SteamIdLobby, int ChatPermissions, bool Locked, int ChatRoomEnterResponse);
+  void OnLobbyInvite(uint64 SteamIdUser, uint64 SteamIdLobby, uint64 GameId);
+  void OnGameLobbyJoinRequested(uint64 SteamIdLobby, uint64 SteamIdUser);
 
  private:
   const Nan::Persistent<v8::Object>& persistent_steam_events_;
