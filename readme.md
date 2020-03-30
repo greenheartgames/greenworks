@@ -24,6 +24,8 @@ donors.
 Prebuilt binaries of Greenworks for NW.js & Electron can be found on
 the [releases](https://github.com/greenheartgames/greenworks/releases) page.
 
+You can also download [daily automated builds](https://greenworks-prebuilds.armaldio.xyz/) for a variety of platforms (electron, nw.js, node) and systems (Windows, Mac Linux - 32/64 bit). This is site is graciously provided by [@armaldio](https://github.com/armaldio).
+
 ## Documentation
 
 Guides and the API references are located in [docs](docs) directory.
