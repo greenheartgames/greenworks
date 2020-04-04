@@ -306,6 +306,22 @@ NAN_METHOD(SetRichPresence) {
   );
 }
 
+NAN_METHOD(GetFriendRichPresence) {
+  Nan::HandleScope scope;
+  if (info.Length() < 2 || !info[0]->IsString() || !info[1]->IsString()) {
+    THROW_BAD_ARGS("Bad arguments");
+  }
+  std::string steam_id_str(*(Nan::Utf8String(info[0])));
+  CSteamID steam_id(utils::strToUint64(steam_id_str));
+  if (!steam_id.IsValid()) {
+    THROW_BAD_ARGS("Steam ID is invalid");
+  }
+  std::string pch_key_str(*(Nan::Utf8String(info[1])));
+  info.GetReturnValue().Set(
+      Nan::New(SteamFriends()->GetFriendRichPresence(steam_id, pch_key_str.data()))
+          .ToLocalChecked());
+}
+
 NAN_METHOD(ClearRichPresence) {
   Nan::HandleScope scope;
   SteamFriends()->ClearRichPresence();
@@ -355,6 +371,7 @@ void RegisterAPIs(v8::Local<v8::Object> target) {
   SET_FUNCTION("replyToFriendMessage", ReplyToFriendMessage);
   SET_FUNCTION("getFriendMessage", GetFriendMessage);
   SET_FUNCTION("getFriendPersonaName", GetFriendPersonaName);
+  SET_FUNCTION("getFriendRichPresence", GetFriendRichPresence);
   SET_FUNCTION("setRichPresence", SetRichPresence);
   SET_FUNCTION("clearRichPresence", ClearRichPresence);
   SET_FUNCTION("setPlayedWith", SetPlayedWith);
