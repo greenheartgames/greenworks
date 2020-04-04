@@ -86,7 +86,7 @@ you'll see a name, avatar & relationship change for every friend.
 * `GoneOffline`
 * `GamePlayed`
 * `GameServer`
-* `Avator`
+* `Avatar`
 * `JoinedSource`
 * `LeftSource`
 * `RelationshipChanged`

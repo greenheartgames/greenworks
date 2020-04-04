@@ -69,7 +69,7 @@ void InitFriendPersonaChange(v8::Local<v8::Object> exports) {
   SET_TYPE(persona_change, "GoneOffline", k_EPersonaChangeGoneOffline);
   SET_TYPE(persona_change, "GamePlayed", k_EPersonaChangeGamePlayed);
   SET_TYPE(persona_change, "GameServer", k_EPersonaChangeGameServer);
-  SET_TYPE(persona_change, "Avator", k_EPersonaChangeAvatar);
+  SET_TYPE(persona_change, "Avatar", k_EPersonaChangeAvatar);
   SET_TYPE(persona_change, "JoinedSource", k_EPersonaChangeJoinedSource);
   SET_TYPE(persona_change, "LeftSource", k_EPersonaChangeLeftSource);
   SET_TYPE(persona_change, "RelationshipChanged",
