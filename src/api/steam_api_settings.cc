@@ -340,7 +340,6 @@ void RegisterAPIs(v8::Local<v8::Object> target) {
   SET_FUNCTION("getImageSize", GetImageSize);
   SET_FUNCTION("getImageRGBA", GetImageRGBA);
   SET_FUNCTION("getIPCountry", GetIPCountry);
-  SET_FUNCTION("runCallbacks", RunCallbacks);
 }
 
 SteamAPIRegistry::Add X(RegisterAPIs);
