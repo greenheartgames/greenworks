@@ -69,7 +69,7 @@ void InitFriendPersonaChange(v8::Local<v8::Object> exports) {
   SET_TYPE(persona_change, "GoneOffline", k_EPersonaChangeGoneOffline);
   SET_TYPE(persona_change, "GamePlayed", k_EPersonaChangeGamePlayed);
   SET_TYPE(persona_change, "GameServer", k_EPersonaChangeGameServer);
-  SET_TYPE(persona_change, "Avator", k_EPersonaChangeAvatar);
+  SET_TYPE(persona_change, "Avatar", k_EPersonaChangeAvatar);
   SET_TYPE(persona_change, "JoinedSource", k_EPersonaChangeJoinedSource);
   SET_TYPE(persona_change, "LeftSource", k_EPersonaChangeLeftSource);
   SET_TYPE(persona_change, "RelationshipChanged",
@@ -265,6 +265,95 @@ NAN_METHOD(GetFriendMessage) {
   info.GetReturnValue().Set(result);
 }
 
+NAN_METHOD(GetFriendPersonaName) {
+  Nan::HandleScope scope;
+  if (info.Length() < 1 || !info[0]->IsString()) {
+    THROW_BAD_ARGS("Bad arguments");
+  }
+  std::string steam_id_str(*(Nan::Utf8String(info[0])));
+  CSteamID steam_id(utils::strToUint64(steam_id_str));
+  if (!steam_id.IsValid()) {
+    THROW_BAD_ARGS("Steam ID is invalid");
+  }
+  info.GetReturnValue().Set(
+      Nan::New(SteamFriends()->GetFriendPersonaName(steam_id))
+          .ToLocalChecked());
+}
+
+NAN_METHOD(SetPlayedWith) {
+  Nan::HandleScope scope;
+  if (info.Length() < 1 || !info[0]->IsString()) {
+    THROW_BAD_ARGS("Bad arguments");
+  }
+  std::string steam_id_str(*(Nan::Utf8String(info[0])));
+  CSteamID steam_id(utils::strToUint64(steam_id_str));
+  if (!steam_id.IsValid()) {
+    THROW_BAD_ARGS("Steam ID is invalid");
+  }
+  SteamFriends()->SetPlayedWith(steam_id);
+}
+
+NAN_METHOD(SetRichPresence) {
+  Nan::HandleScope scope;
+  if (info.Length() < 2 || !info[0]->IsString() || !info[1]->IsString()) {
+    THROW_BAD_ARGS("Bad arguments");
+  }
+  std::string pch_key_str(*(Nan::Utf8String(info[0])));
+  std::string pch_value_str(*(Nan::Utf8String(info[1])));
+
+  info.GetReturnValue().Set(
+    SteamFriends()->SetRichPresence(pch_key_str.data(), pch_value_str.data())
+  );
+}
+
+NAN_METHOD(GetFriendRichPresence) {
+  Nan::HandleScope scope;
+  if (info.Length() < 2 || !info[0]->IsString() || !info[1]->IsString()) {
+    THROW_BAD_ARGS("Bad arguments");
+  }
+  std::string steam_id_str(*(Nan::Utf8String(info[0])));
+  CSteamID steam_id(utils::strToUint64(steam_id_str));
+  if (!steam_id.IsValid()) {
+    THROW_BAD_ARGS("Steam ID is invalid");
+  }
+  std::string pch_key_str(*(Nan::Utf8String(info[1])));
+  info.GetReturnValue().Set(
+      Nan::New(SteamFriends()->GetFriendRichPresence(steam_id, pch_key_str.data()))
+          .ToLocalChecked());
+}
+
+NAN_METHOD(ClearRichPresence) {
+  Nan::HandleScope scope;
+  SteamFriends()->ClearRichPresence();
+}
+
+NAN_METHOD(ActivateGameOverlayInviteDialog) {
+  Nan::HandleScope scope;
+  if (info.Length() < 1 || !info[0]->IsString()) {
+    THROW_BAD_ARGS("Bad arguments");
+  }
+  std::string steam_id_str(*(Nan::Utf8String(info[0])));
+  CSteamID steam_id(utils::strToUint64(steam_id_str));
+  if (!steam_id.IsValid()) {
+    THROW_BAD_ARGS("Steam ID is invalid");
+  }
+  SteamFriends()->ActivateGameOverlayInviteDialog(steam_id);
+}
+
+NAN_METHOD(ActivateGameOverlayToUser) {
+  Nan::HandleScope scope;
+  if (info.Length() < 2 || !info[0]->IsString() || !info[1]->IsString()) {
+    THROW_BAD_ARGS("Bad arguments");
+  }
+  std::string pch_dialog_str(*(Nan::Utf8String(info[0])));
+  std::string steam_id_str(*(Nan::Utf8String(info[1])));
+  CSteamID steam_id(utils::strToUint64(steam_id_str));
+  if (!steam_id.IsValid()) {
+    THROW_BAD_ARGS("Steam ID is invalid");
+  }
+  SteamFriends()->ActivateGameOverlayToUser(pch_dialog_str.data(), steam_id);
+}
+
 void RegisterAPIs(v8::Local<v8::Object> target) {
   InitFriendFlags(target);
   InitFriendRelationship(target);
@@ -281,6 +370,13 @@ void RegisterAPIs(v8::Local<v8::Object> target) {
   SET_FUNCTION("setListenForFriendsMessage", SetListenForFriendsMessages);
   SET_FUNCTION("replyToFriendMessage", ReplyToFriendMessage);
   SET_FUNCTION("getFriendMessage", GetFriendMessage);
+  SET_FUNCTION("getFriendPersonaName", GetFriendPersonaName);
+  SET_FUNCTION("getFriendRichPresence", GetFriendRichPresence);
+  SET_FUNCTION("setRichPresence", SetRichPresence);
+  SET_FUNCTION("clearRichPresence", ClearRichPresence);
+  SET_FUNCTION("setPlayedWith", SetPlayedWith);
+  SET_FUNCTION("activateGameOverlayInviteDialog", ActivateGameOverlayInviteDialog);
+  SET_FUNCTION("activateGameOverlayToUser", ActivateGameOverlayToUser);
 }
 
 SteamAPIRegistry::Add X(RegisterAPIs);

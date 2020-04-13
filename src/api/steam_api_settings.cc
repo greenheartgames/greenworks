@@ -310,6 +310,12 @@ NAN_METHOD(GetIPCountry) {
   info.GetReturnValue().Set(Nan::New(countryCode, 2).ToLocalChecked());
 }
 
+NAN_METHOD(RunCallbacks) {
+  Nan::HandleScope scope;
+  SteamAPI_RunCallbacks();
+  info.GetReturnValue().Set(Nan::Undefined());
+}
+
 void RegisterAPIs(v8::Local<v8::Object> target) {
   Nan::Set(target,
            Nan::New("_version").ToLocalChecked(),

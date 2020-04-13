@@ -81,3 +81,57 @@ Returns:
 * `authorized` Boolean: if user authorized transaction.
 
 Emitted after a user has responded to a microtransaction authorization request.
+
+### Event: 'lobby-created'
+
+Emitted after lobby creation attempt.
+
+[Steam docs](https://partner.steamgames.com/doc/api/ISteamMatchmaking#LobbyCreated_t)
+
+Returns:
+* `m_eResult` Integer: lobby creation result.
+* `m_ulSteamIDLobby` String: the Steam ID of the Lobby.
+
+### Event: 'lobby-data-update'
+
+Emitted when lobby metadata changes.
+
+[Steam docs](https://partner.steamgames.com/doc/api/ISteamMatchmaking#king#LobbyDataUpdate_t)
+
+Returns:
+* `m_ulSteamIDLobby` String: the Steam ID of the Lobby.
+* `m_ulSteamIDMember` String: Steam ID of either the member whose data changed, or the room itself.
+* `m_bSuccess` Boolean: whatever the lobby data was successfully changed.
+
+### Event: 'lobby-enter'
+
+Emitted upon attempting to enter a lobby. Lobby metadata is available to use immediately after receiving this.
+
+[Steam docs](https://partner.steamgames.com/doc/api/ISteamMatchmaking#king#LobbyEnter_t)
+
+Returns:
+* `m_ulSteamIDLobby` String: the Steam ID of the Lobby.
+* `m_rgfChatPermissions` Integer: unused - always 0.
+* `m_bLocked` Boolean: if true, then only invited users may join.
+* `m_EChatRoomEnterResponse` Integer: This is actually a [EChatRoomEnterResponse](https://partner.steamgames.com/doc/api/steam_api#EChatRoomEnterResponse) value. This will be set to k_EChatRoomEnterResponseSuccess if the lobby was successfully joined, otherwise it will be k_EChatRoomEnterResponseError.
+
+### Event: 'lobby-invite'
+
+Emitted on invite received.
+
+[Steam docs](https://partner.steamgames.com/doc/api/ISteamMatchmaking#king#LobbyInvite_t)
+
+Returns:
+* `m_ulSteamIDUser` String: Steam ID of the person that sent the invite.
+* `m_ulSteamIDLobby` String: Steam ID of the lobby we're invited to.
+* `m_ulGameID` String: Game ID of the lobby we're invited to.
+
+### Event: 'lobby-join-requested'
+
+Emitted when the user tries to join a lobby from their friends list or from an invite. The game client should attempt to connect to specified lobby when this is received.
+
+[Steam docs](https://partner.steamgames.com/doc/api/ISteamFriends#GameLobbyJoinRequested_t)
+
+Returns:
+* `m_steamIDLobby` String: the Steam ID of the lobby to connect to.
+* `m_steamIDFriend` String: the friend they joined through. This will be invalid if not directly via a friend.

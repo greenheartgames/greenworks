@@ -85,6 +85,7 @@
         'src/api/steam_api_cloud.cc',
         'src/api/steam_api_dlc.cc',
         'src/api/steam_api_friends.cc',
+        'src/api/steam_api_matchmaking.cc',
         'src/api/steam_api_registry.h',
         'src/api/steam_api_settings.cc',
         'src/api/steam_api_stats.cc',

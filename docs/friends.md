@@ -86,7 +86,7 @@ you'll see a name, avatar & relationship change for every friend.
 * `GoneOffline`
 * `GamePlayed`
 * `GameServer`
-* `Avator`
+* `Avatar`
 * `JoinedSource`
 * `LeftSource`
 * `RelationshipChanged`
@@ -301,3 +301,65 @@ is sent successfully.
 * `maximum_message_size` Integer
 
 Returns a `String` represents a message from a friend.
+
+### greenworks.getFriendPersonaName(raw_steam_id)
+
+* `raw_steam_id` String: a 64-bits steam ID.
+
+Returns a `String` represents a specified user's persona (display) name.
+
+### greenworks.setRichPresence(pchKey, pchValue)
+
+* `pchKey` String: the rich presence 'key' to set. This can not be longer than specified in [k_cchMaxRichPresenceKeyLength](https://partner.steamgames.com/doc/api/ISteamFriends#k_cchMaxRichPresenceKeyLength).
+* `pchValue` String: the rich presence 'value' to associate with `pchKey`. This can not be longer than specified in [k_cchMaxRichPresenceValueLength](https://partner.steamgames.com/doc/api/ISteamFriends#k_cchMaxRichPresenceValueLength).
+If this is set to an empty string ("") or NULL then the key is removed if it's set.
+
+Returns a `Boolean`:
+
+`true` if the rich presence was set successfully.
+
+`false` under the following conditions:
+* `pchKey` was longer than `k_cchMaxRichPresenceKeyLength` or had a length of 0.
+* `pchValue` was longer than `k_cchMaxRichPresenceValueLength`.
+* The user has reached the maximum amount of rich presence keys as defined by [k_cchMaxRichPresenceKeys](https://partner.steamgames.com/doc/api/ISteamFriends#k_cchMaxRichPresenceKeys).
+
+### greenworks.ClearRichPresence() 
+
+Clears all of the current user's Rich Presence key/values.
+
+### greenworks.getFriendRichPresence(steamIDFriend, pchKey)
+
+* `steamIDFriend` String: a 64-bits steam ID.
+* `pchKey` String: the Rich Presence key to request.
+
+Returns `String` representing Rich Presence value from a specified friend.
+
+### greenworks.setPlayedWith(steamIDUserPlayedWith)
+
+Mark a target user as 'played with'.
+
+* `steamIDUserPlayedWith` String: a 64-bits steam ID of other user that we have played with.
+
+### greenworks.activateGameOverlayInviteDialog(steamIDLobby)
+
+Activates the Steam Overlay to open the invite dialog. Invitations sent from this dialog will be for the provided lobby.
+
+* `steamIDLobby` String: the Steam ID of the lobby that selected users will be invited to.
+
+### greenworks.activateGameOverlayToUser(pchDialog, CSteamID steamID)
+
+Activates Steam Overlay to a specific dialog.
+
+* `pchDialog` String: the dialog to open.
+* `steamID` String: the Steam ID of the context to open this dialog to.
+
+Valid pchDialog options are:
+* "steamid" - Opens the overlay web browser to the specified user or groups profile.
+* "chat" - Opens a chat window to the specified user, or joins the group chat.
+* "jointrade" - Opens a window to a Steam Trading session that was started with the [ISteamEconomy/StartTrade](https://partner.steamgames.com/doc/webapi/ISteamEconomy#StartTrade) Web API.
+* "stats" - Opens the overlay web browser to the specified user's stats.
+* "achievements" - Opens the overlay web browser to the specified user's achievements.
+* "friendadd" - Opens the overlay in minimal mode prompting the user to add the target user as a friend.
+* "friendremove" - Opens the overlay in minimal mode prompting the user to remove the target friend.
+* "friendrequestaccept" - Opens the overlay in minimal mode prompting the user to accept an incoming friend invite.
+* "friendrequestignore" - Opens the overlay in minimal mode prompting the user to ignore an incoming friend invite.
