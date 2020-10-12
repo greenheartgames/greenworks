@@ -190,4 +190,16 @@ void SteamEvent::OnGameLobbyJoinRequested(uint64 SteamIdLobby, uint64 SteamIdUse
       Nan::New(persistent_steam_events_), "on", 3, argv);
 }
 
+void SteamEvent::OnGameRichPresenceJoinRequested(uint64 steamIDFriend, std::string rgchConnect) {
+  Nan::HandleScope scope;
+  v8::Local<v8::Value> argv[] = {
+    Nan::New("rich-presence-join-requested").ToLocalChecked(),
+    Nan::New(utils::uint64ToString(steamIDFriend)).ToLocalChecked(),
+    Nan::New(rgchConnect).ToLocalChecked()
+  };
+  Nan::AsyncResource ar("greenworks:SteamEvent.OnGameRichPresenceJoinRequested");
+  ar.runInAsyncScope(
+    Nan::New(persistent_steam_events_), "on", 3, argv);
+}
+
 }  // namespace greenworks
