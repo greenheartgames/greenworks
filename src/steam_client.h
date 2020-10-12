@@ -39,7 +39,7 @@ class SteamClient {
     virtual void OnLobbyEnter(uint64 SteamIdLobby, int ChatPermissions, bool Locked, int ChatRoomEnterResponse) = 0;
     virtual void OnLobbyInvite(uint64 SteamIdUser, uint64 SteamIdLobby, uint64 GameId) = 0;
     virtual void OnGameLobbyJoinRequested(uint64 SteamIdLobby, uint64 SteamIdUser) = 0;
-    virtual void OnGameRichPresenceJoinRequested(uint64 steamIdFriend, std::string rgchConnect) = 0;
+    virtual void OnGameRichPresenceJoinRequested(uint64 steamIDFriend, std::string rgchConnect) = 0;
     virtual ~Observer() {}
   };
 
