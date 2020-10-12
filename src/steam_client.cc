@@ -193,7 +193,7 @@ void SteamClient::OnGameRichPresenceJoinRequested(GameRichPresenceJoinRequested_
   for (size_t i = 0; i < observer_list_.size(); ++i) {
     observer_list_[i]->OnGameRichPresenceJoinRequested(
       callback->m_steamIDFriend.ConvertToUint64(),
-      std::string str(callback->m_rgchConnect));
+      callback->m_rgchConnect);
   }
 }
 
