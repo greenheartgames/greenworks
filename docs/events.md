@@ -135,3 +135,13 @@ Emitted when the user tries to join a lobby from their friends list or from an i
 Returns:
 * `m_steamIDLobby` String: the Steam ID of the lobby to connect to.
 * `m_steamIDFriend` String: the friend they joined through. This will be invalid if not directly via a friend.
+
+### Event: 'rich-presence-join-requested'
+
+Emitted when the user tries to join a game from their friends list using Rich Presence.
+
+[Steam docs](https://partner.steamgames.com/doc/api/ISteamFriends#GameRichPresenceJoinRequested_t)
+
+Returns:
+* `m_steamIdFriend` String: the friend they joined through. This will be invalid if not directly via a friend.
+* `m_rgchConnect` String: The value associated with the "connect" Rich Presence key.

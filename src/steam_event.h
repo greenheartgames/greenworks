@@ -39,6 +39,7 @@ class SteamEvent : public greenworks::SteamClient::Observer {
   void OnLobbyEnter(uint64 SteamIdLobby, int ChatPermissions, bool Locked, int ChatRoomEnterResponse);
   void OnLobbyInvite(uint64 SteamIdUser, uint64 SteamIdLobby, uint64 GameId);
   void OnGameLobbyJoinRequested(uint64 SteamIdLobby, uint64 SteamIdUser);
+  void OnGameRichPresenceJoinRequested(uint64 steamIDFriend, std::string rgchConnect);
 
  private:
   const Nan::Persistent<v8::Object>& persistent_steam_events_;

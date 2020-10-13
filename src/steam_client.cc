@@ -51,7 +51,8 @@ SteamClient::SteamClient()
       OnLobbyDataUpdate_(this, &SteamClient::OnLobbyDataUpdate),
       OnLobbyEnter_(this, &SteamClient::OnLobbyEnter),
       OnLobbyInvite_(this, &SteamClient::OnLobbyInvite),
-      OnGameLobbyJoinRequested_(this, &SteamClient::OnGameLobbyJoinRequested) {}
+      OnGameLobbyJoinRequested_(this, &SteamClient::OnGameLobbyJoinRequested),
+      OnGameRichPresenceJoinRequested_(this, &SteamClient::OnGameRichPresenceJoinRequested) {}
 
 SteamClient::~SteamClient() {
   for (size_t i = 0; i < observer_list_.size(); ++i) {
@@ -185,6 +186,14 @@ void SteamClient::OnGameLobbyJoinRequested(GameLobbyJoinRequested_t *callback) {
     observer_list_[i]->OnGameLobbyJoinRequested(
         callback->m_steamIDLobby.ConvertToUint64(),
         callback->m_steamIDFriend.ConvertToUint64());
+  }
+}
+
+void SteamClient::OnGameRichPresenceJoinRequested(GameRichPresenceJoinRequested_t *callback) {
+  for (size_t i = 0; i < observer_list_.size(); ++i) {
+    observer_list_[i]->OnGameRichPresenceJoinRequested(
+      callback->m_steamIDFriend.ConvertToUint64(),
+      callback->m_rgchConnect);
   }
 }
 
