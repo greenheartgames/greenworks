@@ -341,24 +341,25 @@ NAN_METHOD(GetFriendGamePlayed) {
   }
 
   FriendGameInfo_t* friendInfo = new FriendGameInfo_t();
-  if (SteamFriends()->GetFriendGamePlayed(steam_id, friendInfo)) {
-    v8::Local<v8::Object> result = Nan::New<v8::Object>();
-    Nan::Set(result, Nan::New("m_gameID").ToLocalChecked(), Nan::New(
-      utils::uint64ToString(friendInfo->m_gameID.ToUint64())
-    ).ToLocalChecked());
-
-    Nan::Set(result, Nan::New("m_unGameIP").ToLocalChecked(), Nan::New<v8::Integer>(friendInfo->m_unGameIP));
-    Nan::Set(result, Nan::New("m_usGamePort").ToLocalChecked(), Nan::New<v8::Integer>(friendInfo->m_usGamePort));
-    Nan::Set(result, Nan::New("m_usQueryPort").ToLocalChecked(), Nan::New<v8::Integer>(friendInfo->m_usQueryPort));
-
-    Nan::Set(result, Nan::New("m_steamIDLobby").ToLocalChecked(), Nan::New(
-      utils::uint64ToString(friendInfo->m_steamIDLobby.ConvertToUint64())
-    ).ToLocalChecked());
-
-    info.GetReturnValue().Set(result);
-  } else {
+  if (!SteamFriends()->GetFriendGamePlayed(steam_id, friendInfo)) {
     info.GetReturnValue().Set(Nan::Undefined());
+    return;
   }
+
+  v8::Local<v8::Object> result = Nan::New<v8::Object>();
+  Nan::Set(result, Nan::New("m_gameID").ToLocalChecked(), Nan::New(
+    utils::uint64ToString(friendInfo->m_gameID.ToUint64())
+  ).ToLocalChecked());
+
+  Nan::Set(result, Nan::New("m_unGameIP").ToLocalChecked(), Nan::New<v8::Integer>(friendInfo->m_unGameIP));
+  Nan::Set(result, Nan::New("m_usGamePort").ToLocalChecked(), Nan::New<v8::Integer>(friendInfo->m_usGamePort));
+  Nan::Set(result, Nan::New("m_usQueryPort").ToLocalChecked(), Nan::New<v8::Integer>(friendInfo->m_usQueryPort));
+
+  Nan::Set(result, Nan::New("m_steamIDLobby").ToLocalChecked(), Nan::New(
+    utils::uint64ToString(friendInfo->m_steamIDLobby.ConvertToUint64())
+  ).ToLocalChecked());
+
+  info.GetReturnValue().Set(result);
 }
 
 NAN_METHOD(ActivateGameOverlayInviteDialog) {
