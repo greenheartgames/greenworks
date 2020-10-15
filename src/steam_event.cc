@@ -202,4 +202,14 @@ void SteamEvent::OnGameRichPresenceJoinRequested(uint64 steamIDFriend, std::stri
     Nan::New(persistent_steam_events_), "on", 3, argv);
 }
 
+void SteamEvent::OnNewUrlLaunchParameters() {
+  Nan::HandleScope scope;
+  v8::Local<v8::Value> argv[] = {
+    Nan::New("new-url-launch-parameters").ToLocalChecked()
+  };
+  Nan::AsyncResource ar("greenworks:SteamEvent.OnNewUrlLaunchParameters");
+  ar.runInAsyncScope(
+    Nan::New(persistent_steam_events_), "on", 1, argv);
+}
+
 }  // namespace greenworks

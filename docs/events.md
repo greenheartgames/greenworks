@@ -145,3 +145,9 @@ Emitted when the user tries to join a game from their friends list using Rich Pr
 Returns:
 * `m_steamIdFriend` String: the friend they joined through. This will be invalid if not directly via a friend.
 * `m_rgchConnect` String: The value associated with the "connect" Rich Presence key.
+
+### Event: 'new-url-launch-parameters'
+
+Posted after the user executes a steam url with command line or query parameters such as `steam://run/<appid>//?param1=value1;param2=value2;param3=value3;` while the game is already running. The new params can be queried with [GetLaunchCommandLine](https://partner.steamgames.com/doc/api/ISteamApps#GetLaunchCommandLine) and [GetLaunchQueryParam](https://partner.steamgames.com/doc/api/ISteamApps#GetLaunchQueryParam).
+
+[Steam docs](https://partner.steamgames.com/doc/api/ISteamApps#NewUrlLaunchParameters_t)

@@ -310,6 +310,15 @@ NAN_METHOD(GetIPCountry) {
   info.GetReturnValue().Set(Nan::New(countryCode, 2).ToLocalChecked());
 }
 
+NAN_METHOD(GetLaunchCommandLine) {
+  Nan::HandleScope scope;
+  const int buffer_size = 260; // Same value used by Valve docs.
+  char buffer[buffer_size];
+  uint32 length = SteamApps()->GetLaunchCommandLine(buffer, buffer_size);
+
+  info.GetReturnValue().Set(Nan::New(buffer, length - 1).ToLocalChecked());
+}
+
 NAN_METHOD(RunCallbacks) {
   Nan::HandleScope scope;
   SteamAPI_RunCallbacks();
@@ -340,6 +349,7 @@ void RegisterAPIs(v8::Local<v8::Object> target) {
   SET_FUNCTION("getImageSize", GetImageSize);
   SET_FUNCTION("getImageRGBA", GetImageRGBA);
   SET_FUNCTION("getIPCountry", GetIPCountry);
+  SET_FUNCTION("getLaunchCommandLine", GetLaunchCommandLine);
 }
 
 SteamAPIRegistry::Add X(RegisterAPIs);

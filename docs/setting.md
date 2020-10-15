@@ -151,3 +151,9 @@ if (friends.length > 0) {
 ### greenworks.getIPCountry()
 
 Returns the 2 digit ISO 3166-1-alpha-2 format country code which client is running in, e.g "US" or "UK".
+
+### greenworks.getLaunchCommandLine()
+
+Gets the command line if the game was launched via Steam URL, e.g. `steam://run/<appid>//<command line>/`. This method is preferable to launching with a command line via the operating system, which can be a security risk. In order for rich presence joins to go through this and not be placed on the OS command line, you must enable "Use launch command line" from the Installation > General page on your app.
+
+[Steam docs](https://partner.steamgames.com/doc/api/ISteamApps#GetLaunchCommandLine)
