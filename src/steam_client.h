@@ -5,6 +5,7 @@
 #ifndef SRC_STEAM_CLIENT_H_
 #define SRC_STEAM_CLIENT_H_
 
+#include <string>
 #include <vector>
 
 #include "steam/steam_api.h"
