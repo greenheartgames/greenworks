@@ -327,6 +327,38 @@ NAN_METHOD(ClearRichPresence) {
   SteamFriends()->ClearRichPresence();
 }
 
+NAN_METHOD(GetFriendGamePlayed) {
+  Nan::HandleScope scope;
+  if (info.Length() < 1 || !info[0]->IsString()) {
+    THROW_BAD_ARGS("Bad arguments");
+  }
+
+  std::string steam_id_str(*(Nan::Utf8String(info[0])));
+  CSteamID steam_id(utils::strToUint64(steam_id_str));
+
+  if (!steam_id.IsValid()) {
+    THROW_BAD_ARGS("Steam ID is invalid");
+  }
+
+  FriendGameInfo_t* friendInfo = new FriendGameInfo_t();
+  SteamFriends()->GetFriendGamePlayed(steam_id, friendInfo);
+
+  v8::Local<v8::Object> result = Nan::New<v8::Object>();
+  Nan::Set(result, Nan::New("m_gameID").ToLocalChecked(), Nan::New(
+    utils::uint64ToString(friendInfo->m_gameID.ToUint64())
+  ).ToLocalChecked());
+
+  Nan::Set(result, Nan::New("m_unGameIP").ToLocalChecked(), Nan::New<v8::Integer>(friendInfo->m_unGameIP));
+  Nan::Set(result, Nan::New("m_usGamePort").ToLocalChecked(), Nan::New<v8::Integer>(friendInfo->m_usGamePort));
+  Nan::Set(result, Nan::New("m_usQueryPort").ToLocalChecked(), Nan::New<v8::Integer>(friendInfo->m_usQueryPort));
+
+  Nan::Set(result, Nan::New("m_steamIDLobby").ToLocalChecked(), Nan::New(
+    utils::uint64ToString(friendInfo->m_steamIDLobby.ConvertToUint64())
+  ).ToLocalChecked());
+
+  info.GetReturnValue().Set(result);
+}
+
 NAN_METHOD(ActivateGameOverlayInviteDialog) {
   Nan::HandleScope scope;
   if (info.Length() < 1 || !info[0]->IsString()) {
@@ -374,6 +406,7 @@ void RegisterAPIs(v8::Local<v8::Object> target) {
   SET_FUNCTION("getFriendRichPresence", GetFriendRichPresence);
   SET_FUNCTION("setRichPresence", SetRichPresence);
   SET_FUNCTION("clearRichPresence", ClearRichPresence);
+  SET_FUNCTION("getFriendGamePlayed", GetFriendGamePlayed);
   SET_FUNCTION("setPlayedWith", SetPlayedWith);
   SET_FUNCTION("activateGameOverlayInviteDialog", ActivateGameOverlayInviteDialog);
   SET_FUNCTION("activateGameOverlayToUser", ActivateGameOverlayToUser);

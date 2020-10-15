@@ -340,6 +340,12 @@ Mark a target user as 'played with'.
 
 * `steamIDUserPlayedWith` String: a 64-bits steam ID of other user that we have played with.
 
+### greenworks.getFriendGamePlayed(steamIDFriend)
+
+* `steamIDFriend` String: a 64-bit Steam ID.
+
+Returns an object containing [FriendGameInfo_t](https://partner.steamgames.com/doc/api/ISteamFriends#FriendGameInfo_t) values.
+
 ### greenworks.activateGameOverlayInviteDialog(steamIDLobby)
 
 Activates the Steam Overlay to open the invite dialog. Invitations sent from this dialog will be for the provided lobby.
