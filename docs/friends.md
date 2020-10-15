@@ -344,7 +344,7 @@ Mark a target user as 'played with'.
 
 * `steamIDFriend` String: a 64-bit Steam ID.
 
-Returns an object containing [FriendGameInfo_t](https://partner.steamgames.com/doc/api/ISteamFriends#FriendGameInfo_t) values.
+Returns an object containing [FriendGameInfo_t](https://partner.steamgames.com/doc/api/ISteamFriends#FriendGameInfo_t) values if the user is a friend and in a game, otherwise returns `undefined`.
 
 ### greenworks.activateGameOverlayInviteDialog(steamIDLobby)
 
