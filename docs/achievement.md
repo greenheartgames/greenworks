@@ -8,6 +8,17 @@
 
 The `achievement` represents the unlocked achievement in your game.
 
+### greenworks.indicateAchievementProgress(achievement, current, max)
+
+Shows the user a pop-up notification with the current progress of an achievement.
+Calling this function will NOT set the progress or unlock the achievement, use [SetStat](https://partner.steamgames.com/doc/api/ISteamUserStats#SetStat).
+
+* `achievement` String: API name of the achievement.
+* `current` Number: The current progress.
+* `max` Number: The progress required to unlock the achievement.
+
+Returns `true` upon success, otherwise `false`.
+
 ### greenworks.getAchievement(achievement, success_callback, [error_callback])
 
 * `achievement` String: The achievement name in you game
