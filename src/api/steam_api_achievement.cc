@@ -32,6 +32,21 @@ NAN_METHOD(ActivateAchievement) {
   info.GetReturnValue().Set(Nan::Undefined());
 }
 
+NAN_METHOD(IndicateAchievementProgress) {
+  Nan::HandleScope scope;
+
+  if (info.Length() < 3 || !info[0]->IsString() || !info[1]->IsUint32() || !info[2]->IsUint32()) {
+    THROW_BAD_ARGS("Bad arguments");
+  }
+
+  std::string achievement = (*(Nan::Utf8String(info[0])));
+  uint32 current = Nan::To<uint32>(info[1]).FromJust();
+  uint32 max = Nan::To<uint32>(info[2]).FromJust();
+
+  info.GetReturnValue().Set(
+      Nan::New(SteamUserStats()->IndicateAchievementProgress(achievement.c_str(), current, max)));
+}
+
 NAN_METHOD(GetAchievement) {
   Nan::HandleScope scope;
   if (info.Length() < 2 || !info[0]->IsString() || !info[1]->IsFunction()) {
@@ -88,6 +103,7 @@ NAN_METHOD(GetNumberOfAchievements) {
 
 void RegisterAPIs(v8::Local<v8::Object> target) {
   SET_FUNCTION("activateAchievement", ActivateAchievement);
+  SET_FUNCTION("indicateAchievementProgress", IndicateAchievementProgress);
   SET_FUNCTION("getAchievement", GetAchievement);
   SET_FUNCTION("clearAchievement", ClearAchievement);
   SET_FUNCTION("getAchievementNames", GetAchievementNames);
