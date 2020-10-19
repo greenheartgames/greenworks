@@ -35,7 +35,7 @@ NAN_METHOD(CancelAuthTicket) {
   if (info.Length() < 1 || !info[0]->IsNumber()) {
     THROW_BAD_ARGS("Bad arguments");
   }
-  HAuthTicket h = Nan::To<int32>(info[1].As<v8::Number>()).FromJust();
+  HAuthTicket h = Nan::To<int32>(info[0].As<v8::Number>()).FromJust();
   SteamUser()->CancelAuthTicket(h);
   info.GetReturnValue().Set(Nan::Undefined());
 }
