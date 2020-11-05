@@ -236,6 +236,19 @@ NAN_METHOD(ActivateGameOverlayToWebPage) {
   info.GetReturnValue().Set(Nan::Undefined());
 }
 
+NAN_METHOD(ActivateGameOverlayToStore) {
+  Nan::HandleScope scope;
+  if (info.Length() < 2 || !info[0]->IsUint32() || !info[1]->IsUint32()) {
+    THROW_BAD_ARGS("bad arguments");
+  }
+
+  AppId_t app_id = static_cast<AppId_t>(Nan::To<int32>(info[0]).FromJust());
+  auto overlay_store_flag = static_cast<EOverlayToStoreFlag>(Nan::To<int32>(info[1]).FromJust());
+
+  SteamFriends()->ActivateGameOverlayToStore(app_id, overlay_store_flag);
+  info.GetReturnValue().Set(Nan::Undefined());
+}
+
 NAN_METHOD(IsSubscribedApp) {
   Nan::HandleScope scope;
   if (info.Length() < 1) {
@@ -344,6 +357,7 @@ void RegisterAPIs(v8::Local<v8::Object> target) {
   SET_FUNCTION("isSteamInBigPictureMode", IsSteamInBigPictureMode);
   SET_FUNCTION("activateGameOverlay", ActivateGameOverlay);
   SET_FUNCTION("activateGameOverlayToWebPage", ActivateGameOverlayToWebPage);
+  SET_FUNCTION("activateGameOverlayToStore", ActivateGameOverlayToStore);
   SET_FUNCTION("isAppInstalled", IsAppInstalled);
   SET_FUNCTION("isSubscribedApp", IsSubscribedApp);
   SET_FUNCTION("getImageSize", GetImageSize);

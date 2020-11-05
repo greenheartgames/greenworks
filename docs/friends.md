@@ -369,3 +369,15 @@ Valid pchDialog options are:
 * "friendremove" - Opens the overlay in minimal mode prompting the user to remove the target friend.
 * "friendrequestaccept" - Opens the overlay in minimal mode prompting the user to accept an incoming friend invite.
 * "friendrequestignore" - Opens the overlay in minimal mode prompting the user to ignore an incoming friend invite.
+
+### greenworks.activateGameOverlayToStore(appId, EOverlayToStoreFlag storeFlag)
+
+Activates the Steam Overlay to the Steam store page for the provided app.
+
+* `appId` Integer: The app ID to show the store page of.
+* `storeFlag` Integer: Flags to modify the behavior when the page opens.
+
+Valid storeFlag options are:
+* 0 - No
+* 1 - Add the specified app ID to the users cart.
+* 2 - Add the specified app ID to the users cart and show the store page.
