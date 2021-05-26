@@ -248,6 +248,9 @@ NAN_METHOD(UGCGetItems) {
     THROW_BAD_ARGS(
         "The object parameter must have 'app_id' and 'page_num' fields.");
   }
+  else {
+      THROW_BAD_ARGS("hello world");
+  }
 
   auto ugc_matching_type = static_cast<EUGCMatchingUGCType>(
       Nan::To<int32>(info[1]).FromJust());
