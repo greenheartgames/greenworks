@@ -13,7 +13,6 @@
 #include "greenworks_utils.h"
 
 namespace {
-
 v8::Local<v8::Object> ConvertToJsObject(const SteamUGCDetails_t& item) {
   v8::Local<v8::Object> result = Nan::New<v8::Object>();
 
@@ -79,6 +78,66 @@ v8::Local<v8::Object> ConvertToJsObject(const SteamUGCDetails_t& item) {
   return result;
 }
 
+v8::Local<v8::Object> ConvertToJsObject(const UGCItem& item) {
+    v8::Local<v8::Object> result = ConvertToJsObject(item.m_details);
+
+    Nan::Set(
+        result, Nan::New("NumSubscriptions").ToLocalChecked(),
+        Nan::New(utils::uint64ToString(item.m_ulNumSubscriptions)).ToLocalChecked());
+
+    Nan::Set(
+        result, Nan::New("NumFavorites").ToLocalChecked(),
+        Nan::New(utils::uint64ToString(item.m_ulNumFavorites)).ToLocalChecked());
+
+    Nan::Set(
+        result, Nan::New("NumFollowers").ToLocalChecked(),
+        Nan::New(utils::uint64ToString(item.m_ulNumFollowers)).ToLocalChecked());
+
+    Nan::Set(
+        result, Nan::New("NumUniqueSubscriptions").ToLocalChecked(),
+        Nan::New(utils::uint64ToString(item.m_ulNumUniqueSubscriptions)).ToLocalChecked());
+
+    Nan::Set(
+        result, Nan::New("NumUniqueFavorites").ToLocalChecked(),
+        Nan::New(utils::uint64ToString(item.m_ulNumUniqueFavorites)).ToLocalChecked());
+
+    Nan::Set(
+        result, Nan::New("NumUniqueFollowers").ToLocalChecked(),
+        Nan::New(utils::uint64ToString(item.m_ulNumUniqueFollowers)).ToLocalChecked());
+
+    Nan::Set(
+        result, Nan::New("NumUniqueWebsiteViews").ToLocalChecked(),
+        Nan::New(utils::uint64ToString(item.m_ulNumUniqueWebsiteViews)).ToLocalChecked());
+
+    Nan::Set(
+        result, Nan::New("NumSecondsPlayed").ToLocalChecked(),
+        Nan::New(utils::uint64ToString(item.m_ulNumSecondsPlayed)).ToLocalChecked());
+
+    Nan::Set(
+        result, Nan::New("NumPlaytimeSessions").ToLocalChecked(),
+        Nan::New(utils::uint64ToString(item.m_ulNumPlaytimeSessions)).ToLocalChecked());
+
+    Nan::Set(
+        result, Nan::New("NumComments").ToLocalChecked(),
+        Nan::New(utils::uint64ToString(item.m_ulNumComments)).ToLocalChecked());
+
+    Nan::Set(
+        result, Nan::New("NumSecondsPlayedDuringTimePeriod").ToLocalChecked(),
+        Nan::New(utils::uint64ToString(item.m_ulNumSecondsPlayedDuringTimePeriod)).ToLocalChecked());
+
+    Nan::Set(
+        result, Nan::New("NumPlaytimeSessionsDuringTimePeriod").ToLocalChecked(),
+        Nan::New(utils::uint64ToString(item.m_ulNumPlaytimeSessionsDuringTimePeriod)).ToLocalChecked());
+
+    Nan::Set(result, Nan::New("PreviewImageUrl").ToLocalChecked(),
+        Nan::New(item.m_rgchPreviewImageUrl).ToLocalChecked());
+
+    Nan::Set(result, Nan::New("Metadata").ToLocalChecked(),
+        Nan::New(item.m_rgchMetadata).ToLocalChecked());
+
+    return result;
+}
+
 inline std::string GetAbsoluteFilePath(const std::string& file_path,
     const std::string& download_dir) {
   std::string file_name = file_path.substr(file_path.find_last_of("/\\") + 1);
@@ -139,7 +198,8 @@ PublishWorkshopFileWorker::PublishWorkshopFileWorker(
 void PublishWorkshopFileWorker::Execute() {
   SteamParamStringArray_t tags;
   tags.m_nNumStrings = properties_.tags_scratch.size();
-  tags.m_ppStrings = reinterpret_cast<const char**>(&properties_.tags);
+  //tags.m_ppStrings = reinterpret_cast<const char**>(&properties_.tags);
+  tags.m_ppStrings = properties_.tags;
 
   std::string file_name = utils::GetFileNameFromPath(properties_.file_path);
   std::string image_name = utils::GetFileNameFromPath(properties_.image_path);
@@ -218,7 +278,8 @@ void UpdatePublishedWorkshopFileWorker::Execute() {
       tags.m_ppStrings = nullptr;
     } else {
       tags.m_nNumStrings = properties_.tags_scratch.size();
-      tags.m_ppStrings = reinterpret_cast<const char**>(&properties_.tags);
+      //tags.m_ppStrings = reinterpret_cast<const char**>(&properties_.tags);
+      tags.m_ppStrings = properties_.tags;
     }
     SteamRemoteStorage()->UpdatePublishedFileTags(update_handle, &tags);
   }
@@ -260,9 +321,13 @@ void QueryUGCWorker::HandleOKCallback() {
       static_cast<int>(ugc_items_.size()));
   for (size_t i = 0; i < ugc_items_.size(); ++i)
     Nan::Set(items, i, ConvertToJsObject(ugc_items_[i]));
-  v8::Local<v8::Value> argv[] = { items };
+
+  v8::Local<v8::Uint32> numResults = Nan::New<v8::Uint32>(num_results_);
+  v8::Local<v8::Uint32> numTotalResults = Nan::New<v8::Uint32>(num_total_results_);
+
+  v8::Local<v8::Value> argv[] = { items, numResults, numTotalResults };
   Nan::AsyncResource resource("greenworks:QueryUGCWorker.HandleOKCallback");
-  callback->Call(1, argv, &resource);
+  callback->Call(3, argv, &resource);
 }
 
 void QueryUGCWorker::OnUGCQueryCompleted(SteamUGCQueryCompleted_t* result,
@@ -271,10 +336,29 @@ void QueryUGCWorker::OnUGCQueryCompleted(SteamUGCQueryCompleted_t* result,
     SetErrorMessage("Error on querying all ugc: Steam API IO Failure");
   } else if (result->m_eResult == k_EResultOK) {
     uint32 count = result->m_unNumResultsReturned;
+    num_results_ = count;
+    num_total_results_ = result->m_unTotalMatchingResults;
     SteamUGCDetails_t item;
     for (uint32 i = 0; i < count; ++i) {
       SteamUGC()->GetQueryUGCResult(result->m_handle, i, &item);
-      ugc_items_.push_back(item);
+      UGCItem ugcItem;
+      ugcItem.m_details = item;
+      SteamUGC()->GetQueryUGCStatistic(result->m_handle, i, EItemStatistic::k_EItemStatistic_NumSubscriptions, &ugcItem.m_ulNumSubscriptions);
+      SteamUGC()->GetQueryUGCStatistic(result->m_handle, i, EItemStatistic::k_EItemStatistic_NumFavorites, &ugcItem.m_ulNumFavorites);
+      SteamUGC()->GetQueryUGCStatistic(result->m_handle, i, EItemStatistic::k_EItemStatistic_NumFollowers, &ugcItem.m_ulNumFollowers);
+      SteamUGC()->GetQueryUGCStatistic(result->m_handle, i, EItemStatistic::k_EItemStatistic_NumUniqueSubscriptions, &ugcItem.m_ulNumUniqueSubscriptions);
+      SteamUGC()->GetQueryUGCStatistic(result->m_handle, i, EItemStatistic::k_EItemStatistic_NumUniqueFavorites, &ugcItem.m_ulNumUniqueFavorites);
+      SteamUGC()->GetQueryUGCStatistic(result->m_handle, i, EItemStatistic::k_EItemStatistic_NumUniqueFollowers, &ugcItem.m_ulNumUniqueFollowers);
+      SteamUGC()->GetQueryUGCStatistic(result->m_handle, i, EItemStatistic::k_EItemStatistic_NumUniqueWebsiteViews, &ugcItem.m_ulNumUniqueWebsiteViews);
+      SteamUGC()->GetQueryUGCStatistic(result->m_handle, i, EItemStatistic::k_EItemStatistic_ReportScore, &ugcItem.m_ulReportScore);
+      SteamUGC()->GetQueryUGCStatistic(result->m_handle, i, EItemStatistic::k_EItemStatistic_NumSecondsPlayed, &ugcItem.m_ulNumSecondsPlayed);
+      SteamUGC()->GetQueryUGCStatistic(result->m_handle, i, EItemStatistic::k_EItemStatistic_NumPlaytimeSessions, &ugcItem.m_ulNumPlaytimeSessions);
+      SteamUGC()->GetQueryUGCStatistic(result->m_handle, i, EItemStatistic::k_EItemStatistic_NumComments, &ugcItem.m_ulNumComments);
+      SteamUGC()->GetQueryUGCStatistic(result->m_handle, i, EItemStatistic::k_EItemStatistic_NumSecondsPlayedDuringTimePeriod, &ugcItem.m_ulNumSecondsPlayedDuringTimePeriod);
+      SteamUGC()->GetQueryUGCStatistic(result->m_handle, i, EItemStatistic::k_EItemStatistic_NumPlaytimeSessionsDuringTimePeriod, &ugcItem.m_ulNumPlaytimeSessionsDuringTimePeriod);
+      SteamUGC()->GetQueryUGCPreviewURL(result->m_handle, i, &ugcItem.m_rgchPreviewImageUrl[0], 256);
+      SteamUGC()->GetQueryUGCMetadata(result->m_handle, i, &ugcItem.m_rgchMetadata[0], (1024 * 32));
+      ugc_items_.push_back(ugcItem);
     }
     SteamUGC()->ReleaseQueryUGCRequest(result->m_handle);
   } else {
@@ -300,6 +384,7 @@ void QueryAllUGCWorker::Execute() {
       ugc_query_type_, ugc_matching_type_, /*creator_app_id=*/invalid_app_id,
       /*consumer_app_id=*/app_id_, page_num_);
   SteamAPICall_t ugc_query_result = SteamUGC()->SendQueryUGCRequest(ugc_handle);
+
   ugc_query_call_result_.Set(ugc_query_result, this,
       &QueryAllUGCWorker::OnUGCQueryCompleted);
 
@@ -414,7 +499,25 @@ void SynchronizeItemsWorker::OnUGCQueryCompleted(
           download_dir_);
       int64 file_update_time = utils::GetFileLastUpdatedTime(
           target_path.c_str());
-      ugc_items_.push_back(item);
+
+      UGCItem ugcItem;
+      ugcItem.m_details = item;
+      SteamUGC()->GetQueryUGCStatistic(result->m_handle, i, EItemStatistic::k_EItemStatistic_NumSubscriptions, &ugcItem.m_ulNumSubscriptions);
+      SteamUGC()->GetQueryUGCStatistic(result->m_handle, i, EItemStatistic::k_EItemStatistic_NumFavorites, &ugcItem.m_ulNumFavorites);
+      SteamUGC()->GetQueryUGCStatistic(result->m_handle, i, EItemStatistic::k_EItemStatistic_NumFollowers, &ugcItem.m_ulNumFollowers);
+      SteamUGC()->GetQueryUGCStatistic(result->m_handle, i, EItemStatistic::k_EItemStatistic_NumUniqueSubscriptions, &ugcItem.m_ulNumUniqueSubscriptions);
+      SteamUGC()->GetQueryUGCStatistic(result->m_handle, i, EItemStatistic::k_EItemStatistic_NumUniqueFavorites, &ugcItem.m_ulNumUniqueFavorites);
+      SteamUGC()->GetQueryUGCStatistic(result->m_handle, i, EItemStatistic::k_EItemStatistic_NumUniqueFollowers, &ugcItem.m_ulNumUniqueFollowers);
+      SteamUGC()->GetQueryUGCStatistic(result->m_handle, i, EItemStatistic::k_EItemStatistic_NumUniqueWebsiteViews, &ugcItem.m_ulNumUniqueWebsiteViews);
+      SteamUGC()->GetQueryUGCStatistic(result->m_handle, i, EItemStatistic::k_EItemStatistic_ReportScore, &ugcItem.m_ulReportScore);
+      SteamUGC()->GetQueryUGCStatistic(result->m_handle, i, EItemStatistic::k_EItemStatistic_NumSecondsPlayed, &ugcItem.m_ulNumSecondsPlayed);
+      SteamUGC()->GetQueryUGCStatistic(result->m_handle, i, EItemStatistic::k_EItemStatistic_NumPlaytimeSessions, &ugcItem.m_ulNumPlaytimeSessions);
+      SteamUGC()->GetQueryUGCStatistic(result->m_handle, i, EItemStatistic::k_EItemStatistic_NumComments, &ugcItem.m_ulNumComments);
+      SteamUGC()->GetQueryUGCStatistic(result->m_handle, i, EItemStatistic::k_EItemStatistic_NumSecondsPlayedDuringTimePeriod, &ugcItem.m_ulNumSecondsPlayedDuringTimePeriod);
+      SteamUGC()->GetQueryUGCStatistic(result->m_handle, i, EItemStatistic::k_EItemStatistic_NumPlaytimeSessionsDuringTimePeriod, &ugcItem.m_ulNumPlaytimeSessionsDuringTimePeriod);
+      SteamUGC()->GetQueryUGCPreviewURL(result->m_handle, i, &ugcItem.m_rgchPreviewImageUrl[0], 256);
+      SteamUGC()->GetQueryUGCMetadata(result->m_handle, i, &ugcItem.m_rgchMetadata[0], (1024 * 32));
+      ugc_items_.push_back(ugcItem);
       // If the file is not existed or last update time is not equal to Steam,
       // download it.
       if (file_update_time == -1 || file_update_time != item.m_rtimeUpdated)
@@ -462,7 +565,7 @@ void SynchronizeItemsWorker::OnDownloadCompleted(
     }
 
     int64 file_updated_time =
-        ugc_items_[current_download_items_pos_].m_rtimeUpdated;
+        ugc_items_[current_download_items_pos_].m_details.m_rtimeUpdated;
     if (!utils::UpdateFileLastUpdatedTime(
             target_path.c_str(), static_cast<time_t>(file_updated_time))) {
       SetErrorMessage("Error on update file time on local machine.");
@@ -491,7 +594,7 @@ void SynchronizeItemsWorker::HandleOKCallback() {
   for (size_t i = 0; i < ugc_items_.size(); ++i) {
     v8::Local<v8::Object> item = ConvertToJsObject(ugc_items_[i]);
     bool is_updated = std::find(download_ugc_items_handle_.begin(),
-        download_ugc_items_handle_.end(), ugc_items_[i].m_hFile) !=
+        download_ugc_items_handle_.end(), ugc_items_[i].m_details.m_hFile) !=
         download_ugc_items_handle_.end();
     Nan::Set(item, Nan::New("isUpdated").ToLocalChecked(),
              Nan::New(is_updated));

@@ -11,6 +11,26 @@
 
 #include "steam/steam_api.h"
 
+// Super-set of SteamUGCDetails_t
+struct UGCItem {
+    SteamUGCDetails_t m_details;
+    uint64 m_ulNumSubscriptions;
+    uint64 m_ulNumFavorites;
+    uint64 m_ulNumFollowers;
+    uint64 m_ulNumUniqueSubscriptions;
+    uint64 m_ulNumUniqueFavorites;
+    uint64 m_ulNumUniqueFollowers;
+    uint64 m_ulNumUniqueWebsiteViews;
+    uint64 m_ulReportScore;
+    uint64 m_ulNumSecondsPlayed;
+    uint64 m_ulNumPlaytimeSessions;
+    uint64 m_ulNumComments;
+    uint64 m_ulNumSecondsPlayedDuringTimePeriod;
+    uint64 m_ulNumPlaytimeSessionsDuringTimePeriod;
+    char m_rgchPreviewImageUrl[k_cchPublishedFileURLMax];
+    char m_rgchMetadata[1024 * 32];
+};
+
 namespace greenworks {
 
 class FileShareWorker : public SteamCallbackAsyncWorker {
@@ -39,6 +59,12 @@ struct WorkshopFileProperties {
 
   std::vector<std::string> tags_scratch;
   const char* tags[MAX_TAGS];
+};
+
+struct WorkshopItemFilter {
+    static constexpr int MAX_TAGS = 100;
+    const char* tags[MAX_TAGS];
+    const char* excludedTags[MAX_TAGS];
 };
 
 class PublishWorkshopFileWorker : public SteamCallbackAsyncWorker {
@@ -95,7 +121,10 @@ class QueryUGCWorker : public SteamCallbackAsyncWorker {
 
  protected:
   EUGCMatchingUGCType ugc_matching_type_;
-  std::vector<SteamUGCDetails_t> ugc_items_;
+  //std::vector<SteamUGCDetails_t> ugc_items_;
+  std::vector<UGCItem> ugc_items_;
+  uint32 num_results_;
+  uint32 num_total_results_;
   uint32 app_id_;
   uint32 page_num_;
 
@@ -170,7 +199,10 @@ class SynchronizeItemsWorker : public SteamCallbackAsyncWorker {
  private:
   size_t current_download_items_pos_;
   std::string download_dir_;
-  std::vector<SteamUGCDetails_t> ugc_items_;
+  //std::vector<SteamUGCDetails_t> ugc_items_;
+  std::vector<UGCItem> ugc_items_;
+  uint32 num_results_;
+  uint32 num_total_results_;
   std::vector<UGCHandle_t> download_ugc_items_handle_;
   uint32 app_id_;
   uint32 page_num_;
