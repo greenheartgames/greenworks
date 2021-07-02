@@ -227,7 +227,9 @@ void PublishWorkshopFileWorker::OnFilePublishCompleted(
   } else if (result->m_eResult == k_EResultOK) {
     publish_file_id_ = result->m_nPublishedFileId;
   } else {
-    SetErrorMessage("Error on publishing workshop file.");
+    char buffer[100];
+    sprintf(buffer, "%d: Error on publishing workshop file.", (int)result->m_eResult);
+    SetErrorMessage(buffer);
   }
   is_completed_ = true;
 }
@@ -603,6 +605,53 @@ void SynchronizeItemsWorker::HandleOKCallback() {
   v8::Local<v8::Value> argv[] = { items };
   Nan::AsyncResource resource("greenworks:SynchronizeItemsWorker.HandleOKCallback");
   callback->Call(1, argv, &resource);
+}
+
+VotePublishedFileWorker::VotePublishedFileWorker(
+    Nan::Callback* success_callback, Nan::Callback* error_callback,
+    PublishedFileId_t unsubscribe_file_id, bool vote_up)
+    :SteamCallbackAsyncWorker(success_callback, error_callback),
+    file_id_(unsubscribe_file_id), 
+    vote_up_(vote_up)
+{
+}
+
+void VotePublishedFileWorker::OnVoteCompleted(SetUserItemVoteResult_t* result,
+    bool io_failure) {
+    is_completed_ = true;
+}
+
+void VotePublishedFileWorker::Execute() {
+    SteamAPICall_t voted_result =
+        SteamUGC()->SetUserItemVote(file_id_, vote_up_);
+    vote_call_result_.Set(voted_result, this,
+        &VotePublishedFileWorker::OnVoteCompleted);
+
+    // Wait for unsubscribing job completed.
+    WaitForCompleted();
+}
+
+
+SubscribePublishedFileWorker::SubscribePublishedFileWorker(
+    Nan::Callback* success_callback, Nan::Callback* error_callback,
+    PublishedFileId_t unsubscribe_file_id)
+    :SteamCallbackAsyncWorker(success_callback, error_callback),
+    subscribe_file_id_(unsubscribe_file_id) {
+}
+
+void SubscribePublishedFileWorker::Execute() {
+    SteamAPICall_t subscribed_result =
+        SteamUGC()->SubscribeItem(subscribe_file_id_);
+    subscribe_call_result_.Set(subscribed_result, this,
+        &SubscribePublishedFileWorker::OnSubscribeCompleted);
+
+    // Wait for unsubscribing job completed.
+    WaitForCompleted();
+}
+
+void SubscribePublishedFileWorker::OnSubscribeCompleted(
+    RemoteStoragePublishedFileSubscribed_t* result, bool io_failure) {
+    is_completed_ = true;
 }
 
 UnsubscribePublishedFileWorker::UnsubscribePublishedFileWorker(

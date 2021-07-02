@@ -212,6 +212,43 @@ class SynchronizeItemsWorker : public SteamCallbackAsyncWorker {
       SteamUGCQueryCompleted_t> ugc_query_call_result_;
 };
 
+class VotePublishedFileWorker : public SteamCallbackAsyncWorker {
+public:
+    VotePublishedFileWorker(Nan::Callback* success_callback,
+        Nan::Callback* error_callback,
+        PublishedFileId_t file_id, bool vote_up);
+
+    void OnVoteCompleted(SetUserItemVoteResult_t* result,
+        bool io_failure);
+
+    void Execute() override;
+
+private:
+    PublishedFileId_t file_id_;
+    bool vote_up_;
+
+    CCallResult<VotePublishedFileWorker,
+        SetUserItemVoteResult_t> vote_call_result_;
+};
+
+class SubscribePublishedFileWorker : public SteamCallbackAsyncWorker {
+public:
+    SubscribePublishedFileWorker(Nan::Callback* success_callback,
+        Nan::Callback* error_callback,
+        PublishedFileId_t subscribe_file_id);
+
+    void OnSubscribeCompleted(RemoteStoragePublishedFileSubscribed_t* result,
+        bool io_failure);
+
+    void Execute() override;
+
+private:
+    PublishedFileId_t subscribe_file_id_;
+
+    CCallResult<SubscribePublishedFileWorker,
+        RemoteStoragePublishedFileSubscribed_t> subscribe_call_result_;
+};
+
 class UnsubscribePublishedFileWorker : public SteamCallbackAsyncWorker {
  public:
   UnsubscribePublishedFileWorker(Nan::Callback* success_callback,
