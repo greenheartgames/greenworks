@@ -267,6 +267,27 @@ class UnsubscribePublishedFileWorker : public SteamCallbackAsyncWorker {
       RemoteStoragePublishedFileUnsubscribed_t> unsubscribe_call_result_;
 };
 
+class GetItemStateWorker : public SteamCallbackAsyncWorker {
+public:
+    GetItemStateWorker(Nan::Callback* success_callback,
+        Nan::Callback* error_callback,
+        const PublishedFileId_t& file_id);
+    void OnGetItemStateCompleted(GetUserItemVoteResult_t* result,
+        bool io_failure);
+
+    void Execute() override;
+    void HandleOKCallback() override;
+
+private:
+    PublishedFileId_t file_id_;
+
+    uint32 item_state_;
+    bool voted_up_;
+    bool voted_down_;
+
+    CCallResult<GetItemStateWorker, GetUserItemVoteResult_t> call_result_;
+};
+
 }  // namespace greenworks
 
 #endif  // SRC_GREENWORKS_WORKSHOP_WORKERS_H_

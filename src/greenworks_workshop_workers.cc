@@ -196,28 +196,27 @@ PublishWorkshopFileWorker::PublishWorkshopFileWorker(
       properties_(properties) {}
 
 void PublishWorkshopFileWorker::Execute() {
-  SteamParamStringArray_t tags;
-  tags.m_nNumStrings = properties_.tags_scratch.size();
-  //tags.m_ppStrings = reinterpret_cast<const char**>(&properties_.tags);
-  tags.m_ppStrings = properties_.tags;
+    SteamParamStringArray_t tags;
+    tags.m_nNumStrings = properties_.tags_scratch.size();
+    tags.m_ppStrings = reinterpret_cast<const char**>(&properties_.tags);
 
-  std::string file_name = utils::GetFileNameFromPath(properties_.file_path);
-  std::string image_name = utils::GetFileNameFromPath(properties_.image_path);
-  SteamAPICall_t publish_result = SteamRemoteStorage()->PublishWorkshopFile(
-      file_name.c_str(),
-      image_name.empty()? nullptr:image_name.c_str(),
-      app_id_,
-      properties_.title.c_str(),
-      properties_.description.empty()? nullptr:properties_.description.c_str(),
-      k_ERemoteStoragePublishedFileVisibilityPublic,
-      &tags,
-      k_EWorkshopFileTypeCommunity);
+    std::string file_name = utils::GetFileNameFromPath(properties_.file_path);
+    std::string image_name = utils::GetFileNameFromPath(properties_.image_path);
+    SteamAPICall_t publish_result = SteamRemoteStorage()->PublishWorkshopFile(
+        file_name.c_str(),
+        image_name.empty()? nullptr:image_name.c_str(),
+        app_id_,
+        properties_.title.c_str(),
+        properties_.description.empty()? nullptr:properties_.description.c_str(),
+        k_ERemoteStoragePublishedFileVisibilityPublic,
+        &tags,
+        k_EWorkshopFileTypeCommunity);
 
-  call_result_.Set(publish_result, this,
-      &PublishWorkshopFileWorker::OnFilePublishCompleted);
+    call_result_.Set(publish_result, this,
+    &PublishWorkshopFileWorker::OnFilePublishCompleted);
 
-  // Wait for FileShare callback result.
-  WaitForCompleted();
+    // Wait for FileShare callback result.
+    WaitForCompleted();
 }
 
 void PublishWorkshopFileWorker::OnFilePublishCompleted(
@@ -273,17 +272,17 @@ void UpdatePublishedWorkshopFileWorker::Execute() {
     SteamRemoteStorage()->UpdatePublishedFileDescription(update_handle,
         properties_.description.c_str());
   if (!properties_.tags_scratch.empty()) {
-    SteamParamStringArray_t tags;
-    if (properties_.tags_scratch.size() == 1 &&
-        properties_.tags_scratch.front().empty()) {  // clean the tag.
-      tags.m_nNumStrings = 0;
-      tags.m_ppStrings = nullptr;
-    } else {
-      tags.m_nNumStrings = properties_.tags_scratch.size();
-      //tags.m_ppStrings = reinterpret_cast<const char**>(&properties_.tags);
-      tags.m_ppStrings = properties_.tags;
-    }
-    SteamRemoteStorage()->UpdatePublishedFileTags(update_handle, &tags);
+      SteamParamStringArray_t tags;
+      if (properties_.tags_scratch.size() == 1 &&
+          properties_.tags_scratch.front().empty()) {  // clean the tag.
+          tags.m_nNumStrings = 0;
+          tags.m_ppStrings = nullptr;
+      }
+      else {
+          tags.m_nNumStrings = properties_.tags_scratch.size();
+          tags.m_ppStrings = reinterpret_cast<const char**>(&properties_.tags);
+      }
+      SteamRemoteStorage()->UpdatePublishedFileTags(update_handle, &tags);
   }
   SteamAPICall_t commit_update_result =
       SteamRemoteStorage()->CommitPublishedFileUpdate(update_handle);
@@ -674,6 +673,50 @@ void UnsubscribePublishedFileWorker::Execute() {
 void UnsubscribePublishedFileWorker::OnUnsubscribeCompleted(
     RemoteStoragePublishedFileUnsubscribed_t* result, bool io_failure) {
   is_completed_ = true;
+}
+
+GetItemStateWorker::GetItemStateWorker(Nan::Callback* success_callback,
+    Nan::Callback* error_callback, const PublishedFileId_t& file_id)
+    :SteamCallbackAsyncWorker(success_callback, error_callback),
+    file_id_(file_id) {
+}
+
+void GetItemStateWorker::Execute() {
+    // Ignore empty path.
+    SteamAPICall_t get_result = SteamUGC()->GetUserItemVote(file_id_);
+    call_result_.Set(get_result, this, &GetItemStateWorker::OnGetItemStateCompleted);
+
+    // Wait for FileShare callback result.
+    WaitForCompleted();
+}
+
+void GetItemStateWorker::OnGetItemStateCompleted(
+    GetUserItemVoteResult_t* result, bool io_failure) {
+    if (io_failure) {
+        SetErrorMessage("Error on sharing file: Steam API IO Failure");
+    }
+    else if (result->m_eResult == k_EResultOK) {
+        item_state_ = SteamUGC()->GetItemState(file_id_);
+        voted_up_ = result->m_bVotedUp;
+        voted_down_ = result->m_bVotedDown;
+    }
+    else {
+        SetErrorMessage("Error on sharing file on Steam cloud.");
+    }
+    is_completed_ = true;
+}
+
+void GetItemStateWorker::HandleOKCallback() {
+    Nan::HandleScope scope;
+    v8::Local<v8::Object> result = Nan::New<v8::Object>();
+
+    Nan::Set(result, Nan::New("itemState").ToLocalChecked(), Nan::New(item_state_));
+    Nan::Set(result, Nan::New("votedUp").ToLocalChecked(), Nan::New(voted_up_));
+    Nan::Set(result, Nan::New("votedDown").ToLocalChecked(), Nan::New(voted_down_));
+
+    v8::Local<v8::Value> argv[] = { result };
+    Nan::AsyncResource resource("greenworks:GetItemStateWorker.HandleOKCallback");
+    callback->Call(1, argv, &resource);
 }
 
 }  // namespace greenworks

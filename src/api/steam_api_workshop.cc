@@ -483,13 +483,26 @@ namespace greenworks
 
       NAN_METHOD(UGCGetItemState)
       {
-        Nan::HandleScope scope;
-        if (info.Length() < 1 || !info[0]->IsString())
-        {
-          THROW_BAD_ARGS("Bad arguments; expected: publishedFileId [string]");
-        }
-        PublishedFileId_t file_id = utils::strToUint64(*(Nan::Utf8String(info[0])));
-        info.GetReturnValue().Set(Nan::New(SteamUGC()->GetItemState(file_id)));
+          Nan::HandleScope scope;
+
+          if (info.Length() < 2 || !info[0]->IsString() || !info[1]->IsFunction())
+          {
+              THROW_BAD_ARGS("Bad arguments");
+          }
+
+          PublishedFileId_t file_id = utils::strToUint64(*(Nan::Utf8String(info[0])));
+          info.GetReturnValue().Set(Nan::New(SteamUGC()->GetItemState(file_id)));
+          
+          Nan::Callback* success_callback =
+              new Nan::Callback(info[1].As<v8::Function>());
+          Nan::Callback* error_callback = nullptr;
+
+          if (info.Length() > 2 && info[2]->IsFunction())
+              error_callback = new Nan::Callback(info[2].As<v8::Function>());
+
+          Nan::AsyncQueueWorker(new greenworks::GetItemStateWorker(
+              success_callback, error_callback, file_id));
+          info.GetReturnValue().Set(Nan::Undefined());
       }
 
       NAN_METHOD(UGCGetItemInstallInfo)
