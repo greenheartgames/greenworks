@@ -67,6 +67,27 @@ struct WorkshopItemFilter {
     const char* excludedTags[MAX_TAGS];
 };
 
+class CreateWorkshopItemWorker : public SteamCallbackAsyncWorker {
+public:
+    CreateWorkshopItemWorker(Nan::Callback* success_callback,
+        Nan::Callback* error_callback,
+        uint32 app_id,
+        const WorkshopFileProperties& properties);
+    void OnItemCreateCompleted(CreateItemResult_t* result,
+        bool io_failure);
+
+    void Execute() override;
+    void HandleOKCallback() override;
+
+private:
+    uint32 app_id_;
+    WorkshopFileProperties properties_;
+
+    PublishedFileId_t publish_file_id_;
+    CCallResult<CreateWorkshopItemWorker,
+        CreateItemResult_t> call_result_;
+};
+
 class PublishWorkshopFileWorker : public SteamCallbackAsyncWorker {
  public:
   PublishWorkshopFileWorker(Nan::Callback* success_callback,

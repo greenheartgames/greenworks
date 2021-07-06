@@ -188,6 +188,76 @@ void FileShareWorker::HandleOKCallback() {
   callback->Call(1, argv, &resource);
 }
 
+CreateWorkshopItemWorker::CreateWorkshopItemWorker(
+    Nan::Callback* success_callback, Nan::Callback* error_callback,
+    uint32 app_id, const WorkshopFileProperties& properties)
+    : SteamCallbackAsyncWorker(success_callback, error_callback),
+    app_id_(app_id),
+    properties_(properties) {}
+
+void CreateWorkshopItemWorker::Execute() {
+    SteamAPICall_t create_result = SteamUGC()->CreateItem(app_id_, EWorkshopFileType::k_EWorkshopFileTypeCommunity);
+
+    call_result_.Set(create_result, this,
+        &CreateWorkshopItemWorker::OnItemCreateCompleted);
+
+    // Wait for ItemCreate callback result.
+    WaitForCompleted();
+}
+
+void CreateWorkshopItemWorker::OnItemCreateCompleted(
+    CreateItemResult_t* result, bool io_failure) {
+    if (io_failure) {
+        SetErrorMessage("Error on publishing workshop file: Steam API IO Failure");
+    }
+    else if (result->m_eResult == k_EResultOK) {
+        publish_file_id_ = result->m_nPublishedFileId;
+
+        SteamParamStringArray_t tags;
+        tags.m_nNumStrings = properties_.tags_scratch.size();
+        tags.m_ppStrings = new const char* [tags.m_nNumStrings];
+        for (int i = 0; i < tags.m_nNumStrings; i++) {
+            tags.m_ppStrings[i] = properties_.tags_scratch[i].c_str();
+        }
+
+        if (result->m_bUserNeedsToAcceptWorkshopLegalAgreement) {
+            // Inform user legal agreement is required to make workshop item visible to public
+        }
+
+        UGCUpdateHandle_t update_handle = SteamUGC()->StartItemUpdate(app_id_, publish_file_id_);
+        
+        if (!properties_.title.empty())
+            SteamUGC()->SetItemTitle(update_handle, properties_.title.c_str());
+        if (!properties_.description.empty())
+            SteamUGC()->SetItemDescription(update_handle, properties_.description.c_str());
+        SteamUGC()->SetItemVisibility(update_handle, ERemoteStoragePublishedFileVisibility::k_ERemoteStoragePublishedFileVisibilityPublic);
+        SteamUGC()->SetItemTags(update_handle, &tags);
+        if (!properties_.file_path.empty())
+            SteamUGC()->SetItemContent(update_handle, properties_.file_path.c_str());
+        if (!properties_.image_path.empty())
+            SteamUGC()->SetItemPreview(update_handle, properties_.image_path.c_str());
+
+        if (tags.m_ppStrings) delete tags.m_ppStrings;
+
+        SteamAPICall_t submit_result = SteamUGC()->SubmitItemUpdate(update_handle, nullptr);
+    }
+    else {
+        char buffer[100];
+        sprintf(buffer, "%d: Error on publishing workshop file.", (int)result->m_eResult);
+        SetErrorMessage(buffer);
+    }
+    is_completed_ = true;
+}
+
+void CreateWorkshopItemWorker::HandleOKCallback() {
+    Nan::HandleScope scope;
+
+    v8::Local<v8::Value> argv[] = {
+        Nan::New(utils::uint64ToString(publish_file_id_)).ToLocalChecked() };
+    Nan::AsyncResource resource("greenworks:CreateWorkshopItemWorker.HandleOKCallback");
+    callback->Call(1, argv, &resource);
+}
+
 PublishWorkshopFileWorker::PublishWorkshopFileWorker(
     Nan::Callback* success_callback, Nan::Callback* error_callback,
     uint32 app_id, const WorkshopFileProperties& properties)
@@ -198,7 +268,10 @@ PublishWorkshopFileWorker::PublishWorkshopFileWorker(
 void PublishWorkshopFileWorker::Execute() {
     SteamParamStringArray_t tags;
     tags.m_nNumStrings = properties_.tags_scratch.size();
-    tags.m_ppStrings = reinterpret_cast<const char**>(&properties_.tags);
+    tags.m_ppStrings = new const char* [tags.m_nNumStrings];
+    for (int i = 0; i < tags.m_nNumStrings; i++) {
+        tags.m_ppStrings[i] = properties_.tags_scratch[i].c_str();
+    }
 
     std::string file_name = utils::GetFileNameFromPath(properties_.file_path);
     std::string image_name = utils::GetFileNameFromPath(properties_.image_path);
@@ -215,6 +288,7 @@ void PublishWorkshopFileWorker::Execute() {
     call_result_.Set(publish_result, this,
     &PublishWorkshopFileWorker::OnFilePublishCompleted);
 
+    if (tags.m_ppStrings) delete tags.m_ppStrings;
     // Wait for FileShare callback result.
     WaitForCompleted();
 }
@@ -223,9 +297,17 @@ void PublishWorkshopFileWorker::OnFilePublishCompleted(
     RemoteStoragePublishFileResult_t* result, bool io_failure) {
   if (io_failure) {
     SetErrorMessage("Error on publishing workshop file: Steam API IO Failure");
-  } else if (result->m_eResult == k_EResultOK) {
-    publish_file_id_ = result->m_nPublishedFileId;
-  } else {
+  }
+  else if (result->m_eResult == k_EResultOK) {
+      publish_file_id_ = result->m_nPublishedFileId;
+
+      std::vector<std::string> t = { "aaa", "bbb" };
+      SteamParamStringArray_t tags{ reinterpret_cast<const char**>(&t), t.size() };
+      UGCUpdateHandle_t update_handle = SteamUGC()->StartItemUpdate(app_id_, publish_file_id_);
+      SteamUGC()->SetItemTags(update_handle, &tags);
+      SteamUGC()->SubmitItemUpdate(update_handle, "");
+  }
+  else {
     char buffer[100];
     sprintf(buffer, "%d: Error on publishing workshop file.", (int)result->m_eResult);
     SetErrorMessage(buffer);
@@ -259,6 +341,7 @@ void UpdatePublishedWorkshopFileWorker::Execute() {
       utils::GetFileNameFromPath(properties_.file_path);
   const std::string image_name =
       utils::GetFileNameFromPath(properties_.image_path);
+  SteamParamStringArray_t tags;
   if (!file_name.empty())
     SteamRemoteStorage()->UpdatePublishedFileFile(update_handle,
         file_name.c_str());
@@ -272,15 +355,18 @@ void UpdatePublishedWorkshopFileWorker::Execute() {
     SteamRemoteStorage()->UpdatePublishedFileDescription(update_handle,
         properties_.description.c_str());
   if (!properties_.tags_scratch.empty()) {
-      SteamParamStringArray_t tags;
       if (properties_.tags_scratch.size() == 1 &&
           properties_.tags_scratch.front().empty()) {  // clean the tag.
           tags.m_nNumStrings = 0;
           tags.m_ppStrings = nullptr;
       }
       else {
+
           tags.m_nNumStrings = properties_.tags_scratch.size();
-          tags.m_ppStrings = reinterpret_cast<const char**>(&properties_.tags);
+          tags.m_ppStrings = new const char* [tags.m_nNumStrings];
+          for (int i = 0; i < tags.m_nNumStrings; i++) {
+              tags.m_ppStrings[i] = properties_.tags_scratch[i].c_str();
+          }
       }
       SteamRemoteStorage()->UpdatePublishedFileTags(update_handle, &tags);
   }
@@ -290,6 +376,7 @@ void UpdatePublishedWorkshopFileWorker::Execute() {
       &UpdatePublishedWorkshopFileWorker::
            OnCommitPublishedFileUpdateCompleted);
 
+  if (tags.m_ppStrings) delete tags.m_ppStrings;
   // Wait for published workshop file updated.
   WaitForCompleted();
 }

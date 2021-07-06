@@ -148,6 +148,60 @@ namespace greenworks
         info.GetReturnValue().Set(Nan::Undefined());
       }
 
+      NAN_METHOD(UGCCreateWorkshopItem)
+      {
+          Nan::HandleScope scope;
+
+          if (info.Length() < 6 || !info[0]->IsObject() || !info[1]->IsString() ||
+              !info[2]->IsString() || !info[3]->IsString() || !info[4]->IsString() ||
+              !info[5]->IsFunction())
+          {
+              THROW_BAD_ARGS("Bad arguments");
+          }
+          Nan::MaybeLocal<v8::Object> maybe_opt = Nan::To<v8::Object>(info[0]);
+          auto options = maybe_opt.ToLocalChecked();
+          auto app_id = Nan::Get(options, Nan::New("app_id").ToLocalChecked());
+          auto tags = Nan::Get(options, Nan::New("tags").ToLocalChecked());
+          if (!app_id.ToLocalChecked()->IsInt32() ||
+              !tags.ToLocalChecked()->IsArray())
+          {
+              THROW_BAD_ARGS(
+                  "The object parameter must have 'app_id' and 'tags' field.");
+          }
+          greenworks::WorkshopFileProperties properties;
+
+          v8::Local<v8::Array> tags_array = tags.ToLocalChecked().As<v8::Array>();
+          if (tags_array->Length() > greenworks::WorkshopFileProperties::MAX_TAGS)
+          {
+              THROW_BAD_ARGS("The length of 'tags' must be less than 100.");
+          }
+          for (uint32_t i = 0; i < tags_array->Length(); ++i)
+          {
+              if (!Nan::Get(tags_array, i).ToLocalChecked()->IsString())
+                  THROW_BAD_ARGS("Bad arguments");
+              Nan::Utf8String tag(Nan::Get(tags_array, (i)).ToLocalChecked());
+              properties.tags_scratch.push_back(*tag);
+              properties.tags[i] = properties.tags_scratch.back().c_str();
+          }
+
+          Nan::Callback* success_callback =
+              new Nan::Callback(info[5].As<v8::Function>());
+          Nan::Callback* error_callback = nullptr;
+
+          if (info.Length() > 6 && info[6]->IsFunction())
+              error_callback = new Nan::Callback(info[6].As<v8::Function>());
+
+          properties.file_path = (*(Nan::Utf8String(info[1])));
+          properties.image_path = (*(Nan::Utf8String(info[2])));
+          properties.title = (*(Nan::Utf8String(info[3])));
+          properties.description = (*(Nan::Utf8String(info[4])));
+
+          Nan::AsyncQueueWorker(new greenworks::CreateWorkshopItemWorker(
+              success_callback, error_callback, Nan::To<int32>(app_id.ToLocalChecked()).FromJust(),
+              properties));
+          info.GetReturnValue().Set(Nan::Undefined());
+      }
+
       NAN_METHOD(PublishWorkshopFile)
       {
         Nan::HandleScope scope;
@@ -543,6 +597,7 @@ namespace greenworks
         InitUgcItemStates(target);
 
         SET_FUNCTION("fileShare", FileShare);
+        SET_FUNCTION("ugcCreateWorkshopItem", UGCCreateWorkshopItem);
         SET_FUNCTION("_publishWorkshopFile", PublishWorkshopFile);
         SET_FUNCTION("_updatePublishedWorkshopFile", UpdatePublishedWorkshopFile);
         SET_FUNCTION("_ugcGetItems", UGCGetItems);
