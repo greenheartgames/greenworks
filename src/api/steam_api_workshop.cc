@@ -319,15 +319,50 @@ namespace greenworks
         auto options = maybe_opt.ToLocalChecked();
         auto app_id = Nan::Get(options, (Nan::New("app_id").ToLocalChecked()));
         auto page_num = Nan::Get(options, (Nan::New("page_num").ToLocalChecked()));
+        auto tags = Nan::Get(options, (Nan::New("tags").ToLocalChecked()));
+        auto excluded_tags = Nan::Get(options, (Nan::New("excluded_tags").ToLocalChecked()));
+        auto keyword = Nan::Get(options, (Nan::New("keyword").ToLocalChecked()));
         if (!app_id.ToLocalChecked()->IsInt32() ||
-            !page_num.ToLocalChecked()->IsInt32())
+            !page_num.ToLocalChecked()->IsInt32() ||
+            !tags.ToLocalChecked()->IsArray() ||
+            !excluded_tags.ToLocalChecked()->IsArray() ||
+            !keyword.ToLocalChecked()->IsString())
         {
           THROW_BAD_ARGS(
               "The object parameter must have 'app_id' and 'page_num' fields.");
         }
-        // else {
-        //     THROW_BAD_ARGS("hello world");
-        // }
+        greenworks::SearchOptions searchOp;
+
+        searchOp.page_num = Nan::To<int32>(page_num.ToLocalChecked()).FromJust();
+        searchOp.keyword = (*(Nan::Utf8String(keyword.ToLocalChecked())));
+
+        v8::Local<v8::Array> tags_array = tags.ToLocalChecked().As<v8::Array>();
+        if (tags_array->Length() > greenworks::SearchOptions::MAX_TAGS)
+        {
+            THROW_BAD_ARGS("The length of 'tags' must be less than 100.");
+        }
+        for (uint32_t i = 0; i < tags_array->Length(); ++i)
+        {
+            if (!Nan::Get(tags_array, i).ToLocalChecked()->IsString())
+                THROW_BAD_ARGS("Bad arguments");
+            Nan::Utf8String tag(Nan::Get(tags_array, (i)).ToLocalChecked());
+            searchOp.tags_scratch.push_back(*tag);
+            searchOp.tags[i] = searchOp.tags_scratch.back().c_str();
+        }
+
+        v8::Local<v8::Array> ex_tags_array = excluded_tags.ToLocalChecked().As<v8::Array>();
+        if (ex_tags_array->Length() > greenworks::SearchOptions::MAX_TAGS)
+        {
+            THROW_BAD_ARGS("The length of 'tags' must be less than 100.");
+        }
+        for (uint32_t i = 0; i < ex_tags_array->Length(); ++i)
+        {
+            if (!Nan::Get(ex_tags_array, i).ToLocalChecked()->IsString())
+                THROW_BAD_ARGS("Bad arguments");
+            Nan::Utf8String tag(Nan::Get(ex_tags_array, (i)).ToLocalChecked());
+            searchOp.excluded_tags_scratch.push_back(*tag);
+            searchOp.excluded_tags[i] = searchOp.excluded_tags_scratch.back().c_str();
+        }
 
         auto ugc_matching_type = static_cast<EUGCMatchingUGCType>(
             Nan::To<int32>(info[1]).FromJust());
@@ -343,7 +378,7 @@ namespace greenworks
         Nan::AsyncQueueWorker(new greenworks::QueryAllUGCWorker(
             success_callback, error_callback, ugc_matching_type, ugc_query_type,
             Nan::To<int32>(app_id.ToLocalChecked()).FromJust(),
-            Nan::To<int32>(page_num.ToLocalChecked()).FromJust()));
+            searchOp));
         info.GetReturnValue().Set(Nan::Undefined());
       }
 

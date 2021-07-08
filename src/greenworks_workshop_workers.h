@@ -50,6 +50,16 @@ class FileShareWorker : public SteamCallbackAsyncWorker {
   CCallResult<FileShareWorker, RemoteStorageFileShareResult_t> call_result_;
 };
 
+struct SearchOptions {
+    static constexpr int MAX_TAGS = 100;
+    uint32 page_num = 1;
+    std::string keyword;
+    std::vector<std::string> tags_scratch;
+    std::vector<std::string> excluded_tags_scratch;
+    const char* tags[MAX_TAGS];
+    const char* excluded_tags[MAX_TAGS];
+};
+
 struct WorkshopFileProperties {
   static constexpr int MAX_TAGS = 100;
   std::string file_path;
@@ -158,11 +168,12 @@ class QueryAllUGCWorker : public QueryUGCWorker {
   QueryAllUGCWorker(Nan::Callback* success_callback,
                     Nan::Callback* error_callback,
                     EUGCMatchingUGCType ugc_matching_type,
-                    EUGCQuery ugc_query_type, uint32 app_id, uint32 page_num);
+                    EUGCQuery ugc_query_type, uint32 app_id, const SearchOptions& options);
 
   void Execute() override;
 
  private:
+     SearchOptions ugc_search_options_;
   EUGCQuery ugc_query_type_;
 };
 

@@ -300,12 +300,6 @@ void PublishWorkshopFileWorker::OnFilePublishCompleted(
   }
   else if (result->m_eResult == k_EResultOK) {
       publish_file_id_ = result->m_nPublishedFileId;
-
-      std::vector<std::string> t = { "aaa", "bbb" };
-      SteamParamStringArray_t tags{ reinterpret_cast<const char**>(&t), t.size() };
-      UGCUpdateHandle_t update_handle = SteamUGC()->StartItemUpdate(app_id_, publish_file_id_);
-      SteamUGC()->SetItemTags(update_handle, &tags);
-      SteamUGC()->SubmitItemUpdate(update_handle, "");
   }
   else {
     char buffer[100];
@@ -450,7 +444,9 @@ void QueryUGCWorker::OnUGCQueryCompleted(SteamUGCQueryCompleted_t* result,
     }
     SteamUGC()->ReleaseQueryUGCRequest(result->m_handle);
   } else {
-    SetErrorMessage("Error on querying ugc.");
+    char buffer[100];
+    sprintf(buffer, "%d: Error on querying ugc.", (int)result->m_eResult);
+    SetErrorMessage(buffer);
   }
   is_completed_ = true;
 }
@@ -459,18 +455,38 @@ QueryAllUGCWorker::QueryAllUGCWorker(Nan::Callback* success_callback,
                                      Nan::Callback* error_callback,
                                      EUGCMatchingUGCType ugc_matching_type,
                                      EUGCQuery ugc_query_type, uint32 app_id,
-                                     uint32 page_num)
+                                     const SearchOptions& options)
     : QueryUGCWorker(success_callback, error_callback, ugc_matching_type,
-                     app_id, page_num),
-      ugc_query_type_(ugc_query_type) {}
+                     app_id, options.page_num),
+                    ugc_query_type_(ugc_query_type),
+                    ugc_search_options_(options){}
 
 void QueryAllUGCWorker::Execute() {
   uint32 invalid_app_id = 0;
   // Set "creator_app_id" parameter to an invalid id to make Steam API return
   // all ugc items, otherwise the API won't get any results in some cases.
+
   UGCQueryHandle_t ugc_handle = SteamUGC()->CreateQueryAllUGCRequest(
       ugc_query_type_, ugc_matching_type_, /*creator_app_id=*/invalid_app_id,
       /*consumer_app_id=*/app_id_, page_num_);
+
+  // keyword
+  SteamUGC()->SetSearchText(ugc_handle, ugc_search_options_.keyword.c_str());
+
+  // tags
+  SteamParamStringArray_t tags;
+  tags.m_nNumStrings = ugc_search_options_.tags_scratch.size();
+  tags.m_ppStrings = new const char* [tags.m_nNumStrings];
+  for (int i = 0; i < tags.m_nNumStrings; i++) {
+      tags.m_ppStrings[i] = ugc_search_options_.tags_scratch[i].c_str();
+  }
+  SteamUGC()->AddRequiredTagGroup(ugc_handle, &tags);
+
+  // excluded tags
+  const size_t numExTags = ugc_search_options_.excluded_tags_scratch.size();
+  for (int i = 0; i < numExTags; i++) {
+      SteamUGC()->AddExcludedTag(ugc_handle, ugc_search_options_.excluded_tags_scratch[i].c_str());
+  }
   SteamAPICall_t ugc_query_result = SteamUGC()->SendQueryUGCRequest(ugc_handle);
 
   ugc_query_call_result_.Set(ugc_query_result, this,
