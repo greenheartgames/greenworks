@@ -559,7 +559,9 @@ void DownloadItemWorker::OnDownloadCompleted(
     }
     delete[] content;
   } else {
-    SetErrorMessage("Error on downloading file.");
+      char buffer[100];
+      sprintf(buffer, "%d: Error on downloading file.", (int)result->m_eResult);
+      SetErrorMessage(buffer);
   }
   is_completed_ = true;
 }
@@ -685,7 +687,9 @@ void SynchronizeItemsWorker::OnDownloadCompleted(
       return;
     }
   } else {
-    SetErrorMessage("Error on downloading file.");
+    char buffer[100];
+    sprintf(buffer, "%d: Error on downloading file.", (int)result->m_eResult);
+    SetErrorMessage(buffer);
   }
   is_completed_ = true;
 }
