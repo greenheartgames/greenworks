@@ -26,7 +26,7 @@ NAN_METHOD(SaveTextToFile) {
   std::string file_name(*(Nan::Utf8String(info[0])));
   std::string content(*(Nan::Utf8String(info[1])));
   Nan::Callback* success_callback =
-      new Nan::Callback(info[2].As<v8::Function>());
+    new Nan::Callback(info[2].As<v8::Function>());
   Nan::Callback* error_callback = nullptr;
 
   if (info.Length() > 3 && info[3]->IsFunction())
@@ -48,7 +48,7 @@ NAN_METHOD(DeleteFile) {
 
   std::string file_name(*(Nan::Utf8String(info[0])));
   Nan::Callback* success_callback =
-      new Nan::Callback(info[1].As<v8::Function>());
+    new Nan::Callback(info[1].As<v8::Function>());
   Nan::Callback* error_callback = nullptr;
 
   if (info.Length() > 2 && info[2]->IsFunction())
@@ -77,7 +77,7 @@ NAN_METHOD(SaveFilesToCloud) {
   }
 
   Nan::Callback* success_callback =
-      new Nan::Callback(info[1].As<v8::Function>());
+    new Nan::Callback(info[1].As<v8::Function>());
   Nan::Callback* error_callback = nullptr;
 
   if (info.Length() > 2 && info[2]->IsFunction())
@@ -97,7 +97,7 @@ NAN_METHOD(ReadTextFromFile) {
 
   std::string file_name(*(Nan::Utf8String(info[0])));
   Nan::Callback* success_callback =
-      new Nan::Callback(info[1].As<v8::Function>());
+    new Nan::Callback(info[1].As<v8::Function>());
   Nan::Callback* error_callback = nullptr;
 
   if (info.Length() > 2 && info[2]->IsFunction())
@@ -113,14 +113,14 @@ NAN_METHOD(IsCloudEnabled) {
   Nan::HandleScope scope;
   ISteamRemoteStorage* steam_remote_storage = SteamRemoteStorage();
   info.GetReturnValue().Set(Nan::New<v8::Boolean>(
-      steam_remote_storage->IsCloudEnabledForApp()));
+    steam_remote_storage->IsCloudEnabledForApp()));
 }
 
 NAN_METHOD(IsCloudEnabledForUser) {
   Nan::HandleScope scope;
   ISteamRemoteStorage* steam_remote_storage = SteamRemoteStorage();
   info.GetReturnValue().Set(Nan::New<v8::Boolean>(
-      steam_remote_storage->IsCloudEnabledForAccount()));
+    steam_remote_storage->IsCloudEnabledForAccount()));
 }
 
 NAN_METHOD(EnableCloud) {
@@ -141,7 +141,7 @@ NAN_METHOD(GetCloudQuota) {
     THROW_BAD_ARGS("Bad arguments");
   }
   Nan::Callback* success_callback =
-      new Nan::Callback(info[0].As<v8::Function>());
+    new Nan::Callback(info[0].As<v8::Function>());
   Nan::Callback* error_callback = nullptr;
 
   if (info.Length() > 2 && info[1]->IsFunction())
@@ -166,7 +166,7 @@ NAN_METHOD(GetFileNameAndSize) {
   int32 index = Nan::To<int32>(info[0].As<v8::Number>()).FromJust();
   int32 file_size = 0;
   const char* file_name =
-      SteamRemoteStorage()->GetFileNameAndSize(index, &file_size);
+    SteamRemoteStorage()->GetFileNameAndSize(index, &file_size);
   Nan::Set(result, Nan::New("name").ToLocalChecked(),
            Nan::New(file_name).ToLocalChecked());
   Nan::Set(result, Nan::New("size").ToLocalChecked(), Nan::New(file_size));

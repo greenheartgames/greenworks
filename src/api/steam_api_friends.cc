@@ -164,7 +164,7 @@ NAN_METHOD(GetSmallFriendAvatar) {
     THROW_BAD_ARGS("Steam ID is invalid");
   }
   info.GetReturnValue().Set(
-      SteamFriends()->GetSmallFriendAvatar(steam_id));
+    SteamFriends()->GetSmallFriendAvatar(steam_id));
 }
 
 NAN_METHOD(GetMediumFriendAvatar) {
@@ -178,7 +178,7 @@ NAN_METHOD(GetMediumFriendAvatar) {
     THROW_BAD_ARGS("Steam ID is invalid");
   }
   info.GetReturnValue().Set(
-      SteamFriends()->GetMediumFriendAvatar(steam_id));
+    SteamFriends()->GetMediumFriendAvatar(steam_id));
 }
 
 NAN_METHOD(GetLargeFriendAvatar) {
@@ -192,7 +192,7 @@ NAN_METHOD(GetLargeFriendAvatar) {
     THROW_BAD_ARGS("Steam ID is invalid");
   }
   info.GetReturnValue().Set(
-      SteamFriends()->GetLargeFriendAvatar(steam_id));
+    SteamFriends()->GetLargeFriendAvatar(steam_id));
 }
 
 NAN_METHOD(RequestUserInformation) {
@@ -207,7 +207,7 @@ NAN_METHOD(RequestUserInformation) {
     THROW_BAD_ARGS("Steam ID is invalid");
   }
   info.GetReturnValue().Set(
-      SteamFriends()->RequestUserInformation(steam_id, require_name_only));
+    SteamFriends()->RequestUserInformation(steam_id, require_name_only));
 }
 
 NAN_METHOD(SetListenForFriendsMessages) {
@@ -217,7 +217,7 @@ NAN_METHOD(SetListenForFriendsMessages) {
   }
   bool intercept_enabled = Nan::To<bool>(info[0]).FromJust();
   info.GetReturnValue().Set(
-      SteamFriends()->SetListenForFriendsMessages(intercept_enabled));
+    SteamFriends()->SetListenForFriendsMessages(intercept_enabled));
 }
 
 NAN_METHOD(ReplyToFriendMessage) {
@@ -232,8 +232,8 @@ NAN_METHOD(ReplyToFriendMessage) {
   }
   std::string message_being_sent(*(Nan::Utf8String(info[1])));
   info.GetReturnValue().Set(SteamFriends()->ReplyToFriendMessage(
-      steam_id,
-      message_being_sent.c_str()));
+    steam_id,
+    message_being_sent.c_str()));
 }
 
 NAN_METHOD(GetFriendMessage) {
@@ -254,8 +254,8 @@ NAN_METHOD(GetFriendMessage) {
   std::unique_ptr<char[]>message(new char[maximam_size]);
 
   int message_size = SteamFriends()->GetFriendMessage(
-      steam_id, message_id, message.get(),
-      maximam_size, &chat_type);
+    steam_id, message_id, message.get(),
+    maximam_size, &chat_type);
 
   v8::Local<v8::Object> result = Nan::New<v8::Object>();
   Nan::Set(result, Nan::New("message").ToLocalChecked(),
@@ -276,8 +276,8 @@ NAN_METHOD(GetFriendPersonaName) {
     THROW_BAD_ARGS("Steam ID is invalid");
   }
   info.GetReturnValue().Set(
-      Nan::New(SteamFriends()->GetFriendPersonaName(steam_id))
-          .ToLocalChecked());
+    Nan::New(SteamFriends()->GetFriendPersonaName(steam_id))
+    .ToLocalChecked());
 }
 
 NAN_METHOD(SetPlayedWith) {
@@ -318,8 +318,8 @@ NAN_METHOD(GetFriendRichPresence) {
   }
   std::string pch_key_str(*(Nan::Utf8String(info[1])));
   info.GetReturnValue().Set(
-      Nan::New(SteamFriends()->GetFriendRichPresence(steam_id, pch_key_str.data()))
-          .ToLocalChecked());
+    Nan::New(SteamFriends()->GetFriendRichPresence(steam_id, pch_key_str.data()))
+    .ToLocalChecked());
 }
 
 NAN_METHOD(ClearRichPresence) {

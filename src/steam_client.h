@@ -15,9 +15,9 @@
 namespace greenworks {
 
 class SteamClient {
- public:
+public:
   class Observer {
-   public:
+  public:
     virtual void OnGameOverlayActivated(bool is_active) = 0;
     virtual void OnSteamServersConnected() = 0;
     virtual void OnSteamServersDisconnected() = 0;
@@ -50,7 +50,7 @@ class SteamClient {
   static SteamClient* GetInstance();
   static void StartSteamLoop();
 
- private:
+private:
   SteamClient();
   ~SteamClient();
 
@@ -58,13 +58,13 @@ class SteamClient {
   std::vector<Observer*> observer_list_;
 
   STEAM_CALLBACK(SteamClient, OnGameOverlayActivated,
-      GameOverlayActivated_t, game_overlay_activated_);
+                 GameOverlayActivated_t, game_overlay_activated_);
   STEAM_CALLBACK(SteamClient, OnSteamServersConnected,
-      SteamServersConnected_t, steam_servers_connected_);
+                 SteamServersConnected_t, steam_servers_connected_);
   STEAM_CALLBACK(SteamClient, OnSteamServersDisconnected,
-      SteamServersDisconnected_t, steam_servers_disconnected_);
+                 SteamServersDisconnected_t, steam_servers_disconnected_);
   STEAM_CALLBACK(SteamClient, OnSteamServerConnectFailure,
-      SteamServerConnectFailure_t, steam_server_connect_failure_);
+                 SteamServerConnectFailure_t, steam_server_connect_failure_);
   STEAM_CALLBACK(SteamClient,
                  OnSteamShutdown,
                  SteamShutdown_t,

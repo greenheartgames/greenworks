@@ -23,12 +23,12 @@ void sleep(int milliseconds) {
 #if defined(_WIN32)
   Sleep(milliseconds);
 #else
-  usleep(milliseconds*1000);
+  usleep(milliseconds * 1000);
 #endif
 }
 
 bool ReadFile(const char* path, char** content, int* length) {
-  std::ifstream fin(path, std::ios::in|std::ios::binary|std::ios::ate);
+  std::ifstream fin(path, std::ios::in | std::ios::binary | std::ios::ate);
   if (!fin.is_open()) {
     return false;
   }
@@ -40,7 +40,7 @@ bool ReadFile(const char* path, char** content, int* length) {
 }
 
 bool WriteFile(const std::string& target_path, char* content, int length) {
-  std::ofstream fout(target_path.c_str(), std::ios::out|std::ios::binary);
+  std::ofstream fout(target_path.c_str(), std::ios::out | std::ios::binary);
   fout.write(content, length);
   return fout.good();
 }

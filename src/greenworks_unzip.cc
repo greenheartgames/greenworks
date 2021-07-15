@@ -22,18 +22,18 @@
 #include "zlib/zlib.h"
 
 #ifndef _WIN32
-  #ifndef __USE_FILE_OFFSET64
-    #define __USE_FILE_OFFSET64
-  #endif
-  #ifndef __USE_LARGEFILE64
-    #define __USE_LARGEFILE64
-  #endif
-  #ifndef _LARGEFILE64_SOURCE
-    #define _LARGEFILE64_SOURCE
-  #endif
-  #ifndef _FILE_OFFSET_BIT
-    #define _FILE_OFFSET_BIT 64
-  #endif
+#ifndef __USE_FILE_OFFSET64
+#define __USE_FILE_OFFSET64
+#endif
+#ifndef __USE_LARGEFILE64
+#define __USE_LARGEFILE64
+#endif
+#ifndef _LARGEFILE64_SOURCE
+#define _LARGEFILE64_SOURCE
+#endif
+#ifndef _FILE_OFFSET_BIT
+#define _FILE_OFFSET_BIT 64
+#endif
 #endif
 
 #include <stdio.h>
@@ -44,13 +44,13 @@
 #include <fcntl.h>
 
 #ifdef _WIN32
-  #include <direct.h>
-  #include <io.h>
+#include <direct.h>
+#include <io.h>
 #else
-  #include <unistd.h>
-  #include <utime.h>
-  #include <sys/stat.h>
-  #include <sys/types.h>
+#include <unistd.h>
+#include <utime.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 #endif
 
 #define CASESENSITIVITY (0)
@@ -68,12 +68,12 @@ namespace {
 filename : the filename of the file where date/time must be modified
 dosdate : the new date at the MSDos format (4 bytes)
 tmu_date : the SAME new date at the tm_unz format */
-void change_file_date(const char *filename, uLong dosdate, tm_unz tmu_date) {
+void change_file_date(const char* filename, uLong dosdate, tm_unz tmu_date) {
 #ifdef _WIN32
   HANDLE hFile;
   FILETIME ftm, ftLocal, ftCreate, ftLastAcc, ftLastWrite;
   hFile = CreateFileA(filename, GENERIC_READ | GENERIC_WRITE,
-    0, NULL, OPEN_EXISTING, 0, NULL);
+                      0, NULL, OPEN_EXISTING, 0, NULL);
   GetFileTime(hFile, &ftCreate, &ftLastAcc, &ftLastWrite);
   DosDateTimeToFileTime((WORD)(dosdate >> 16), (WORD)dosdate, &ftLocal);
   LocalFileTimeToFileTime(&ftLocal, &ftm);
@@ -108,9 +108,9 @@ int mymkdir(const char* dirname) {
   return ret;
 }
 
-int makedir(const char *newdir) {
-  char *buffer;
-  char *p;
+int makedir(const char* newdir) {
+  char* buffer;
+  char* p;
   auto len = (int)strlen(newdir);
 
   if (len <= 0)
@@ -150,16 +150,16 @@ int makedir(const char *newdir) {
 }
 
 int do_extract_currentfile(unzFile uf, const int* popt_extract_without_path,
-    int* popt_overwrite, const char* password) {
+                           int* popt_overwrite, const char* password) {
   char filename_inzip[256];
   char* filename_withoutpath;
   char* p;
-  FILE *fout = nullptr;
+  FILE* fout = nullptr;
   void* buf;
 
   unz_file_info64 file_info;
   int err = unzGetCurrentFileInfo64(uf, &file_info, filename_inzip,
-      sizeof(filename_inzip), nullptr, 0, nullptr, 0);
+                                    sizeof(filename_inzip), nullptr, 0, nullptr, 0);
 
   if (err != UNZ_OK)
     return err;
@@ -183,8 +183,7 @@ int do_extract_currentfile(unzFile uf, const int* popt_extract_without_path,
   if ((*filename_withoutpath) == '\0') {
     if ((*popt_extract_without_path) == 0)
       mymkdir(filename_inzip);
-  }
-  else {
+  } else {
     const char* write_filename;
     if ((*popt_extract_without_path) == 0)
       write_filename = filename_inzip;
@@ -197,8 +196,7 @@ int do_extract_currentfile(unzFile uf, const int* popt_extract_without_path,
 
       /* some zipfile don't contain directory alone before file */
       if ((fout == nullptr) && ((*popt_extract_without_path) == 0) &&
-        (filename_withoutpath != (char*)filename_inzip))
-      {
+          (filename_withoutpath != (char*)filename_inzip)) {
         char c = *(filename_withoutpath - 1);
         *(filename_withoutpath - 1) = '\0';
         makedir(write_filename);
@@ -210,20 +208,20 @@ int do_extract_currentfile(unzFile uf, const int* popt_extract_without_path,
     if (fout != nullptr) {
       do {
         err = unzReadCurrentFile(uf, buf, size_buf);
-        if (err<0)
+        if (err < 0)
           break;
-        if (err>0)
+        if (err > 0)
           if (fwrite(buf, err, 1, fout) != 1) {
             err = UNZ_ERRNO;
             break;
           }
-      } while (err>0);
+      } while (err > 0);
       if (fout)
         fclose(fout);
 
       if (err == 0)
         change_file_date(write_filename, file_info.dosDate,
-        file_info.tmu_date);
+                         file_info.tmu_date);
     }
 
     if (err == UNZ_OK)
@@ -237,7 +235,7 @@ int do_extract_currentfile(unzFile uf, const int* popt_extract_without_path,
 }
 
 int do_extract(unzFile uf, int opt_extract_without_path,
-    int opt_overwrite, const char* password) {
+               int opt_overwrite, const char* password) {
   uLong i;
   unz_global_info64 gi;
 
@@ -247,7 +245,7 @@ int do_extract(unzFile uf, int opt_extract_without_path,
 
   for (i = 0; i < gi.number_entry; i++) {
     err = do_extract_currentfile(uf, &opt_extract_without_path, &opt_overwrite,
-        password);
+                                 password);
     if (err != UNZ_OK)
       return err;
 
@@ -265,7 +263,7 @@ int do_extract(unzFile uf, int opt_extract_without_path,
 
 namespace greenworks {
 
-int unzip(const char *zipfilename, const char *dirname, const char *password) {
+int unzip(const char* zipfilename, const char* dirname, const char* password) {
   char filename_try[MAXFILENAME + 16] = "";
   unzFile uf = nullptr;
   int ret_value = 0;

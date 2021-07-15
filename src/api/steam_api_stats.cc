@@ -16,7 +16,7 @@ namespace api {
 namespace {
 
 class StoreUserStatsWorker : public SteamCallbackAsyncWorker {
- public:
+public:
   StoreUserStatsWorker(Nan::Callback* success_callback,
                        Nan::Callback* error_callback);
   STEAM_CALLBACK(StoreUserStatsWorker,
@@ -28,15 +28,16 @@ class StoreUserStatsWorker : public SteamCallbackAsyncWorker {
   void Execute() override;
   void HandleOKCallback() override;
 
- private:
+private:
   uint64 game_id_;
   CSteamID steam_id_user_;
 };
 
 StoreUserStatsWorker::StoreUserStatsWorker(Nan::Callback* success_callback,
                                            Nan::Callback* error_callback)
-    : SteamCallbackAsyncWorker(success_callback, error_callback),
-      result(this, &StoreUserStatsWorker::OnStoreUserStatsCompleted) {}
+  : SteamCallbackAsyncWorker(success_callback, error_callback),
+  result(this, &StoreUserStatsWorker::OnStoreUserStatsCompleted) {
+}
 
 void StoreUserStatsWorker::Execute() {
   SteamUserStats()->StoreStats();
@@ -44,7 +45,7 @@ void StoreUserStatsWorker::Execute() {
 }
 
 void StoreUserStatsWorker::OnStoreUserStatsCompleted(
-    UserStatsStored_t* result) {
+  UserStatsStored_t* result) {
   if (result->m_eResult != k_EResultOK) {
     SetErrorMessage("Error on storing user stats.");
   } else {
@@ -56,7 +57,7 @@ void StoreUserStatsWorker::OnStoreUserStatsCompleted(
 void StoreUserStatsWorker::HandleOKCallback() {
   Nan::HandleScope scope;
   v8::Local<v8::Value> argv[] = {
-      Nan::New(utils::uint64ToString(game_id_)).ToLocalChecked()};
+      Nan::New(utils::uint64ToString(game_id_)).ToLocalChecked() };
   Nan::AsyncResource resource("greenworks:StoreUserStatsWorker.HandleOKCallback");
   callback->Call(1, argv, &resource);
 }
@@ -106,7 +107,7 @@ NAN_METHOD(SetStat) {
 
   double value = Nan::To<double>(info[1].As<v8::Number>()).FromJust();
   info.GetReturnValue().Set(
-      SteamUserStats()->SetStat(name.c_str(), static_cast<float>(value)));
+    SteamUserStats()->SetStat(name.c_str(), static_cast<float>(value)));
 }
 
 NAN_METHOD(StoreStats) {
@@ -115,13 +116,13 @@ NAN_METHOD(StoreStats) {
     THROW_BAD_ARGS("Bad arguments");
   }
   Nan::Callback* success_callback =
-      new Nan::Callback(info[0].As<v8::Function>());
+    new Nan::Callback(info[0].As<v8::Function>());
   Nan::Callback* error_callback = nullptr;
   if (info.Length() > 1 && info[1]->IsFunction())
     error_callback = new Nan::Callback(info[1].As<v8::Function>());
 
   Nan::AsyncQueueWorker(
-      new StoreUserStatsWorker(success_callback, error_callback));
+    new StoreUserStatsWorker(success_callback, error_callback));
   info.GetReturnValue().Set(Nan::Undefined());
 }
 

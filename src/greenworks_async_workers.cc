@@ -30,22 +30,22 @@ struct FilesContentContainer {
 namespace greenworks {
 
 FileContentSaveWorker::FileContentSaveWorker(Nan::Callback* success_callback,
-    Nan::Callback* error_callback, std::string file_name, std::string content):
-        SteamAsyncWorker(success_callback, error_callback),
-        file_name_(file_name),
-        content_(content) {
+                                             Nan::Callback* error_callback, std::string file_name, std::string content) :
+  SteamAsyncWorker(success_callback, error_callback),
+  file_name_(file_name),
+  content_(content) {
 }
 
 void FileContentSaveWorker::Execute() {
   if (!SteamRemoteStorage()->FileWrite(
-      file_name_.c_str(), content_.c_str(), content_.size()))
+    file_name_.c_str(), content_.c_str(), content_.size()))
     SetErrorMessage("Error on writing to file.");
 }
 
 FilesSaveWorker::FilesSaveWorker(Nan::Callback* success_callback,
-    Nan::Callback* error_callback, const std::vector<std::string>& files_path):
-        SteamAsyncWorker(success_callback, error_callback),
-        files_path_(files_path) {
+                                 Nan::Callback* error_callback, const std::vector<std::string>& files_path) :
+  SteamAsyncWorker(success_callback, error_callback),
+  files_path_(files_path) {
 }
 
 void FilesSaveWorker::Execute() {
@@ -66,7 +66,7 @@ void FilesSaveWorker::Execute() {
   for (size_t i = 0; i < files_path_.size(); ++i) {
     std::string file_name = utils::GetFileNameFromPath(files_path_[i]);
     if (!SteamRemoteStorage()->FileWrite(file_name.c_str(),
-        container.files_content[i], files_content_length[i])) {
+                                         container.files_content[i], files_content_length[i])) {
       SetErrorMessage("Error on writing file on Steam Cloud.");
       return;
     }
@@ -74,9 +74,9 @@ void FilesSaveWorker::Execute() {
 }
 
 FileDeleteWorker::FileDeleteWorker(Nan::Callback* success_callback,
-    Nan::Callback* error_callback, std::string file_name):
-        SteamAsyncWorker(success_callback, error_callback),
-        file_name_(file_name) {
+                                   Nan::Callback* error_callback, std::string file_name) :
+  SteamAsyncWorker(success_callback, error_callback),
+  file_name_(file_name) {
 }
 
 void FileDeleteWorker::Execute() {
@@ -94,9 +94,9 @@ void FileDeleteWorker::Execute() {
 }
 
 FileReadWorker::FileReadWorker(Nan::Callback* success_callback,
-    Nan::Callback* error_callback, std::string file_name):
-        SteamAsyncWorker(success_callback, error_callback),
-        file_name_(file_name) {
+                               Nan::Callback* error_callback, std::string file_name) :
+  SteamAsyncWorker(success_callback, error_callback),
+  file_name_(file_name) {
 }
 
 void FileReadWorker::Execute() {
@@ -109,9 +109,9 @@ void FileReadWorker::Execute() {
 
   int32 file_size = steam_remote_storage->GetFileSize(file_name_.c_str());
 
-  auto* content = new char[file_size+1];
+  auto* content = new char[file_size + 1];
   int32 end_pos = steam_remote_storage->FileRead(
-      file_name_.c_str(), content, file_size);
+    file_name_.c_str(), content, file_size);
   content[end_pos] = '\0';
 
   if (end_pos == 0 && file_size > 0) {
@@ -132,8 +132,8 @@ void FileReadWorker::HandleOKCallback() {
 }
 
 CloudQuotaGetWorker::CloudQuotaGetWorker(Nan::Callback* success_callback,
-      Nan::Callback* error_callback):SteamAsyncWorker(success_callback,
-          error_callback), total_bytes_(-1), available_bytes_(-1) {
+                                         Nan::Callback* error_callback) :SteamAsyncWorker(success_callback,
+                                                                                          error_callback), total_bytes_(-1), available_bytes_(-1) {
 }
 
 void CloudQuotaGetWorker::Execute() {
@@ -149,16 +149,16 @@ void CloudQuotaGetWorker::HandleOKCallback() {
   Nan::HandleScope scope;
   v8::Local<v8::Value> argv[] = {
       Nan::New(utils::uint64ToString(total_bytes_)).ToLocalChecked(),
-      Nan::New(utils::uint64ToString(available_bytes_)).ToLocalChecked()};
+      Nan::New(utils::uint64ToString(available_bytes_)).ToLocalChecked() };
   Nan::AsyncResource resource("greenworks:CloudQuotaGetWorker.HandleOKCallback");
   callback->Call(2, argv, &resource);
 }
 
 ActivateAchievementWorker::ActivateAchievementWorker(
-    Nan::Callback* success_callback, Nan::Callback* error_callback,
-    const std::string& achievement):
-        SteamAsyncWorker(success_callback,
-        error_callback), achievement_(achievement) {
+  Nan::Callback* success_callback, Nan::Callback* error_callback,
+  const std::string& achievement) :
+  SteamAsyncWorker(success_callback,
+                   error_callback), achievement_(achievement) {
 }
 
 void ActivateAchievementWorker::Execute() {
@@ -175,12 +175,12 @@ void ActivateAchievementWorker::Execute() {
 }
 
 GetAchievementWorker::GetAchievementWorker(
-    Nan::Callback* success_callback,
-    Nan::Callback* error_callback,
-    const std::string& achievement):
-        SteamAsyncWorker(success_callback, error_callback),
-        achievement_(achievement),
-        is_achieved_(false) {
+  Nan::Callback* success_callback,
+  Nan::Callback* error_callback,
+  const std::string& achievement) :
+  SteamAsyncWorker(success_callback, error_callback),
+  achievement_(achievement),
+  is_achieved_(false) {
 }
 
 void GetAchievementWorker::Execute() {
@@ -200,12 +200,12 @@ void GetAchievementWorker::HandleOKCallback() {
 }
 
 ClearAchievementWorker::ClearAchievementWorker(
-    Nan::Callback* success_callback,
-    Nan::Callback* error_callback,
-    const std::string& achievement):
-        SteamAsyncWorker(success_callback, error_callback),
-        achievement_(achievement),
-        success_(false) {
+  Nan::Callback* success_callback,
+  Nan::Callback* error_callback,
+  const std::string& achievement) :
+  SteamAsyncWorker(success_callback, error_callback),
+  achievement_(achievement),
+  success_(false) {
 }
 
 void ClearAchievementWorker::Execute() {
@@ -222,21 +222,21 @@ void ClearAchievementWorker::Execute() {
 }
 
 GetNumberOfPlayersWorker::GetNumberOfPlayersWorker(
-    Nan::Callback* success_callback, Nan::Callback* error_callback)
-       :SteamCallbackAsyncWorker(success_callback, error_callback),
-        num_of_players_(-1) {
+  Nan::Callback* success_callback, Nan::Callback* error_callback)
+  :SteamCallbackAsyncWorker(success_callback, error_callback),
+  num_of_players_(-1) {
 }
 
 void GetNumberOfPlayersWorker::Execute() {
   SteamAPICall_t steam_api_call = SteamUserStats()->GetNumberOfCurrentPlayers();
   call_result_.Set(steam_api_call, this,
-      &GetNumberOfPlayersWorker::OnGetNumberOfPlayersCompleted);
+                   &GetNumberOfPlayersWorker::OnGetNumberOfPlayersCompleted);
 
   WaitForCompleted();
 }
 
 void GetNumberOfPlayersWorker::OnGetNumberOfPlayersCompleted(
-    NumberOfCurrentPlayers_t* result, bool io_failure) {
+  NumberOfCurrentPlayers_t* result, bool io_failure) {
   if (io_failure) {
     SetErrorMessage("Error on getting number of players: Steam API IO Failure");
   } else if (result->m_bSuccess) {
@@ -256,47 +256,47 @@ void GetNumberOfPlayersWorker::HandleOKCallback() {
 }
 
 CreateArchiveWorker::CreateArchiveWorker(Nan::Callback* success_callback,
-    Nan::Callback* error_callback, const std::string& zip_file_path,
-    const std::string& source_dir, const std::string& password,
-    int compress_level)
-        :SteamAsyncWorker(success_callback, error_callback),
-         zip_file_path_(zip_file_path),
-         source_dir_(source_dir),
-         password_(password),
-         compress_level_(compress_level) {
+                                         Nan::Callback* error_callback, const std::string& zip_file_path,
+                                         const std::string& source_dir, const std::string& password,
+                                         int compress_level)
+  :SteamAsyncWorker(success_callback, error_callback),
+  zip_file_path_(zip_file_path),
+  source_dir_(source_dir),
+  password_(password),
+  compress_level_(compress_level) {
 }
 
 void CreateArchiveWorker::Execute() {
   int result = zip(zip_file_path_.c_str(),
                    source_dir_.c_str(),
                    compress_level_,
-                   password_.empty()?nullptr:password_.c_str());
+                   password_.empty() ? nullptr : password_.c_str());
   if (result)
     SetErrorMessage("Error on creating zip file.");
 }
 
 ExtractArchiveWorker::ExtractArchiveWorker(Nan::Callback* success_callback,
-    Nan::Callback* error_callback, const std::string& zip_file_path,
-    const std::string& extract_path, const std::string& password)
-        : SteamAsyncWorker(success_callback, error_callback),
-          zip_file_path_(zip_file_path),
-          extract_path_(extract_path),
-          password_(password) {
+                                           Nan::Callback* error_callback, const std::string& zip_file_path,
+                                           const std::string& extract_path, const std::string& password)
+  : SteamAsyncWorker(success_callback, error_callback),
+  zip_file_path_(zip_file_path),
+  extract_path_(extract_path),
+  password_(password) {
 }
 
 void ExtractArchiveWorker::Execute() {
   int result = unzip(zip_file_path_.c_str(), extract_path_.c_str(),
-      password_.empty()?nullptr:password_.c_str());
+                     password_.empty() ? nullptr : password_.c_str());
   if (result)
     SetErrorMessage("Error on extracting zip file.");
 }
 
 GetAuthSessionTicketWorker::GetAuthSessionTicketWorker(
   Nan::Callback* success_callback,
-  Nan::Callback* error_callback )
-    : SteamCallbackAsyncWorker(success_callback, error_callback),
-      result(this, &GetAuthSessionTicketWorker::OnGetAuthSessionCompleted),
-      handle_(0), ticket_buf_size_(0) {
+  Nan::Callback* error_callback)
+  : SteamCallbackAsyncWorker(success_callback, error_callback),
+  result(this, &GetAuthSessionTicketWorker::OnGetAuthSessionCompleted),
+  handle_(0), ticket_buf_size_(0) {
 }
 
 void GetAuthSessionTicketWorker::Execute() {
@@ -307,7 +307,7 @@ void GetAuthSessionTicketWorker::Execute() {
 }
 
 void GetAuthSessionTicketWorker::OnGetAuthSessionCompleted(
-    GetAuthSessionTicketResponse_t *inCallback) {
+  GetAuthSessionTicketResponse_t* inCallback) {
   if (inCallback->m_eResult != k_EResultOK)
     SetErrorMessage("Error on getting auth session ticket.");
   is_completed_ = true;
@@ -317,9 +317,9 @@ void GetAuthSessionTicketWorker::HandleOKCallback() {
   Nan::HandleScope scope;
   v8::Local<v8::Object> ticket = Nan::New<v8::Object>();
   Nan::Set(
-      ticket, Nan::New("ticket").ToLocalChecked(),
-      Nan::CopyBuffer(reinterpret_cast<char *>(ticket_buf_), ticket_buf_size_)
-          .ToLocalChecked());
+    ticket, Nan::New("ticket").ToLocalChecked(),
+    Nan::CopyBuffer(reinterpret_cast<char*>(ticket_buf_), ticket_buf_size_)
+    .ToLocalChecked());
   Nan::Set(ticket, Nan::New("handle").ToLocalChecked(), Nan::New(handle_));
   v8::Local<v8::Value> argv[] = { ticket };
   Nan::AsyncResource resource("greenworks:GetAuthSessionTicketWorker.HandleOKCallback");
@@ -330,24 +330,24 @@ RequestEncryptedAppTicketWorker::RequestEncryptedAppTicketWorker(
   std::string user_data,
   Nan::Callback* success_callback,
   Nan::Callback* error_callback)
-    : SteamCallbackAsyncWorker(success_callback, error_callback),
-      user_data_(user_data), ticket_buf_size_(0) {
+  : SteamCallbackAsyncWorker(success_callback, error_callback),
+  user_data_(user_data), ticket_buf_size_(0) {
 }
 
 void RequestEncryptedAppTicketWorker::Execute() {
   SteamAPICall_t steam_api_call = SteamUser()->RequestEncryptedAppTicket(
-      static_cast<void*>(const_cast<char*>(user_data_.c_str())),
-      user_data_.length());
+    static_cast<void*>(const_cast<char*>(user_data_.c_str())),
+    user_data_.length());
   call_result_.Set(steam_api_call, this,
-      &RequestEncryptedAppTicketWorker::OnRequestEncryptedAppTicketCompleted);
+                   &RequestEncryptedAppTicketWorker::OnRequestEncryptedAppTicketCompleted);
   WaitForCompleted();
 }
 
 void RequestEncryptedAppTicketWorker::OnRequestEncryptedAppTicketCompleted(
-    EncryptedAppTicketResponse_t *inCallback, bool io_failure) {
+  EncryptedAppTicketResponse_t* inCallback, bool io_failure) {
   if (!io_failure && inCallback->m_eResult == k_EResultOK) {
     SteamUser()->GetEncryptedAppTicket(ticket_buf_, sizeof(ticket_buf_),
-        &ticket_buf_size_);
+                                       &ticket_buf_size_);
   } else {
     SetErrorMessage("Error on getting encrypted app ticket.");
   }
@@ -357,7 +357,7 @@ void RequestEncryptedAppTicketWorker::OnRequestEncryptedAppTicketCompleted(
 void RequestEncryptedAppTicketWorker::HandleOKCallback() {
   Nan::HandleScope scope;
   v8::Local<v8::Value> argv[] = {
-      Nan::CopyBuffer(reinterpret_cast<char *>(ticket_buf_), ticket_buf_size_)
+      Nan::CopyBuffer(reinterpret_cast<char*>(ticket_buf_), ticket_buf_size_)
           .ToLocalChecked() };
   Nan::AsyncResource resource("greenworks:RequestEncryptedAppTicketWorker.HandleOKCallback");
   callback->Call(1, argv, &resource);

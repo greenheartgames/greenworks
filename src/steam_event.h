@@ -12,10 +12,11 @@
 namespace greenworks {
 
 class SteamEvent : public greenworks::SteamClient::Observer {
- public:
+public:
   explicit SteamEvent(
-      const Nan::Persistent<v8::Object>& persistent_steam_events)
-      : persistent_steam_events_(persistent_steam_events) {}
+    const Nan::Persistent<v8::Object>& persistent_steam_events)
+    : persistent_steam_events_(persistent_steam_events) {
+  }
 
   void OnGameOverlayActivated(bool is_active) override;
   void OnSteamServersConnected() override;
@@ -23,7 +24,7 @@ class SteamEvent : public greenworks::SteamClient::Observer {
   void OnSteamServerConnectFailure(int status_code) override;
   void OnSteamShutdown() override;
   void OnPersonaStateChange(uint64 raw_steam_id,
-                                    int persona_change_flag) override;
+                            int persona_change_flag) override;
   void OnAvatarImageLoaded(uint64 raw_steam_id,
                            int image_handle,
                            int height,
@@ -42,7 +43,7 @@ class SteamEvent : public greenworks::SteamClient::Observer {
   void OnGameRichPresenceJoinRequested(uint64 steamIDFriend, std::string rgchConnect);
   void OnNewUrlLaunchParameters();
 
- private:
+private:
   const Nan::Persistent<v8::Object>& persistent_steam_events_;
 };
 

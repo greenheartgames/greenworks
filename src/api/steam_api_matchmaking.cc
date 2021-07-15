@@ -260,8 +260,8 @@ NAN_METHOD(GetNumLobbyMembers) {
   }
   info.GetReturnValue().Set(
     Nan::New<v8::Integer>(
-        SteamMatchmaking()->GetNumLobbyMembers(steam_id)
-    )
+      SteamMatchmaking()->GetNumLobbyMembers(steam_id)
+      )
   );
 }
 
@@ -389,7 +389,7 @@ NAN_METHOD(SetLobbyType) {
     THROW_BAD_ARGS("Steam ID is invalid");
   }
   auto lobby_type = static_cast<ELobbyType>(Nan::To<int32>(info[0]).FromJust());
-  
+
   info.GetReturnValue().Set(
     SteamMatchmaking()->SetLobbyType(steam_id, lobby_type)
   );

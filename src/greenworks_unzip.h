@@ -21,7 +21,7 @@
 
 namespace greenworks {
 
-int unzip(const char *zipfilename, const char *dirname, const char *password);
+int unzip(const char* zipfilename, const char* dirname, const char* password);
 
 }  // namespace greenworks
 

@@ -26,18 +26,18 @@
 #include "zlib/contrib/minizip/zip.h"
 
 #ifndef _WIN32
-  #ifndef __USE_FILE_OFFSET64
-    #define __USE_FILE_OFFSET64
-  #endif
-  #ifndef __USE_LARGEFILE64
-    #define __USE_LARGEFILE64
-  #endif
-  #ifndef _LARGEFILE64_SOURCE
-    #define _LARGEFILE64_SOURCE
-  #endif
-  #ifndef _FILE_OFFSET_BIT
-    #define _FILE_OFFSET_BIT 64
-  #endif
+#ifndef __USE_FILE_OFFSET64
+#define __USE_FILE_OFFSET64
+#endif
+#ifndef __USE_LARGEFILE64
+#define __USE_LARGEFILE64
+#endif
+#ifndef _LARGEFILE64_SOURCE
+#define _LARGEFILE64_SOURCE
+#endif
+#ifndef _FILE_OFFSET_BIT
+#define _FILE_OFFSET_BIT 64
+#endif
 #endif
 
 #include <stdio.h>
@@ -48,14 +48,14 @@
 #include <fcntl.h>
 
 #ifdef _WIN32
-  #include <direct.h>
-  #include <io.h>
-  #include "misc/dirent.h"
+#include <direct.h>
+#include <io.h>
+#include "misc/dirent.h"
 #else
-  #include <dirent.h>
-  #include <sys/types.h>
-  #include <sys/stat.h>
-  #include <unistd.h>
+#include <dirent.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 #endif
 
 #ifdef _WIN32
@@ -72,8 +72,7 @@ namespace {
 /* char *f: name of file to get info on */
 /* tm_zip *tmzip: return value: access, modific. and creation times */
 /* uLong *dt: dostime */
-uLong filetime(const char *f, tm_zip *tmzip, uLong *dt)
-{
+uLong filetime(const char* f, tm_zip* tmzip, uLong* dt) {
   int ret = 0;
   {
     FILETIME ftLocal;
@@ -81,8 +80,7 @@ uLong filetime(const char *f, tm_zip *tmzip, uLong *dt)
     WIN32_FIND_DATAA ff32;
 
     hFind = FindFirstFileA(f, &ff32);
-    if (hFind != INVALID_HANDLE_VALUE)
-    {
+    if (hFind != INVALID_HANDLE_VALUE) {
       FileTimeToLocalFileTime(&(ff32.ftLastWriteTime), &ftLocal);
       FileTimeToDosDateTime(&ftLocal, ((LPWORD)dt) + 1, ((LPWORD)dt) + 0);
       FindClose(hFind);
@@ -92,15 +90,13 @@ uLong filetime(const char *f, tm_zip *tmzip, uLong *dt)
   return ret;
 }
 #else
-uLong filetime(const char *f, tm_zip *tmzip, uLong *dt)
-{
+uLong filetime(const char* f, tm_zip* tmzip, uLong* dt) {
   int ret = 0;
   struct stat s;        /* results of stat() */
   struct tm* filedate;
   time_t tm_t = 0;
 
-  if (strcmp(f, "-") != 0)
-  {
+  if (strcmp(f, "-") != 0) {
     char name[MAXFILENAME + 1];
     int len = strlen(f);
     if (len > MAXFILENAME)
@@ -113,8 +109,7 @@ uLong filetime(const char *f, tm_zip *tmzip, uLong *dt)
     if (name[len - 1] == '/')
       name[len - 1] = '\0';
     /* not all systems allow stat'ing a file with / appended */
-    if (stat(name, &s) == 0)
-    {
+    if (stat(name, &s) == 0) {
       tm_t = s.st_mtime;
       ret = 1;
     }
@@ -133,34 +128,30 @@ uLong filetime(const char *f, tm_zip *tmzip, uLong *dt)
 #endif
 
 /* calculate the CRC32 of a file, because to encrypt a file, we need known the CRC32 of the file before */
-int getFileCrc(const char* filenameinzip, void* buf, unsigned long size_buf, unsigned long* result_crc)
-{
+int getFileCrc(const char* filenameinzip, void* buf, unsigned long size_buf, unsigned long* result_crc) {
   unsigned long calculate_crc = 0;
   int err = ZIP_OK;
-  FILE * fin = fopen(filenameinzip, "rb");
+  FILE* fin = fopen(filenameinzip, "rb");
   unsigned long size_read = 0;
   unsigned long total_read = 0;
-  if (fin == nullptr)
-  {
+  if (fin == nullptr) {
     err = ZIP_ERRNO;
   }
 
   if (err == ZIP_OK)
-    do
-    {
+    do {
       err = ZIP_OK;
       size_read = (int)fread(buf, 1, size_buf, fin);
       if (size_read < size_buf)
-        if (feof(fin) == 0)
-        {
+        if (feof(fin) == 0) {
           err = ZIP_ERRNO;
         }
 
-      if (size_read>0)
+      if (size_read > 0)
         calculate_crc = crc32(calculate_crc, (const Bytef*)buf, size_read);
       total_read += size_read;
 
-    } while ((err == ZIP_OK) && (size_read>0));
+    } while ((err == ZIP_OK) && (size_read > 0));
 
     if (fin)
       fclose(fin);
@@ -203,9 +194,8 @@ std::string PathCombine(std::string path1, std::string path2) {
   return path;
 }
 
-std::vector<std::string> GetDirectoryList(const std::string& dir)
-{
-  DIR * d;
+std::vector<std::string> GetDirectoryList(const std::string& dir) {
+  DIR* d;
   std::vector<std::string> ret;
 
   /* Open the directory specified by "dir_name". */
@@ -218,8 +208,8 @@ std::vector<std::string> GetDirectoryList(const std::string& dir)
   }
 
   while (1) {
-    struct dirent * entry;
-    const char * d_name;
+    struct dirent* entry;
+    const char* d_name;
 
     /* "Readdir" gets subsequent entries from "d". */
     entry = readdir(d);
@@ -258,8 +248,7 @@ std::vector<std::string> GetDirectoryList(const std::string& dir)
         std::vector<std::string> rret = GetDirectoryList(path);
         ret.insert(ret.end(), rret.begin(), rret.end());
       }
-    }
-    else {
+    } else {
       ret.push_back(PathCombine(dir, entry->d_name));
     }
   }
@@ -326,9 +315,9 @@ int zip(const char* targetFile, const char* sourceDir, int compressionLevel, con
     std::vector<std::string>::iterator itr;
     for (itr = files.begin(); itr < files.end(); ++itr) {
       const char* filenameinzip = itr->c_str();
-      const char *savefilenameinzip;
+      const char* savefilenameinzip;
 
-      FILE * fin;
+      FILE* fin;
       int size_read;
       zip_fileinfo zi;
       unsigned long crcFile = 0;
@@ -377,10 +366,10 @@ int zip(const char* targetFile, const char* sourceDir, int compressionLevel, con
             if (feof(fin) == 0)
               err = ZIP_ERRNO;
 
-          if (size_read>0) {
+          if (size_read > 0) {
             err = zipWriteInFileInZip(zf, buf, size_read);
           }
-        } while ((err == ZIP_OK) && (size_read>0));
+        } while ((err == ZIP_OK) && (size_read > 0));
       }
       if (fin)
         fclose(fin);
