@@ -199,17 +199,21 @@ class DownloadItemWorker : public SteamCallbackAsyncWorker {
                      Nan::Callback* error_callback,
                      UGCHandle_t download_file_handle,
                      const std::string& download_dir);
+  STEAM_CALLBACK(DownloadItemWorker,
+      OnDownloadCompleted,
+      DownloadItemResult_t,
+      result);
 
-  void OnDownloadCompleted(RemoteStorageDownloadUGCResult_t* result,
-      bool io_failure);
-
+  // Override NanAsyncWorker methods.
   void Execute() override;
+  void HandleOKCallback() override;
 
  private:
   UGCHandle_t download_file_handle_;
   std::string download_dir_;
-  CCallResult<DownloadItemWorker,
-      RemoteStorageDownloadUGCResult_t> call_result_;
+
+  uint64 app_id_;
+  PublishedFileId_t file_id_;
 };
 
 class SynchronizeItemsWorker : public SteamCallbackAsyncWorker {
