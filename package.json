@@ -9,7 +9,6 @@
     }
   ],
   "scripts": {
-    "prebuild": "../../pre_build.bat",
     "cpplint": "python ./deps/cpplint/cpplint.py --extensions=h,cc src/* src/api/*",
     "compdb": "node-gyp configure -- -f ninja && ninja -C build/Release -t compdb cxx > compile_commands.json"
   },
