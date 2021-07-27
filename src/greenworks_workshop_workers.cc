@@ -528,41 +528,43 @@ DownloadItemWorker::DownloadItemWorker(Nan::Callback* success_callback,
                                        const std::string& download_dir)
   :SteamCallbackAsyncWorker(success_callback, error_callback),
   download_file_handle_(download_file_handle),
-  download_dir_(download_dir),
-  result(this, &DownloadItemWorker::OnDownloadCompleted) {
+  download_dir_(download_dir) {
 }
 
 void DownloadItemWorker::Execute() {
-  bool success = SteamUGC()->DownloadItem(download_file_handle_, true);
-  if (success) {
-    // Wait for downloading file completed.
-    WaitForCompleted();
-  } else {
-    SetErrorMessage("given file id is invalid or the you are not logged on.");
-  }
+  SteamAPICall_t download_item_result =
+    SteamRemoteStorage()->UGCDownload(download_file_handle_, 0);
+  call_result_.Set(download_item_result, this,
+                   &DownloadItemWorker::OnDownloadCompleted);
+
+  // Wait for downloading file completed.
+  WaitForCompleted();
 }
 
 void DownloadItemWorker::OnDownloadCompleted(
-  DownloadItemResult_t* result) {
+  RemoteStorageDownloadUGCResult_t* result, bool io_failure) {
+  if (io_failure) {
+    SetErrorMessage(
+      "Error on downloading file: Steam API IO Failure");
+  } else if (result->m_eResult == k_EResultOK) {
+    std::string target_path = GetAbsoluteFilePath(result->m_pchFileName,
+                                                  download_dir_);
 
-  if (result->m_eResult == k_EResultOK) {
-    app_id_ = result->m_unAppID;
-    file_id_ = result->m_nPublishedFileId;
+    int file_size_in_bytes = result->m_nSizeInBytes;
+    auto* content = new char[file_size_in_bytes];
+
+    SteamRemoteStorage()->UGCRead(download_file_handle_,
+                                  content, file_size_in_bytes, 0, k_EUGCRead_Close);
+    if (!utils::WriteFile(target_path, content, file_size_in_bytes)) {
+      SetErrorMessage("Error on saving file on local machine.");
+    }
+    delete[] content;
   } else {
     char buffer[100];
     sprintf(buffer, "%d: Error on downloading file.", (int)result->m_eResult);
     SetErrorMessage(buffer);
   }
   is_completed_ = true;
-}
-
-void DownloadItemWorker::HandleOKCallback() {
-  Nan::HandleScope scope;
-  v8::Local<v8::Value> argv[] = {
-      Nan::New(utils::uint64ToString(app_id_)).ToLocalChecked(),
-      Nan::New(utils::uint64ToString(file_id_)).ToLocalChecked() };
-  Nan::AsyncResource resource("greenworks:DownloadItemWorker.HandleOKCallback");
-  callback->Call(2, argv, &resource);
 }
 
 SynchronizeItemsWorker::SynchronizeItemsWorker(Nan::Callback* success_callback,
@@ -821,6 +823,32 @@ void GetItemStateWorker::HandleOKCallback() {
   v8::Local<v8::Value> argv[] = { result };
   Nan::AsyncResource resource("greenworks:GetItemStateWorker.HandleOKCallback");
   callback->Call(1, argv, &resource);
+}
+
+UGCDownloadProgressGetWorker::UGCDownloadProgressGetWorker(Nan::Callback* success_callback,
+                                                           Nan::Callback* error_callback, UGCHandle_t ugc_handle) :SteamAsyncWorker(success_callback,
+                                                                                                                                    error_callback), ugc_handle_(ugc_handle), bytes_downloaded_(0), bytes_expected_(0) {
+}
+
+void UGCDownloadProgressGetWorker::Execute() {
+  ISteamUGC* steam_ugc = SteamUGC();
+
+  if (!steam_ugc->GetItemDownloadInfo(ugc_handle_, &bytes_downloaded_, &bytes_expected_)) {
+    char buffer[256];
+    sprintf(buffer, "Error on publishing workshop file. [handle: %lld, downloaded: %d, expected: %d]", ugc_handle_, bytes_downloaded_, bytes_expected_);
+    SetErrorMessage(buffer);
+    return;
+  }
+}
+
+void UGCDownloadProgressGetWorker::HandleOKCallback() {
+  Nan::HandleScope scope;
+
+  v8::Local<v8::Value> argv[] = {
+  Nan::New(utils::uint64ToString(bytes_downloaded_)).ToLocalChecked(),
+    Nan::New(utils::uint64ToString(bytes_expected_)).ToLocalChecked() };
+  Nan::AsyncResource resource("greenworks:DownloadProgressGetWorker.HandleOKCallback");
+  callback->Call(2, argv, &resource);
 }
 
 }  // namespace greenworks

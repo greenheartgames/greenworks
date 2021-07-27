@@ -549,7 +549,7 @@ NAN_METHOD(UGCGetItemInstallInfo) {
 
   PublishedFileId_t file_id = utils::strToUint64(*(Nan::Utf8String(info[0])));
   uint64 size_on_disk;
-  const int folder_path_size = 260;  // MAX_PATH on 32bit Windows according to MSDN documentation
+  const int folder_path_size = 260; // MAX_PATH on 32bit Windows according to MSDN documentation
   char folder_path[folder_path_size];
   uint32 timestamp;
   bool success = SteamUGC()->GetItemInstallInfo(file_id, &size_on_disk, folder_path, folder_path_size, &timestamp);
@@ -563,6 +563,27 @@ NAN_METHOD(UGCGetItemInstallInfo) {
     Nan::Set(result, Nan::New("timestamp").ToLocalChecked(), Nan::New(timestamp));
     info.GetReturnValue().Set(result);
   }
+}
+
+NAN_METHOD(UGCGetItemDownloadProgress) {
+  Nan::HandleScope scope;
+
+  if (info.Length() < 2 || !info[0]->IsString() || !info[1]->IsFunction()) {
+    THROW_BAD_ARGS("Bad arguments");
+  }
+  Nan::Callback* success_callback =
+    new Nan::Callback(info[1].As<v8::Function>());
+  Nan::Callback* error_callback = nullptr;
+
+  UGCHandle_t ugc_handle = utils::strToUint64(
+    *(Nan::Utf8String(info[0])));
+
+  if (info.Length() > 2 && info[2]->IsFunction())
+    error_callback = new Nan::Callback(info[2].As<v8::Function>());
+
+  Nan::AsyncQueueWorker(new greenworks::UGCDownloadProgressGetWorker(success_callback,
+                                                                     error_callback, ugc_handle));
+  info.GetReturnValue().Set(Nan::Undefined());
 }
 
 void RegisterAPIs(v8::Local<v8::Object> target) {
@@ -586,10 +607,11 @@ void RegisterAPIs(v8::Local<v8::Object> target) {
   SET_FUNCTION("ugcUnsubscribe", UGCUnsubscribe);
   SET_FUNCTION("ugcGetItemState", UGCGetItemState);
   SET_FUNCTION("ugcGetItemInstallInfo", UGCGetItemInstallInfo);
+  SET_FUNCTION("ugcGetItemDownloadProgress", UGCGetItemDownloadProgress);
 }
 
 SteamAPIRegistry::Add X(RegisterAPIs);
 
-}  // namespace
-}  // namespace api
-}  // namespace greenworks
+} // namespace
+}   // namespace api
+} // namespace greenworks

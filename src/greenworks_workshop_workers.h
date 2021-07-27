@@ -199,21 +199,17 @@ public:
                      Nan::Callback* error_callback,
                      UGCHandle_t download_file_handle,
                      const std::string& download_dir);
-  STEAM_CALLBACK(DownloadItemWorker,
-                 OnDownloadCompleted,
-                 DownloadItemResult_t,
-                 result);
 
-  // Override NanAsyncWorker methods.
+  void OnDownloadCompleted(RemoteStorageDownloadUGCResult_t* result,
+                           bool io_failure);
+
   void Execute() override;
-  void HandleOKCallback() override;
 
 private:
   UGCHandle_t download_file_handle_;
   std::string download_dir_;
-
-  uint64 app_id_;
-  PublishedFileId_t file_id_;
+  CCallResult<DownloadItemWorker,
+    RemoteStorageDownloadUGCResult_t> call_result_;
 };
 
 class SynchronizeItemsWorker : public SteamCallbackAsyncWorker {
@@ -322,6 +318,22 @@ private:
   bool voted_down_;
 
   CCallResult<GetItemStateWorker, GetUserItemVoteResult_t> call_result_;
+};
+
+
+class UGCDownloadProgressGetWorker : public SteamAsyncWorker {
+public:
+  UGCDownloadProgressGetWorker(Nan::Callback* success_callback,
+                               Nan::Callback* error_callback,
+                               UGCHandle_t ugc_handle);
+
+  void Execute() override;
+  void HandleOKCallback() override;
+
+private:
+  UGCHandle_t ugc_handle_;
+  uint64 bytes_downloaded_;
+  uint64 bytes_expected_;
 };
 
 }  // namespace greenworks
