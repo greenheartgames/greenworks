@@ -21,7 +21,7 @@ NAN_METHOD(GetAuthSessionTicket) {
     THROW_BAD_ARGS("Bad arguments");
   }
   Nan::Callback* success_callback =
-      new Nan::Callback(info[0].As<v8::Function>());
+    new Nan::Callback(info[0].As<v8::Function>());
   Nan::Callback* error_callback = nullptr;
   if (info.Length() > 1 && info[1]->IsFunction())
     error_callback = new Nan::Callback(info[1].As<v8::Function>());
@@ -50,7 +50,7 @@ NAN_METHOD(GetEncryptedAppTicket) {
     THROW_BAD_ARGS("Bad arguments");
   }
   Nan::Callback* success_callback =
-      new Nan::Callback(info[1].As<v8::Function>());
+    new Nan::Callback(info[1].As<v8::Function>());
   Nan::Callback* error_callback = nullptr;
   if (info.Length() > 2 && info[2]->IsFunction())
     error_callback = new Nan::Callback(info[2].As<v8::Function>());
@@ -78,18 +78,18 @@ NAN_METHOD(DecryptAppTicket) {
   uint8 decrypted_ticket[1024];
   uint32 decrypted_ticket_size = 1024;
   bool is_success = SteamEncryptedAppTicket_BDecryptTicket(
-      reinterpret_cast<const uint8*>(encrypted_ticket_buf),
-      encrypted_ticket_buf_size, decrypted_ticket, &decrypted_ticket_size, key,
-      k_nSteamEncryptedAppTicketSymmetricKeyLen);
+    reinterpret_cast<const uint8*>(encrypted_ticket_buf),
+    encrypted_ticket_buf_size, decrypted_ticket, &decrypted_ticket_size, key,
+    k_nSteamEncryptedAppTicketSymmetricKeyLen);
 
   if (!is_success) {
     info.GetReturnValue().Set(Nan::Undefined());
     return;
   }
   info.GetReturnValue().Set(
-      Nan::CopyBuffer(reinterpret_cast<const char *>(decrypted_ticket),
-                      decrypted_ticket_size)
-          .ToLocalChecked());
+    Nan::CopyBuffer(reinterpret_cast<const char*>(decrypted_ticket),
+                    decrypted_ticket_size)
+    .ToLocalChecked());
 }
 
 NAN_METHOD(IsTicketForApp) {
@@ -103,8 +103,8 @@ NAN_METHOD(IsTicketForApp) {
   size_t decrypted_ticket_buf_size = node::Buffer::Length(info[0]);
   uint32 app_id = Nan::To<uint32>(info[1]).FromJust();
   bool result = SteamEncryptedAppTicket_BIsTicketForApp(
-      reinterpret_cast<uint8*>(decrypted_ticket_buf), decrypted_ticket_buf_size,
-      app_id);
+    reinterpret_cast<uint8*>(decrypted_ticket_buf), decrypted_ticket_buf_size,
+    app_id);
   info.GetReturnValue().Set(result);
 }
 
@@ -116,8 +116,8 @@ NAN_METHOD(getTicketIssueTime) {
   char* decrypted_ticket_buf = node::Buffer::Data(info[0]);
   size_t decrypted_ticket_buf_size = node::Buffer::Length(info[0]);
   uint32 time = SteamEncryptedAppTicket_GetTicketIssueTime(
-      reinterpret_cast<uint8*>(decrypted_ticket_buf),
-      decrypted_ticket_buf_size);
+    reinterpret_cast<uint8*>(decrypted_ticket_buf),
+    decrypted_ticket_buf_size);
   info.GetReturnValue().Set(time);
 }
 
@@ -130,8 +130,8 @@ NAN_METHOD(getTicketSteamId) {
   size_t decrypted_ticket_buf_size = node::Buffer::Length(info[0]);
   CSteamID steam_id;
   SteamEncryptedAppTicket_GetTicketSteamID(
-      reinterpret_cast<uint8*>(decrypted_ticket_buf), decrypted_ticket_buf_size,
-      &steam_id);
+    reinterpret_cast<uint8*>(decrypted_ticket_buf), decrypted_ticket_buf_size,
+    &steam_id);
   info.GetReturnValue().Set(greenworks::SteamID::Create(steam_id));
 }
 
@@ -143,8 +143,8 @@ NAN_METHOD(getTicketAppId) {
   char* decrypted_ticket_buf = node::Buffer::Data(info[0]);
   size_t decrypted_ticket_buf_size = node::Buffer::Length(info[0]);
   uint32 app_id = SteamEncryptedAppTicket_GetTicketAppID(
-      reinterpret_cast<uint8*>(decrypted_ticket_buf),
-      decrypted_ticket_buf_size);
+    reinterpret_cast<uint8*>(decrypted_ticket_buf),
+    decrypted_ticket_buf_size);
   info.GetReturnValue().Set(app_id);
 }
 

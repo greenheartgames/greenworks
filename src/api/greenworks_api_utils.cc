@@ -26,15 +26,15 @@ NAN_METHOD(CreateArchive) {
   int compress_level = Nan::To<int>(info[3]).FromJust();
 
   Nan::Callback* success_callback =
-      new Nan::Callback(info[4].As<v8::Function>());
+    new Nan::Callback(info[4].As<v8::Function>());
   Nan::Callback* error_callback = nullptr;
 
   if (info.Length() > 5 && info[5]->IsFunction())
     error_callback = new Nan::Callback(info[5].As<v8::Function>());
 
   Nan::AsyncQueueWorker(new greenworks::CreateArchiveWorker(
-      success_callback, error_callback, zip_file_path, source_dir, password,
-      compress_level));
+    success_callback, error_callback, zip_file_path, source_dir, password,
+    compress_level));
   info.GetReturnValue().Set(Nan::Undefined());
 }
 
@@ -49,14 +49,14 @@ NAN_METHOD(ExtractArchive) {
   std::string password = *(Nan::Utf8String(info[2]));
 
   Nan::Callback* success_callback =
-      new Nan::Callback(info[3].As<v8::Function>());
+    new Nan::Callback(info[3].As<v8::Function>());
   Nan::Callback* error_callback = nullptr;
 
   if (info.Length() > 4 && info[4]->IsFunction())
     error_callback = new Nan::Callback(info[4].As<v8::Function>());
 
   Nan::AsyncQueueWorker(new greenworks::ExtractArchiveWorker(
-      success_callback, error_callback, zip_file_path, extract_dir, password));
+    success_callback, error_callback, zip_file_path, extract_dir, password));
   info.GetReturnValue().Set(Nan::Undefined());
 }
 

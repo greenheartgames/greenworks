@@ -28,7 +28,7 @@ namespace greenworks {
 namespace api {
 
 class SteamAPIRegistry {
- public:
+public:
   typedef std::function<void(v8::Local<v8::Object>)> RegistryFactory;
 
   static SteamAPIRegistry* GetInstance() {
@@ -43,13 +43,13 @@ class SteamAPIRegistry {
   }
 
   class Add {
-   public:
+  public:
     explicit Add(const SteamAPIRegistry::RegistryFactory& registry_factory) {
       SteamAPIRegistry::GetInstance()->AddRegistryFactory(registry_factory);
     }
   };
 
- private:
+private:
   void AddRegistryFactory(const RegistryFactory& register_api) {
     registry_factories_.push_back(register_api);
   }

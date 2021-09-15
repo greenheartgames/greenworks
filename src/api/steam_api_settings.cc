@@ -120,10 +120,10 @@ NAN_METHOD(GetSteamId) {
            Nan::New<v8::Integer>(user_id.GetAccountID()));
   Nan::Set(result, Nan::New("steamId").ToLocalChecked(),
            Nan::New(utils::uint64ToString(user_id.ConvertToUint64()))
-               .ToLocalChecked());
+           .ToLocalChecked());
   Nan::Set(result, Nan::New("staticAccountId").ToLocalChecked(),
            Nan::New(utils::uint64ToString(user_id.GetStaticAccountKey()))
-               .ToLocalChecked());
+           .ToLocalChecked());
   Nan::Set(result, Nan::New("isValid").ToLocalChecked(),
            Nan::New<v8::Integer>(user_id.IsValid()));
   Nan::Set(result, Nan::New("level").ToLocalChecked(),
@@ -132,7 +132,7 @@ NAN_METHOD(GetSteamId) {
   if (!SteamFriends()->RequestUserInformation(user_id, true)) {
     Nan::Set(result, Nan::New("screenName").ToLocalChecked(),
              Nan::New(SteamFriends()->GetFriendPersonaName(user_id))
-                 .ToLocalChecked());
+             .ToLocalChecked());
   } else {
     std::ostringstream sout;
     sout << user_id.GetAccountID();
@@ -145,25 +145,25 @@ NAN_METHOD(GetSteamId) {
 NAN_METHOD(GetAppId) {
   Nan::HandleScope scope;
   info.GetReturnValue().Set(
-      Nan::New(SteamUtils()->GetAppID()));
+    Nan::New(SteamUtils()->GetAppID()));
 }
 
 NAN_METHOD(GetAppBuildId) {
   Nan::HandleScope scope;
   info.GetReturnValue().Set(
-      Nan::New(SteamApps()->GetAppBuildId()));
+    Nan::New(SteamApps()->GetAppBuildId()));
 }
 
 NAN_METHOD(GetCurrentGameLanguage) {
   Nan::HandleScope scope;
   info.GetReturnValue().Set(
-      Nan::New(SteamApps()->GetCurrentGameLanguage()).ToLocalChecked());
+    Nan::New(SteamApps()->GetCurrentGameLanguage()).ToLocalChecked());
 }
 
 NAN_METHOD(GetCurrentUILanguage) {
   Nan::HandleScope scope;
   info.GetReturnValue().Set(
-      Nan::New(SteamUtils()->GetSteamUILanguage()).ToLocalChecked());
+    Nan::New(SteamUtils()->GetSteamUILanguage()).ToLocalChecked());
 }
 
 // TODO(hokein): Implement get game install directory.
@@ -181,7 +181,7 @@ NAN_METHOD(GetAppInstallDir) {
 
   AppId_t app_id = static_cast<AppId_t>(Nan::To<int32>(info[0]).FromJust());
   const int buffer_size =
-      260;  // MAX_PATH on 32bit Windows according to MSDN documentation
+    260;  // MAX_PATH on 32bit Windows according to MSDN documentation
   char buffer[buffer_size];
   uint32 length = SteamApps()->GetAppInstallDir(app_id, buffer, buffer_size);
 
@@ -195,14 +195,14 @@ NAN_METHOD(GetNumberOfPlayers) {
     THROW_BAD_ARGS("Bad arguments");
   }
   Nan::Callback* success_callback =
-      new Nan::Callback(info[0].As<v8::Function>());
+    new Nan::Callback(info[0].As<v8::Function>());
   Nan::Callback* error_callback = nullptr;
 
   if (info.Length() > 1 && info[1]->IsFunction())
     error_callback = new Nan::Callback(info[1].As<v8::Function>());
 
   Nan::AsyncQueueWorker(new greenworks::GetNumberOfPlayersWorker(
-      success_callback, error_callback));
+    success_callback, error_callback));
   info.GetReturnValue().Set(Nan::Undefined());
 }
 
@@ -300,8 +300,8 @@ NAN_METHOD(GetImageRGBA) {
     THROW_BAD_ARGS("Fail to get image");
   }
   info.GetReturnValue().Set(
-      Nan::NewBuffer(image_buffer, buffer_size, FreeCallback, nullptr)
-          .ToLocalChecked());
+    Nan::NewBuffer(image_buffer, buffer_size, FreeCallback, nullptr)
+    .ToLocalChecked());
 }
 
 NAN_METHOD(GetIPCountry) {

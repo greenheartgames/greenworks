@@ -12,8 +12,8 @@
 namespace greenworks {
 
 SteamAsyncWorker::SteamAsyncWorker(Nan::Callback* success_callback,
-    Nan::Callback* error_callback): Nan::AsyncWorker(success_callback),
-                                    error_callback_(error_callback) {
+                                   Nan::Callback* error_callback) : Nan::AsyncWorker(success_callback),
+  error_callback_(error_callback) {
 }
 
 SteamAsyncWorker::~SteamAsyncWorker() {
@@ -29,9 +29,9 @@ void SteamAsyncWorker::HandleErrorCallback() {
 }
 
 SteamCallbackAsyncWorker::SteamCallbackAsyncWorker(
-    Nan::Callback* success_callback, Nan::Callback* error_callback):
-        SteamAsyncWorker(success_callback, error_callback),
-        is_completed_(false) {
+  Nan::Callback* success_callback, Nan::Callback* error_callback) :
+  SteamAsyncWorker(success_callback, error_callback),
+  is_completed_(false) {
 }
 
 void SteamCallbackAsyncWorker::WaitForCompleted() {

@@ -23,7 +23,7 @@ void on_timer_close_complete(uv_handle_t* handle) {
 #if NAUV_UVVERSION < 0x000b17
 void RunSteamAPICallback(uv_timer_t* handle, int status_code) {
 #else
-void RunSteamAPICallback(uv_timer_t* handle) {
+void RunSteamAPICallback(uv_timer_t * handle) {
 #endif
   SteamAPI_RunCallbacks();
 }
@@ -31,29 +31,30 @@ void RunSteamAPICallback(uv_timer_t* handle) {
 }  // namespace
 
 SteamClient::SteamClient()
-    : game_overlay_activated_(this, &SteamClient::OnGameOverlayActivated),
-      steam_servers_connected_(this, &SteamClient::OnSteamServersConnected),
-      steam_servers_disconnected_(this,
-                                  &SteamClient::OnSteamServersDisconnected),
-      steam_server_connect_failure_(this,
-                                    &SteamClient::OnSteamServerConnectFailure),
-      steam_shutdown_(this, &SteamClient::OnSteamShutdown),
-      steam_persona_state_change_(this, &SteamClient::OnPeronaStateChange),
-      avatar_image_loaded_(this, &SteamClient::OnAvatarImageLoaded),
-      game_connected_friend_chat_msg_(
-          this,
-          &SteamClient::OnGameConnectedFriendChatMessage),
-      dlc_installed_(this, &SteamClient::OnDLCInstalled),
-      MicroTxnAuthorizationResponse_(
-          this,
-          &SteamClient::OnMicroTxnAuthorizationResponse),
-      OnLobbyCreated_(this, &SteamClient::OnLobbyCreated),
-      OnLobbyDataUpdate_(this, &SteamClient::OnLobbyDataUpdate),
-      OnLobbyEnter_(this, &SteamClient::OnLobbyEnter),
-      OnLobbyInvite_(this, &SteamClient::OnLobbyInvite),
-      OnGameLobbyJoinRequested_(this, &SteamClient::OnGameLobbyJoinRequested),
-      OnGameRichPresenceJoinRequested_(this, &SteamClient::OnGameRichPresenceJoinRequested),
-      OnNewUrlLaunchParameters_(this, &SteamClient::OnNewUrlLaunchParameters) {}
+  : game_overlay_activated_(this, &SteamClient::OnGameOverlayActivated),
+  steam_servers_connected_(this, &SteamClient::OnSteamServersConnected),
+  steam_servers_disconnected_(this,
+                              &SteamClient::OnSteamServersDisconnected),
+  steam_server_connect_failure_(this,
+                                &SteamClient::OnSteamServerConnectFailure),
+  steam_shutdown_(this, &SteamClient::OnSteamShutdown),
+  steam_persona_state_change_(this, &SteamClient::OnPeronaStateChange),
+  avatar_image_loaded_(this, &SteamClient::OnAvatarImageLoaded),
+  game_connected_friend_chat_msg_(
+    this,
+    &SteamClient::OnGameConnectedFriendChatMessage),
+  dlc_installed_(this, &SteamClient::OnDLCInstalled),
+  MicroTxnAuthorizationResponse_(
+    this,
+    &SteamClient::OnMicroTxnAuthorizationResponse),
+  OnLobbyCreated_(this, &SteamClient::OnLobbyCreated),
+  OnLobbyDataUpdate_(this, &SteamClient::OnLobbyDataUpdate),
+  OnLobbyEnter_(this, &SteamClient::OnLobbyEnter),
+  OnLobbyInvite_(this, &SteamClient::OnLobbyInvite),
+  OnGameLobbyJoinRequested_(this, &SteamClient::OnGameLobbyJoinRequested),
+  OnGameRichPresenceJoinRequested_(this, &SteamClient::OnGameRichPresenceJoinRequested),
+  OnNewUrlLaunchParameters_(this, &SteamClient::OnNewUrlLaunchParameters) {
+}
 
 SteamClient::~SteamClient() {
   for (size_t i = 0; i < observer_list_.size(); ++i) {
@@ -76,7 +77,7 @@ SteamClient* SteamClient::GetInstance() {
 void SteamClient::OnGameOverlayActivated(GameOverlayActivated_t* callback) {
   for (size_t i = 0; i < observer_list_.size(); ++i) {
     observer_list_[i]->OnGameOverlayActivated(
-        static_cast<bool>(callback->m_bActive));
+      static_cast<bool>(callback->m_bActive));
   }
 }
 
@@ -87,17 +88,17 @@ void SteamClient::OnSteamServersConnected(SteamServersConnected_t* callback) {
 }
 
 void SteamClient::OnSteamServersDisconnected(
-    SteamServersDisconnected_t* callback) {
+  SteamServersDisconnected_t* callback) {
   for (size_t i = 0; i < observer_list_.size(); ++i) {
     observer_list_[i]->OnSteamServersDisconnected();
   }
 }
 
 void SteamClient::OnSteamServerConnectFailure(
-    SteamServerConnectFailure_t* callback) {
+  SteamServerConnectFailure_t* callback) {
   for (size_t i = 0; i < observer_list_.size(); ++i) {
     observer_list_[i]->OnSteamServerConnectFailure(
-        static_cast<int>(callback->m_eResult));
+      static_cast<int>(callback->m_eResult));
   }
 }
 
@@ -117,80 +118,80 @@ void SteamClient::OnPeronaStateChange(PersonaStateChange_t* callback) {
 void SteamClient::OnAvatarImageLoaded(AvatarImageLoaded_t* callback) {
   for (size_t i = 0; i < observer_list_.size(); ++i) {
     observer_list_[i]->OnAvatarImageLoaded(
-        callback->m_steamID.ConvertToUint64(), callback->m_iImage,
-        callback->m_iTall, callback->m_iWide);
+      callback->m_steamID.ConvertToUint64(), callback->m_iImage,
+      callback->m_iTall, callback->m_iWide);
   }
 }
 
 void SteamClient::OnGameConnectedFriendChatMessage(
-    GameConnectedFriendChatMsg_t* callback) {
+  GameConnectedFriendChatMsg_t* callback) {
   for (size_t i = 0; i < observer_list_.size(); ++i) {
     observer_list_[i]->OnGameConnectedFriendChatMessage(
-        callback->m_steamIDUser.ConvertToUint64(), callback->m_iMessageID);
+      callback->m_steamIDUser.ConvertToUint64(), callback->m_iMessageID);
   }
 }
 
-void SteamClient::OnDLCInstalled(DlcInstalled_t *callback) {
+void SteamClient::OnDLCInstalled(DlcInstalled_t* callback) {
   for (size_t i = 0; i < observer_list_.size(); ++i) {
     observer_list_[i]->OnDLCInstalled(
-        callback->m_nAppID);
+      callback->m_nAppID);
   }
 }
 
 void SteamClient::OnMicroTxnAuthorizationResponse(
-                          MicroTxnAuthorizationResponse_t *callback) {
+  MicroTxnAuthorizationResponse_t* callback) {
   for (size_t i = 0; i < observer_list_.size(); ++i) {
     observer_list_[i]->OnMicroTxnAuthorizationResponse(
-        callback->m_unAppID, callback->m_ulOrderID,
-        callback->m_bAuthorized);
+      callback->m_unAppID, callback->m_ulOrderID,
+      callback->m_bAuthorized);
   }
 }
 
-void SteamClient::OnLobbyCreated(LobbyCreated_t *callback) {
+void SteamClient::OnLobbyCreated(LobbyCreated_t* callback) {
   for (size_t i = 0; i < observer_list_.size(); ++i) {
     observer_list_[i]->OnLobbyCreated(
-        static_cast<int>(callback->m_eResult),
-        callback->m_ulSteamIDLobby);
+      static_cast<int>(callback->m_eResult),
+      callback->m_ulSteamIDLobby);
   }
 }
 
-void SteamClient::OnLobbyDataUpdate(LobbyDataUpdate_t *callback) {
+void SteamClient::OnLobbyDataUpdate(LobbyDataUpdate_t* callback) {
   for (size_t i = 0; i < observer_list_.size(); ++i) {
     observer_list_[i]->OnLobbyDataUpdate(
-        callback->m_ulSteamIDLobby,
-        callback->m_ulSteamIDMember,
-        static_cast<bool>(callback->m_bSuccess));
+      callback->m_ulSteamIDLobby,
+      callback->m_ulSteamIDMember,
+      static_cast<bool>(callback->m_bSuccess));
   }
 }
 
-void SteamClient::OnLobbyEnter(LobbyEnter_t *callback) {
+void SteamClient::OnLobbyEnter(LobbyEnter_t* callback) {
   for (size_t i = 0; i < observer_list_.size(); ++i) {
     observer_list_[i]->OnLobbyEnter(
-        callback->m_ulSteamIDLobby,
-        callback->m_rgfChatPermissions,
-        static_cast<bool>(callback->m_bLocked),
-        static_cast<int>(callback->m_EChatRoomEnterResponse));
+      callback->m_ulSteamIDLobby,
+      callback->m_rgfChatPermissions,
+      static_cast<bool>(callback->m_bLocked),
+      static_cast<int>(callback->m_EChatRoomEnterResponse));
   }
 }
 
-void SteamClient::OnLobbyInvite(LobbyInvite_t *callback) {
+void SteamClient::OnLobbyInvite(LobbyInvite_t* callback) {
   for (size_t i = 0; i < observer_list_.size(); ++i) {
     observer_list_[i]->OnLobbyInvite(
-        callback->m_ulSteamIDUser,
-        callback->m_ulSteamIDLobby,
-        callback->m_ulGameID);
+      callback->m_ulSteamIDUser,
+      callback->m_ulSteamIDLobby,
+      callback->m_ulGameID);
   }
 }
 
-void SteamClient::OnGameLobbyJoinRequested(GameLobbyJoinRequested_t *callback) {
+void SteamClient::OnGameLobbyJoinRequested(GameLobbyJoinRequested_t* callback) {
   for (size_t i = 0; i < observer_list_.size(); ++i) {
     observer_list_[i]->OnGameLobbyJoinRequested(
-        callback->m_steamIDLobby.ConvertToUint64(),
-        callback->m_steamIDFriend.ConvertToUint64());
+      callback->m_steamIDLobby.ConvertToUint64(),
+      callback->m_steamIDFriend.ConvertToUint64());
   }
 }
 
-void SteamClient::OnGameRichPresenceJoinRequested(GameRichPresenceJoinRequested_t *callback) {
+void SteamClient::OnGameRichPresenceJoinRequested(GameRichPresenceJoinRequested_t* callback) {
   for (size_t i = 0; i < observer_list_.size(); ++i) {
     observer_list_[i]->OnGameRichPresenceJoinRequested(
       callback->m_steamIDFriend.ConvertToUint64(),
@@ -198,7 +199,7 @@ void SteamClient::OnGameRichPresenceJoinRequested(GameRichPresenceJoinRequested_
   }
 }
 
-void SteamClient::OnNewUrlLaunchParameters(NewUrlLaunchParameters_t *callback) {
+void SteamClient::OnNewUrlLaunchParameters(NewUrlLaunchParameters_t* callback) {
   for (size_t i = 0; i < observer_list_.size(); ++i) {
     observer_list_[i]->OnNewUrlLaunchParameters();
   }

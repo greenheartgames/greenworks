@@ -16,10 +16,10 @@ void SteamEvent::OnGameOverlayActivated(bool is_active) {
   Nan::HandleScope scope;
   v8::Local<v8::Value> argv[] = {
       Nan::New("game-overlay-activated").ToLocalChecked(),
-      Nan::New(is_active) }; 
+      Nan::New(is_active) };
   Nan::AsyncResource ar("greenworks:SteamEvent.OnGameOverlayActivated");
   ar.runInAsyncScope(
-      Nan::New(persistent_steam_events_), "on", 2, argv);
+    Nan::New(persistent_steam_events_), "on", 2, argv);
 }
 
 void SteamEvent::OnSteamServersConnected() {
@@ -28,7 +28,7 @@ void SteamEvent::OnSteamServersConnected() {
       Nan::New("steam-servers-connected").ToLocalChecked() };
   Nan::AsyncResource ar("greenworks:SteamEvent.OnSteamServersConnected");
   ar.runInAsyncScope(
-      Nan::New(persistent_steam_events_), "on", 1, argv);
+    Nan::New(persistent_steam_events_), "on", 1, argv);
 }
 
 void SteamEvent::OnSteamServersDisconnected() {
@@ -37,7 +37,7 @@ void SteamEvent::OnSteamServersDisconnected() {
       Nan::New("steam-servers-disconnected").ToLocalChecked() };
   Nan::AsyncResource ar("greenworks:SteamEvent.OnSteamServersDisconnected");
   ar.runInAsyncScope(
-      Nan::New(persistent_steam_events_), "on", 1, argv);
+    Nan::New(persistent_steam_events_), "on", 1, argv);
 }
 
 void SteamEvent::OnSteamServerConnectFailure(int status_code) {
@@ -47,7 +47,7 @@ void SteamEvent::OnSteamServerConnectFailure(int status_code) {
       Nan::New(status_code) };
   Nan::AsyncResource ar("greenworks:SteamEvent.OnSteamServerConnectFailure");
   ar.runInAsyncScope(
-      Nan::New(persistent_steam_events_), "on", 2, argv);
+    Nan::New(persistent_steam_events_), "on", 2, argv);
 }
 
 void SteamEvent::OnSteamShutdown() {
@@ -55,7 +55,7 @@ void SteamEvent::OnSteamShutdown() {
   v8::Local<v8::Value> argv[] = { Nan::New("steam-shutdown").ToLocalChecked() };
   Nan::AsyncResource ar("greenworks:SteamEvent.OnSteamShutdown");
   ar.runInAsyncScope(
-      Nan::New(persistent_steam_events_), "on", 1, argv);
+    Nan::New(persistent_steam_events_), "on", 1, argv);
 }
 
 void SteamEvent::OnPersonaStateChange(uint64 raw_steam_id,
@@ -67,7 +67,7 @@ void SteamEvent::OnPersonaStateChange(uint64 raw_steam_id,
   };
   Nan::AsyncResource ar("greenworks:SteamEvent.OnPersonaStateChange");
   ar.runInAsyncScope(
-      Nan::New(persistent_steam_events_), "on", 3, argv);
+    Nan::New(persistent_steam_events_), "on", 3, argv);
 }
 
 void SteamEvent::OnAvatarImageLoaded(uint64 raw_steam_id,
@@ -84,7 +84,7 @@ void SteamEvent::OnAvatarImageLoaded(uint64 raw_steam_id,
   };
   Nan::AsyncResource ar("greenworks:SteamEvent.OnAvatarImageLoaded");
   ar.runInAsyncScope(
-      Nan::New(persistent_steam_events_), "on", 5, argv);
+    Nan::New(persistent_steam_events_), "on", 5, argv);
 }
 
 void SteamEvent::OnGameConnectedFriendChatMessage(uint64 raw_steam_id,
@@ -97,7 +97,7 @@ void SteamEvent::OnGameConnectedFriendChatMessage(uint64 raw_steam_id,
   };
   Nan::AsyncResource ar("greenworks:SteamEvent.OnGameConnectedFriendChatMessage");
   ar.runInAsyncScope(
-      Nan::New(persistent_steam_events_), "on", 3, argv);
+    Nan::New(persistent_steam_events_), "on", 3, argv);
 }
 
 void SteamEvent::OnDLCInstalled(AppId_t dlc_app_id) {
@@ -108,7 +108,7 @@ void SteamEvent::OnDLCInstalled(AppId_t dlc_app_id) {
   };
   Nan::AsyncResource ar("greenworks:SteamEvent.OnDLCInstalled");
   ar.runInAsyncScope(
-      Nan::New(persistent_steam_events_), "on", 2, argv);
+    Nan::New(persistent_steam_events_), "on", 2, argv);
 }
 
 void SteamEvent::OnMicroTxnAuthorizationResponse(uint32 AppID,
@@ -123,7 +123,7 @@ void SteamEvent::OnMicroTxnAuthorizationResponse(uint32 AppID,
   };
   Nan::AsyncResource ar("greenworks:SteamEvent.OnMicroTxnAuthorizationResponse");
   ar.runInAsyncScope(
-      Nan::New(persistent_steam_events_), "on", 4, argv);
+    Nan::New(persistent_steam_events_), "on", 4, argv);
 }
 
 void SteamEvent::OnLobbyCreated(int status_code, uint64 SteamIdLobby) {
@@ -135,7 +135,7 @@ void SteamEvent::OnLobbyCreated(int status_code, uint64 SteamIdLobby) {
   };
   Nan::AsyncResource ar("greenworks:SteamEvent.OnLobbyCreated");
   ar.runInAsyncScope(
-      Nan::New(persistent_steam_events_), "on", 3, argv);
+    Nan::New(persistent_steam_events_), "on", 3, argv);
 }
 
 void SteamEvent::OnLobbyDataUpdate(uint64 SteamIdLobby, uint64 SteamIdMember, bool Success) {
@@ -148,7 +148,7 @@ void SteamEvent::OnLobbyDataUpdate(uint64 SteamIdLobby, uint64 SteamIdMember, bo
   };
   Nan::AsyncResource ar("greenworks:SteamEvent.OnLobbyDataUpdate");
   ar.runInAsyncScope(
-      Nan::New(persistent_steam_events_), "on", 4, argv);
+    Nan::New(persistent_steam_events_), "on", 4, argv);
 }
 
 void SteamEvent::OnLobbyEnter(uint64 SteamIdLobby, int ChatPermissions, bool Locked, int ChatRoomEnterResponse) {
@@ -162,7 +162,7 @@ void SteamEvent::OnLobbyEnter(uint64 SteamIdLobby, int ChatPermissions, bool Loc
   };
   Nan::AsyncResource ar("greenworks:SteamEvent.OnLobbyEnter");
   ar.runInAsyncScope(
-      Nan::New(persistent_steam_events_), "on", 5, argv);
+    Nan::New(persistent_steam_events_), "on", 5, argv);
 }
 
 void SteamEvent::OnLobbyInvite(uint64 SteamIdUser, uint64 SteamIdLobby, uint64 GameId) {
@@ -175,7 +175,7 @@ void SteamEvent::OnLobbyInvite(uint64 SteamIdUser, uint64 SteamIdLobby, uint64 G
   };
   Nan::AsyncResource ar("greenworks:SteamEvent.OnLobbyInvite");
   ar.runInAsyncScope(
-      Nan::New(persistent_steam_events_), "on", 4, argv);
+    Nan::New(persistent_steam_events_), "on", 4, argv);
 }
 
 void SteamEvent::OnGameLobbyJoinRequested(uint64 SteamIdLobby, uint64 SteamIdUser) {
@@ -187,7 +187,7 @@ void SteamEvent::OnGameLobbyJoinRequested(uint64 SteamIdLobby, uint64 SteamIdUse
   };
   Nan::AsyncResource ar("greenworks:SteamEvent.OnGameLobbyJoinRequested");
   ar.runInAsyncScope(
-      Nan::New(persistent_steam_events_), "on", 3, argv);
+    Nan::New(persistent_steam_events_), "on", 3, argv);
 }
 
 void SteamEvent::OnGameRichPresenceJoinRequested(uint64 steamIDFriend, std::string rgchConnect) {

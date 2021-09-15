@@ -39,7 +39,7 @@ v8::Local<v8::Object> SteamID::Create(CSteamID steam_id) {
 
   auto* obj = new SteamID(steam_id);
   v8::Local<v8::Object> instance =
-      Nan::NewInstance(Nan::GetFunction(tpl).ToLocalChecked()).ToLocalChecked();
+    Nan::NewInstance(Nan::GetFunction(tpl).ToLocalChecked()).ToLocalChecked();
   Nan::SetInternalFieldPointer(instance, 0, obj);
   return scope.Escape(instance);
 }
@@ -97,7 +97,7 @@ NAN_METHOD(SteamID::IsIndividualAccount) {
 NAN_METHOD(SteamID::IsPersistentGameServerAccount) {
   auto* obj = ObjectWrap::Unwrap<SteamID>(info.Holder());
   info.GetReturnValue().Set(
-      Nan::New(obj->steam_id_.BPersistentGameServerAccount()));
+    Nan::New(obj->steam_id_.BPersistentGameServerAccount()));
 }
 
 NAN_METHOD(SteamID::IsLobby) {
@@ -108,14 +108,14 @@ NAN_METHOD(SteamID::IsLobby) {
 NAN_METHOD(SteamID::GetAccountID) {
   auto* obj = ObjectWrap::Unwrap<SteamID>(info.Holder());
   info.GetReturnValue().Set(
-      Nan::New<v8::Integer>(obj->steam_id_.GetAccountID()));
+    Nan::New<v8::Integer>(obj->steam_id_.GetAccountID()));
 }
 
 NAN_METHOD(SteamID::GetRawSteamID) {
   auto* obj = ObjectWrap::Unwrap<SteamID>(info.Holder());
   info.GetReturnValue().Set(
-      Nan::New(utils::uint64ToString(obj->steam_id_.ConvertToUint64()))
-          .ToLocalChecked());
+    Nan::New(utils::uint64ToString(obj->steam_id_.ConvertToUint64()))
+    .ToLocalChecked());
 }
 
 NAN_METHOD(SteamID::GetAccountType) {
@@ -131,15 +131,15 @@ NAN_METHOD(SteamID::IsValid) {
 NAN_METHOD(SteamID::GetStaticAccountKey) {
   auto* obj = ObjectWrap::Unwrap<SteamID>(info.Holder());
   info.GetReturnValue().Set(
-      Nan::New(utils::uint64ToString(
-          obj->steam_id_.GetStaticAccountKey())).ToLocalChecked());
+    Nan::New(utils::uint64ToString(
+      obj->steam_id_.GetStaticAccountKey())).ToLocalChecked());
 }
 
 NAN_METHOD(SteamID::GetPersonaName) {
   auto* obj = ObjectWrap::Unwrap<SteamID>(info.Holder());
   info.GetReturnValue().Set(
-      Nan::New(SteamFriends()->GetFriendPersonaName(obj->steam_id_))
-          .ToLocalChecked());
+    Nan::New(SteamFriends()->GetFriendPersonaName(obj->steam_id_))
+    .ToLocalChecked());
 }
 
 NAN_METHOD(SteamID::GetNickname) {
@@ -155,13 +155,13 @@ NAN_METHOD(SteamID::GetNickname) {
 NAN_METHOD(SteamID::GetRelationship) {
   auto* obj = ObjectWrap::Unwrap<SteamID>(info.Holder());
   info.GetReturnValue().Set(
-      Nan::New(SteamFriends()->GetFriendRelationship(obj->steam_id_)));
+    Nan::New(SteamFriends()->GetFriendRelationship(obj->steam_id_)));
 }
 
 NAN_METHOD(SteamID::GetSteamLevel) {
   auto* obj = ObjectWrap::Unwrap<SteamID>(info.Holder());
   info.GetReturnValue().Set(
-      Nan::New(SteamFriends()->GetFriendSteamLevel(obj->steam_id_)));
+    Nan::New(SteamFriends()->GetFriendSteamLevel(obj->steam_id_)));
 }
 
 }  // namespace greenworks
