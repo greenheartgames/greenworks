@@ -52,22 +52,28 @@ NAN_MODULE_INIT(init) {
 
 }  // namespace
 
+#if NODE_MAJOR_VERSION >= 10
+#define GREENWORKS_DEFINE_MODULE NAN_MODULE_WORKER_ENABLED
+#else
+#define GREENWORKS_DEFINE_MODULE NODE_MODULE
+#endif
+
 #if defined(_WIN32)
-#if defined(_M_IX86)
-NODE_MODULE(greenworks_win32, init)
-#elif defined(_M_AMD64)
-NODE_MODULE(greenworks_win64, init)
-#endif
+  #if defined(_M_IX86)
+    GREENWORKS_DEFINE_MODULE(greenworks_win32, init)
+  #elif defined(_M_AMD64)
+    GREENWORKS_DEFINE_MODULE(greenworks_win64, init)
+  #endif
 #elif defined(__APPLE__)
-#if defined(__x86_64__) || defined(__ppc64__)
-NODE_MODULE(greenworks_osx64, init)
-#else
-NODE_MODULE(greenworks_osx32, init)
-#endif
+  #if defined(__x86_64__) || defined(__ppc64__)
+    GREENWORKS_DEFINE_MODULE(greenworks_osx64, init)
+  #else
+    GREENWORKS_DEFINE_MODULE(greenworks_osx32, init)
+  #endif
 #elif defined(__linux__)
-#if defined(__x86_64__) || defined(__ppc64__)
-NODE_MODULE(greenworks_linux64, init)
-#else
-NODE_MODULE(greenworks_linux32, init)
-#endif
+  #if defined(__x86_64__) || defined(__ppc64__)
+    GREENWORKS_DEFINE_MODULE(greenworks_linux64, init)
+  #else
+    GREENWORKS_DEFINE_MODULE(greenworks_linux32, init)
+  #endif
 #endif
