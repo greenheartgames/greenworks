@@ -54,20 +54,20 @@ NAN_MODULE_INIT(init) {
 
 #if defined(_WIN32)
   #if defined(_M_IX86)
-    NODE_MODULE(greenworks_win32, init)
+    NAN_MODULE_WORKER_ENABLED(greenworks_win32, init)
   #elif defined(_M_AMD64)
-    NODE_MODULE(greenworks_win64, init)
+    NAN_MODULE_WORKER_ENABLED(greenworks_win64, init)
   #endif
 #elif defined(__APPLE__)
   #if defined(__x86_64__) || defined(__ppc64__)
-    NODE_MODULE(greenworks_osx64, init)
+    NAN_MODULE_WORKER_ENABLED(greenworks_osx64, init)
   #else
-    NODE_MODULE(greenworks_osx32, init)
+    NAN_MODULE_WORKER_ENABLED(greenworks_osx32, init)
   #endif
 #elif defined(__linux__)
   #if defined(__x86_64__) || defined(__ppc64__)
-    NODE_MODULE(greenworks_linux64, init)
+    NAN_MODULE_WORKER_ENABLED(greenworks_linux64, init)
   #else
-    NODE_MODULE(greenworks_linux32, init)
+    NAN_MODULE_WORKER_ENABLED(greenworks_linux32, init)
   #endif
 #endif
