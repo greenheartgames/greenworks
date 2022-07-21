@@ -1,3 +1,13 @@
+Note: As of 2022, **Greenworks has no active maintainer and is no longer in active development**. While **many games continue to use greenworks successfully in production**, depending on your needs, you might want to consider alternatives:
+
+* https://github.com/Spacetech/greenworks - A greenworks fork which seems to have better workshop support and is context-aware but does not seem to have automated builds.
+* https://github.com/ceifa/steamworks.js - A greenworks alternative built on Rust, it's unclear what the feature set is.
+* https://github.com/greenworksjs/greenworks - A community attempt at reviving greenworks - did not go past the planning stages yet.
+
+Feel free to add a PR for other alternatives. Again, [many projects](https://github.com/greenheartgames/greenworks/wiki/Apps-games-using-greenworks) use greenworks successfully, so this might still be your best choice.
+
+---
+
 # Greenworks
 
 * Greenworks is a [node.js addon](https://nodejs.org/api/addons.html) that
