@@ -117,8 +117,8 @@
           'xcode_settings': {
             # Build universal binary to support M1 (Apple silicon)
             'OTHER_CFLAGS': [
-              "-arch x86_64",
-              "-arch arm64"
+              '-arch x86_64',
+              '-arch arm64'
             ],
           }
         }],
