@@ -32,21 +32,10 @@
       ],
     }],
     ['OS=="mac"', {
-      'conditions': [
-        ['target_arch=="ia32"', {
-          'variables': {
-            'project_name': 'greenworks-osx32',
-          },
-        }],
-        ['target_arch=="x64"', {
-          'variables': {
-            'project_name': 'greenworks-osx64',
-          },
-        }],
-      ],
       'variables': {
-        'redist_bin_dir': 'osx32',
-        'public_lib_dir': 'osx32',
+        'project_name': 'greenworks-osx',
+        'redist_bin_dir': 'osx',
+        'public_lib_dir': 'osx',
         'lib_steam': 'libsteam_api.dylib',
         'lib_encryptedappticket': 'libsdkencryptedappticket.dylib',
       },
@@ -169,9 +158,14 @@
         ],
         'OTHER_CPLUSPLUSFLAGS' : [
           '-std=c++14',
+          '-arch x86_64',
+          '-arch arm64',
           '-stdlib=libc++'
         ],
+
         'OTHER_LDFLAGS': [
+          '-arch x86_64',
+          '-arch arm64',
           '-stdlib=libc++'
         ],
       },
