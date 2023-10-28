@@ -57,6 +57,17 @@
             ],
           },
         ],
+        ['OS=="mac"',
+          {
+            'xcode_settings': {
+              # Build universal binary to support M1 (Apple silicon)
+              'OTHER_CFLAGS': [
+                '-arch x86_64',
+                '-arch arm64'
+              ]
+            }
+          },
+        ]
       ],
       'msvs_disabled_warnings': [
         4244,  # conversion from '__int64' to 'long'(gzlib.c)
@@ -103,6 +114,13 @@
           'defines': [
             'USE_FILE32API'
           ],
+          'xcode_settings': {
+            # Build universal binary to support M1 (Apple silicon)
+            'OTHER_CFLAGS': [
+              '-arch x86_64',
+              '-arch arm64'
+            ],
+          }
         }],
         ['clang==1', {
           'xcode_settings': {
