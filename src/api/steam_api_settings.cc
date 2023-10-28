@@ -82,6 +82,11 @@ NAN_METHOD(IsSteamRunning) {
   info.GetReturnValue().Set(Nan::New(running));
 }
 
+NAN_METHOD(IsSteamRunningOnSteamDeck) {
+  Nan::HandleScope scope;
+  info.GetReturnValue().Set(SteamUtils()->IsSteamRunningOnSteamDeck());
+}
+
 NAN_METHOD(GetSteamId) {
   Nan::HandleScope scope;
   CSteamID user_id = SteamUser()->GetSteamID();
@@ -325,6 +330,7 @@ NAN_METHOD(RunCallbacks) {
   info.GetReturnValue().Set(Nan::Undefined());
 }
 
+
 void RegisterAPIs(v8::Local<v8::Object> target) {
   Nan::Set(target,
            Nan::New("_version").ToLocalChecked(),
@@ -332,6 +338,7 @@ void RegisterAPIs(v8::Local<v8::Object> target) {
 
   SET_FUNCTION("restartAppIfNecessary", RestartAppIfNecessary);
   SET_FUNCTION("isSteamRunning", IsSteamRunning);
+  SET_FUNCTION("isSteamRunningOnSteamDeck", IsSteamRunningOnSteamDeck);
   SET_FUNCTION("getSteamId", GetSteamId);
   SET_FUNCTION("getAppId", GetAppId);
   SET_FUNCTION("getAppBuildId", GetAppBuildId);
