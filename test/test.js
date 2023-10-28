@@ -61,6 +61,7 @@ describe('greenworks API', function() {
       console.log(greenworks.getCurrentUILanguage());
       console.log(greenworks.getCurrentGameInstallDir());
       console.log(greenworks.getSteamId());
+      console.log(greenworks.isSteamRunningOnSteamDeck());
       console.log(greenworks.getNumberOfPlayers(function(num) {
         console.log('Number of Players: ' + num);
         done();
