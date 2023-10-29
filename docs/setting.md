@@ -17,6 +17,10 @@ an error.
 
 Returns a `Boolean` whether Steam is running.
 
+### greeenworks.isSteamRunningOnSteamDeck()
+
+Returns a `True` if currently running on the Steam Deck device.
+
 ### greenworks.restartAppIfNecessary(appId)
 
 * `appId` Integer: The APP ID of your game
