@@ -121,7 +121,7 @@
           }],
         ],
       },
-      'cflags': [ '-std=c++14' ],
+      'cflags': [ '-std=c++17' ],
       'conditions': [
         ['OS== "linux"',
           {
@@ -157,7 +157,7 @@
           '-Wno-deprecated-declarations',
         ],
         'OTHER_CPLUSPLUSFLAGS' : [
-          '-std=c++14',
+          '-std=c++17',
           '-arch x86_64',
           '-arch arm64',
           '-stdlib=libc++'
