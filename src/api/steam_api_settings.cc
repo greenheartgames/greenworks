@@ -324,13 +324,6 @@ NAN_METHOD(GetLaunchCommandLine) {
   info.GetReturnValue().Set(Nan::New(buffer, length - 1).ToLocalChecked());
 }
 
-NAN_METHOD(RunCallbacks) {
-  Nan::HandleScope scope;
-  SteamAPI_RunCallbacks();
-  info.GetReturnValue().Set(Nan::Undefined());
-}
-
-
 void RegisterAPIs(v8::Local<v8::Object> target) {
   Nan::Set(target,
            Nan::New("_version").ToLocalChecked(),
