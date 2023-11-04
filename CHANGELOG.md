@@ -1,3 +1,54 @@
+## 2023.11.04 v0.15.0 stable
+
+* Update to Steamworks SDK 1.58
+* Greenworks copmiled for NW.js v0.82.0
+* Greenworks addon on mac is a universal binary (x86_64 and arm64)
+* New APIs:
+  * `greenworks.isSteamRunningOnSteamDeck()`
+  * `greenworks.indicateAchievementProgress(achievement, current, max)`
+  * `greenworks.getFriendGamePlayed(steamIDFriend)`
+  * `greenworks.getLaunchCommandLine()`
+  * `greenworks.getFriendPersonaName(raw_steam_id)`
+  * `greenworks.setRichPresence(pchKey, pchValue)`
+  * `greenworks.ClearRichPresence()`
+  * `greenworks.getFriendRichPresence(steamIDFriend, pchKey)`
+  * `greenworks.setPlayedWith(steamIDUserPlayedWith)`
+  * `greenworks.activateGameOverlayInviteDialog(steamIDLobby)`
+  * `greenworks.activateGameOverlayToUser(pchDialog, CSteamID steamID)`
+  * `greenworks.createLobby(lobbyType, maxMembers)`
+  * `greenworks.deleteLobbyData(steamIDLobby, pchKey)`
+  * `greenworks.getLobbyByIndex(iLobby)`
+  * `greenworks.getLobbyData(steamIDLobby, pchKey)`
+  * `greenworks.getLobbyMemberByIndex(steamIDLobby, iMember)`
+  * `greenworks.getNumLobbyMembers(steamIDLobby)`
+  * `greenworks.getLobbyOwner(steamIDLobby)`
+  * `greenworks.inviteUserToLobby(steamIDLobby, steamIDInvitee)`
+  * `greenworks.joinLobby(steamIDLobby)`
+  * `greenworks.leaveLobby(steamIDLobby)`
+  * `greenworks.setLobbyData(steamIDLobby, pchKey, pchValue)`
+  * `greenworks.setLobbyJoinable(steamIDLobby, bLobbyJoinable)`
+  * `greenworks.setLobbyOwner(steamIDLobby, steamIDNewOwner)`
+  * `greenworks.setLobbyType(steamIDLobby, eLobbyType)`
+  * `greenworks.ugcGetItemState(published_file_id)`
+  * `greenworks.ugcGetItemInstallInfo(published_file_id)`
+  * `greenworks.getIPCountry()`
+  * `greenworks.isSteamInBigPictureMode()`
+  * `greenworks.getDLCDataByIndex(index)`
+  * `greenworks.getAppBuildId()`
+  * `greenworks.isAppInstalled(appId)`
+  * `greenworks.getAppInstallDir(app_id, buffer, buffer_size)`
+* New events:
+  * `new-url-launch-parameters`
+  * `rich-presence-join-requested`
+  * `lobby-created`
+  * `lobby-data-update`
+  * `lobby-enter`
+  * `lobby-invite`
+  * `lobby-join-requested`
+* Fix incorrect index on `canelAuthticket` API
+* Fix "Error on saving file on local machine" bug, #178
+* Fix `requestUserInformation` API not returning result
+
 ## 2018.11.18 v0.14.0 stable
 
 * Greenworks complied for for NW.js v0.31.5, v0.32.4, v0.33.3 and Electron v3.0.9, v4.0.0-beta 7 with Steamworks SDK 1.42
