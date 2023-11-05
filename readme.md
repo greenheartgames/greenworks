@@ -1,32 +1,3 @@
-Note: As of 2022, **Greenworks has no active maintainer and is no longer in active development**. While **many games continue to use greenworks successfully in production**, depending on your needs, you might want to consider alternatives:
-
-<table>
- <thead>
-  <tr>
-   <th>Repository</th>
-   <th>Stats</th>
-  </tr>
- </thead>
- <tbody>
-  <tr>
-   <td><a href="https://github.com/ceifa/steamworks.js">ceifa/steamworks.js</a><br />A greenworks alternative built on Rust, it's unclear what the feature set is.</td>
-   <td><img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/ceifa/steamworks.js"> <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/ceifa/steamworks.js"> <img alt="npm" src="https://img.shields.io/npm/dm/steamworks.js"> <img alt="Discord" src="https://img.shields.io/discord/663831597690257431"></td>
-  </tr>
-  <tr>
-   <td><a href="https://github.com/greenworksjs/greenworks">greenworksjs/greenworks</a><br />A community attempt at reviving greenworks - did not go past the planning stages yet.</td>
-   <td><img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/greenworksjs/greenworks"> <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/greenworksjs/greenworks"></td>
-  </tr>
-  <tr>
-   <td><a href="https://github.com/Spacetech/greenworks">Spacetech/greenworks</a><br />A greenworks fork which seems to have better workshop support and is context-aware but does not seem to have automated builds.</td>
-   <td><img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/Spacetech/greenworks"> <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/Spacetech/greenworks"></td>
-  </tr>
- </tbody>
-</table>
-
-Feel free to add a PR for other alternatives. Again, [many projects](https://github.com/greenheartgames/greenworks/wiki/Apps-games-using-greenworks) use greenworks successfully, so this might still be your best choice.
-
----
-
 # Greenworks
 
 * Greenworks is a [node.js addon](https://nodejs.org/api/addons.html) that
@@ -58,6 +29,16 @@ You can also download [daily automated builds](https://greenworks-prebuilds.arma
 ## Documentation
 
 Guides and the API references are located in [docs](docs) directory.
+
+## Contributions
+
+This project is not actively developed but is maintained at best-effort.
+Due to my limited time, responses to issues and code reviews may be slow.
+If you need additional support or have big great ideas, please reach out to
+the [maintainer](https://github.com/hokein).
+
+While [many games]((https://github.com/greenheartgames/greenworks/wiki/Apps-games-using-greenworks)) uses Greenworks successfully in production,
+depending on your needs, you might want to consider [alternatives](docs/alternatives.md).
 
 ## License
 
