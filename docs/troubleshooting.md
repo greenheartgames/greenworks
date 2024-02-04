@@ -42,17 +42,27 @@ In order for the Steam Overlay (activated by "Shift + Tab" by default) to work
 properly, you need to have your NW.js draw every frame. Normally, the browser
 won't redraw every frame when it's idle.
 
-One possible solution to this would be, to insert a small 1x1 pixel canvas
+One possible solution to this would be, to insert a blank pixel canvas
 element, which you update in every frame. Example:
 
 ```html
 <html>
 <head>
+<style>
+#forceRefreshCanvas{
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  z-index: -99999;
+}
+</style>
+</head>
 <script>
     function forceRefresh() {
         var canvas = document.getElementById("forceRefreshCanvas");
-        var ctx = canvas.getContext("2d");
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        canvas.width = window.outerWidth;
+        canvas.height = window.outerHeight;
+        canvas.getContext("2d").clearRect(0, 0, canvas.width, canvas.height);
         window.requestAnimationFrame(forceRefresh);
     }
 </script>
