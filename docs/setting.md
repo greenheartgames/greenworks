@@ -91,6 +91,18 @@ Will always return `false` if the application is not in Steam's `game` category.
 
 Open a specified url in steam game overlay.
 
+### greenworks.activateGameOverlayToStore(appId, storeFlag)
+
+Activates the Steam Overlay to the Steam store page for the provided app.
+
+* `appId` Integer: The app ID to show the store page of.
+* `storeFlag` Integer: Flags to modify the behavior when the page opens.
+
+Valid storeFlag options are:
+* 0 - No.
+* 1 - Add the specified app ID to the users cart.
+* 2 - Add the specified app ID to the users cart and show the store page.
+
 ### greenworks.isSubscribedApp(appId)
 
 * `appId` Integer: The APP ID of your game
