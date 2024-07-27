@@ -1,5 +1,26 @@
 ## Methods
 
+### greenworks.FloatingGamepadTextInputMode
+
+Represents Steam SDK `EFloatingGamepadTextInputMode`.
+
+* `SingleLine`
+* `MultipleLines`
+* `Email`
+* `Numeric`
+
+### greenworks.showFloatingGamepadTextInput(keyboardMode, x, y, width, height)
+
+* `keyboardMode` greenworks.FloatingGamepadTextInputMode
+* `x` Integer
+* `y` Integer
+* `width` Integer
+* `height` Integer
+
+Opens a floating keyboard over the game content and sends OS keyboard keys directly to the game.
+
+Returns `true` if the floating keyboard was shown, otherwise `false`.
+
 ### greenworks.Utils.move(source_dir, target_dir, [success_callback], [error_callback])
 
 * `source_dir` String
