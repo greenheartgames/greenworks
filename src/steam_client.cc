@@ -7,6 +7,7 @@
 #include <algorithm>
 
 #include "nan.h"
+#include "steam/isteamutils.h"
 
 namespace greenworks {
 
@@ -41,19 +42,20 @@ SteamClient::SteamClient()
       steam_persona_state_change_(this, &SteamClient::OnPeronaStateChange),
       avatar_image_loaded_(this, &SteamClient::OnAvatarImageLoaded),
       game_connected_friend_chat_msg_(
-          this,
-          &SteamClient::OnGameConnectedFriendChatMessage),
+          this, &SteamClient::OnGameConnectedFriendChatMessage),
       dlc_installed_(this, &SteamClient::OnDLCInstalled),
       MicroTxnAuthorizationResponse_(
-          this,
-          &SteamClient::OnMicroTxnAuthorizationResponse),
+          this, &SteamClient::OnMicroTxnAuthorizationResponse),
       OnLobbyCreated_(this, &SteamClient::OnLobbyCreated),
       OnLobbyDataUpdate_(this, &SteamClient::OnLobbyDataUpdate),
       OnLobbyEnter_(this, &SteamClient::OnLobbyEnter),
       OnLobbyInvite_(this, &SteamClient::OnLobbyInvite),
       OnGameLobbyJoinRequested_(this, &SteamClient::OnGameLobbyJoinRequested),
-      OnGameRichPresenceJoinRequested_(this, &SteamClient::OnGameRichPresenceJoinRequested),
-      OnNewUrlLaunchParameters_(this, &SteamClient::OnNewUrlLaunchParameters) {}
+      OnGameRichPresenceJoinRequested_(
+          this, &SteamClient::OnGameRichPresenceJoinRequested),
+      OnNewUrlLaunchParameters_(this, &SteamClient::OnNewUrlLaunchParameters),
+      OnFloatingGamepadTextInputDismissed_(
+          this, &SteamClient::OnFloatingGamepadTextInputDismissed) {}
 
 SteamClient::~SteamClient() {
   for (size_t i = 0; i < observer_list_.size(); ++i) {
@@ -201,6 +203,13 @@ void SteamClient::OnGameRichPresenceJoinRequested(GameRichPresenceJoinRequested_
 void SteamClient::OnNewUrlLaunchParameters(NewUrlLaunchParameters_t *callback) {
   for (size_t i = 0; i < observer_list_.size(); ++i) {
     observer_list_[i]->OnNewUrlLaunchParameters();
+  }
+}
+
+void SteamClient::OnFloatingGamepadTextInputDismissed(
+    FloatingGamepadTextInputDismissed_t *callback) {
+  for (size_t i = 0; i < observer_list_.size(); ++i) {
+    observer_list_[i]->OnFloatingGamepadTextInputDismissed();
   }
 }
 

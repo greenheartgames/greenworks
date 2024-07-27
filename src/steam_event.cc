@@ -212,4 +212,13 @@ void SteamEvent::OnNewUrlLaunchParameters() {
     Nan::New(persistent_steam_events_), "on", 1, argv);
 }
 
+void SteamEvent::OnFloatingGamepadTextInputDismissed() {
+  Nan::HandleScope scope;
+  v8::Local<v8::Value> argv[] = {
+      Nan::New("floating-gamepad-text-input-dismissed").ToLocalChecked()};
+  Nan::AsyncResource ar(
+      "greenworks:SteamEvent.OnFloatingGamepadTextInputDismissed");
+  ar.runInAsyncScope(Nan::New(persistent_steam_events_), "on", 1, argv);
+}
+
 }  // namespace greenworks

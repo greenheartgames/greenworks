@@ -45,6 +45,7 @@ class SteamEvent : public greenworks::SteamClient::Observer {
   void OnGameRichPresenceJoinRequested(uint64 steamIDFriend,
                                        std::string rgchConnect) override;
   void OnNewUrlLaunchParameters() override;
+  void OnFloatingGamepadTextInputDismissed() override;
 
 private:
   const Nan::Persistent<v8::Object>& persistent_steam_events_;

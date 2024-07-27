@@ -42,6 +42,7 @@ class SteamClient {
     virtual void OnGameLobbyJoinRequested(uint64 SteamIdLobby, uint64 SteamIdUser) = 0;
     virtual void OnGameRichPresenceJoinRequested(uint64 steamIDFriend, std::string rgchConnect) = 0;
     virtual void OnNewUrlLaunchParameters() = 0;
+    virtual void OnFloatingGamepadTextInputDismissed() = 0;
     virtual ~Observer() {}
   };
 
@@ -90,9 +91,16 @@ class SteamClient {
   STEAM_CALLBACK(SteamClient, OnLobbyDataUpdate, LobbyDataUpdate_t, OnLobbyDataUpdate_);
   STEAM_CALLBACK(SteamClient, OnLobbyEnter, LobbyEnter_t, OnLobbyEnter_);
   STEAM_CALLBACK(SteamClient, OnLobbyInvite, LobbyInvite_t, OnLobbyInvite_);
-  STEAM_CALLBACK(SteamClient, OnGameLobbyJoinRequested, GameLobbyJoinRequested_t, OnGameLobbyJoinRequested_);
-  STEAM_CALLBACK(SteamClient, OnGameRichPresenceJoinRequested, GameRichPresenceJoinRequested_t, OnGameRichPresenceJoinRequested_);
-  STEAM_CALLBACK(SteamClient, OnNewUrlLaunchParameters, NewUrlLaunchParameters_t, OnNewUrlLaunchParameters_);
+  STEAM_CALLBACK(SteamClient, OnGameLobbyJoinRequested,
+                 GameLobbyJoinRequested_t, OnGameLobbyJoinRequested_);
+  STEAM_CALLBACK(SteamClient, OnGameRichPresenceJoinRequested,
+                 GameRichPresenceJoinRequested_t,
+                 OnGameRichPresenceJoinRequested_);
+  STEAM_CALLBACK(SteamClient, OnNewUrlLaunchParameters,
+                 NewUrlLaunchParameters_t, OnNewUrlLaunchParameters_);
+  STEAM_CALLBACK(SteamClient, OnFloatingGamepadTextInputDismissed,
+                 FloatingGamepadTextInputDismissed_t,
+                 OnFloatingGamepadTextInputDismissed_);
 };
 
 }  // namespace greenworks
