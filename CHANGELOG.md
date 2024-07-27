@@ -1,8 +1,14 @@
+## 2024.07.27 v0.17.0 stable
+
+* Update to Steamworks SDK 1.60
+* Greenworks compiled for NW.js v0.89.0
+* Add `greenworks.showFloatingGamepadTextInput` API and `floating-gamepad-text-input-dismissed` event
+
 ## 2024.04.07 v0.16.0 stable
 
 * Update to Steamworks SDK 1.59
 * Greenworks copmiled for NW.js v0.86.0
-* Add greenworks.activateGameOverlayToStore API #280
+* Add `greenworks.activateGameOverlayToStore` API #280
 
 ## 2023.11.04 v0.15.0 stable
 
