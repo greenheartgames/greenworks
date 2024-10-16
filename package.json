@@ -13,7 +13,7 @@
     "compdb": "node-gyp configure --release -- -f gyp.generator.compile_commands_json.py && cp Release/compile_commands.json ."
   },
   "dependencies": {
-    "nan": "^2.19.0"
+    "nan": "^2.22.0"
   },
   "devDependencies": {
     "mocha": "1.21.4"
