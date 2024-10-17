@@ -1,3 +1,7 @@
+## 2024.10.17 v0.18.0 stable
+
+* Greenworks compiled for NW.js v0.92.0
+
 ## 2024.07.27 v0.17.0 stable
 
 * Update to Steamworks SDK 1.60
