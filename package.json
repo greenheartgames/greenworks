@@ -1,11 +1,11 @@
 {
-  "name": "greenworks",
-  "version": "0.18.0",
-  "description": "A node.js addon exposing Valve's Steamworks APIs to JavaScript",
+  "name": "greenteaworks",
+  "version": "0.92.0",
+  "description": "a node.js plugin to integrate nw.js/electron games with steamworks with p2p",
   "licenses": [
     {
       "type": "MIT",
-      "url": "https://github.com/greenheartgames/greenworks/blob/master/LICENSE"
+      "url": "https://github.com/Hocti/greenteaworks"
     }
   ],
   "scripts": {
@@ -13,11 +13,20 @@
     "compdb": "node-gyp configure --release -- -f gyp.generator.compile_commands_json.py && cp Release/compile_commands.json ."
   },
   "dependencies": {
-    "nan": "^2.22.0"
   },
   "devDependencies": {
-    "mocha": "1.21.4"
+    "nan": "^2.22.0",
+    "mocha": "1.21.4",
+    "@types/node": "^22.8.1"
   },
+  "files": [
+    "greenteaworks.js",
+    "types",
+    "lib",
+    "greenteaworks.d.ts",
+    "package.json"
+  ],
   "gypfile": true,
-  "main": "greenworks.js"
+  "main": "greenteaworks.js",
+  "types": "greenteaworks.d.js"
 }

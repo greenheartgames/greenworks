@@ -47,6 +47,11 @@ class SteamEvent : public greenworks::SteamClient::Observer {
   void OnNewUrlLaunchParameters() override;
   void OnFloatingGamepadTextInputDismissed() override;
 
+//*
+  void OnLobbyMatchList(uint32 LobbiesMatching) override;
+  void OnP2PSessionRequest(uint64 steamIDRemote) override;
+  void OnP2PSessionConnectFail(uint64 steamIDRemote, uint8 eP2PSessionError) override;
+
 private:
   const Nan::Persistent<v8::Object>& persistent_steam_events_;
 };
