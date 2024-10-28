@@ -19,6 +19,16 @@
     "mocha": "1.21.4",
     "@types/node": "^22.8.1"
   },
+  "keywords": [
+    "steamworks",
+    "greenworks",
+    "steam",
+    "nw.js",
+    "electron",
+    "p2p",
+    "multiplayer",
+    "windows"
+  ],
   "files": [
     "greenteaworks.js",
     "types",
