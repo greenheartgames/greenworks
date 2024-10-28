@@ -395,6 +395,21 @@ NAN_METHOD(SetLobbyType) {
   );
 }
 
+//*
+NAN_METHOD(RequestLobbyList) {
+  Nan::HandleScope scope;
+  if (info.Length() >0) {
+    THROW_BAD_ARGS("Bad arguments");
+  }
+  info.GetReturnValue().Set(
+    Nan::New(
+      utils::uint64ToString(
+        SteamMatchmaking()->RequestLobbyList()
+      )
+    ).ToLocalChecked()
+  );
+}
+
 void RegisterAPIs(v8::Local<v8::Object> target) {
   InitChatMemberStateChange(target);
   InitLobbyComparison(target);
@@ -416,6 +431,9 @@ void RegisterAPIs(v8::Local<v8::Object> target) {
   SET_FUNCTION("setLobbyJoinable", SetLobbyJoinable);
   SET_FUNCTION("setLobbyOwner", SetLobbyOwner);
   SET_FUNCTION("setLobbyType", SetLobbyType);
+
+//*
+  SET_FUNCTION("requestLobbyList", RequestLobbyList);
 }
 
 SteamAPIRegistry::Add X(RegisterAPIs);

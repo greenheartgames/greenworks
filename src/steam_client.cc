@@ -54,6 +54,11 @@ SteamClient::SteamClient()
       OnGameRichPresenceJoinRequested_(
           this, &SteamClient::OnGameRichPresenceJoinRequested),
       OnNewUrlLaunchParameters_(this, &SteamClient::OnNewUrlLaunchParameters),
+      //*
+      OnLobbyMatchList_(this, &SteamClient::OnLobbyMatchList),
+      OnP2PSessionRequest_(this, &SteamClient::OnP2PSessionRequest),
+      OnP2PSessionConnectFail_(this, &SteamClient::OnP2PSessionConnectFail),
+      
       OnFloatingGamepadTextInputDismissed_(
           this, &SteamClient::OnFloatingGamepadTextInputDismissed) {}
 
@@ -210,6 +215,32 @@ void SteamClient::OnFloatingGamepadTextInputDismissed(
     FloatingGamepadTextInputDismissed_t *callback) {
   for (size_t i = 0; i < observer_list_.size(); ++i) {
     observer_list_[i]->OnFloatingGamepadTextInputDismissed();
+  }
+}
+
+//*
+void SteamClient::OnLobbyMatchList(LobbyMatchList_t *callback) {
+  for (size_t i = 0; i < observer_list_.size(); ++i) {
+    observer_list_[i]->OnLobbyMatchList(
+        callback->m_nLobbiesMatching
+        );
+  }
+}
+
+void SteamClient::OnP2PSessionRequest(P2PSessionRequest_t *callback) {
+  for (size_t i = 0; i < observer_list_.size(); ++i) {
+    observer_list_[i]->OnP2PSessionRequest(
+        callback->m_steamIDRemote.ConvertToUint64()
+        );
+  }
+}
+
+void SteamClient::OnP2PSessionConnectFail(P2PSessionConnectFail_t *callback) {
+  for (size_t i = 0; i < observer_list_.size(); ++i) {
+    observer_list_[i]->OnP2PSessionConnectFail(
+        callback->m_steamIDRemote.ConvertToUint64(),
+        callback->m_eP2PSessionError
+        );
   }
 }
 
