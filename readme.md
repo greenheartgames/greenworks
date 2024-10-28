@@ -1,8 +1,8 @@
 # GreenTeaWorks
 
-- clone from greenworks.js
+- clone from [greenworks.js](https://github.com/greenheartgames/greenworks)。
 - version number sync as nw.js
-- added types for typescript
+- added types for typescript, clone from [here](https://www.npmjs.com/package/@wangdevops/greenworks)。
 - added p2p function:
   - `acceptP2PSessionWithUser(steamId: string): void`
   - `isP2PPacketAvailable(nChannel?:number): number`
