@@ -221,4 +221,40 @@ void SteamEvent::OnFloatingGamepadTextInputDismissed() {
   ar.runInAsyncScope(Nan::New(persistent_steam_events_), "on", 1, argv);
 }
 
+//*
+void SteamEvent::OnLobbyMatchList(uint32 LobbiesMatching) {
+  Nan::HandleScope scope;
+  v8::Local<v8::Value> argv[] = {
+      Nan::New("lobby-match-list").ToLocalChecked(),
+      Nan::New(LobbiesMatching)
+      //Nan::New(utils::uint32ToString(LobbiesMatching)).ToLocalChecked()
+  };
+  Nan::AsyncResource ar("greenworks:SteamEvent.OnLobbyMatchList");
+  ar.runInAsyncScope(
+      Nan::New(persistent_steam_events_), "on", 2, argv);
+}
+
+void SteamEvent::OnP2PSessionRequest(uint64 steamIDRemote) {
+  Nan::HandleScope scope;
+  v8::Local<v8::Value> argv[] = {
+      Nan::New("p2p-session-request").ToLocalChecked(),
+        Nan::New(utils::uint64ToString(steamIDRemote)).ToLocalChecked()
+  };
+  Nan::AsyncResource ar("greenworks:SteamEvent.OnP2PSessionRequest");
+  ar.runInAsyncScope(
+      Nan::New(persistent_steam_events_), "on", 2, argv);
+}
+
+void SteamEvent::OnP2PSessionConnectFail(uint64 steamIDRemote,uint8 eP2PSessionError) {
+  Nan::HandleScope scope;
+  v8::Local<v8::Value> argv[] = {
+      Nan::New("p2p-session-connect-fail").ToLocalChecked(),
+        Nan::New(utils::uint64ToString(steamIDRemote)).ToLocalChecked(),
+        Nan::New(eP2PSessionError)
+  };
+  Nan::AsyncResource ar("greenworks:SteamEvent.OnP2PSessionConnectFail");
+  ar.runInAsyncScope(
+      Nan::New(persistent_steam_events_), "on", 3, argv);
+}
+
 }  // namespace greenworks
