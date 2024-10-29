@@ -58,6 +58,8 @@ SteamClient::SteamClient()
       OnLobbyMatchList_(this, &SteamClient::OnLobbyMatchList),
       OnP2PSessionRequest_(this, &SteamClient::OnP2PSessionRequest),
       OnP2PSessionConnectFail_(this, &SteamClient::OnP2PSessionConnectFail),
+      OnLobbyChatMsg_(this, &SteamClient::OnLobbyChatMsg),
+      OnLobbyChatUpdate_(this, &SteamClient::OnLobbyChatUpdate),
       
       OnFloatingGamepadTextInputDismissed_(
           this, &SteamClient::OnFloatingGamepadTextInputDismissed) {}
@@ -243,6 +245,33 @@ void SteamClient::OnP2PSessionConnectFail(P2PSessionConnectFail_t *callback) {
         );
   }
 }
+
+void SteamClient::OnLobbyChatMsg(LobbyChatMsg_t *callback) {
+  for (size_t i = 0; i < observer_list_.size(); ++i) {
+    observer_list_[i]->OnLobbyChatMsg(
+        callback->m_ulSteamIDLobby,
+        callback->m_ulSteamIDUser,
+        callback->m_eChatEntryType,
+        callback->m_iChatID
+        );
+  }
+}
+
+void SteamClient::OnLobbyChatUpdate(LobbyChatUpdate_t *callback) {
+  for (size_t i = 0; i < observer_list_.size(); ++i) {
+    observer_list_[i]->OnLobbyChatUpdate(
+        callback->m_ulSteamIDLobby,
+        callback->m_ulSteamIDUserChanged,
+        callback->m_ulSteamIDMakingChange,
+        callback->m_rgfChatMemberStateChange
+        );
+  }
+}
+
+
+
+
+
 
 void SteamClient::StartSteamLoop() {
   if (g_steam_timer)

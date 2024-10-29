@@ -48,6 +48,8 @@ class SteamClient {
     virtual void OnLobbyMatchList(uint32 LobbiesMatching) = 0;
     virtual void OnP2PSessionRequest(uint64 steamIDRemote) = 0;
     virtual void OnP2PSessionConnectFail(uint64 steamIDRemote, uint8 eP2PSessionError) = 0;
+    virtual void OnLobbyChatMsg(uint64 steamIDLobby,uint64 steamIDUser,uint8 chatEntryType,uint32 chatID) = 0;
+    virtual void OnLobbyChatUpdate(uint64 SteamIDLobby,uint64 SteamIDUserChanged,uint64 SteamIDMakingChange	,uint32 ChatMemberStateChange) = 0;
 
     virtual ~Observer() {}
   };
@@ -112,6 +114,8 @@ class SteamClient {
   STEAM_CALLBACK(SteamClient, OnLobbyMatchList, LobbyMatchList_t, OnLobbyMatchList_);
   STEAM_CALLBACK(SteamClient, OnP2PSessionRequest, P2PSessionRequest_t, OnP2PSessionRequest_);
   STEAM_CALLBACK(SteamClient, OnP2PSessionConnectFail, P2PSessionConnectFail_t, OnP2PSessionConnectFail_);
+  STEAM_CALLBACK(SteamClient, OnLobbyChatMsg, LobbyChatMsg_t, OnLobbyChatMsg_);
+  STEAM_CALLBACK(SteamClient, OnLobbyChatUpdate, LobbyChatUpdate_t, OnLobbyChatUpdate_);
 };
 
 }  // namespace greenworks
