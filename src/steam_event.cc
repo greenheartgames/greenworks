@@ -257,4 +257,32 @@ void SteamEvent::OnP2PSessionConnectFail(uint64 steamIDRemote,uint8 eP2PSessionE
       Nan::New(persistent_steam_events_), "on", 3, argv);
 }
 
+void SteamEvent::OnLobbyChatUpdate(uint64 SteamIDLobby,uint64 SteamIDUserChanged,uint64 SteamIDMakingChange	,uint32 ChatMemberStateChange) {
+  Nan::HandleScope scope;
+  v8::Local<v8::Value> argv[] = {
+      Nan::New("lobby-chat-update").ToLocalChecked(),
+        Nan::New(utils::uint64ToString(SteamIDLobby)).ToLocalChecked(),
+        Nan::New(utils::uint64ToString(SteamIDUserChanged)).ToLocalChecked(),
+        Nan::New(utils::uint64ToString(SteamIDMakingChange)).ToLocalChecked(),
+        Nan::New(ChatMemberStateChange)
+  };
+  Nan::AsyncResource ar("greenworks:SteamEvent.OnLobbyChatUpdate");
+  ar.runInAsyncScope(
+      Nan::New(persistent_steam_events_), "on", 5, argv);
+}
+
+void SteamEvent::OnLobbyChatMsg(uint64 steamIDLobby,uint64 steamIDUser,uint8 chatEntryType,uint32 chatID) {
+  Nan::HandleScope scope;
+  v8::Local<v8::Value> argv[] = {
+      Nan::New("lobby-chat-msg").ToLocalChecked(),
+        Nan::New(utils::uint64ToString(steamIDLobby)).ToLocalChecked(),
+        Nan::New(utils::uint64ToString(steamIDUser)).ToLocalChecked(),
+        Nan::New(chatEntryType),
+        Nan::New(chatID)
+  };
+  Nan::AsyncResource ar("greenworks:SteamEvent.OnLobbyChatMsg");
+  ar.runInAsyncScope(
+      Nan::New(persistent_steam_events_), "on", 5, argv);
+}
+
 }  // namespace greenworks

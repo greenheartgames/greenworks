@@ -51,6 +51,8 @@ class SteamEvent : public greenworks::SteamClient::Observer {
   void OnLobbyMatchList(uint32 LobbiesMatching) override;
   void OnP2PSessionRequest(uint64 steamIDRemote) override;
   void OnP2PSessionConnectFail(uint64 steamIDRemote, uint8 eP2PSessionError) override;
+  void OnLobbyChatMsg(uint64 steamIDLobby,uint64 steamIDUser,uint8 chatEntryType,uint32 chatID) override;
+  void OnLobbyChatUpdate(uint64 SteamIDLobby,uint64 SteamIDUserChanged,uint64 SteamIDMakingChange	,uint32 ChatMemberStateChange) override;
 
 private:
   const Nan::Persistent<v8::Object>& persistent_steam_events_;

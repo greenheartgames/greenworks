@@ -30,13 +30,13 @@
     "windows"
   ],
   "files": [
-    "greenteaworks.js",
+    "greenworks.js",
     "types",
     "lib",
-    "greenteaworks.d.ts",
+    "greenworks.d.ts",
     "package.json"
   ],
   "gypfile": true,
-  "main": "greenteaworks.js",
-  "types": "greenteaworks.d.js"
+  "main": "greenworks.js",
+  "types": "greenworks.d.js"
 }

@@ -491,6 +491,8 @@ export const enum SteamEvent {
   LobbyMatchList = 'lobby-match-list', //
   P2PSessionRequest = "p2p-session-request", //
   P2PSessionConnectFail = "p2p-session-connect-fail", //
+  LobbyChatMsg = "lobby-chat-msg", //
+  LobbyChatUpdate = "lobby-chat-update", //
 }
 
 /**游戏遮罩层*/

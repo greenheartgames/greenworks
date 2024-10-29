@@ -410,6 +410,44 @@ NAN_METHOD(RequestLobbyList) {
   );
 }
 
+/*
+NAN_METHOD(GetLobbyChatEntry) {
+  if (info.Length() < 3) {
+    Nan::ThrowTypeError("Wrong number of arguments");
+    return;
+  }
+
+  if (!info[0]->IsString() || !info[1]->IsNumber() || !info[2]->IsObject()) {
+    Nan::ThrowTypeError("Wrong arguments");
+    return;
+  }
+
+  v8::String::Utf8Value str(info[0]->ToString());
+  std::string lobbyIdStr(*str);
+  CSteamID steamIDLobby(static_cast<uint64>(std::stoull(lobbyIdStr)));
+
+  int iChatID = info[1]->Int32Value();
+
+  CSteamID steamIDUser;
+  char dataBuffer[4096];
+  int cubData = sizeof(dataBuffer);
+  EChatEntryType chatEntryType;
+
+  int result = SteamMatchmaking()->GetLobbyChatEntry(steamIDLobby, iChatID, &steamIDUser, dataBuffer, cubData, &chatEntryType);
+
+  if (result == -1) {
+    Nan::ThrowError("Failed to get chat entry");
+    return;
+  }
+
+  v8::Local<v8::Object> resultObj = Nan::New<v8::Object>();
+  resultObj->Set(Nan::New("steamIDUser").ToLocalChecked(), Nan::New(std::to_string(steamIDUser.ConvertToUint64())).ToLocalChecked());
+  resultObj->Set(Nan::New("data").ToLocalChecked(), Nan::New(dataBuffer).ToLocalChecked());
+  resultObj->Set(Nan::New("chatEntryType").ToLocalChecked(), Nan::New(chatEntryType));
+
+  info.GetReturnValue().Set(resultObj);
+}
+*/
 void RegisterAPIs(v8::Local<v8::Object> target) {
   InitChatMemberStateChange(target);
   InitLobbyComparison(target);
@@ -434,6 +472,7 @@ void RegisterAPIs(v8::Local<v8::Object> target) {
 
 //*
   SET_FUNCTION("requestLobbyList", RequestLobbyList);
+  //SET_FUNCTION("getLobbyChatEntry", GetLobbyChatEntry);
 }
 
 SteamAPIRegistry::Add X(RegisterAPIs);
