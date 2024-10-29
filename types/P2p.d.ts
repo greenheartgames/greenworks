@@ -8,7 +8,7 @@ export const enum eP2PSendType {
     ReliableWithBuffering = 3
   }
 
-export function sendP2PPacket(steamId: string, sendType: eP2PSendType, data: Buffer): boolean
+export function sendP2PPacket(steamId: string, sendType: eP2PSendType, data: Buffer,nChannel?:number): boolean
 
 export interface P2PPacket {
     data: Buffer

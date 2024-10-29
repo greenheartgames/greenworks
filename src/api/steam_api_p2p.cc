@@ -93,16 +93,24 @@ NAN_METHOD(SendP2PPacket) {
   }
   int eP2PSendType = info[1]->NumberValue(Nan::GetCurrentContext()).FromJust();
 
-
   if (!info[2]->IsObject() || !node::Buffer::HasInstance(info[2])) {
       Nan::ThrowTypeError("data argument must be a buffer");
       return;
   }
+
+  int nChannel = 0;
+  if (info.Length() > 1) {
+    if(!info[3]->IsInt32()){
+      THROW_BAD_ARGS("Bad arguments: nChannel must be a number");
+    }
+    nChannel=info[3]->NumberValue(Nan::GetCurrentContext()).FromJust();
+  }
+
   v8::Local<v8::Object> bufferObj = info[2]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
   char* bufferData = node::Buffer::Data(bufferObj);
   size_t bufferLength = node::Buffer::Length(bufferObj);
 
-  bool success = SteamNetworking()->SendP2PPacket(targetUserID, bufferData, static_cast<uint32>(bufferLength), static_cast<EP2PSend>(eP2PSendType));
+  bool success = SteamNetworking()->SendP2PPacket(targetUserID, bufferData, static_cast<uint32>(bufferLength), static_cast<EP2PSend>(eP2PSendType),nChannel);
 
   info.GetReturnValue().Set(Nan::New(success));
 }
