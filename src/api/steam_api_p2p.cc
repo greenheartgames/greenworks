@@ -53,17 +53,6 @@ NAN_METHOD(IsP2PPacketAvailable) {
     } else {
         info.GetReturnValue().Set(Nan::New(0));
     }
-  /*
-  v8::Local<v8::Object> result = Nan::New<v8::Object>();
-  Nan::Set(result, Nan::New("available").ToLocalChecked(), Nan::New(available));
-  Nan::Set(result, Nan::New("msgSize").ToLocalChecked(), Nan::New(cubMsgSize));
-
-  info.GetReturnValue().Set(result);
-
-  info.GetReturnValue().Set(
-    SteamNetworking()->IsP2PPacketAvailable(&cubMsgSize,nChannel)
-  );
-  */
 }
 
 
@@ -161,11 +150,86 @@ NAN_METHOD(ReadP2PPacket) {
 
 
 
+NAN_METHOD(CloseP2PSessionWithUser) {
+  Nan::HandleScope scope;
+  if (info.Length() < 1 || !info[0]->IsString()) {
+    THROW_BAD_ARGS("Bad arguments");
+  }
+  std::string steam_id_str(*(Nan::Utf8String(info[0])));
+  CSteamID steam_id(utils::strToUint64(steam_id_str));
+  if (!steam_id.IsValid()) {
+    THROW_BAD_ARGS("Steam ID is invalid");
+  }
+  info.GetReturnValue().Set(
+    SteamNetworking()->CloseP2PSessionWithUser(steam_id)
+  );
+}
+
+NAN_METHOD(CloseP2PChannelWithUser) {
+  Nan::HandleScope scope;
+  if (info.Length() < 2 || !info[0]->IsString() || !info[1]->IsInt32()) {
+    THROW_BAD_ARGS("Bad arguments");
+  }
+
+  std::string steam_id_str(*(Nan::Utf8String(info[0])));
+  CSteamID steam_id(utils::strToUint64(steam_id_str));
+  if (!steam_id.IsValid()) {
+    THROW_BAD_ARGS("Steam ID is invalid");
+  }
+
+  int nChannel=info[1]->NumberValue(Nan::GetCurrentContext()).FromJust();
+
+  info.GetReturnValue().Set(
+    SteamNetworking()->CloseP2PChannelWithUser(steam_id,nChannel)
+  );
+}
+
+NAN_METHOD(GetP2PSessionState) {
+  Nan::HandleScope scope;
+  if (info.Length() < 1 || !info[0]->IsString()) {
+    THROW_BAD_ARGS("Bad arguments");
+  }
+  std::string steam_id_str(*(Nan::Utf8String(info[0])));
+  CSteamID steamIDRemote(utils::strToUint64(steam_id_str));
+  if (!steamIDRemote.IsValid()) {
+    THROW_BAD_ARGS("Steam ID is invalid");
+  }
+
+    P2PSessionState_t pConnectionState;
+    bool result = SteamNetworking()->GetP2PSessionState(steamIDRemote, &pConnectionState);
+
+    v8::Local<v8::Object> sessionStateObj = Nan::New<v8::Object>();
+    Nan::Set(sessionStateObj, Nan::New("m_bConnectionActive").ToLocalChecked(), Nan::New(pConnectionState.m_bConnectionActive));
+    Nan::Set(sessionStateObj, Nan::New("m_bConnecting").ToLocalChecked(), Nan::New(pConnectionState.m_bConnecting));
+    Nan::Set(sessionStateObj, Nan::New("m_eP2PSessionError").ToLocalChecked(), Nan::New(pConnectionState.m_eP2PSessionError));
+    Nan::Set(sessionStateObj, Nan::New("m_bUsingRelay").ToLocalChecked(), Nan::New(pConnectionState.m_bUsingRelay));
+    Nan::Set(sessionStateObj, Nan::New("m_nBytesQueuedForSend").ToLocalChecked(), Nan::New(pConnectionState.m_nBytesQueuedForSend));
+    Nan::Set(sessionStateObj, Nan::New("m_nPacketsQueuedForSend").ToLocalChecked(), Nan::New(pConnectionState.m_nPacketsQueuedForSend));
+    Nan::Set(sessionStateObj, Nan::New("m_nRemoteIP").ToLocalChecked(), Nan::New(pConnectionState.m_nRemoteIP));
+    Nan::Set(sessionStateObj, Nan::New("m_nRemotePort").ToLocalChecked(), Nan::New(pConnectionState.m_nRemotePort));
+
+    v8::Local<v8::Object> resultObj = Nan::New<v8::Object>();
+    Nan::Set(resultObj, Nan::New("result").ToLocalChecked(), Nan::New(result));
+    Nan::Set(resultObj, Nan::New("connectionState").ToLocalChecked(), sessionStateObj);
+
+    info.GetReturnValue().Set(resultObj);
+}
+
+NAN_METHOD(BIsBehindNAT) {
+    bool isBehindNAT = SteamUser()->BIsBehindNAT();
+    info.GetReturnValue().Set(Nan::New(isBehindNAT));
+}
+
 void RegisterAPIs(v8::Local<v8::Object> target) {
   SET_FUNCTION("acceptP2PSessionWithUser", AcceptP2PSessionWithUser);
   SET_FUNCTION("isP2PPacketAvailable", IsP2PPacketAvailable);
   SET_FUNCTION("sendP2PPacket", SendP2PPacket);
   SET_FUNCTION("readP2PPacket", ReadP2PPacket);
+  
+  SET_FUNCTION("closeP2PSessionWithUser", CloseP2PSessionWithUser);
+  SET_FUNCTION("closeP2PChannelWithUser", CloseP2PChannelWithUser);
+  SET_FUNCTION("getP2PSessionState", GetP2PSessionState);
+  SET_FUNCTION("isBehindNAT", BIsBehindNAT);
 }
 
 SteamAPIRegistry::Add X(RegisterAPIs);
