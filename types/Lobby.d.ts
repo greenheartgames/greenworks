@@ -1,4 +1,4 @@
-import {LobbyType, SteamID} from './Defination';
+import {LobbyType, SteamID,eChatEntryType} from './Defination';
 
 /**
  * 创建一个新的匹配大厅。
@@ -138,4 +138,23 @@ export function setLobbyOwner(steamIDLobby: string, steamIDNewOwner: string): bo
  */
 export function setLobbyType(steamIDLobby: string, lobbyType: LobbyType): boolean
 
+
 export function requestLobbyList(): string
+
+export function getLobbyMemberLimit(steamIDLobby: string): number
+export function setLobbyMemberLimit(steamIDLobby: string,limit: number): boolean
+
+export function getLobbyMemberData(steamIDLobby: string, steamIDMember: string, pchKey: string): string
+export function setLobbyMemberData(steamIDLobby: string, pchKey: string, pchValue: string): void
+
+export function getLobbyDataCount(steamIDLobby: string): number
+export function getLobbyDataByIndex(steamIDLobby: string, index:number): {key: string, value: string}
+
+
+
+export function getLobbyChatEntry(steamIDLobby: string,chatID: number): {
+    steamIDUser: string,
+    data: Buffer,
+    chatEntryType: eChatEntryType
+}
+export function sendLobbyChatMsg(steamIDLobby: string,data: Buffer): boolean

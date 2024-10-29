@@ -1,4 +1,4 @@
-import {ChatRoomEnterResponse, ErrorCallback, Result, SteamEvent} from './Defination';
+import {ChatRoomEnterResponse, ErrorCallback, Result, SteamEvent,eChatMemberStateChange,eChatEntryType} from './Defination';
 
 /**
  * 当游戏覆盖层激活或隐藏时触发
@@ -188,17 +188,10 @@ export function on(eventKey: SteamEvent.RichPresenceJoinRequested, success_callb
 export function on(eventKey: SteamEvent.NewUrlLaunchParameters, success_callback: () => void, error_callback?: ErrorCallback): void
 
 
-export const enum eChatMemberStateChange {
-    Entered = 0x0001,//	This user has joined or is joining the lobby.
-    Left = 0x0002,//	This user has left or is leaving the lobby.
-    Disconnected = 0x0004,//	User disconnected without leaving the lobby first.
-    Kicked = 0x0008,//	The user has been kicked.
-    Banned = 0x0010,//	The user has been kicked and banned.
-}
 
 export function on(eventKey: SteamEvent.LobbyMatchList, success_callback: (LobbiesMatching: number) => void, error_callback?: ErrorCallback): void
 export function on(eventKey: SteamEvent.P2PSessionRequest, success_callback: (steamIDRemote: string) => void, error_callback?: ErrorCallback): void
 export function on(eventKey: SteamEvent.P2PSessionConnectFail, success_callback: (steamIDRemote: string,eP2PSessionError:number) => void, error_callback?: ErrorCallback): void
 
-export function on(eventKey: SteamEvent.LobbyChatMsg, success_callback: (steamIDLobby: string,steamIDUser: string,chatEntryType:number,chatID:number) => void, error_callback?: ErrorCallback): void
+export function on(eventKey: SteamEvent.LobbyChatMsg, success_callback: (steamIDLobby: string,steamIDUser: string,chatEntryType:eChatEntryType,chatID:number) => void, error_callback?: ErrorCallback): void
 export function on(eventKey: SteamEvent.LobbyChatUpdate, success_callback: (SteamIDLobby: string, SteamIDUserChanged: string, SteamIDMakingChange: string,ChatMemberStateChange:eChatMemberStateChange) => void, error_callback?: ErrorCallback): void
