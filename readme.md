@@ -2,7 +2,7 @@
 
 
 
-- clone from [greenworks.js](https://github.com/greenheartgames/greenworks)
+- fork from [greenworks.js](https://github.com/greenheartgames/greenworks)
 - added types for typescript, clone from [here](https://www.npmjs.com/package/@wangdevops/greenworks)
 - version number sync as nw.js
 - added p2p function:
@@ -36,4 +36,4 @@
   - `SteamEvent.P2PSessionRequest` callback: `(steamIDRemote: string)` (after other player called `acceptP2PSessionWithUser`)
   - `SteamEvent.P2PSessionConnectFail` callback: `(steamIDRemote: string,eP2PSessionError:number)` (after connected player quit)
   - `SteamEvent.LobbyChatUpdate` callback: `(SteamIDLobby: string, SteamIDUserChanged: string, SteamIDMakingChange: string,ChatMemberStateChange:eChatMemberStateChange)` (It's not about chat actually, It's player enter/leave etc)
-- use case please reference [steamwork.js](https://github.com/ceifa/steamworks.js/blob/main/test/networking.js)
+- use case please reference [steamwork.js](https://github.com/ceifa/steamworks.js/blob/main/test/networking.js) (but `LobbyChatUpdate` is new)
