@@ -30,7 +30,7 @@ void InitFloatingGamepadTextInputMode(v8::Local<v8::Object> exports) {
 NAN_METHOD(ShowFloatingGamepadTextInput) {
   Nan::HandleScope scope;
   if (info.Length() < 5 || !info[0]->IsInt32() || !info[1]->IsInt32() ||
-      !info[2]->IsInt32() || !info[3]->IsInt32() || !info[4]->IsString()) {
+      !info[2]->IsInt32() || !info[3]->IsInt32() || !info[4]->IsInt32()) {
     THROW_BAD_ARGS("Bad arguments");
   }
 
