@@ -283,3 +283,23 @@ Returns an `Boolean`: true if the owner was successfully changed otherwise false
 * `eLobbyType` greenworks.LobbyType
 
 Returns an `Boolean`: true upon success; otherwise, false if you're not the owner of the lobby.
+
+
+***
+
+### added matching function:
+  - `greenworks.requestLobbyList()` (the return is useless, same as `creataLobby`, use `SteamEvent.LobbyMatchList` to recieve the result)
+  - `greenworks.getLobbyMemberLimit(steamIDLobby: string): number`
+  - `greenworks.setLobbyMemberLimit(steamIDLobby: string,limit: number): boolean`
+  - `greenworks.getLobbyMemberData(steamIDLobby: string, steamIDMember: string, pchKey: string): string`
+  - `greenworks.setLobbyMemberData(steamIDLobby: string, pchKey: string, pchValue: string): void`
+  - `greenworks.getLobbyDataCount(steamIDLobby: string): number`
+  - `greenworks.getLobbyDataByIndex(steamIDLobby: string, index:number): {key: string, value: string}`
+  - `greenworks.sendLobbyChatMsg(steamIDLobby: string,data: Buffer): boolean`
+  - `greenworks.getLobbyChatEntry(steamIDLobby: string,chatID: number): {steamIDUser: string, data: Buffer,chatEntryType: eChatEntryType}`
+
+### added enum `eChatMemberStateChange`,`eChatEntryType` on types
+
+### added event `lobby-match-list`,`lobby-chat-update`,`lobby-chat-msg`
+  
+[Steam docs](https://partner.steamgames.com/doc/api/ISteamMatchmaking)
