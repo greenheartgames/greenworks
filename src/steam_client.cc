@@ -54,15 +54,13 @@ SteamClient::SteamClient()
       OnGameRichPresenceJoinRequested_(
           this, &SteamClient::OnGameRichPresenceJoinRequested),
       OnNewUrlLaunchParameters_(this, &SteamClient::OnNewUrlLaunchParameters),
-      //*
+      OnFloatingGamepadTextInputDismissed_(
+          this, &SteamClient::OnFloatingGamepadTextInputDismissed),
       OnLobbyMatchList_(this, &SteamClient::OnLobbyMatchList),
       OnP2PSessionRequest_(this, &SteamClient::OnP2PSessionRequest),
       OnP2PSessionConnectFail_(this, &SteamClient::OnP2PSessionConnectFail),
       OnLobbyChatMsg_(this, &SteamClient::OnLobbyChatMsg),
-      OnLobbyChatUpdate_(this, &SteamClient::OnLobbyChatUpdate),
-      
-      OnFloatingGamepadTextInputDismissed_(
-          this, &SteamClient::OnFloatingGamepadTextInputDismissed) {}
+      OnLobbyChatUpdate_(this, &SteamClient::OnLobbyChatUpdate) {}
 
 SteamClient::~SteamClient() {
   for (size_t i = 0; i < observer_list_.size(); ++i) {
@@ -220,20 +218,16 @@ void SteamClient::OnFloatingGamepadTextInputDismissed(
   }
 }
 
-//*
 void SteamClient::OnLobbyMatchList(LobbyMatchList_t *callback) {
   for (size_t i = 0; i < observer_list_.size(); ++i) {
-    observer_list_[i]->OnLobbyMatchList(
-        callback->m_nLobbiesMatching
-        );
+    observer_list_[i]->OnLobbyMatchList(callback->m_nLobbiesMatching);
   }
 }
 
 void SteamClient::OnP2PSessionRequest(P2PSessionRequest_t *callback) {
   for (size_t i = 0; i < observer_list_.size(); ++i) {
     observer_list_[i]->OnP2PSessionRequest(
-        callback->m_steamIDRemote.ConvertToUint64()
-        );
+        callback->m_steamIDRemote.ConvertToUint64());
   }
 }
 
@@ -241,37 +235,26 @@ void SteamClient::OnP2PSessionConnectFail(P2PSessionConnectFail_t *callback) {
   for (size_t i = 0; i < observer_list_.size(); ++i) {
     observer_list_[i]->OnP2PSessionConnectFail(
         callback->m_steamIDRemote.ConvertToUint64(),
-        callback->m_eP2PSessionError
-        );
+        callback->m_eP2PSessionError);
   }
 }
 
 void SteamClient::OnLobbyChatMsg(LobbyChatMsg_t *callback) {
   for (size_t i = 0; i < observer_list_.size(); ++i) {
     observer_list_[i]->OnLobbyChatMsg(
-        callback->m_ulSteamIDLobby,
-        callback->m_ulSteamIDUser,
-        callback->m_eChatEntryType,
-        callback->m_iChatID
-        );
+        callback->m_ulSteamIDLobby, callback->m_ulSteamIDUser,
+        callback->m_eChatEntryType, callback->m_iChatID);
   }
 }
 
 void SteamClient::OnLobbyChatUpdate(LobbyChatUpdate_t *callback) {
   for (size_t i = 0; i < observer_list_.size(); ++i) {
-    observer_list_[i]->OnLobbyChatUpdate(
-        callback->m_ulSteamIDLobby,
-        callback->m_ulSteamIDUserChanged,
-        callback->m_ulSteamIDMakingChange,
-        callback->m_rgfChatMemberStateChange
-        );
+    observer_list_[i]->OnLobbyChatUpdate(callback->m_ulSteamIDLobby,
+                                         callback->m_ulSteamIDUserChanged,
+                                         callback->m_ulSteamIDMakingChange,
+                                         callback->m_rgfChatMemberStateChange);
   }
 }
-
-
-
-
-
 
 void SteamClient::StartSteamLoop() {
   if (g_steam_timer)
