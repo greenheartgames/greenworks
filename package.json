@@ -13,29 +13,11 @@
     "compdb": "node-gyp configure --release -- -f gyp.generator.compile_commands_json.py && cp Release/compile_commands.json ."
   },
   "dependencies": {
+    "nan": "^2.22.0"
   },
   "devDependencies": {
-    "nan": "^2.22.0",
     "mocha": "1.21.4"
   },
-  "keywords": [
-    "steamworks",
-    "greenworks",
-    "steam",
-    "nw.js",
-    "electron",
-    "p2p",
-    "multiplayer",
-    "windows"
-  ],
-  "files": [
-    "greenworks.js",
-    "types",
-    "lib",
-    "greenworks.d.ts",
-    "package.json"
-  ],
   "gypfile": true,
-  "main": "greenworks.js",
-  "types": "greenworks.d.js"
+  "main": "greenworks.js"
 }
