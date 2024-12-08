@@ -158,12 +158,6 @@ Emitted when the floating keyboard invoked from ShowFloatingGamepadTextInput has
 
 [Steam docs](https://partner.steamgames.com/doc/api/ISteamUtils#FloatingGamepadTextInputDismissed_t)
 
-
-
-
-
-
-
 ### Event: 'lobby-match-list'
 
 Result when requesting the lobby list(called requestLobbyList). You should iterate over the returned lobbies with GetLobbyByIndex
@@ -172,7 +166,6 @@ Result when requesting the lobby list(called requestLobbyList). You should itera
 
 Returns:
 * `LobbiesMatching` Integer: Number of lobbies that matched search criteria and we have Steam IDs for.
-
 
 ### Event: 'lobby-chat-update'
 
@@ -187,7 +180,6 @@ Returns:
 * `SteamIDMakingChange` Integer: Chat member who made the change. This can be different from m_ulSteamIDUserChanged if kicking, muting, etc. For example, if one user kicks another from the lobby, this will be set to the id of the user who initiated the kick.
 * `ChatMemberStateChange` eChatMemberStateChange: Bitfield of EChatMemberStateChange values.
 
-
 ### Event: 'lobby-chat-msg'
 
 A chat (text or binary) message for this lobby has been received. After getting this you must use GetLobbyChatEntry to retrieve the contents of this message.
@@ -200,7 +192,6 @@ Returns:
 * `chatEntryType` Integer: Type of message received. This is actually a EChatEntryType.
 * `chatID` Integer: The index of the chat entry to use with GetLobbyChatEntry, this is not valid outside of the scope of this callback and should never be stored.
 
-
 ### Event: 'p2p-session-request'
 
 A user wants to communicate with us over the P2P channel via the SendP2PPacket. In response, a call to AcceptP2PSessionWithUser needs to be made, if you want to open the network channel with them.
@@ -210,7 +201,6 @@ A user wants to communicate with us over the P2P channel via the SendP2PPacket. 
 
 Returns:
 * `steamIDRemote` String: The user who wants to start a P2P session with us.
-
 
 ### Event: 'p2p-session-connect-fail'
 
