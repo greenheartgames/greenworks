@@ -395,16 +395,15 @@ NAN_METHOD(SetLobbyType) {
   );
 }
 
-// FIXME: RequestLobbyList is an async API, we should use worker.
-// NAN_METHOD(RequestLobbyList) {
-//   Nan::HandleScope scope;
-//   if (info.Length() > 0) {
-//     THROW_BAD_ARGS("Bad arguments");
-//   }
-//   info.GetReturnValue().Set(
-//       Nan::New(utils::uint64ToString(SteamMatchmaking()->RequestLobbyList()))
-//           .ToLocalChecked());
-// }
+NAN_METHOD(RequestLobbyList) {
+  Nan::HandleScope scope;
+  if (info.Length() > 0) {
+    THROW_BAD_ARGS("Bad arguments");
+  }
+  info.GetReturnValue().Set(
+      Nan::New(utils::uint64ToString(SteamMatchmaking()->RequestLobbyList()))
+          .ToLocalChecked());
+}
 
 NAN_METHOD(GetLobbyMemberLimit) {
   Nan::HandleScope scope;
@@ -620,7 +619,7 @@ void RegisterAPIs(v8::Local<v8::Object> target) {
   SET_FUNCTION("setLobbyOwner", SetLobbyOwner);
   SET_FUNCTION("setLobbyType", SetLobbyType);
 
-  // SET_FUNCTION("requestLobbyList", RequestLobbyList);
+  SET_FUNCTION("requestLobbyList", RequestLobbyList);
   SET_FUNCTION("getLobbyMemberLimit", GetLobbyMemberLimit);
   SET_FUNCTION("setLobbyMemberLimit", SetLobbyMemberLimit);
   SET_FUNCTION("getLobbyMemberData", GetLobbyMemberData);
