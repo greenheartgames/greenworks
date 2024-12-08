@@ -1,6 +1,6 @@
 {
   "name": "greenworks",
-  "version": "0.18.0",
+  "version": "0.19.0",
   "description": "A node.js addon exposing Valve's Steamworks APIs to JavaScript",
   "licenses": [
     {
