@@ -1,3 +1,32 @@
+## 2024.12.08 v0.19.0 stable
+
+* Update to Steamworks SDK 1.61
+* Greenworks compiled for NW.js v0.94.0
+* New lobby and p2p APIs, #335 (thanks to @Hocti):
+  - `greenworks.requestLobbyList()`
+  - `greenworks.getLobbyMemberLimit(steamIDLobby: string): number`
+  - `greenworks.setLobbyMemberLimit(steamIDLobby: string,limit: number): boolean`
+  - `greenworks.getLobbyMemberData(steamIDLobby: string, steamIDMember: string, pchKey: string): string`
+  - `greenworks.setLobbyMemberData(steamIDLobby: string, pchKey: string, pchValue: string): void`
+  - `greenworks.getLobbyDataCount(steamIDLobby: string): number`
+  - `greenworks.getLobbyDataByIndex(steamIDLobby: string, index:number): {key: string, value: string}`
+  - `greenworks.sendLobbyChatMsg(steamIDLobby: string,data: Buffer): boolean`
+  - `greenworks.getLobbyChatEntry(steamIDLobby: string,chatID: number): {steamIDUser: string, data: Buffer,chatEntryType: eChatEntryType}`
+  - `greenworks.sendP2PPacket(steamId: string, sendType: eP2PSendType, data: Buffer,nChannel:number): boolean`
+  - `greenworks.isP2PPacketAvailable(nChannel:number): number`
+  - `greenworks.readP2PPacket(size: number,nChannel:number):{data: Buffer,steamIDRemote: string}`
+  - `greenworks.acceptP2PSessionWithUser(steamId: string): void`
+  - `greenworks.getP2PSessionState(steamIDUser: string): {result:boolean,connectionState:Object}`
+  - `greenworks.closeP2PSessionWithUser(steamIDUser: string): boolean`
+  - `greenworks.closeP2PChannelWithUser(steamIDUser: string, nChannel: number): boolean`
+  - `greenworks.isBehindNAT():boolean`
+* New events:
+  - `lobby-match-list`
+  - `lobby-chat-update`
+  - `lobby-chat-msg`
+  - `p2p-session-request`
+  - `p2p-session-connect-fail`
+
 ## 2024.10.17 v0.18.0 stable
 
 * Greenworks compiled for NW.js v0.92.0
