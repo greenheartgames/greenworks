@@ -6,6 +6,8 @@ const BrowserWindow = electron.BrowserWindow;
 
 var mainWindow = null;
 
+app.commandLine.appendSwitch('--in-process-gpu', '--disable-direct-composition'); // Allows the Steam overlay to work
+
 app.on('window-all-closed', function() {
   if (process.platform != 'darwin')
     app.quit();
