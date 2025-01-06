@@ -323,7 +323,7 @@ Returns a `Boolean`:
 * `pchValue` was longer than `k_cchMaxRichPresenceValueLength`.
 * The user has reached the maximum amount of rich presence keys as defined by [k_cchMaxRichPresenceKeys](https://partner.steamgames.com/doc/api/ISteamFriends#k_cchMaxRichPresenceKeys).
 
-### greenworks.ClearRichPresence() 
+### greenworks.clearRichPresence() 
 
 Clears all of the current user's Rich Presence key/values.
 
