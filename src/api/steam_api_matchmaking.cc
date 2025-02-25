@@ -566,11 +566,11 @@ NAN_METHOD(GetLobbyChatEntry) {
     return;
   }
 
-  v8::String::Utf8Value str(info[0]->ToString());
+  Nan::Utf8String str(info[0]);
   std::string lobbyIdStr(*str);
   CSteamID steamIDLobby(static_cast<uint64>(std::stoull(lobbyIdStr)));
 
-  int iChatID = info[1]->Int32Value();
+  int iChatID = info[1]->Int32Value(Nan::GetCurrentContext()).FromJust();
 
   CSteamID steamIDUser;
   char dataBuffer[4096];
