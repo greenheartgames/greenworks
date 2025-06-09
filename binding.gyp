@@ -74,6 +74,7 @@
         'src/api/steam_api_cloud.cc',
         'src/api/steam_api_dlc.cc',
         'src/api/steam_api_friends.cc',
+        'src/api/steam_api_input.cc',
         'src/api/steam_api_matchmaking.cc',
         'src/api/steam_api_p2p.cc',
         'src/api/steam_api_registry.h',
