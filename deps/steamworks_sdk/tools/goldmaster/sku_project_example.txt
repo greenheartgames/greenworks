@@ -1,0 +1,12 @@
+"sku"
+{
+	"name" "Steamworks Spacewar"
+	"appID"				"480"
+	"disk_size_mb"		4700
+
+	"included_depots"
+	{
+		"1"	"481"
+	//  "2"	"482" more depots if needed
+	}
+}

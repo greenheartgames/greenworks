@@ -1,0 +1,716 @@
+"controller_mappings"
+{
+	"version"		"3"
+	"revision"		"8"
+	"title"		"#title"
+	"description"		"#description"
+	"controller_type"		"controller_xboxone"
+	"major_revision"		"0"
+	"minor_revision"		"0"
+	"Timestamp"		"1559770832"
+	"actions"
+	{
+		"ship_controls"
+		{
+			"title"		"Ship Controls"
+			"legacy_set"		"0"
+			"StickPadGyro"
+			{
+				"analog_controls"
+				{
+					"title"		"#AnalogControls"
+					"input_mode"		"joystick_move"
+				}
+			}
+			"Button"
+			{
+				"turn_left"		"#TurnLeft"
+				"turn_right"		"#TurnRight"
+				"fire_lasers"		"#FireLasers"
+				"pause_menu"		"#PauseMenu"
+				"forward_thrust"		"#ForwardThrust"
+				"backward_thrust"		"#BackwardThrust"
+			}
+			"Layers"
+			{
+				"thrust_action_layer"		"#ThrustLayer"
+			}
+		}
+		"menu_controls"
+		{
+			"title"		"#MenuControls"
+			"legacy_set"		"0"
+			"Button"
+			{
+				"menu_up"		"#MenuUp"
+				"menu_down"		"#MenuDown"
+				"menu_left"		"#MenuLeft"
+				"menu_right"		"#MenuRight"
+				"menu_select"		"#MenuSelect"
+				"menu_cancel"		"#MenuCancel"
+			}
+		}
+	}
+	"action_layers"
+	{
+		"thrust_action_layer"
+		{
+			"title"		"#ThrustLayer"
+			"legacy_set"		"1"
+			"set_layer"		"1"
+			"parent_set_name"		"ship_controls"
+		}
+	}
+	"localization"
+	{
+		"english"
+		{
+			"title"		"Space War Action Set Config Sample"
+			"description"		"This is an example configuration for using Steamworks Action Sets."
+			"AnalogControls"		"Analog Controls"
+			"TurnLeft"		"Turn Left"
+			"TurnRight"		"Turn Right"
+			"FireLasers"		"Fire Lasers"
+			"PauseMenu"		"Pause Menu"
+			"BackwardThrust"		"Backward Thrust"
+			"MenuControls"		"Menu Controls"
+			"MenuUp"		"Menu Up"
+			"MenuDown"		"Menu Down"
+			"MenuLeft"		"Menu Left"
+			"MenuRight"		"Menu Right"
+			"MenuSelect"		"Menu Select"
+			"ThrustLayer"		"Thrust Layer"
+		}
+	}
+	"group"
+	{
+		"id"		"0"
+		"mode"		"four_buttons"
+		"inputs"
+		{
+		}
+		"settings"
+		{
+			"button_size"		"17988"
+			"button_dist"		"19988"
+		}
+	}
+	"group"
+	{
+		"id"		"1"
+		"mode"		"trigger"
+		"inputs"
+		{
+		}
+	}
+	"group"
+	{
+		"id"		"2"
+		"mode"		"trigger"
+		"inputs"
+		{
+			"edge"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"game_action ship_controls fire_lasers"
+						}
+						"settings"
+						{
+							"haptic_intensity"		"2"
+						}
+					}
+				}
+			}
+		}
+	}
+	"group"
+	{
+		"id"		"3"
+		"mode"		"four_buttons"
+		"inputs"
+		{
+			"button_a"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"game_action menu_controls menu_select"
+						}
+					}
+				}
+			}
+			"button_b"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"game_action menu_controls menu_cancel"
+						}
+					}
+				}
+			}
+		}
+		"settings"
+		{
+			"button_size"		"17992"
+			"button_dist"		"19992"
+		}
+	}
+	"group"
+	{
+		"id"		"4"
+		"mode"		"trigger"
+		"inputs"
+		{
+		}
+	}
+	"group"
+	{
+		"id"		"5"
+		"mode"		"trigger"
+		"inputs"
+		{
+		}
+	}
+	"group"
+	{
+		"id"		"6"
+		"mode"		"dpad"
+		"inputs"
+		{
+			"dpad_north"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"game_action menu_controls menu_up"
+						}
+					}
+				}
+			}
+			"dpad_south"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"game_action menu_controls menu_down"
+						}
+					}
+				}
+			}
+			"dpad_east"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"game_action menu_controls menu_right"
+						}
+					}
+				}
+			}
+			"dpad_west"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"game_action menu_controls menu_left"
+						}
+					}
+				}
+			}
+		}
+		"settings"
+		{
+			"requires_click"		"0"
+			"edge_binding_radius"		"24995"
+			"analog_emulation_period"		"29"
+		}
+	}
+	"group"
+	{
+		"id"		"7"
+		"mode"		"dpad"
+		"inputs"
+		{
+		}
+		"settings"
+		{
+			"requires_click"		"0"
+			"edge_binding_radius"		"24995"
+			"analog_emulation_period"		"29"
+		}
+	}
+	"group"
+	{
+		"id"		"8"
+		"mode"		"joystick_move"
+		"inputs"
+		{
+		}
+		"settings"
+		{
+			"virtual_mode"		"1"
+			"edge_binding_radius"		"24997"
+			"sensitivity"		"98"
+		}
+	}
+	"group"
+	{
+		"id"		"9"
+		"mode"		"joystick_move"
+		"inputs"
+		{
+		}
+		"settings"
+		{
+			"virtual_mode"		"1"
+			"edge_binding_radius"		"24997"
+			"sensitivity"		"98"
+		}
+	}
+	"group"
+	{
+		"id"		"10"
+		"mode"		"joystick_move"
+		"inputs"
+		{
+		}
+		"settings"
+		{
+			"virtual_mode"		"1"
+			"edge_binding_radius"		"24996"
+			"sensitivity"		"98"
+		}
+	}
+	"group"
+	{
+		"id"		"11"
+		"mode"		"four_buttons"
+		"inputs"
+		{
+		}
+	}
+	"group"
+	{
+		"id"		"12"
+		"mode"		"trigger"
+		"inputs"
+		{
+		}
+	}
+	"group"
+	{
+		"id"		"13"
+		"mode"		"trigger"
+		"inputs"
+		{
+		}
+	}
+	"group"
+	{
+		"id"		"14"
+		"mode"		"four_buttons"
+		"inputs"
+		{
+		}
+	}
+	"group"
+	{
+		"id"		"15"
+		"mode"		"trigger"
+		"inputs"
+		{
+		}
+	}
+	"group"
+	{
+		"id"		"16"
+		"mode"		"trigger"
+		"inputs"
+		{
+		}
+	}
+	"group"
+	{
+		"id"		"17"
+		"mode"		"four_buttons"
+		"inputs"
+		{
+		}
+	}
+	"group"
+	{
+		"id"		"18"
+		"mode"		"trigger"
+		"inputs"
+		{
+		}
+	}
+	"group"
+	{
+		"id"		"19"
+		"mode"		"trigger"
+		"inputs"
+		{
+		}
+	}
+	"group"
+	{
+		"id"		"20"
+		"mode"		"four_buttons"
+		"inputs"
+		{
+		}
+	}
+	"group"
+	{
+		"id"		"21"
+		"mode"		"trigger"
+		"inputs"
+		{
+		}
+	}
+	"group"
+	{
+		"id"		"22"
+		"mode"		"trigger"
+		"inputs"
+		{
+		}
+	}
+	"group"
+	{
+		"id"		"23"
+		"mode"		"four_buttons"
+		"inputs"
+		{
+		}
+	}
+	"group"
+	{
+		"id"		"24"
+		"mode"		"trigger"
+		"inputs"
+		{
+		}
+	}
+	"group"
+	{
+		"id"		"25"
+		"mode"		"trigger"
+		"inputs"
+		{
+		}
+	}
+	"group"
+	{
+		"id"		"26"
+		"mode"		"joystick_move"
+		"inputs"
+		{
+		}
+		"settings"
+		{
+			"virtual_mode"		"1"
+			"edge_binding_radius"		"24999"
+			"sensitivity"		"99"
+		}
+		"gameactions"
+		{
+			"ship_controls"		"analog_controls"
+		}
+	}
+	"group"
+	{
+		"id"		"35"
+		"mode"		"four_buttons"
+		"inputs"
+		{
+			"button_a"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"game_action ship_controls fire_lasers, Fire Lasers"
+						}
+					}
+				}
+			}
+		}
+		"settings"
+		{
+			"layer"		"1"
+		}
+	}
+	"group"
+	{
+		"id"		"36"
+		"mode"		"trigger"
+		"inputs"
+		{
+		}
+		"settings"
+		{
+			"layer"		"1"
+		}
+	}
+	"group"
+	{
+		"id"		"37"
+		"mode"		"trigger"
+		"inputs"
+		{
+		}
+		"settings"
+		{
+			"layer"		"1"
+		}
+	}
+	"group"
+	{
+		"id"		"38"
+		"mode"		"joystick_move"
+		"inputs"
+		{
+		}
+		"settings"
+		{
+			"layer"		"1"
+		}
+		"gameactions"
+		{
+			"ship_controls"		"analog_controls"
+		}
+	}
+	"group"
+	{
+		"id"		"39"
+		"mode"		"joystick_move"
+		"inputs"
+		{
+		}
+		"settings"
+		{
+			"layer"		"1"
+		}
+	}
+	"group"
+	{
+		"id"		"40"
+		"mode"		"dpad"
+		"inputs"
+		{
+			"dpad_north"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"game_action menu_controls menu_up, Menu Up"
+						}
+					}
+				}
+			}
+			"dpad_south"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"game_action menu_controls menu_down, Menu Down"
+						}
+					}
+				}
+			}
+			"dpad_east"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"game_action menu_controls menu_right, Menu Right"
+						}
+					}
+				}
+			}
+			"dpad_west"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"game_action menu_controls menu_left, Menu Left"
+						}
+					}
+				}
+			}
+		}
+		"settings"
+		{
+			"requires_click"		"0"
+		}
+	}
+	"group"
+	{
+		"id"		"27"
+		"mode"		"switches"
+		"inputs"
+		{
+			"button_escape"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"game_action ship_controls pause_menu"
+						}
+					}
+				}
+			}
+		}
+	}
+	"group"
+	{
+		"id"		"28"
+		"mode"		"switches"
+		"inputs"
+		{
+		}
+	}
+	"group"
+	{
+		"id"		"29"
+		"mode"		"switches"
+		"inputs"
+		{
+		}
+	}
+	"group"
+	{
+		"id"		"30"
+		"mode"		"switches"
+		"inputs"
+		{
+		}
+	}
+	"group"
+	{
+		"id"		"31"
+		"mode"		"switches"
+		"inputs"
+		{
+		}
+	}
+	"group"
+	{
+		"id"		"32"
+		"mode"		"switches"
+		"inputs"
+		{
+		}
+	}
+	"group"
+	{
+		"id"		"33"
+		"mode"		"switches"
+		"inputs"
+		{
+		}
+	}
+	"group"
+	{
+		"id"		"34"
+		"mode"		"switches"
+		"inputs"
+		{
+		}
+		"settings"
+		{
+			"layer"		"1"
+		}
+	}
+	"preset"
+	{
+		"id"		"0"
+		"name"		"ship_controls"
+		"group_source_bindings"
+		{
+			"27"		"switch active"
+			"0"		"button_diamond active"
+			"1"		"left_trigger active"
+			"2"		"right_trigger active"
+			"7"		"joystick inactive"
+			"10"		"joystick inactive"
+			"26"		"joystick active"
+			"8"		"dpad inactive"
+			"9"		"right_joystick active"
+		}
+	}
+	"preset"
+	{
+		"id"		"1"
+		"name"		"menu_controls"
+		"group_source_bindings"
+		{
+			"28"		"switch active"
+			"3"		"button_diamond active"
+			"4"		"left_trigger active"
+			"5"		"right_trigger active"
+			"6"		"joystick active"
+			"40"		"dpad active"
+		}
+	}
+	"preset"
+	{
+		"id"		"2"
+		"name"		"thrust_action_layer"
+		"group_source_bindings"
+		{
+			"34"		"switch active"
+			"35"		"button_diamond active"
+			"36"		"left_trigger active"
+			"37"		"right_trigger active"
+			"38"		"joystick active"
+			"39"		"right_joystick active"
+		}
+	}
+	"settings"
+	{
+	}
+}

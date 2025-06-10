@@ -1,0 +1,95 @@
+"Action Manifest"
+{
+	"configurations"
+	{
+		"controller_xboxone"
+		{
+			"0"
+			{
+				"path" "xbox_controller.vdf"
+			}
+		}
+		"controller_steamcontroller_gordon"
+		{
+			"0"
+			{
+				"path" "steam_controller.vdf"
+			}
+		}
+	}
+	"actions"
+	{
+		"ship_controls"
+		{
+			"title"		"Ship Controls"
+			"legacy_set"		"0"
+			"StickPadGyro"
+			{
+				"analog_controls"
+				{
+					"title"		"#AnalogControls"
+					"input_mode"		"joystick_move"
+				}
+			}
+			"Button"
+			{
+				"turn_left"		"#TurnLeft"
+				"turn_right"		"#TurnRight"
+				"fire_lasers"		"#FireLasers"
+				"pause_menu"		"#PauseMenu"
+				"forward_thrust"		"#ForwardThrust"
+				"backward_thrust"		"#BackwardThrust"
+			}
+			"Layers"
+			{
+				"thrust_action_layer"		"#ThrustLayer"
+			}
+		}
+		"menu_controls"
+		{
+			"title"		"#MenuControls"
+			"legacy_set"		"0"
+			"Button"
+			{
+				"menu_up"		"#MenuUp"
+				"menu_down"		"#MenuDown"
+				"menu_left"		"#MenuLeft"
+				"menu_right"		"#MenuRight"
+				"menu_select"		"#MenuSelect"
+				"menu_cancel"		"#MenuCancel"
+			}
+		}
+	}
+	"action_layers"
+	{
+		"thrust_action_layer"
+		{
+			"title"		"#ThrustLayer"
+			"legacy_set"		"1"
+			"set_layer"		"1"
+			"parent_set_name"		"ship_controls"
+		}
+	}
+	"localization"
+	{
+		"english"
+		{
+			"title"		"Space War Action Set Config Sample"
+			"description"		"This is an example configuration for using Steamworks Action Sets."
+			"AnalogControls"		"Analog Controls"
+			"TurnLeft"		"Turn Left"
+			"TurnRight"		"Turn Right"
+			"FireLasers"		"Fire Lasers"
+			"PauseMenu"		"Pause Menu"
+			"ForwardThrust"		"Forward Thrust"
+			"BackwardThrust"		"Backward Thrust"
+			"MenuControls"		"Menu Controls"
+			"MenuUp"		"Menu Up"
+			"MenuDown"		"Menu Down"
+			"MenuLeft"		"Menu Left"
+			"MenuRight"		"Menu Right"
+			"MenuSelect"		"Menu Select"
+			"ThrustLayer"		"Thrust Layer"
+		}
+	}
+}

@@ -1,0 +1,40 @@
+"DepotBuild"
+{
+	"DepotID" "1002"
+
+	"ContentRoot" "D:\content\depot1002" // override ContentRoot from app build script
+
+	"FileMapping"
+	{
+		// all source files and folders in ".\bin" will be mapped into folder ".\executables" in depot
+		"LocalPath" "bin\*"
+		"DepotPath" "executables\"
+		"Recursive" "1" // include all subfolders
+	}
+
+	"FileMapping"
+	{
+		// override audio files in \\audio with German versions
+		"LocalPath" "localization\german\audio\*"
+		"DepotPath" "audio\"
+	}
+
+	"FileMapping"
+	{
+		// copy install script for german version into depot root folder
+		"LocalPath" "localization\german\german_installscript.vdf"
+		"DepotPath" "."
+	}
+
+	"FileExclusion" "bin\server.exe" // exclude this file
+	"FileExclusion" "*.pdb" // exclude all .PDB files everywhere
+	"FileExclusion" "bin\tools*" // exclude all files under bin/tools/
+
+	"InstallScript" "localization\german\german_installscript.vdf"
+
+	"FileProperties"
+	{
+		"LocalPath" "bin\setup.cfg"
+		"Attributes" "userconfig" // this file will be modified during runtime
+	}
+}

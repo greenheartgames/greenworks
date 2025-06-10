@@ -1,0 +1,27 @@
+"lang"
+{
+	"english"
+	{
+		"tokens"
+		{
+			"#StatusWithoutScore"	"{#Status_%gamestatus%}"
+			"#StatusWithScore"	"{#Status_%gamestatus%}: %score%"
+			"#Status_AtMainMenu"	"At the main menu"
+			"#Status_WaitingForMatch"	"Waiting for match"
+			"#Status_Winning"	"Winning"
+			"#Status_Losing"	"Losing"
+			"#Status_Tied"	"Tied"
+		}
+	}
+	"french"
+	{
+		"tokens"
+		{
+			"#Status_AtMainMenu"	"Au menu principal"
+			"#Status_WaitingForMatch"	"En attente de match"
+			"#Status_Winning"	"Gagnant"
+			"#Status_Losing"	"Perdant"
+			"#Status_Tied"	"Egalité"
+		}
+	}
+}

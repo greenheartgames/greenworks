@@ -1,0 +1,27 @@
+"sku"
+{
+	"name"		"Steamworks Spacewar"
+	"disks"		"1"
+	"disk"		"1"
+	"backup"		"0"
+	"contenttype"		"3"
+	"apps"
+	{
+		"0"		"480"
+	}
+	"depots"
+	{
+		"0"		"481"
+	}
+	"manifests"
+	{
+		"481"		"8382873932604653347"
+	}
+	"chunkstores"
+	{
+		"481"
+		{
+			"1"		"841424"
+		}
+	}
+}
