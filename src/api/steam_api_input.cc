@@ -4,10 +4,196 @@
 #include "greenworks_utils.h"
 #include "steam_api_registry.h"
 #include "steam/isteamdualsense.h" // Required for SetDualSenseTriggerEffect
+#include <vector> // Required for Nan::MakeCallback with argv
+
+// For thread-safe event emitting
+#include "uv.h" // Required for uv_async_send
+#include <queue>
+#include <mutex> // For std::mutex and std::lock_guard
 
 namespace greenworks {
 namespace api {
 namespace input {
+
+// Structure to hold event data for async emission
+struct EventData {
+  std::string event_name;
+  v8::Local<v8::Object> data;
+
+  EventData(std::string name, v8::Local<v8::Object> val) : event_name(name) {
+    Nan::HandleScope scope;
+    data.Reset(val); // This might need careful handling if 'val' is temporary.
+                     // For simplicity, assuming it's appropriately managed or copied.
+                     // A more robust solution might involve creating persistent handles
+                     // or copying data into std::string/basic types.
+  }
+   // Simplified constructor for events without complex data, or where data is built later
+  EventData(std::string name) : event_name(name) {}
+};
+
+static std::queue<EventData*> g_event_queue;
+static std::mutex g_event_queue_mutex;
+static uv_async_t g_event_async;
+static Nan::Persistent<v8::Object> g_emitter; // To store 'greenworks' module object
+
+// This function runs on the V8 main thread
+static void ProcessEvents(uv_async_t *handle) {
+  Nan::HandleScope scope;
+  std::queue<EventData*> local_queue;
+
+  {
+    std::lock_guard<std::mutex> lock(g_event_queue_mutex);
+    std::swap(g_event_queue, local_queue);
+  }
+
+  v8::Local<v8::Object> emitter = Nan::New(g_emitter);
+  if (emitter.IsEmpty() || !emitter->IsObject()) {
+    // Emitter not set or invalid, cannot proceed
+    while (!local_queue.empty()) {
+      delete local_queue.front();
+      local_queue.pop();
+    }
+    return;
+  }
+
+  v8::Local<v8::Function> emit_fn;
+  v8::Local<v8::Value> emit_val = Nan::Get(emitter, Nan::New("emit").ToLocalChecked()).ToLocalChecked();
+  if (!emit_val->IsFunction()) {
+     while (!local_queue.empty()) {
+      delete local_queue.front();
+      local_queue.pop();
+    }
+    return; // No emit function
+  }
+  emit_fn = Nan::To<v8::Function>(emit_val).ToLocalChecked();
+
+
+  while (!local_queue.empty()) {
+    EventData *event_item = local_queue.front();
+    Nan::AsyncResource async_resource("greenworks:SteamInputCallback");
+
+    v8::Local<v8::Value> argv[2];
+    argv[0] = Nan::New(event_item->event_name.c_str()).ToLocalChecked();
+    if (!event_item->data.IsEmpty()) {
+        argv[1] = Nan::New(event_item->data);
+    } else {
+        argv[1] = Nan::Null(); // Or an empty object Nan::New<v8::Object>()
+    }
+
+    int argc = event_item->data.IsEmpty() ? 1 : 2;
+    Nan::TryCatch try_catch;
+    async_resource.runInAsyncScope(emitter, emit_fn, argc, argv);
+    if (try_catch.HasCaught()) {
+        Nan::FatalException(try_catch);
+    }
+
+    delete event_item;
+    local_queue.pop();
+  }
+}
+
+
+// Helper to emit events safely
+void EmitEvent(EventData* event_data) {
+  std::lock_guard<std::mutex> lock(g_event_queue_mutex);
+  g_event_queue.push(event_data);
+  uv_async_send(&g_event_async);
+}
+
+// Callback handler for SteamInputConfigurationLoaded_t
+class SteamInputConfigLoadedCallback {
+public:
+    STEAM_CALLBACK(SteamInputConfigLoadedCallback, OnSteamInputConfigurationLoaded, SteamInputConfigurationLoaded_t);
+};
+void SteamInputConfigLoadedCallback::OnSteamInputConfigurationLoaded(SteamInputConfigurationLoaded_t* pParam) {
+  Nan::HandleScope scope;
+  v8::Local<v8::Object> data = Nan::New<v8::Object>();
+  Nan::Set(data, Nan::New("m_unAppID").ToLocalChecked(), Nan::New(pParam->m_unAppID));
+  Nan::Set(data, Nan::New("m_ulDeviceHandle").ToLocalChecked(), Nan::New<v8::Number>(static_cast<double>(pParam->m_ulDeviceHandle)));
+  // m_ulMappingCreator is CSteamID, convert to string for JS
+  char steamIDString[20]; // Max length for uint64 is 20 digits
+  snprintf(steamIDString, sizeof(steamIDString), "%llu", pParam->m_ulMappingCreator.ConvertToUint64());
+  Nan::Set(data, Nan::New("m_ulMappingCreator").ToLocalChecked(), Nan::New(steamIDString).ToLocalChecked());
+  Nan::Set(data, Nan::New("m_unMajorRevision").ToLocalChecked(), Nan::New(pParam->m_unMajorRevision));
+  Nan::Set(data, Nan::New("m_unMinorRevision").ToLocalChecked(), Nan::New(pParam->m_unMinorRevision));
+  Nan::Set(data, Nan::New("m_bUsesSteamInputAPI").ToLocalChecked(), Nan::New(pParam->m_bUsesSteamInputAPI));
+  Nan::Set(data, Nan::New("m_bUsesGamepadAPI").ToLocalChecked(), Nan::New(pParam->m_bUsesGamepadAPI));
+  EmitEvent(new EventData("steam-input-configuration-loaded", data));
+}
+SteamInputConfigLoadedCallback* g_SteamInputConfigLoadedCallback = nullptr;
+
+// Callback handler for SteamInputDeviceConnected_t
+class SteamInputDeviceConnectedCallback {
+public:
+    STEAM_CALLBACK(SteamInputDeviceConnectedCallback, OnSteamInputDeviceConnected, SteamInputDeviceConnected_t);
+};
+void SteamInputDeviceConnectedCallback::OnSteamInputDeviceConnected(SteamInputDeviceConnected_t* pParam) {
+  Nan::HandleScope scope;
+  v8::Local<v8::Object> data = Nan::New<v8::Object>();
+  Nan::Set(data, Nan::New("m_ulConnectedDeviceHandle").ToLocalChecked(), Nan::New<v8::Number>(static_cast<double>(pParam->m_ulConnectedDeviceHandle)));
+  EmitEvent(new EventData("steam-input-device-connected", data));
+}
+SteamInputDeviceConnectedCallback* g_SteamInputDeviceConnectedCallback = nullptr;
+
+// Callback handler for SteamInputDeviceDisconnected_t
+class SteamInputDeviceDisconnectedCallback {
+public:
+    STEAM_CALLBACK(SteamInputDeviceDisconnectedCallback, OnSteamInputDeviceDisconnected, SteamInputDeviceDisconnected_t);
+};
+void SteamInputDeviceDisconnectedCallback::OnSteamInputDeviceDisconnected(SteamInputDeviceDisconnected_t* pParam) {
+  Nan::HandleScope scope;
+  v8::Local<v8::Object> data = Nan::New<v8::Object>();
+  Nan::Set(data, Nan::New("m_ulDisconnectedDeviceHandle").ToLocalChecked(), Nan::New<v8::Number>(static_cast<double>(pParam->m_ulDisconnectedDeviceHandle)));
+  EmitEvent(new EventData("steam-input-device-disconnected", data));
+}
+SteamInputDeviceDisconnectedCallback* g_SteamInputDeviceDisconnectedCallback = nullptr;
+
+// Callback handler for SteamInputGamepadSlotChange_t
+class SteamInputGamepadSlotChangeCallback {
+public:
+    STEAM_CALLBACK(SteamInputGamepadSlotChangeCallback, OnSteamInputGamepadSlotChange, SteamInputGamepadSlotChange_t);
+};
+void SteamInputGamepadSlotChangeCallback::OnSteamInputGamepadSlotChange(SteamInputGamepadSlotChange_t* pParam) {
+  Nan::HandleScope scope;
+  v8::Local<v8::Object> data = Nan::New<v8::Object>();
+  Nan::Set(data, Nan::New("m_unAppID").ToLocalChecked(), Nan::New(pParam->m_unAppID));
+  Nan::Set(data, Nan::New("m_ulDeviceHandle").ToLocalChecked(), Nan::New<v8::Number>(static_cast<double>(pParam->m_ulDeviceHandle)));
+  Nan::Set(data, Nan::New("m_eDeviceType").ToLocalChecked(), Nan::New(static_cast<int>(pParam->m_eDeviceType)));
+  Nan::Set(data, Nan::New("m_nOldGamepadSlot").ToLocalChecked(), Nan::New(pParam->m_nOldGamepadSlot));
+  Nan::Set(data, Nan::New("m_nNewGamepadSlot").ToLocalChecked(), Nan::New(pParam->m_nNewGamepadSlot));
+  EmitEvent(new EventData("steam-input-gamepad-slot-change", data));
+}
+SteamInputGamepadSlotChangeCallback* g_SteamInputGamepadSlotChangeCallback = nullptr;
+
+// Static handler for SteamInputActionEvent_t
+void SteamInputActionEventCallbackHandler(SteamInputActionEvent_t *pEvent) {
+    Nan::HandleScope scope;
+    v8::Local<v8::Object> eventData = Nan::New<v8::Object>();
+    Nan::Set(eventData, Nan::New("controllerHandle").ToLocalChecked(), Nan::New<v8::Number>(static_cast<double>(pEvent->controllerHandle)));
+    Nan::Set(eventData, Nan::New("eEventType").ToLocalChecked(), Nan::New(static_cast<int>(pEvent->eEventType)));
+
+    if (pEvent->eEventType == ESteamInputActionEventType::ESteamInputActionEventType_DigitalAction) {
+        v8::Local<v8::Object> digitalAction = Nan::New<v8::Object>();
+        Nan::Set(digitalAction, Nan::New("actionHandle").ToLocalChecked(), Nan::New<v8::Number>(static_cast<double>(pEvent->digitalAction.actionHandle)));
+        v8::Local<v8::Object> actionData = Nan::New<v8::Object>();
+        Nan::Set(actionData, Nan::New("bState").ToLocalChecked(), Nan::New(pEvent->digitalAction.digitalActionData.bState));
+        Nan::Set(actionData, Nan::New("bActive").ToLocalChecked(), Nan::New(pEvent->digitalAction.digitalActionData.bActive));
+        Nan::Set(digitalAction, Nan::New("digitalActionData").ToLocalChecked(), actionData);
+        Nan::Set(eventData, Nan::New("digitalAction").ToLocalChecked(), digitalAction);
+    } else if (pEvent->eEventType == ESteamInputActionEventType::ESteamInputActionEventType_AnalogAction) {
+        v8::Local<v8::Object> analogAction = Nan::New<v8::Object>();
+        Nan::Set(analogAction, Nan::New("actionHandle").ToLocalChecked(), Nan::New<v8::Number>(static_cast<double>(pEvent->analogAction.actionHandle)));
+        v8::Local<v8::Object> actionData = Nan::New<v8::Object>();
+        Nan::Set(actionData, Nan::New("eMode").ToLocalChecked(), Nan::New(static_cast<int>(pEvent->analogAction.analogActionData.eMode)));
+        Nan::Set(actionData, Nan::New("x").ToLocalChecked(), Nan::New(pEvent->analogAction.analogActionData.x));
+        Nan::Set(actionData, Nan::New("y").ToLocalChecked(), Nan::New(pEvent->analogAction.analogActionData.y));
+        Nan::Set(actionData, Nan::New("bActive").ToLocalChecked(), Nan::New(pEvent->analogAction.analogActionData.bActive));
+        Nan::Set(analogAction, Nan::New("analogActionData").ToLocalChecked(), actionData);
+        Nan::Set(eventData, Nan::New("analogAction").ToLocalChecked(), analogAction);
+    }
+    EmitEvent(new EventData("steam-input-action-event", eventData));
+}
+
 
 NAN_METHOD(Init) {
   Nan::HandleScope scope;
@@ -15,7 +201,15 @@ NAN_METHOD(Init) {
     info.GetReturnValue().Set(Nan::New(false));
     return;
   }
-  info.GetReturnValue().Set(Nan::New(SteamInput()->Init()));
+  // In the header, Init takes a bool: bExplicitlyCallRunFrame
+  // For now, defaulting to true, meaning RunFrame must be called by the game.
+  // Or, we can expose this if necessary. For simplicity with current greenworks,
+  // let's assume true is a reasonable default.
+  bool bExplicitlyCallRunFrame = true;
+  if (info.Length() > 0 && info[0]->IsBoolean()) {
+     bExplicitlyCallRunFrame = Nan::To<bool>(info[0]).FromJust();
+  }
+  info.GetReturnValue().Set(Nan::New(SteamInput()->Init(bExplicitlyCallRunFrame)));
 }
 
 NAN_METHOD(Shutdown) {
@@ -25,6 +219,69 @@ NAN_METHOD(Shutdown) {
     return;
   }
   info.GetReturnValue().Set(Nan::New(SteamInput()->Shutdown()));
+}
+
+NAN_METHOD(SetInputActionManifestFilePath) {
+  Nan::HandleScope scope;
+  if (!SteamInput()) {
+    THROW_BAD_ARGS("SteamInput not initialized");
+    return;
+  }
+  if (info.Length() < 1 || !info[0]->IsString()) {
+    THROW_BAD_ARGS("Expected 1 string argument: pchInputActionManifestAbsolutePath");
+    return;
+  }
+  Nan::Utf8String path(info[0]);
+  info.GetReturnValue().Set(Nan::New(SteamInput()->SetInputActionManifestFilePath(*path)));
+}
+
+NAN_METHOD(WaitForData) {
+  Nan::HandleScope scope;
+  if (!SteamInput()) {
+    THROW_BAD_ARGS("SteamInput not initialized");
+    return;
+  }
+  if (info.Length() < 2 || !info[0]->IsBoolean() || !info[1]->IsUint32()) {
+    THROW_BAD_ARGS("Expected 2 arguments: bWaitForever (boolean), unTimeout (uint32)");
+    return;
+  }
+  bool bWaitForever = Nan::To<bool>(info[0]).FromJust();
+  uint32 unTimeout = Nan::To<uint32_t>(info[1]).FromJust();
+  info.GetReturnValue().Set(Nan::New(SteamInput()->BWaitForData(bWaitForever, unTimeout)));
+}
+
+NAN_METHOD(IsNewDataAvailable) {
+  Nan::HandleScope scope;
+  if (!SteamInput()) {
+    THROW_BAD_ARGS("SteamInput not initialized");
+    return;
+  }
+  info.GetReturnValue().Set(Nan::New(SteamInput()->BNewDataAvailable()));
+}
+
+NAN_METHOD(EnableDeviceCallbacks) {
+  Nan::HandleScope scope;
+  if (!SteamInput()) {
+    THROW_BAD_ARGS("SteamInput not initialized");
+    return;
+  }
+  SteamInput()->EnableDeviceCallbacks();
+  // Register callbacks if not already done
+  if (!g_SteamInputConfigLoadedCallback) g_SteamInputConfigLoadedCallback = new SteamInputConfigLoadedCallback();
+  if (!g_SteamInputDeviceConnectedCallback) g_SteamInputDeviceConnectedCallback = new SteamInputDeviceConnectedCallback();
+  if (!g_SteamInputDeviceDisconnectedCallback) g_SteamInputDeviceDisconnectedCallback = new SteamInputDeviceDisconnectedCallback();
+  if (!g_SteamInputGamepadSlotChangeCallback) g_SteamInputGamepadSlotChangeCallback = new SteamInputGamepadSlotChangeCallback();
+  // This function returns void, so no SetReturnValue needed unless for chaining/status.
+}
+
+NAN_METHOD(EnableActionEventCallbacks) {
+  Nan::HandleScope scope;
+  if (!SteamInput()) {
+    THROW_BAD_ARGS("SteamInput not initialized");
+    return;
+  }
+  SteamInput()->EnableActionEventCallbacks(SteamInputActionEventCallbackHandler);
+  // This function returns void.
 }
 
 NAN_METHOD(GetActionSetHandle) {
@@ -351,6 +608,44 @@ NAN_METHOD(GetDigitalActionOrigins) {
   info.GetReturnValue().Set(result);
 }
 
+NAN_METHOD(GetStringForDigitalActionName) {
+  Nan::HandleScope scope;
+  if (!SteamInput()) {
+    THROW_BAD_ARGS("SteamInput not initialized");
+    return;
+  }
+  if (info.Length() < 1 || !info[0]->IsNumber()) {
+    THROW_BAD_ARGS("Expected 1 number argument: actionHandle");
+    return;
+  }
+  InputDigitalActionHandle_t actionHandle = static_cast<InputDigitalActionHandle_t>(Nan::To<int64_t>(info[0]).FromJust());
+  const char* actionName = SteamInput()->GetStringForDigitalActionName(actionHandle);
+  if (actionName) {
+    info.GetReturnValue().Set(Nan::New(actionName).ToLocalChecked());
+  } else {
+    info.GetReturnValue().Set(Nan::Null());
+  }
+}
+
+NAN_METHOD(GetStringForAnalogActionName) {
+  Nan::HandleScope scope;
+  if (!SteamInput()) {
+    THROW_BAD_ARGS("SteamInput not initialized");
+    return;
+  }
+  if (info.Length() < 1 || !info[0]->IsNumber()) {
+    THROW_BAD_ARGS("Expected 1 number argument: actionHandle");
+    return;
+  }
+  InputAnalogActionHandle_t actionHandle = static_cast<InputAnalogActionHandle_t>(Nan::To<int64_t>(info[0]).FromJust());
+  const char* actionName = SteamInput()->GetStringForAnalogActionName(actionHandle);
+  if (actionName) {
+    info.GetReturnValue().Set(Nan::New(actionName).ToLocalChecked());
+  } else {
+    info.GetReturnValue().Set(Nan::Null());
+  }
+}
+
 NAN_METHOD(GetStringForActionOrigin) {
   Nan::HandleScope scope;
   if (!SteamInput()) {
@@ -370,7 +665,48 @@ NAN_METHOD(GetStringForActionOrigin) {
   }
 }
 
-NAN_METHOD(GetGlyphForActionOrigin) {
+NAN_METHOD(GetGlyphPNGForActionOrigin) {
+  Nan::HandleScope scope;
+  if (!SteamInput()) {
+    THROW_BAD_ARGS("SteamInput not initialized");
+    return;
+  }
+  if (info.Length() < 3 || !info[0]->IsNumber() || !info[1]->IsNumber() || !info[2]->IsUint32()) {
+    THROW_BAD_ARGS("Expected 3 arguments: eOrigin (number), eSize (enum), unFlags (uint32)");
+    return;
+  }
+  EInputActionOrigin eOrigin = static_cast<EInputActionOrigin>(Nan::To<int32_t>(info[0]).FromJust());
+  ESteamInputGlyphSize eSize = static_cast<ESteamInputGlyphSize>(Nan::To<int32_t>(info[1]).FromJust());
+  uint32 unFlags = Nan::To<uint32_t>(info[2]).FromJust();
+  const char* glyphPath = SteamInput()->GetGlyphPNGForActionOrigin(eOrigin, eSize, unFlags);
+  if (glyphPath) {
+    info.GetReturnValue().Set(Nan::New(glyphPath).ToLocalChecked());
+  } else {
+    info.GetReturnValue().Set(Nan::Null());
+  }
+}
+
+NAN_METHOD(GetGlyphSVGForActionOrigin) {
+  Nan::HandleScope scope;
+  if (!SteamInput()) {
+    THROW_BAD_ARGS("SteamInput not initialized");
+    return;
+  }
+  if (info.Length() < 2 || !info[0]->IsNumber() || !info[1]->IsUint32()) {
+    THROW_BAD_ARGS("Expected 2 arguments: eOrigin (number), unFlags (uint32)");
+    return;
+  }
+  EInputActionOrigin eOrigin = static_cast<EInputActionOrigin>(Nan::To<int32_t>(info[0]).FromJust());
+  uint32 unFlags = Nan::To<uint32_t>(info[1]).FromJust();
+  const char* glyphPath = SteamInput()->GetGlyphSVGForActionOrigin(eOrigin, unFlags);
+  if (glyphPath) {
+    info.GetReturnValue().Set(Nan::New(glyphPath).ToLocalChecked());
+  } else {
+    info.GetReturnValue().Set(Nan::Null());
+  }
+}
+
+NAN_METHOD(GetGlyphForActionOriginLegacy) { // Renamed from GetGlyphForActionOrigin
   Nan::HandleScope scope;
   if (!SteamInput()) {
     THROW_BAD_ARGS("SteamInput not initialized");
@@ -381,7 +717,8 @@ NAN_METHOD(GetGlyphForActionOrigin) {
     return;
   }
   EInputActionOrigin eOrigin = static_cast<EInputActionOrigin>(Nan::To<int32_t>(info[0]).FromJust());
-  const char* glyphPath = SteamInput()->GetGlyphForActionOrigin(eOrigin);
+  // This function in isteaminput.h is GetGlyphForActionOrigin_Legacy
+  const char* glyphPath = SteamInput()->GetGlyphForActionOrigin_Legacy(eOrigin);
   if (glyphPath) {
     info.GetReturnValue().Set(Nan::New(glyphPath).ToLocalChecked());
   } else {
@@ -513,6 +850,74 @@ NAN_METHOD(TriggerVibrationExtended) {
   SteamInput()->TriggerVibrationExtended(inputHandle, usLeftSpeed, usRightSpeed, usLeftTriggerSpeed, usRightTriggerSpeed);
 }
 
+NAN_METHOD(TriggerSimpleHapticEvent) {
+  Nan::HandleScope scope;
+  if (!SteamInput()) {
+    THROW_BAD_ARGS("SteamInput not initialized");
+    return;
+  }
+  if (info.Length() < 6 || !info[0]->IsNumber() || !info[1]->IsNumber() || !info[2]->IsUint32() || !info[3]->IsInt32() || !info[4]->IsUint32() || !info[5]->IsInt32()) {
+    THROW_BAD_ARGS("Expected 6 arguments: inputHandle (number), eHapticLocation (enum), nIntensity (uint8), nGainDB (char), nOtherIntensity (uint8), nOtherGainDB (char)");
+    return;
+  }
+  InputHandle_t inputHandle = static_cast<InputHandle_t>(Nan::To<int64_t>(info[0]).FromJust());
+  EControllerHapticLocation eHapticLocation = static_cast<EControllerHapticLocation>(Nan::To<int32_t>(info[1]).FromJust());
+  uint8 nIntensity = static_cast<uint8>(Nan::To<uint32_t>(info[2]).FromJust());
+  char nGainDB = static_cast<char>(Nan::To<int32_t>(info[3]).FromJust());
+  uint8 nOtherIntensity = static_cast<uint8>(Nan::To<uint32_t>(info[4]).FromJust());
+  char nOtherGainDB = static_cast<char>(Nan::To<int32_t>(info[5]).FromJust());
+
+  SteamInput()->TriggerSimpleHapticEvent(inputHandle, eHapticLocation, nIntensity, nGainDB, nOtherIntensity, nOtherGainDB);
+}
+
+NAN_METHOD(GetStringForXboxOrigin) {
+  Nan::HandleScope scope;
+  if (!SteamInput()) {
+    THROW_BAD_ARGS("SteamInput not initialized");
+    return;
+  }
+  if (info.Length() < 1 || !info[0]->IsNumber()) {
+    THROW_BAD_ARGS("Expected 1 number argument: eOrigin");
+    return;
+  }
+  EXboxOrigin eOrigin = static_cast<EXboxOrigin>(Nan::To<int32_t>(info[0]).FromJust());
+  const char* originString = SteamInput()->GetStringForXboxOrigin(eOrigin);
+  if (originString) {
+    info.GetReturnValue().Set(Nan::New(originString).ToLocalChecked());
+  } else {
+    info.GetReturnValue().Set(Nan::Null());
+  }
+}
+
+NAN_METHOD(GetGlyphForXboxOrigin) {
+  Nan::HandleScope scope;
+  if (!SteamInput()) {
+    THROW_BAD_ARGS("SteamInput not initialized");
+    return;
+  }
+  if (info.Length() < 1 || !info[0]->IsNumber()) {
+    THROW_BAD_ARGS("Expected 1 number argument: eOrigin");
+    return;
+  }
+  EXboxOrigin eOrigin = static_cast<EXboxOrigin>(Nan::To<int32_t>(info[0]).FromJust());
+  const char* glyphPath = SteamInput()->GetGlyphForXboxOrigin(eOrigin);
+  if (glyphPath) {
+    info.GetReturnValue().Set(Nan::New(glyphPath).ToLocalChecked());
+  } else {
+    info.GetReturnValue().Set(Nan::Null());
+  }
+}
+
+NAN_METHOD(GetSessionInputConfigurationSettings) {
+  Nan::HandleScope scope;
+  if (!SteamInput()) {
+    THROW_BAD_ARGS("SteamInput not initialized");
+    return;
+  }
+  info.GetReturnValue().Set(Nan::New(SteamInput()->GetSessionInputConfigurationSettings()));
+}
+
+
 // Helper to get uint8 from object property
 uint8 GetUint8FromObj(v8::Local<v8::Object> obj, const char* key) {
     return static_cast<uint8>(Nan::To<uint32_t>(Nan::Get(obj, Nan::New(key).ToLocalChecked()).ToLocalChecked()).FromMaybe(0));
@@ -640,7 +1045,11 @@ NAN_METHOD(RunFrame) {
     // Depending on desired behavior, might just return if not initialized.
     return;
   }
-  SteamInput()->RunFrame();
+  bool bReservedValue = true; // Default as per header
+  if (info.Length() > 0 && info[0]->IsBoolean()) {
+    bReservedValue = Nan::To<bool>(info[0]).FromJust();
+  }
+  SteamInput()->RunFrame(bReservedValue);
 }
 
 NAN_METHOD(ShowBindingPanel) {
@@ -674,8 +1083,22 @@ NAN_METHOD(StopAnalogActionMomentum) {
 }
 
 void RegisterAPIs(v8::Local<v8::Object> target) {
+  // Store the emitter for later use in EmitEvent
+  // This should ideally be done once when the module initializes.
+  // For simplicity, doing it here, but it might re-assign multiple times if Init is called more than once.
+  // A better place would be in the module's main init function if available, or use a static bool flag.
+  if (g_emitter.IsEmpty() && target->IsObject()) {
+      g_emitter.Reset(target); // Assuming 'target' is the greenworks module object
+      uv_async_init(uv_default_loop(), &g_event_async, ProcessEvents);
+  }
+
   SET_FUNCTION("init", Init);
   SET_FUNCTION("shutdown", Shutdown);
+  SET_FUNCTION("setInputActionManifestFilePath", SetInputActionManifestFilePath);
+  SET_FUNCTION("waitForData", WaitForData);
+  SET_FUNCTION("isNewDataAvailable", IsNewDataAvailable);
+  SET_FUNCTION("enableDeviceCallbacks", EnableDeviceCallbacks); // Modified
+  SET_FUNCTION("enableActionEventCallbacks", EnableActionEventCallbacks); // Modified
   SET_FUNCTION("getActionSetHandle", GetActionSetHandle);
   SET_FUNCTION("activateActionSet", ActivateActionSet);
   SET_FUNCTION("getCurrentActionSet", GetCurrentActionSet);
@@ -687,6 +1110,8 @@ void RegisterAPIs(v8::Local<v8::Object> target) {
   SET_FUNCTION("getDigitalActionHandle", GetDigitalActionHandle);
   SET_FUNCTION("getAnalogActionData", GetAnalogActionData);
   SET_FUNCTION("getDigitalActionData", GetDigitalActionData);
+  SET_FUNCTION("getStringForDigitalActionName", GetStringForDigitalActionName);
+  SET_FUNCTION("getStringForAnalogActionName", GetStringForAnalogActionName);
   SET_FUNCTION("getMotionData", GetMotionData);
   SET_FUNCTION("getConnectedControllers", GetConnectedControllers);
   SET_FUNCTION("getControllerForGamepadIndex", GetControllerForGamepadIndex);
@@ -695,18 +1120,24 @@ void RegisterAPIs(v8::Local<v8::Object> target) {
   SET_FUNCTION("getAnalogActionOrigins", GetAnalogActionOrigins);
   SET_FUNCTION("getDigitalActionOrigins", GetDigitalActionOrigins);
   SET_FUNCTION("getStringForActionOrigin", GetStringForActionOrigin);
-  SET_FUNCTION("getGlyphForActionOrigin", GetGlyphForActionOrigin);
+  SET_FUNCTION("getGlyphPNGForActionOrigin", GetGlyphPNGForActionOrigin);
+  SET_FUNCTION("getGlyphSVGForActionOrigin", GetGlyphSVGForActionOrigin);
+  SET_FUNCTION("getGlyphForActionOriginLegacy", GetGlyphForActionOriginLegacy); // Renamed
   SET_FUNCTION("getActionOriginFromXboxOrigin", GetActionOriginFromXboxOrigin);
   SET_FUNCTION("translateActionOrigin", TranslateActionOrigin);
   SET_FUNCTION("setLEDColor", SetLEDColor);
-  SET_FUNCTION("triggerHapticPulse", TriggerHapticPulse);
-  SET_FUNCTION("triggerRepeatedHapticPulse", TriggerRepeatedHapticPulse);
+  SET_FUNCTION("triggerHapticPulse", TriggerHapticPulse); // Maps to Legacy_TriggerHapticPulse
+  SET_FUNCTION("triggerRepeatedHapticPulse", TriggerRepeatedHapticPulse); // Maps to Legacy_TriggerRepeatedHapticPulse
   SET_FUNCTION("triggerVibration", TriggerVibration);
   SET_FUNCTION("triggerVibrationExtended", TriggerVibrationExtended);
+  SET_FUNCTION("triggerSimpleHapticEvent", TriggerSimpleHapticEvent);
+  SET_FUNCTION("getStringForXboxOrigin", GetStringForXboxOrigin);
+  SET_FUNCTION("getGlyphForXboxOrigin", GetGlyphForXboxOrigin);
   SET_FUNCTION("setDualSenseTriggerEffect", SetDualSenseTriggerEffect);
   SET_FUNCTION("getDeviceBindingRevision", GetDeviceBindingRevision);
   SET_FUNCTION("getRemotePlaySessionID", GetRemotePlaySessionID);
-  SET_FUNCTION("runFrame", RunFrame);
+  SET_FUNCTION("getSessionInputConfigurationSettings", GetSessionInputConfigurationSettings);
+  SET_FUNCTION("runFrame", RunFrame); // Modified
   SET_FUNCTION("showBindingPanel", ShowBindingPanel);
   SET_FUNCTION("stopAnalogActionMomentum", StopAnalogActionMomentum);
 }
