@@ -134,6 +134,15 @@ describe('greenworks API', function () {
     });
   });
 
+  describe('getAuthSessionTicketForWebAPI', function () {
+    it('Should get successfully', function (done) {
+      greenworks.getAuthSessionTicketForWebAPI('my_game', function (ticket) {
+        assert(ticket);
+        done();
+      }, function (err) { throw err; });
+    });
+  });
+
   describe('getFriends', function () {
     it('Should get successfully', function (done) {
       assert(greenworks.FriendFlags);

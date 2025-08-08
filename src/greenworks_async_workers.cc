@@ -326,6 +326,41 @@ void GetAuthSessionTicketWorker::HandleOKCallback() {
   callback->Call(1, argv, &resource);
 }
 
+GetAuthSessionTicketForWebAPIWorker::GetAuthSessionTicketForWebAPIWorker(
+  Nan::Callback* success_callback,
+  Nan::Callback* error_callback,
+  const char* pchIdentity )
+    : SteamCallbackAsyncWorker(success_callback, error_callback),
+      result(this, &GetAuthSessionTicketForWebAPIWorker::OnGetTicketForWebAPICompleted),
+      handle_(0), ticket_buf_size_(0),
+      _pchIdentity(pchIdentity) {
+}
+
+void GetAuthSessionTicketForWebAPIWorker::Execute() {
+  handle_ = SteamUser()->GetAuthTicketForWebApi(_pchIdentity);
+  WaitForCompleted();
+}
+
+void GetAuthSessionTicketForWebAPIWorker::OnGetTicketForWebAPICompleted(
+    GetTicketForWebApiResponse_t *inCallback) {
+  if (inCallback->m_eResult != k_EResultOK)
+    SetErrorMessage("Error on getting auth session ticket.");
+  is_completed_ = true;
+}
+
+void GetAuthSessionTicketForWebAPIWorker::HandleOKCallback() {
+  Nan::HandleScope scope;
+  v8::Local<v8::Object> ticket = Nan::New<v8::Object>();
+  Nan::Set(
+      ticket, Nan::New("ticket").ToLocalChecked(),
+      Nan::CopyBuffer(reinterpret_cast<char *>(ticket_buf_), ticket_buf_size_)
+          .ToLocalChecked());
+  Nan::Set(ticket, Nan::New("handle").ToLocalChecked(), Nan::New(handle_));
+  v8::Local<v8::Value> argv[] = { ticket };
+  Nan::AsyncResource resource("greenworks:GetAuthSessionTicketForWebAPIWorker.HandleOKCallback");
+  callback->Call(1, argv, &resource);
+}
+
 RequestEncryptedAppTicketWorker::RequestEncryptedAppTicketWorker(
   std::string user_data,
   Nan::Callback* success_callback,

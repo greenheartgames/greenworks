@@ -31,6 +31,26 @@ NAN_METHOD(GetAuthSessionTicket) {
   info.GetReturnValue().Set(Nan::Undefined());
 }
 
+NAN_METHOD(GetAuthSessionTicketForWebAPI) {
+  Nan::HandleScope scope;
+  if (info.Length() < 2 ||!info[0]->IsString() || !info[1]->IsFunction()) {
+    THROW_BAD_ARGS("Bad arguments");
+  }
+
+  std::string pchIdentity = *(Nan::Utf8String(info[0]));
+
+  Nan::Callback* success_callback =
+      new Nan::Callback(info[1].As<v8::Function>());
+
+  Nan::Callback* error_callback = nullptr;
+  if (info.Length() > 3 && info[2]->IsFunction())
+    error_callback = new Nan::Callback(info[2].As<v8::Function>());
+
+  Nan::AsyncQueueWorker(new greenworks::GetAuthSessionTicketForWebAPIWorker(
+    success_callback, error_callback, pchIdentity.c_str()));
+  info.GetReturnValue().Set(Nan::Undefined());
+}
+
 NAN_METHOD(CancelAuthTicket) {
   Nan::HandleScope scope;
   if (info.Length() < 1 || !info[0]->IsNumber()) {
@@ -204,6 +224,7 @@ void RegisterAPIs(v8::Local<v8::Object> target) {
            Nan::New("EncryptedAppTicketSymmetricKeyLength").ToLocalChecked(),
            Nan::New(k_nSteamEncryptedAppTicketSymmetricKeyLen));
   SET_FUNCTION("getAuthSessionTicket", GetAuthSessionTicket);
+  SET_FUNCTION("getAuthSessionTicketForWebAPI", GetAuthSessionTicketForWebAPI);
   SET_FUNCTION("getEncryptedAppTicket", GetEncryptedAppTicket);
   SET_FUNCTION("decryptAppTicket", DecryptAppTicket);
   SET_FUNCTION("isTicketForApp", IsTicketForApp);
