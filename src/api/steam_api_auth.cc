@@ -148,6 +148,31 @@ NAN_METHOD(getTicketAppId) {
   info.GetReturnValue().Set(app_id);
 }
 
+NAN_METHOD(BeginAuthSession) {
+    if (info.Length() < 2 || !node::Buffer::HasInstance(info[0]) || !info[1]->IsString()) {
+        Nan::ThrowTypeError("Wrong arguments");
+        return;
+    }
+
+    // Get the authentication ticket from the ArrayBuffer
+    char* ticket = node::Buffer::Data(info[0]);
+    size_t ticket_size = node::Buffer::Length(info[0]);
+
+    // Get the Steam ID from the string
+    std::string steam_id_str(*(Nan::Utf8String(info[1])));
+    CSteamID steam_id(utils::strToUint64(steam_id_str));
+
+    // Begin the authentication session
+    EBeginAuthSessionResult response = SteamUser()->BeginAuthSession(
+      reinterpret_cast<uint8*>(ticket),
+      ticket_size,
+      steam_id
+    );
+
+    // Return the response as a number
+    info.GetReturnValue().Set(static_cast<int>(response));
+}
+
 void RegisterAPIs(v8::Local<v8::Object> target) {
   Nan::Set(target,
            Nan::New("EncryptedAppTicketSymmetricKeyLength").ToLocalChecked(),
@@ -160,6 +185,7 @@ void RegisterAPIs(v8::Local<v8::Object> target) {
   SET_FUNCTION("getTicketSteamId", getTicketSteamId);
   SET_FUNCTION("getTicketAppId", getTicketAppId);
   SET_FUNCTION("cancelAuthTicket", CancelAuthTicket);
+  SET_FUNCTION("beginAuthSession", BeginAuthSession);
 }
 
 SteamAPIRegistry::Add X(RegisterAPIs);

@@ -16,7 +16,7 @@ describe('greenworks API', function () {
   describe('saveTextToFile', function () {
     it('Should save successfully.', function (done) {
       greenworks.saveTextToFile('test_file.txt', 'test_content',
-        function () { done(); }, function (err) { throw err; done(); });
+        function () { done(); }, function (err) { throw err; });
     });
   });
 
@@ -79,9 +79,27 @@ describe('greenworks API', function () {
       greenworks.getAuthSessionTicket(function (ticket) {
         assert(ticket.ticket);
         assert(ticket.handle);
+        const validateRes = greenworks.beginAuthSession(ticket.ticket, greenworks.getSteamId().steamId);
+        assert.equal(validateRes, 0); // k_EBeginAuthSessionResultOK  0 Ticket is valid for this game and this Steam ID.
+        done();
+      }, function (err) { throw err; });
+    });
+
+    it('Invalid SteamID', function (done) {
+      greenworks.getAuthSessionTicket(function (ticket) {
+        assert(ticket.ticket);
+        assert(ticket.handle);
+        const validateRes = greenworks.beginAuthSession(ticket.ticket, '0');
+        assert.equal(validateRes, 1); // k_EBeginAuthSessionResultInvalidTicket 1 The ticket is invalid.
+        done();
+      }, function (err) { throw err; });
+    });
+
+    it('Can cancel the ticket successfully', function (done) {
+      greenworks.getAuthSessionTicket(function (ticket) {
         greenworks.cancelAuthTicket(ticket.handle);
         done();
-      }, function (err) { throw err; done(); });
+      }, function (err) { throw err; });
     });
   });
 
@@ -90,7 +108,7 @@ describe('greenworks API', function () {
       greenworks.getEncryptedAppTicket('test_content', function (ticket) {
         assert(ticket);
         done();
-      }, function (err) { throw err; done(); });
+      }, function (err) { throw err; });
     });
   });
 
