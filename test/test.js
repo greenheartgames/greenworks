@@ -75,21 +75,21 @@ describe('greenworks API', function () {
   });
 
   describe('getAuthSessionTicket', function () {
-    it('Should get successfully', function (done) {
+    it('Should get successfully - User auth', function (done) {
       greenworks.getAuthSessionTicket(function (ticket) {
         assert(ticket.ticket);
         assert(ticket.handle);
-        const validateRes = greenworks.beginAuthSession(ticket.ticket, greenworks.getSteamId().steamId);
+        const validateRes = greenworks.beginAuthSessionAsUser(ticket.ticket, greenworks.getSteamId().steamId);
         assert.equal(validateRes, 0); // k_EBeginAuthSessionResultOK  0 Ticket is valid for this game and this Steam ID.
         done();
       }, function (err) { throw err; });
     });
 
-    it('Invalid SteamID', function (done) {
+    it('Invalid SteamID - User auth', function (done) {
       greenworks.getAuthSessionTicket(function (ticket) {
         assert(ticket.ticket);
         assert(ticket.handle);
-        const validateRes = greenworks.beginAuthSession(ticket.ticket, '0');
+        const validateRes = greenworks.beginAuthSessionAsUser(ticket.ticket, '0');
         assert.equal(validateRes, 1); // k_EBeginAuthSessionResultInvalidTicket 1 The ticket is invalid.
         done();
       }, function (err) { throw err; });
@@ -98,6 +98,28 @@ describe('greenworks API', function () {
     it('Can cancel the ticket successfully', function (done) {
       greenworks.getAuthSessionTicket(function (ticket) {
         greenworks.cancelAuthTicket(ticket.handle);
+        done();
+      }, function (err) { throw err; });
+    });
+
+    it('Should get successfully - Server auth', function (done) {
+      greenworks.getAuthSessionTicket(function (ticket) {
+        assert(ticket.ticket);
+        assert(ticket.handle);
+        assert(greenworks.initGameServer(0x7f000001 /* 127.0.0.1 */, 51234, 51235, 3 /* authenticationAndSecure */, '1.0.0'));
+        const validateRes = greenworks.beginAuthSessionAsServer(ticket.ticket, greenworks.getSteamId().steamId);
+        assert.equal(validateRes, 0); // k_EBeginAuthSessionResultOK  0 Ticket is valid for this game and this Steam ID.
+        done();
+      }, function (err) { throw err; });
+    });
+
+    it('Invalid SteamID - Server auth', function (done) {
+      greenworks.getAuthSessionTicket(function (ticket) {
+        assert(ticket.ticket);
+        assert(ticket.handle);
+        assert(greenworks.initGameServer(0x7f000001 /* 127.0.0.1 */, 51244, 51245, 3 /* authenticationAndSecure */, '1.0.0'));
+        const validateRes = greenworks.beginAuthSessionAsServer(ticket.ticket, '0');
+        assert.equal(validateRes, 1); // k_EBeginAuthSessionResultInvalidTicket 1 The ticket is invalid.
         done();
       }, function (err) { throw err; });
     });
