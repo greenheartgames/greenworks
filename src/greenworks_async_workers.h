@@ -198,7 +198,7 @@ class GetAuthSessionTicketForWebAPIWorker : public SteamCallbackAsyncWorker {
  private:
   HAuthTicket handle_;
   unsigned int ticket_buf_size_;
-  uint8 ticket_buf_[2048];
+  uint8 ticket_buf_[2560];
   const char* _pchIdentity;
 };
 

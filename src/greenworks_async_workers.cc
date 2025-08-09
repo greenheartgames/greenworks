@@ -345,6 +345,10 @@ void GetAuthSessionTicketForWebAPIWorker::OnGetTicketForWebAPICompleted(
     GetTicketForWebApiResponse_t *inCallback) {
   if (inCallback->m_eResult != k_EResultOK)
     SetErrorMessage("Error on getting auth session ticket.");
+
+  handle_ = inCallback->m_hAuthTicket;
+  memcpy(inCallback->m_rgubTicket, ticket_buf_, sizeof(inCallback->m_rgubTicket));
+  ticket_buf_size_ = inCallback->m_cubTicket;
   is_completed_ = true;
 }
 
