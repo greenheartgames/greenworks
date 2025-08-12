@@ -57,6 +57,10 @@ class SteamEvent : public greenworks::SteamClient::Observer {
                          uint64 SteamIDMakingChange,
                          uint32 ChatMemberStateChange) override;
 
+  void OnValidateAuthTicketResponse(CSteamID m_SteamID,
+                         EAuthSessionResponse m_eAuthSessionResponse,
+                         CSteamID m_OwnerSteamID) override;
+
 private:
   const Nan::Persistent<v8::Object>& persistent_steam_events_;
 };

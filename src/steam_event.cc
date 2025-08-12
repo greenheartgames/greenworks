@@ -280,4 +280,18 @@ void SteamEvent::OnLobbyChatMsg(uint64 steamIDLobby, uint64 steamIDUser,
   ar.runInAsyncScope(Nan::New(persistent_steam_events_), "on", 5, argv);
 }
 
+void SteamEvent::OnValidateAuthTicketResponse(CSteamID m_SteamID,
+                         EAuthSessionResponse m_eAuthSessionResponse,
+                         CSteamID m_OwnerSteamID) {
+  Nan::HandleScope scope;
+  v8::Local<v8::Value> argv[] = {
+      Nan::New("validate-auth-ticket").ToLocalChecked(),
+      greenworks::SteamID::Create(m_SteamID),
+      Nan::New(utils::uint64ToString(m_eAuthSessionResponse)).ToLocalChecked(),
+      greenworks::SteamID::Create(m_OwnerSteamID)
+    };
+  Nan::AsyncResource ar("greenworks:SteamEvent.OnValidateAuthTicketResponse");
+  ar.runInAsyncScope(Nan::New(persistent_steam_events_), "on", 4, argv);
+}
+
 } // namespace greenworks

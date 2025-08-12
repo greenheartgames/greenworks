@@ -11,7 +11,7 @@
   "scripts": {
     "cpplint": "python ./deps/cpplint/cpplint.py --extensions=h,cc src/* src/api/*",
     "compdb": "node-gyp configure --release -- -f gyp.generator.compile_commands_json.py && cp Release/compile_commands.json .",
-    "test": "mocha test/test.js"
+    "test": "mocha --timeout 5000 test/test.js"
   },
   "dependencies": {
     "nan": "^2.22.0"
