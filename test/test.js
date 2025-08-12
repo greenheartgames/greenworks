@@ -110,7 +110,10 @@ describe('greenworks API', function () {
         assert(ticket.handle);
 
         const playerSteamId = greenworks.getSteamId().steamId;
-        registerValidateAuthTicketEvent(done, playerSteamId, 0);
+        registerValidateAuthTicketEvent(() => {
+          greenworks.endAuthSessionAsUser(playerSteamId);
+          done();
+        }, playerSteamId, 0);
 
         const validateRes = greenworks.beginAuthSessionAsUser(ticket.ticket, playerSteamId);
         assert.equal(validateRes, 0); // k_EBeginAuthSessionResultOK  0 Ticket is valid for this game and this Steam ID.
@@ -150,11 +153,13 @@ describe('greenworks API', function () {
         assert(greenworks.initGameServer(0x7f000001 /* 127.0.0.1 */, 51234, 51235, 3 /* authenticationAndSecure */, '1.0.0'));
 
         const playerSteamId = greenworks.getSteamId().steamId;
-        registerValidateAuthTicketEvent(done, playerSteamId, 0);
+        registerValidateAuthTicketEvent(() => {
+          greenworks.endAuthSessionAsServer(playerSteamId);
+          done();
+        }, playerSteamId, 0);
 
         const validateRes = greenworks.beginAuthSessionAsServer(ticket.ticket, playerSteamId);
         assert.equal(validateRes, 0); // k_EBeginAuthSessionResultOK  0 Ticket is valid for this game and this Steam ID.
-        done();
       }, function (err) { throw err; });
     });
 
