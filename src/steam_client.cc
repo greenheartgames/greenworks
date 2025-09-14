@@ -60,7 +60,8 @@ SteamClient::SteamClient()
       OnP2PSessionRequest_(this, &SteamClient::OnP2PSessionRequest),
       OnP2PSessionConnectFail_(this, &SteamClient::OnP2PSessionConnectFail),
       OnLobbyChatMsg_(this, &SteamClient::OnLobbyChatMsg),
-      OnLobbyChatUpdate_(this, &SteamClient::OnLobbyChatUpdate) {}
+      OnLobbyChatUpdate_(this, &SteamClient::OnLobbyChatUpdate),
+      OnValidateAuthTicketResponse_(this, &SteamClient::OnValidateAuthTicketResponse) {}
 
 SteamClient::~SteamClient() {
   for (size_t i = 0; i < observer_list_.size(); ++i) {
@@ -253,6 +254,14 @@ void SteamClient::OnLobbyChatUpdate(LobbyChatUpdate_t *callback) {
                                          callback->m_ulSteamIDUserChanged,
                                          callback->m_ulSteamIDMakingChange,
                                          callback->m_rgfChatMemberStateChange);
+  }
+}
+
+void SteamClient::OnValidateAuthTicketResponse(ValidateAuthTicketResponse_t *callback) {
+  for (size_t i = 0; i < observer_list_.size(); ++i) {
+    observer_list_[i]->OnValidateAuthTicketResponse(callback->m_SteamID,
+                                         callback->m_eAuthSessionResponse,
+                                         callback->m_OwnerSteamID);
   }
 }
 

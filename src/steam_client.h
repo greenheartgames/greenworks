@@ -55,6 +55,10 @@ class SteamClient {
                                    uint64 SteamIDMakingChange,
                                    uint32 ChatMemberStateChange) = 0;
 
+    virtual void OnValidateAuthTicketResponse(CSteamID m_SteamID,
+                                   EAuthSessionResponse m_eAuthSessionResponse,
+                                   CSteamID m_OwnerSteamID) = 0;
+
     virtual ~Observer() {}
   };
 
@@ -123,6 +127,9 @@ class SteamClient {
   STEAM_CALLBACK(SteamClient, OnLobbyChatMsg, LobbyChatMsg_t, OnLobbyChatMsg_);
   STEAM_CALLBACK(SteamClient, OnLobbyChatUpdate, LobbyChatUpdate_t,
                  OnLobbyChatUpdate_);
+
+
+  STEAM_CALLBACK(SteamClient, OnValidateAuthTicketResponse, ValidateAuthTicketResponse_t, OnValidateAuthTicketResponse_);
 };
 
 }  // namespace greenworks

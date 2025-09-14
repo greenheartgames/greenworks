@@ -44,7 +44,6 @@ NAN_MODULE_INIT(init) {
 
   SET_FUNCTION("initAPI", InitAPI);
 }
-
 }  // namespace
 
 #if defined(_WIN32)

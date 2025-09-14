@@ -183,6 +183,25 @@ class GetAuthSessionTicketWorker : public SteamCallbackAsyncWorker {
   uint8 ticket_buf_[2048];
 };
 
+class GetAuthSessionTicketForWebAPIWorker : public SteamCallbackAsyncWorker {
+ public:
+  GetAuthSessionTicketForWebAPIWorker(Nan::Callback* success_callback,
+                                      Nan::Callback* error_callback,
+                                      const char* pchIdentity);
+  STEAM_CALLBACK(GetAuthSessionTicketForWebAPIWorker,
+                 OnGetTicketForWebAPICompleted,
+                 GetTicketForWebApiResponse_t,
+                 result);
+  void Execute() override;
+  void HandleOKCallback() override;
+
+ private:
+  HAuthTicket handle_;
+  unsigned int ticket_buf_size_;
+  uint8 ticket_buf_[2560];
+  const char* _pchIdentity;
+};
+
 class RequestEncryptedAppTicketWorker : public SteamCallbackAsyncWorker {
  public:
   RequestEncryptedAppTicketWorker(std::string user_data,
