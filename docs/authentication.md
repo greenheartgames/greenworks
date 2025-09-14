@@ -61,18 +61,6 @@ Returns an `Integer` representing a [EBeginAuthSessionResult](https://partner.st
 
 The final result will be available when listening to `greenworks.on('validate-auth-ticket', ((steamId, eAuthSessionResponse, ownerSteamID) => {});` as explained in [the official documentation](https://partner.steamgames.com/doc/api/ISteamUser#ValidateAuthTicketResponse_t)
 
-### greenworks.beginAuthSessionAsServer(ticket, steam_id)
-Steam Doc entry: [ISteamGameServer::BeginAuthSession()](https://partner.steamgames.com/doc/api/ISteamGameServer#BeginAuthSession)
-**This requires you call greenworks.initGameServer() beforehands**
-
-Parameters:
-* `ticket` Buffer: The `ticket.ticket` value returned from `getAuthSessionTicket()`.
-* `steam_id` String: The player' steamId
-
-Returns an `Integer` representing a [EBeginAuthSessionResult](https://partner.steamgames.com/doc/api/steam_api#EBeginAuthSessionResult)
-
-The final result will be available when listening to `greenworks.on('validate-auth-ticket', ((steamId, eAuthSessionResponse, ownerSteamID) => {});` as explained in [the official documentation](https://partner.steamgames.com/doc/api/ISteamUser#ValidateAuthTicketResponse_t)
-
 ### greenworks.cancelAuthTicket(ticket_handle)
 
 * `ticket_handle` Integer: The `handle` value returned from the ticket.

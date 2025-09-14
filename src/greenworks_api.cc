@@ -4,7 +4,6 @@
 
 #include "nan.h"
 #include "steam/steam_api.h"
-#include "steam/steam_gameserver.h"
 #include "v8.h"
 
 #include "api/steam_api_registry.h"
@@ -35,29 +34,6 @@ NAN_METHOD(InitAPI) {
   info.GetReturnValue().Set(Nan::New(success));
 }
 
-NAN_METHOD(InitGameServer) {
-    if (info.Length() < 5 || 
-        !info[0]->IsNumber() || 
-        !info[1]->IsNumber() || 
-        !info[2]->IsNumber() || 
-        !info[3]->IsNumber() || 
-        !info[4]->IsString()) {
-        Nan::ThrowTypeError("Wrong arguments");
-        return;
-    }
-
-    uint32 unIP = info[0]->Uint32Value(Nan::GetCurrentContext()).FromJust();
-    uint16 usGamePort = info[1]->Uint32Value(Nan::GetCurrentContext()).FromJust();
-    uint16 usQueryPort = info[2]->Uint32Value(Nan::GetCurrentContext()).FromJust();
-    EServerMode eServerMode = static_cast<EServerMode>(info[3]->Uint32Value(Nan::GetCurrentContext()).FromJust());
-    std::string pchVersionString = *(Nan::Utf8String(info[4]));
-
-    // Initialize the game server
-    bool success = SteamGameServer_Init(unIP, usGamePort, usQueryPort, eServerMode, pchVersionString.c_str());
-
-    info.GetReturnValue().Set(Nan::New(success));
-}
-
 NAN_MODULE_INIT(init) {
   // Set internal steam event handler.
   v8::Local<v8::Object> steam_events = Nan::New<v8::Object>();
@@ -67,7 +43,6 @@ NAN_MODULE_INIT(init) {
   greenworks::api::SteamAPIRegistry::GetInstance()->RegisterAllAPIs(target);
 
   SET_FUNCTION("initAPI", InitAPI);
-  SET_FUNCTION("initGameServer", InitGameServer);
 }
 }  // namespace
 
