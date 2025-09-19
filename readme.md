@@ -32,12 +32,13 @@ Guides and the API references are located in [docs](docs) directory.
 
 ## Contributions
 
-This project is not actively developed but is maintained at best-effort.
-Due to my limited time, responses to issues and code reviews may be slow.
-If you need additional support or have big great ideas, please reach out to
-the [maintainer](https://github.com/hokein).
+This project is maintained on a best-effort basis. While it is stable and used in production by many, please be aware that active development is not a priority.
 
-While [many games]((https://github.com/greenheartgames/greenworks/wiki/Apps-games-using-greenworks)) uses Greenworks successfully in production,
+Responses to issues and pull requests may be slow due to limited time. If you need dedicated support or have a great idea you'd like to see implemented, please reach out to the [maintainer](https://github.com/hokein).
+
+If this library has helped you, please consider becoming a sponsor to support its continued maintenance and development.
+
+While [many games](https://github.com/greenheartgames/greenworks/wiki/Apps-games-using-greenworks) uses Greenworks successfully in production,
 depending on your needs, you might want to consider [alternatives](docs/alternatives.md).
 
 ## License
