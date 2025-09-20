@@ -1,3 +1,12 @@
+## 2025.09.20 v0.22.0 stable
+
+* Greenworks compiled for NW.js v0.103.1
+* New authentication APIs  #348 (thanks to @Elanis)
+   * `greenworks.beginAuthSessionAsUser(ticket, steam_id)`
+   * `greenworks.endAuthSessionAsUser(steam_id)`
+   * `greenworks.getAuthSessionTicketForWebAPI(identity, success_callback, [error_callback])`
+   * `validate-auth-ticket` event.
+
 ## 2025.06.21 v0.21.0 stable
 
 * Greenworks compiled for NW.js v0.100.1
