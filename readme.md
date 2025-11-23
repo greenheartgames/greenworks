@@ -16,8 +16,6 @@ Since then, it has been open-sourced and is
   * Steam SDK v1.62
 * Greenworks is built using [Native Abstractions for Node.js](https://github.com/nodejs/nan) to
 support different node versions.
-* The project is currently funded by Greenheart Games and other
-donors.
 
 ## Download
 
