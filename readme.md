@@ -21,10 +21,8 @@ donors.
 
 ## Download
 
-Prebuilt binaries of Greenworks for NW.js & Electron can be found on
+Prebuilt binaries of Greenworks for NW.js can be found on
 the [releases](https://github.com/greenheartgames/greenworks/releases) page.
-
-You can also download [daily automated builds](https://greenworks-prebuilds.armaldio.xyz/) for a variety of platforms (electron, nw.js, node) and systems (Windows, Mac Linux - 32/64 bit). This is site is graciously provided by [@armaldio](https://github.com/armaldio).
 
 ## Documentation
 
@@ -37,9 +35,6 @@ This project is maintained on a best-effort basis. While it is stable and used i
 Responses to issues and pull requests may be slow due to limited time. If you need dedicated support or have a great idea you'd like to see implemented, please reach out to the [maintainer](https://github.com/hokein).
 
 If this library has helped you, please consider becoming a sponsor to support its continued maintenance and development.
-
-While [many games](https://github.com/greenheartgames/greenworks/wiki/Apps-games-using-greenworks) uses Greenworks successfully in production,
-depending on your needs, you might want to consider [alternatives](docs/alternatives.md).
 
 ## License
 
