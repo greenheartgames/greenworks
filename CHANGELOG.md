@@ -1,3 +1,117 @@
+## 2025.09.20 v0.22.0 stable
+
+* Greenworks compiled for NW.js v0.103.1
+* New authentication APIs  #348 (thanks to @Elanis)
+   * `greenworks.beginAuthSessionAsUser(ticket, steam_id)`
+   * `greenworks.endAuthSessionAsUser(steam_id)`
+   * `greenworks.getAuthSessionTicketForWebAPI(identity, success_callback, [error_callback])`
+   * `validate-auth-ticket` event.
+
+## 2025.06.21 v0.21.0 stable
+
+* Greenworks compiled for NW.js v0.100.1
+
+## 2025.03.31 v0.20.0 stable
+
+* Update to Steamworks SDK 1.62
+* Greenworks compiled for NW.js v0.98.0
+
+## 2024.12.08 v0.19.0 stable
+
+* Update to Steamworks SDK 1.61
+* Greenworks compiled for NW.js v0.94.0
+* New lobby and p2p APIs, #335 (thanks to @Hocti):
+  - `greenworks.requestLobbyList()`
+  - `greenworks.getLobbyMemberLimit(steamIDLobby: string): number`
+  - `greenworks.setLobbyMemberLimit(steamIDLobby: string,limit: number): boolean`
+  - `greenworks.getLobbyMemberData(steamIDLobby: string, steamIDMember: string, pchKey: string): string`
+  - `greenworks.setLobbyMemberData(steamIDLobby: string, pchKey: string, pchValue: string): void`
+  - `greenworks.getLobbyDataCount(steamIDLobby: string): number`
+  - `greenworks.getLobbyDataByIndex(steamIDLobby: string, index:number): {key: string, value: string}`
+  - `greenworks.sendLobbyChatMsg(steamIDLobby: string,data: Buffer): boolean`
+  - `greenworks.getLobbyChatEntry(steamIDLobby: string,chatID: number): {steamIDUser: string, data: Buffer,chatEntryType: eChatEntryType}`
+  - `greenworks.sendP2PPacket(steamId: string, sendType: eP2PSendType, data: Buffer,nChannel:number): boolean`
+  - `greenworks.isP2PPacketAvailable(nChannel:number): number`
+  - `greenworks.readP2PPacket(size: number,nChannel:number):{data: Buffer,steamIDRemote: string}`
+  - `greenworks.acceptP2PSessionWithUser(steamId: string): void`
+  - `greenworks.getP2PSessionState(steamIDUser: string): {result:boolean,connectionState:Object}`
+  - `greenworks.closeP2PSessionWithUser(steamIDUser: string): boolean`
+  - `greenworks.closeP2PChannelWithUser(steamIDUser: string, nChannel: number): boolean`
+  - `greenworks.isBehindNAT():boolean`
+* New events:
+  - `lobby-match-list`
+  - `lobby-chat-update`
+  - `lobby-chat-msg`
+  - `p2p-session-request`
+  - `p2p-session-connect-fail`
+
+## 2024.10.17 v0.18.0 stable
+
+* Greenworks compiled for NW.js v0.92.0
+
+## 2024.07.27 v0.17.0 stable
+
+* Update to Steamworks SDK 1.60
+* Greenworks compiled for NW.js v0.89.0
+* Add `greenworks.showFloatingGamepadTextInput` API and `floating-gamepad-text-input-dismissed` event
+
+## 2024.04.07 v0.16.0 stable
+
+* Update to Steamworks SDK 1.59
+* Greenworks copmiled for NW.js v0.86.0
+* Add `greenworks.activateGameOverlayToStore` API #280
+
+## 2023.11.04 v0.15.0 stable
+
+* Update to Steamworks SDK 1.58
+* Greenworks copmiled for NW.js v0.82.0
+* Greenworks addon on mac is a universal binary (x86_64 and arm64)
+* New APIs:
+  * `greenworks.isSteamRunningOnSteamDeck()`
+  * `greenworks.indicateAchievementProgress(achievement, current, max)`
+  * `greenworks.getFriendGamePlayed(steamIDFriend)`
+  * `greenworks.getLaunchCommandLine()`
+  * `greenworks.getFriendPersonaName(raw_steam_id)`
+  * `greenworks.setRichPresence(pchKey, pchValue)`
+  * `greenworks.ClearRichPresence()`
+  * `greenworks.getFriendRichPresence(steamIDFriend, pchKey)`
+  * `greenworks.setPlayedWith(steamIDUserPlayedWith)`
+  * `greenworks.activateGameOverlayInviteDialog(steamIDLobby)`
+  * `greenworks.activateGameOverlayToUser(pchDialog, CSteamID steamID)`
+  * `greenworks.createLobby(lobbyType, maxMembers)`
+  * `greenworks.deleteLobbyData(steamIDLobby, pchKey)`
+  * `greenworks.getLobbyByIndex(iLobby)`
+  * `greenworks.getLobbyData(steamIDLobby, pchKey)`
+  * `greenworks.getLobbyMemberByIndex(steamIDLobby, iMember)`
+  * `greenworks.getNumLobbyMembers(steamIDLobby)`
+  * `greenworks.getLobbyOwner(steamIDLobby)`
+  * `greenworks.inviteUserToLobby(steamIDLobby, steamIDInvitee)`
+  * `greenworks.joinLobby(steamIDLobby)`
+  * `greenworks.leaveLobby(steamIDLobby)`
+  * `greenworks.setLobbyData(steamIDLobby, pchKey, pchValue)`
+  * `greenworks.setLobbyJoinable(steamIDLobby, bLobbyJoinable)`
+  * `greenworks.setLobbyOwner(steamIDLobby, steamIDNewOwner)`
+  * `greenworks.setLobbyType(steamIDLobby, eLobbyType)`
+  * `greenworks.ugcGetItemState(published_file_id)`
+  * `greenworks.ugcGetItemInstallInfo(published_file_id)`
+  * `greenworks.getIPCountry()`
+  * `greenworks.isSteamInBigPictureMode()`
+  * `greenworks.getDLCDataByIndex(index)`
+  * `greenworks.getAppBuildId()`
+  * `greenworks.isAppInstalled(appId)`
+  * `greenworks.getAppInstallDir(app_id, buffer, buffer_size)`
+* New events:
+  * `new-url-launch-parameters`
+  * `rich-presence-join-requested`
+  * `lobby-created`
+  * `lobby-data-update`
+  * `lobby-enter`
+  * `lobby-invite`
+  * `lobby-join-requested`
+* Fix incorrect index on `canelAuthticket` API
+* Fix "Error on saving file on local machine" bug, #178
+* Fix `requestUserInformation` API not returning result
+
 ## 2018.11.18 v0.14.0 stable
 
 * Greenworks complied for for NW.js v0.31.5, v0.32.4, v0.33.3 and Electron v3.0.9, v4.0.0-beta 7 with Steamworks SDK 1.42

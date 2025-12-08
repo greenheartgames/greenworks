@@ -151,3 +151,65 @@ Returns:
 Posted after the user executes a steam url with command line or query parameters such as `steam://run/<appid>//?param1=value1;param2=value2;param3=value3;` while the game is already running. The new params can be queried with [GetLaunchCommandLine](https://partner.steamgames.com/doc/api/ISteamApps#GetLaunchCommandLine) and [GetLaunchQueryParam](https://partner.steamgames.com/doc/api/ISteamApps#GetLaunchQueryParam).
 
 [Steam docs](https://partner.steamgames.com/doc/api/ISteamApps#NewUrlLaunchParameters_t)
+
+### Event: 'floating-gamepad-text-input-dismissed'
+
+Emitted when the floating keyboard invoked from ShowFloatingGamepadTextInput has been closed.
+
+[Steam docs](https://partner.steamgames.com/doc/api/ISteamUtils#FloatingGamepadTextInputDismissed_t)
+
+### Event: 'lobby-match-list'
+
+Result when requesting the lobby list(called requestLobbyList). You should iterate over the returned lobbies with GetLobbyByIndex
+
+[Steam docs](https://partner.steamgames.com/doc/api/ISteamMatchmaking#LobbyMatchList_t)
+
+Returns:
+* `LobbiesMatching` Integer: Number of lobbies that matched search criteria and we have Steam IDs for.
+
+### Event: 'lobby-chat-update'
+
+A lobby chat room state has changed, this is usually sent when a user has joined or left the lobby.
+It's not about chat actually, It's player enter/leave etc
+
+[Steam docs](https://partner.steamgames.com/doc/api/ISteamMatchmaking#LobbyChatUpdate_t)
+
+Returns:
+* `SteamIDLobby` String: The Steam ID of the lobby.
+* `SteamIDUserChanged` String: The user who's status in the lobby just changed - can be recipient.
+* `SteamIDMakingChange` Integer: Chat member who made the change. This can be different from m_ulSteamIDUserChanged if kicking, muting, etc. For example, if one user kicks another from the lobby, this will be set to the id of the user who initiated the kick.
+* `ChatMemberStateChange` eChatMemberStateChange: Bitfield of EChatMemberStateChange values.
+
+### Event: 'lobby-chat-msg'
+
+A chat (text or binary) message for this lobby has been received. After getting this you must use GetLobbyChatEntry to retrieve the contents of this message.
+
+[Steam docs](https://partner.steamgames.com/doc/api/ISteamMatchmaking#LobbyChatMsg_t)
+
+Returns:
+* `steamIDLobby` String: The Steam ID of the lobby this message was sent in.
+* `steamIDUser` String: Steam ID of the user who sent this message. Note that it could have been the local user.
+* `chatEntryType` Integer: Type of message received. This is actually a EChatEntryType.
+* `chatID` Integer: The index of the chat entry to use with GetLobbyChatEntry, this is not valid outside of the scope of this callback and should never be stored.
+
+### Event: 'p2p-session-request'
+
+A user wants to communicate with us over the P2P channel via the SendP2PPacket. In response, a call to AcceptP2PSessionWithUser needs to be made, if you want to open the network channel with them.
+(after other player called acceptP2PSessionWithUser)
+
+[Steam docs](https://partner.steamgames.com/doc/api/ISteamNetworking#P2PSessionRequest_t)
+
+Returns:
+* `steamIDRemote` String: The user who wants to start a P2P session with us.
+
+### Event: 'p2p-session-connect-fail'
+
+Called when packets can't get through to the specified user.
+All queued packets unsent at this point will be dropped, further attempts to send will retry making the connection (but will be dropped if we fail again).
+(after connected player quit)
+
+[Steam docs](https://partner.steamgames.com/doc/api/ISteamNetworking#P2PSessionConnectFail_t)
+
+Returns:
+* `steamIDRemote` String: User we were trying to send the packets to.
+* `eP2PSessionError` Integer: Indicates the reason why we're having trouble. Actually a EP2PSessionError.

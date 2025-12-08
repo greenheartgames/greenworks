@@ -92,19 +92,23 @@ def main():
   shutil.rmtree(DIST_DIR, ignore_errors=True)
   os.makedirs(DIST_DIR)
 
+  arch_name = '64' if args.arch == 'x64' else '32'
+  # we use universal binary for osx, so no arch name is needed.
+  if PLATFORM_KEY == 'osx':
+    arch_name = ''
   want = [
-      'lib/greenworks-{0}{1}.node'.format(PLATFORM_KEY,
-        '64' if args.arch == 'x64' else '32'),
+      'lib/greenworks-{0}{1}.node'.format(PLATFORM_KEY, arch_name),
       'greenworks.js'
   ]
+  if arch_name:
+    arch_name = '-' + arch_name
   if args.target == 'nw.js':
     # The name is like greenworks-v0.6.0-nw-v0.16.0-win-ia32.zip.
-    dist_name = 'greenworks-v{0}-nw-v{1}-{2}-{3}.zip'.format(
-        get_greenworks_version(), args.version, PLATFORM_KEY, args.arch)
+    dist_name = 'greenworks-v{0}-nw-v{1}-{2}{3}.zip'.format(
+        get_greenworks_version(), args.version, PLATFORM_KEY, arch_name)
   elif args.target == 'electron':
-    dist_name = 'greenworks-v{0}-electron-v{1}-{2}-{3}.zip'.format(
-        get_greenworks_version(), args.version, PLATFORM_KEY,
-        args.arch)
+    dist_name = 'greenworks-v{0}-electron-v{1}-{2}{3}.zip'.format(
+        get_greenworks_version(), args.version, PLATFORM_KEY, arch_name)
   else:
      raise 'Unknown target.'
 

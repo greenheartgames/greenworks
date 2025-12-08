@@ -8,8 +8,7 @@ var fs = require('fs');
 var greenworks;
 
 if (process.platform == 'darwin') {
-  if (process.arch == 'x64')
-    greenworks = require(__dirname + '/lib/greenworks-osx64');
+  greenworks = require(__dirname + '/lib/greenworks-osx');
 } else if (process.platform == 'win32') {
   if (process.arch == 'x64')
     greenworks = require(__dirname + '/lib/greenworks-win64');

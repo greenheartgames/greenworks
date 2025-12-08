@@ -82,6 +82,11 @@ NAN_METHOD(IsSteamRunning) {
   info.GetReturnValue().Set(Nan::New(running));
 }
 
+NAN_METHOD(IsSteamRunningOnSteamDeck) {
+  Nan::HandleScope scope;
+  info.GetReturnValue().Set(SteamUtils()->IsSteamRunningOnSteamDeck());
+}
+
 NAN_METHOD(GetSteamId) {
   Nan::HandleScope scope;
   CSteamID user_id = SteamUser()->GetSteamID();
@@ -236,6 +241,19 @@ NAN_METHOD(ActivateGameOverlayToWebPage) {
   info.GetReturnValue().Set(Nan::Undefined());
 }
 
+NAN_METHOD(ActivateGameOverlayToStore) {
+  Nan::HandleScope scope;
+  if (info.Length() < 2 || !info[0]->IsUint32() || !info[1]->IsUint32()) {
+    THROW_BAD_ARGS("bad arguments");
+  }
+
+  AppId_t app_id = static_cast<AppId_t>(Nan::To<int32>(info[0]).FromJust());
+  auto overlay_store_flag = static_cast<EOverlayToStoreFlag>(Nan::To<int32>(info[1]).FromJust());
+
+  SteamFriends()->ActivateGameOverlayToStore(app_id, overlay_store_flag);
+  info.GetReturnValue().Set(Nan::Undefined());
+}
+
 NAN_METHOD(IsSubscribedApp) {
   Nan::HandleScope scope;
   if (info.Length() < 1) {
@@ -319,12 +337,6 @@ NAN_METHOD(GetLaunchCommandLine) {
   info.GetReturnValue().Set(Nan::New(buffer, length - 1).ToLocalChecked());
 }
 
-NAN_METHOD(RunCallbacks) {
-  Nan::HandleScope scope;
-  SteamAPI_RunCallbacks();
-  info.GetReturnValue().Set(Nan::Undefined());
-}
-
 void RegisterAPIs(v8::Local<v8::Object> target) {
   Nan::Set(target,
            Nan::New("_version").ToLocalChecked(),
@@ -332,6 +344,7 @@ void RegisterAPIs(v8::Local<v8::Object> target) {
 
   SET_FUNCTION("restartAppIfNecessary", RestartAppIfNecessary);
   SET_FUNCTION("isSteamRunning", IsSteamRunning);
+  SET_FUNCTION("isSteamRunningOnSteamDeck", IsSteamRunningOnSteamDeck);
   SET_FUNCTION("getSteamId", GetSteamId);
   SET_FUNCTION("getAppId", GetAppId);
   SET_FUNCTION("getAppBuildId", GetAppBuildId);
@@ -344,6 +357,7 @@ void RegisterAPIs(v8::Local<v8::Object> target) {
   SET_FUNCTION("isSteamInBigPictureMode", IsSteamInBigPictureMode);
   SET_FUNCTION("activateGameOverlay", ActivateGameOverlay);
   SET_FUNCTION("activateGameOverlayToWebPage", ActivateGameOverlayToWebPage);
+  SET_FUNCTION("activateGameOverlayToStore", ActivateGameOverlayToStore);
   SET_FUNCTION("isAppInstalled", IsAppInstalled);
   SET_FUNCTION("isSubscribedApp", IsSubscribedApp);
   SET_FUNCTION("getImageSize", GetImageSize);

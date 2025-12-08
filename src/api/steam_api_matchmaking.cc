@@ -395,6 +395,208 @@ NAN_METHOD(SetLobbyType) {
   );
 }
 
+NAN_METHOD(RequestLobbyList) {
+  Nan::HandleScope scope;
+  if (info.Length() > 0) {
+    THROW_BAD_ARGS("Bad arguments");
+  }
+  info.GetReturnValue().Set(
+      Nan::New(utils::uint64ToString(SteamMatchmaking()->RequestLobbyList()))
+          .ToLocalChecked());
+}
+
+NAN_METHOD(GetLobbyMemberLimit) {
+  Nan::HandleScope scope;
+  if (info.Length() < 1 || !info[0]->IsString()) {
+    THROW_BAD_ARGS("Bad arguments");
+  }
+  std::string steam_id_str(*(Nan::Utf8String(info[0])));
+  CSteamID steam_id(utils::strToUint64(steam_id_str));
+  info.GetReturnValue().Set(
+      Nan::New<v8::Integer>(SteamMatchmaking()->GetLobbyMemberLimit(steam_id)));
+}
+
+NAN_METHOD(SetLobbyMemberLimit) {
+  Nan::HandleScope scope;
+  if (info.Length() < 1 || !info[0]->IsString() || !info[1]->IsInt32()) {
+    THROW_BAD_ARGS("Bad arguments");
+  }
+  std::string steam_id_str(*(Nan::Utf8String(info[0])));
+  CSteamID steam_id(utils::strToUint64(steam_id_str));
+  info.GetReturnValue().Set(SteamMatchmaking()->SetLobbyMemberLimit(
+      steam_id, Nan::To<int32>(info[1]).FromJust()));
+}
+
+NAN_METHOD(GetLobbyMemberData) {
+  Nan::HandleScope scope;
+  if (info.Length() < 3 || !info[0]->IsString() || !info[1]->IsString() ||
+      !info[2]->IsString()) {
+    THROW_BAD_ARGS("Bad arguments");
+  }
+
+  std::string steam_id_str(*(Nan::Utf8String(info[0])));
+  CSteamID steam_id(utils::strToUint64(steam_id_str));
+  if (!steam_id.IsValid()) {
+    THROW_BAD_ARGS("Steam ID is invalid");
+  }
+
+  std::string steam_id2_str(*(Nan::Utf8String(info[1])));
+  CSteamID steam_id2(utils::strToUint64(steam_id2_str));
+  if (!steam_id2.IsValid()) {
+    THROW_BAD_ARGS("Steam ID is invalid");
+  }
+
+  std::string pch_key_str(*(Nan::Utf8String(info[2])));
+
+  info.GetReturnValue().Set(
+      Nan::New(SteamMatchmaking()->GetLobbyMemberData(steam_id, steam_id2,
+                                                      pch_key_str.data()))
+          .ToLocalChecked());
+}
+
+NAN_METHOD(SetLobbyMemberData) {
+  Nan::HandleScope scope;
+  if (info.Length() < 3 || !info[0]->IsString() || !info[1]->IsString() ||
+      !info[2]->IsString()) {
+    THROW_BAD_ARGS("Bad arguments");
+  }
+  std::string steam_id_str(*(Nan::Utf8String(info[0])));
+  std::string pch_key_str(*(Nan::Utf8String(info[1])));
+  std::string pch_value_str(*(Nan::Utf8String(info[2])));
+  CSteamID steam_id(utils::strToUint64(steam_id_str));
+  if (!steam_id.IsValid()) {
+    THROW_BAD_ARGS("Steam ID is invalid");
+  }
+
+  SteamMatchmaking()->SetLobbyMemberData(steam_id, pch_key_str.data(),
+                                         pch_value_str.data());
+}
+
+NAN_METHOD(GetLobbyDataCount) {
+  Nan::HandleScope scope;
+  if (info.Length() < 1 || !info[0]->IsString()) {
+    THROW_BAD_ARGS("Bad arguments");
+  }
+
+  std::string steam_id_str(*(Nan::Utf8String(info[0])));
+  CSteamID steam_id(utils::strToUint64(steam_id_str));
+  if (!steam_id.IsValid()) {
+    THROW_BAD_ARGS("Steam ID is invalid");
+  }
+
+  info.GetReturnValue().Set(
+      Nan::New<v8::Integer>(SteamMatchmaking()->GetLobbyDataCount(steam_id)));
+}
+
+NAN_METHOD(GetLobbyDataByIndex) {
+  if (info.Length() < 2 || !info[0]->IsString() || !info[1]->IsInt32()) {
+    Nan::ThrowTypeError("Expected steamIDLobby and iLobbyData as arguments");
+    return;
+  }
+
+  std::string steam_id_str(*(Nan::Utf8String(info[0])));
+  CSteamID steamIDLobby(utils::strToUint64(steam_id_str));
+  if (!steamIDLobby.IsValid()) {
+    THROW_BAD_ARGS("Steam ID is invalid");
+  }
+
+  int iLobbyData = Nan::To<int>(info[1]).FromJust();
+
+  char pchKey[256];
+  char pchValue[256];
+
+  bool result = SteamMatchmaking()->GetLobbyDataByIndex(
+      steamIDLobby, iLobbyData, pchKey, sizeof(pchKey), pchValue,
+      sizeof(pchValue));
+
+  if (!result) {
+    info.GetReturnValue().Set(Nan::Null());
+    return;
+  }
+
+  v8::Local<v8::Object> resultObj = Nan::New<v8::Object>();
+  Nan::Set(resultObj, Nan::New("key").ToLocalChecked(),
+           Nan::New(pchKey).ToLocalChecked());
+  Nan::Set(resultObj, Nan::New("value").ToLocalChecked(),
+           Nan::New(pchValue).ToLocalChecked());
+
+  info.GetReturnValue().Set(resultObj);
+}
+
+NAN_METHOD(SendLobbyChatMsg) {
+  Nan::HandleScope scope;
+  if (info.Length() < 2) {
+    THROW_BAD_ARGS("Bad arguments");
+  }
+
+  if (!info[0]->IsString()) {
+    Nan::ThrowTypeError("steamID argument must be a string");
+    return;
+  }
+  std::string steam_id_str(*(Nan::Utf8String(info[0])));
+  CSteamID targetUserID(utils::strToUint64(steam_id_str));
+  if (!targetUserID.IsValid()) {
+    THROW_BAD_ARGS("Steam ID is invalid");
+  }
+
+  if (!info[1]->IsObject() || !node::Buffer::HasInstance(info[1])) {
+    Nan::ThrowTypeError("data argument must be a buffer");
+    return;
+  }
+
+  v8::Local<v8::Object> bufferObj =
+      info[1]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
+  char *bufferData = node::Buffer::Data(bufferObj);
+  size_t bufferLength = node::Buffer::Length(bufferObj);
+
+  bool success = SteamMatchmaking()->SendLobbyChatMsg(
+      targetUserID, bufferData, static_cast<uint32>(bufferLength));
+
+  info.GetReturnValue().Set(Nan::New(success));
+}
+
+NAN_METHOD(GetLobbyChatEntry) {
+  if (info.Length() < 2) {
+    Nan::ThrowTypeError("Wrong number of arguments");
+    return;
+  }
+
+  if (!info[0]->IsString() || !info[1]->IsNumber()) {
+    Nan::ThrowTypeError("Wrong arguments");
+    return;
+  }
+
+  Nan::Utf8String str(info[0]);
+  std::string lobbyIdStr(*str);
+  CSteamID steamIDLobby(static_cast<uint64>(std::stoull(lobbyIdStr)));
+
+  int iChatID = info[1]->Int32Value(Nan::GetCurrentContext()).FromJust();
+
+  CSteamID steamIDUser;
+  char dataBuffer[4096];
+  int cubData = sizeof(dataBuffer);
+  EChatEntryType chatEntryType;
+
+  int result = SteamMatchmaking()->GetLobbyChatEntry(
+      steamIDLobby, iChatID, &steamIDUser, dataBuffer, cubData, &chatEntryType);
+
+  if (result == -1) {
+    Nan::ThrowError("Failed to get chat entry");
+    return;
+  }
+
+  v8::Local<v8::Object> resultObj = Nan::New<v8::Object>();
+  Nan::Set(
+      resultObj, Nan::New("steamIDUser").ToLocalChecked(),
+      Nan::New(std::to_string(steamIDUser.ConvertToUint64())).ToLocalChecked());
+  Nan::Set(resultObj, Nan::New("data").ToLocalChecked(),
+           Nan::New(dataBuffer).ToLocalChecked());
+  Nan::Set(resultObj, Nan::New("chatEntryType").ToLocalChecked(),
+           Nan::New(chatEntryType));
+
+  info.GetReturnValue().Set(resultObj);
+}
+
 void RegisterAPIs(v8::Local<v8::Object> target) {
   InitChatMemberStateChange(target);
   InitLobbyComparison(target);
@@ -416,6 +618,16 @@ void RegisterAPIs(v8::Local<v8::Object> target) {
   SET_FUNCTION("setLobbyJoinable", SetLobbyJoinable);
   SET_FUNCTION("setLobbyOwner", SetLobbyOwner);
   SET_FUNCTION("setLobbyType", SetLobbyType);
+
+  SET_FUNCTION("requestLobbyList", RequestLobbyList);
+  SET_FUNCTION("getLobbyMemberLimit", GetLobbyMemberLimit);
+  SET_FUNCTION("setLobbyMemberLimit", SetLobbyMemberLimit);
+  SET_FUNCTION("getLobbyMemberData", GetLobbyMemberData);
+  SET_FUNCTION("setLobbyMemberData", SetLobbyMemberData);
+  SET_FUNCTION("getLobbyDataCount", GetLobbyDataCount);
+  SET_FUNCTION("getLobbyDataByIndex", GetLobbyDataByIndex);
+  SET_FUNCTION("getLobbyChatEntry", GetLobbyChatEntry);
+  SET_FUNCTION("sendLobbyChatMsg", SendLobbyChatMsg);
 }
 
 SteamAPIRegistry::Add X(RegisterAPIs);

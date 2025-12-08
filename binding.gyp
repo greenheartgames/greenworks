@@ -32,21 +32,10 @@
       ],
     }],
     ['OS=="mac"', {
-      'conditions': [
-        ['target_arch=="ia32"', {
-          'variables': {
-            'project_name': 'greenworks-osx32',
-          },
-        }],
-        ['target_arch=="x64"', {
-          'variables': {
-            'project_name': 'greenworks-osx64',
-          },
-        }],
-      ],
       'variables': {
-        'redist_bin_dir': 'osx32',
-        'public_lib_dir': 'osx32',
+        'project_name': 'greenworks-osx',
+        'redist_bin_dir': 'osx',
+        'public_lib_dir': 'osx',
         'lib_steam': 'libsteam_api.dylib',
         'lib_encryptedappticket': 'libsdkencryptedappticket.dylib',
       },
@@ -86,9 +75,11 @@
         'src/api/steam_api_dlc.cc',
         'src/api/steam_api_friends.cc',
         'src/api/steam_api_matchmaking.cc',
+        'src/api/steam_api_p2p.cc',
         'src/api/steam_api_registry.h',
         'src/api/steam_api_settings.cc',
         'src/api/steam_api_stats.cc',
+        'src/api/steam_api_utils.cc',
         'src/api/steam_api_workshop.cc',
         'src/greenworks_api.cc',
         'src/greenworks_async_workers.cc',
@@ -132,7 +123,7 @@
           }],
         ],
       },
-      'cflags': [ '-std=c++14' ],
+      'cflags': [ '-std=c++20' ],
       'conditions': [
         ['OS== "linux"',
           {
@@ -168,10 +159,15 @@
           '-Wno-deprecated-declarations',
         ],
         'OTHER_CPLUSPLUSFLAGS' : [
-          '-std=c++14',
+          '-std=c++20',
+          '-arch x86_64',
+          '-arch arm64',
           '-stdlib=libc++'
         ],
+
         'OTHER_LDFLAGS': [
+          '-arch x86_64',
+          '-arch arm64',
           '-stdlib=libc++'
         ],
       },

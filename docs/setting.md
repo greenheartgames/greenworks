@@ -17,6 +17,10 @@ an error.
 
 Returns a `Boolean` whether Steam is running.
 
+### greeenworks.isSteamRunningOnSteamDeck()
+
+Returns a `True` if currently running on the Steam Deck device.
+
 ### greenworks.restartAppIfNecessary(appId)
 
 * `appId` Integer: The APP ID of your game
@@ -86,6 +90,18 @@ Will always return `false` if the application is not in Steam's `game` category.
 * `url` String: a full url, e.g. http://www.steamgames.com.
 
 Open a specified url in steam game overlay.
+
+### greenworks.activateGameOverlayToStore(appId, storeFlag)
+
+Activates the Steam Overlay to the Steam store page for the provided app.
+
+* `appId` Integer: The app ID to show the store page of.
+* `storeFlag` Integer: Flags to modify the behavior when the page opens.
+
+Valid storeFlag options are:
+* 0 - No.
+* 1 - Add the specified app ID to the users cart.
+* 2 - Add the specified app ID to the users cart and show the store page.
 
 ### greenworks.isSubscribedApp(appId)
 

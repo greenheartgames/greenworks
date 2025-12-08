@@ -28,11 +28,6 @@ NAN_METHOD(InitAPI) {
 
   bool success = SteamAPI_Init();
 
-  if (success) {
-    ISteamUserStats* steam_user_stats = SteamUserStats();
-    steam_user_stats->RequestCurrentStats();
-  }
-
   greenworks::SteamClient::GetInstance()->AddObserver(
       new greenworks::SteamEvent(g_persistent_steam_events));
   greenworks::SteamClient::StartSteamLoop();
@@ -49,7 +44,6 @@ NAN_MODULE_INIT(init) {
 
   SET_FUNCTION("initAPI", InitAPI);
 }
-
 }  // namespace
 
 #if NODE_MAJOR_VERSION >= 10

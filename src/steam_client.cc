@@ -7,6 +7,7 @@
 #include <algorithm>
 
 #include "nan.h"
+#include "steam/isteamutils.h"
 
 namespace greenworks {
 
@@ -41,19 +42,26 @@ SteamClient::SteamClient()
       steam_persona_state_change_(this, &SteamClient::OnPeronaStateChange),
       avatar_image_loaded_(this, &SteamClient::OnAvatarImageLoaded),
       game_connected_friend_chat_msg_(
-          this,
-          &SteamClient::OnGameConnectedFriendChatMessage),
+          this, &SteamClient::OnGameConnectedFriendChatMessage),
       dlc_installed_(this, &SteamClient::OnDLCInstalled),
       MicroTxnAuthorizationResponse_(
-          this,
-          &SteamClient::OnMicroTxnAuthorizationResponse),
+          this, &SteamClient::OnMicroTxnAuthorizationResponse),
       OnLobbyCreated_(this, &SteamClient::OnLobbyCreated),
       OnLobbyDataUpdate_(this, &SteamClient::OnLobbyDataUpdate),
       OnLobbyEnter_(this, &SteamClient::OnLobbyEnter),
       OnLobbyInvite_(this, &SteamClient::OnLobbyInvite),
       OnGameLobbyJoinRequested_(this, &SteamClient::OnGameLobbyJoinRequested),
-      OnGameRichPresenceJoinRequested_(this, &SteamClient::OnGameRichPresenceJoinRequested),
-      OnNewUrlLaunchParameters_(this, &SteamClient::OnNewUrlLaunchParameters) {}
+      OnGameRichPresenceJoinRequested_(
+          this, &SteamClient::OnGameRichPresenceJoinRequested),
+      OnNewUrlLaunchParameters_(this, &SteamClient::OnNewUrlLaunchParameters),
+      OnFloatingGamepadTextInputDismissed_(
+          this, &SteamClient::OnFloatingGamepadTextInputDismissed),
+      OnLobbyMatchList_(this, &SteamClient::OnLobbyMatchList),
+      OnP2PSessionRequest_(this, &SteamClient::OnP2PSessionRequest),
+      OnP2PSessionConnectFail_(this, &SteamClient::OnP2PSessionConnectFail),
+      OnLobbyChatMsg_(this, &SteamClient::OnLobbyChatMsg),
+      OnLobbyChatUpdate_(this, &SteamClient::OnLobbyChatUpdate),
+      OnValidateAuthTicketResponse_(this, &SteamClient::OnValidateAuthTicketResponse) {}
 
 SteamClient::~SteamClient() {
   for (size_t i = 0; i < observer_list_.size(); ++i) {
@@ -201,6 +209,59 @@ void SteamClient::OnGameRichPresenceJoinRequested(GameRichPresenceJoinRequested_
 void SteamClient::OnNewUrlLaunchParameters(NewUrlLaunchParameters_t *callback) {
   for (size_t i = 0; i < observer_list_.size(); ++i) {
     observer_list_[i]->OnNewUrlLaunchParameters();
+  }
+}
+
+void SteamClient::OnFloatingGamepadTextInputDismissed(
+    FloatingGamepadTextInputDismissed_t *callback) {
+  for (size_t i = 0; i < observer_list_.size(); ++i) {
+    observer_list_[i]->OnFloatingGamepadTextInputDismissed();
+  }
+}
+
+void SteamClient::OnLobbyMatchList(LobbyMatchList_t *callback) {
+  for (size_t i = 0; i < observer_list_.size(); ++i) {
+    observer_list_[i]->OnLobbyMatchList(callback->m_nLobbiesMatching);
+  }
+}
+
+void SteamClient::OnP2PSessionRequest(P2PSessionRequest_t *callback) {
+  for (size_t i = 0; i < observer_list_.size(); ++i) {
+    observer_list_[i]->OnP2PSessionRequest(
+        callback->m_steamIDRemote.ConvertToUint64());
+  }
+}
+
+void SteamClient::OnP2PSessionConnectFail(P2PSessionConnectFail_t *callback) {
+  for (size_t i = 0; i < observer_list_.size(); ++i) {
+    observer_list_[i]->OnP2PSessionConnectFail(
+        callback->m_steamIDRemote.ConvertToUint64(),
+        callback->m_eP2PSessionError);
+  }
+}
+
+void SteamClient::OnLobbyChatMsg(LobbyChatMsg_t *callback) {
+  for (size_t i = 0; i < observer_list_.size(); ++i) {
+    observer_list_[i]->OnLobbyChatMsg(
+        callback->m_ulSteamIDLobby, callback->m_ulSteamIDUser,
+        callback->m_eChatEntryType, callback->m_iChatID);
+  }
+}
+
+void SteamClient::OnLobbyChatUpdate(LobbyChatUpdate_t *callback) {
+  for (size_t i = 0; i < observer_list_.size(); ++i) {
+    observer_list_[i]->OnLobbyChatUpdate(callback->m_ulSteamIDLobby,
+                                         callback->m_ulSteamIDUserChanged,
+                                         callback->m_ulSteamIDMakingChange,
+                                         callback->m_rgfChatMemberStateChange);
+  }
+}
+
+void SteamClient::OnValidateAuthTicketResponse(ValidateAuthTicketResponse_t *callback) {
+  for (size_t i = 0; i < observer_list_.size(); ++i) {
+    observer_list_[i]->OnValidateAuthTicketResponse(callback->m_SteamID,
+                                         callback->m_eAuthSessionResponse,
+                                         callback->m_OwnerSteamID);
   }
 }
 

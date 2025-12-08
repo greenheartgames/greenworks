@@ -130,9 +130,9 @@ Represents Steam SDK `EItemState`, local state of a workshop item (combinable fl
   * `publish_file_handle` String: Represents uint64, the published file handle
 * `error_callback` Function(err)
 
-Publishes `file_path` workshop item on Steam. The files `file_path` and
-`image_path` need to be existed on Steam Cloud (Using `writeTextToFile` or
-`saveFilesToCloud` API) and get shared (Using `Greenworks.fileShare`) first.
+Publishes `file_path` workshop item on Steam. Before doing this, the files `file_path` and
+`image_path` need to exist on Steam Cloud (using `writeTextToFile` or
+`saveFilesToCloud` API) and need to be be shared (using `Greenworks.fileShare`).
 
 An empty String of `image_path` means no image for the workshp item.
 

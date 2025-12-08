@@ -1,6 +1,6 @@
 {
   "name": "greenworks",
-  "version": "0.14.0",
+  "version": "0.22.0",
   "description": "A node.js addon exposing Valve's Steamworks APIs to JavaScript",
   "licenses": [
     {
@@ -10,13 +10,14 @@
   ],
   "scripts": {
     "cpplint": "python ./deps/cpplint/cpplint.py --extensions=h,cc src/* src/api/*",
-    "compdb": "node-gyp configure -- -f ninja && ninja -C build/Release -t compdb cxx > compile_commands.json"
+    "compdb": "node-gyp configure --release -- -f gyp.generator.compile_commands_json.py && cp Release/compile_commands.json .",
+    "test": "mocha --timeout 5000 test/test.js"
   },
   "dependencies": {
-    "nan": "^2.14.0"
+    "nan": "^2.22.0"
   },
   "devDependencies": {
-    "mocha": "1.21.4"
+    "mocha": "^11.7.1"
   },
   "gypfile": true,
   "main": "greenworks.js"
